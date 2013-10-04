@@ -1,0 +1,849 @@
+
+
+
+
+
+
+MutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirrorTester> {}
+WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirrorTester,WeakMutableDictionary> {}
+
+
+
+
+
+
+
+<Dictionary>
+    NSDictionary __dictionary (nodef,readonly,dealloc,ivar=__dictionary)
+
+
+    // initializing a set
+
+    -(init)init {
+        @-100 __dictionary=[[NSDictionary alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @-100 __dictionary=[[NSDictionary alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithContentsOfFile:(NSString*)file {
+        @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfFile:file];
+    }
+    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+        @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfURL:url];
+    }
+    -(init[super init])initWithDictionary:(NSDictionary*)dictionary {
+        @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary];
+    }
+    -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
+        @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary copyItems:copy];
+    }
+    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(NSUInteger)count {
+        @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:count];
+    }
+
+
+    -(void)encodeWithCoder:(NSCoder*)coder {
+        [__dictionary encodeWithCoder:coder];
+    }
+
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[ImmutableDictionary allocWithZone:zone] initWithDictionary:__dictionary]);
+    }
+    -(id)mutableCopyWithZone:(NSZone*)zone {
+        return([[MutableDictionary allocWithZone:zone] initWithDictionary:__dictionary]);
+    }
+
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+        NSUInteger ret=[__dictionary countByEnumeratingWithState:state objects:stackbuf count:len];
+        return(ret);
+    }
+
+
+
+    // Creating an dictionary
+    +(__WIClass__*)dictionary {return([[[__WIClass__ alloc] init] autorelease]);}
+    +(__WIClass__*)dictionaryWithContentsOfFile:(NSString*)file {return([[[__WIClass__ alloc] initWithContentsOfFile:file] autorelease]);}
+    +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WIClass__ alloc] initWithContentsOfURL:url] autorelease]);}
+    +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WIClass__ alloc] initWithDictionary:dictionary] autorelease]);}
+    +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
+    +(__WIClass__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
+
+
+
+
+    //Counting Entries
+    NSUInteger count={return([__dictionary count]);}
+    
+    
+    //Comparing Dictionaries
+    -(BOOL)isEqualToDictionary:(NSDictionary*)dictionary {return([__dictionary isEqualToDictionary:dictionary]);}
+    
+    
+    //Accessing Keys and Values
+    NSArray allKeys={return([__dictionary allKeys]);}
+    -(NSArray*)allKeysForObject:(id)object {return([__dictionary allKeysForObject:object]);}
+    NSArray allValues={return([__dictionary allValues]);}
+    -(void)getObjects:(id __unsafe_unretained [])objects andKeys:(id __unsafe_unretained [])keys {
+        [__dictionary getObjects:objects andKeys:keys];
+    }
+    -(id)objectForKey:(id<NSCopying>)key {@-10 
+        id ret=[__dictionary objectForKey:key];
+        @999 return(ret);
+    }
+    -(NSArray*)objectsForKeys:(NSArray *)keys notFoundMarker:(id)anObject {
+        return([__dictionary objectsForKeys:keys notFoundMarker:anObject]);
+    }
+    -(id)valueForKey:(NSString*)key {return([__dictionary valueForKey:key]);}
+    
+    
+    //Enumerating Dictionaries
+    NSEnumerator keyEnumerator={return([__dictionary keyEnumerator]);}
+    NSEnumerator objectEnumerator={return([__dictionary objectEnumerator]);}
+    -(void)enumerateKeysAndObjectsUsingBlock:(void (^)(id key, id obj, BOOL *stop))block {
+        [__dictionary enumerateKeysAndObjectsUsingBlock:block];
+    }
+    -(void)enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id key, id obj, BOOL *stop))block {
+        [__dictionary enumerateKeysAndObjectsWithOptions:opts usingBlock:block];
+    }
+    
+    
+    //Sorting Dictionaries
+    -(NSArray*)keysSortedByValueUsingSelector:(SEL)selector {
+        return([__dictionary keysSortedByValueUsingSelector:selector]);
+    }
+    -(NSArray*)keysSortedByValueUsingComparator:(NSComparator)cmptr {
+        return([__dictionary keysSortedByValueUsingComparator:cmptr]);
+    }
+    -(NSArray*)keysSortedByValueWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+        return([__dictionary keysSortedByValueWithOptions:opts usingComparator:cmptr]);
+    }
+    
+    
+    //Filtering Dictionaries
+    -(NSSet *)keysOfEntriesPassingTest:(BOOL (^)(id key, id obj, BOOL *stop))predicate {
+        return([__dictionary keysOfEntriesPassingTest:predicate]);
+    }
+    -(NSSet *)keysOfEntriesWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id key, id obj, BOOL *stop))predicate {
+        return([__dictionary keysOfEntriesWithOptions:opts passingTest:predicate]);
+    }
+    
+    
+    //Storing Dictionaries
+    -(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
+        return([__dictionary writeToFile:path atomically:flag]);
+    }
+    -(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
+        return([__dictionary writeToURL:url atomically:flag]);
+    }
+    
+    
+    //Accessing File Attributes
+    NSDate fileCreationDate={return([__dictionary fileCreationDate]);}
+    BOOL fileExtensionHidden={return([__dictionary fileExtensionHidden]);}
+    NSNumber fileGroupOwnerAccountID={return([__dictionary fileGroupOwnerAccountID]);}
+    NSString fileGroupOwnerAccountName={return([__dictionary fileGroupOwnerAccountName]);}
+    OSType fileHFSCreatorCode={return([__dictionary fileHFSCreatorCode]);}
+    OSType fileHFSTypeCode={return([__dictionary fileHFSTypeCode]);}
+    BOOL fileIsAppendOnly={return([__dictionary fileIsAppendOnly]);}
+    BOOL fileIsImmutable={return([__dictionary fileIsImmutable]);}
+    NSDate fileModificationDate={return([__dictionary fileModificationDate]);}
+    NSNumber fileOwnerAccountID={return([__dictionary fileOwnerAccountID]);}
+    NSString fileOwnerAccountName={return([__dictionary fileOwnerAccountName]);}
+    NSUInteger filePosixPermissions={return([__dictionary filePosixPermissions]);}
+    ULL fileSize={return([__dictionary fileSize]);}
+    NSUInteger fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
+    NSInteger fileSystemNumber={return([__dictionary fileSystemNumber]);}
+    NSString fileType={return([__dictionary fileType]);}
+    
+    
+    //Creating a Description
+    NSString description={return([__dictionary description]);}
+    NSString descriptionInStringsFileFormat={return([__dictionary descriptionInStringsFileFormat]);}
+    -(NSString *)descriptionWithLocale:(id)locale {
+        return([__dictionary descriptionWithLocale:locale]);
+    }
+    -(NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+        return([__dictionary descriptionWithLocale:locale indent:level]);
+    }
+
+
+
+
+
+
+
+<ProxiedDictionaryDelegate> "nac" "multi"
+    Basic_ProxyDictionaryDelegate basic_subDictionaryDelegate=[[Basic_ProxyDictionaryDelegate alloc] initWithOwner:self] (ivar,readonly,dealloc)
+    -(void)dealloc {@-800 [self basic_attachDictionaryDelegateTo:nil];}
+    -(void)basic_attachDictionaryDelegateTo:(NSObject<MutableDictionaryDelegate>*)dictionary {
+        [(NSObject<MutableDictionaryDelegate>*)v_basic_subDictionaryDelegate.delegateForDictionary removeDelegate:v_basic_subDictionaryDelegate];
+        [dictionary addDelegate:v_basic_subDictionaryDelegate];
+    }
+    -(void)basic_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    }
+    -(void)basic_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    }
+    -(void)basic_stateOK {
+    }
+    -(void)basic_delegateForDictionaryChanged {
+    }
+    NSDictionary basic_delegateForDictionary={return(v_basic_subDictionaryDelegate.delegateForDictionary);}
+
+
+
+<ProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
+    <Basic_ProxiedDictionaryDelegate> owner (ivar=owner,assign,nodef)
+    -(init[super init])initWithOwner:(NSObject<Basic_ProxiedDictionaryDelegate>*)aowner {
+        owner=aowner;
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        [owner basic_willReplaceObject:fromObject withObject:toObject forKey:key];
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        [owner basic_didReplaceObject:fromObject withObject:toObject forKey:key];
+    }
+    -(void)stateOK {
+        [owner basic_stateOK];
+    }
+    -(void)delegateForDictionaryChanged {
+        [owner basic_delegateForDictionaryChanged];
+    }
+
+
+<Basic_ProxiedDictionaryDelegate:ProxiedDictionaryDelegate>
+<Basic_ProxyDictionaryDelegate:ProxyDictionaryDelegate>
+Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
+
+
+
+<SourcedProxiedDictionaryDelegate> "nac" "multi"
+    MutableDictionary basic_subDictionaryDelegates=[[MutableDictionary alloc] init] (dealloc,ivar=basic_subDictionaryDelegates,readonly)
+    -(void)dealloc {@-800
+        {
+            NSArray *sources=basic_subDictionaryDelegates.allKeys;
+            for (NSObject<NSCopying> *source in sources) {
+                [self basic_attachDictionaryDelegateTo:nil forSource:source];
+            }
+        }
+    }
+    -(void)basic_attachDictionaryDelegateTo:(NSObject<MutableDictionaryDelegate>*)dictionary forSource:(NSObject<NSCopying>*)source {
+        Basic_SourcedProxyDictionaryDelegate *del=[basic_subDictionaryDelegates objectForKey:source];
+        if (del) {
+            [(NSObject<MutableDictionaryDelegate>*)del.delegateForDictionary removeDelegate:del];
+            if (!dictionary) {
+                [basic_subDictionaryDelegates removeObjectForKey:source];
+            }
+        }
+        else if (dictionary) {
+            [basic_subDictionaryDelegates setObject:del=[[[Basic_SourcedProxyDictionaryDelegate alloc] initWithOwner:self source:source] autorelease] forKey:source];
+        }
+        [dictionary addDelegate:del];
+    }
+    -(void)basic_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
+    }
+    -(void)basic_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
+    }
+    -(void)basic_stateOKForSource:(NSObject<NSCopying>*)source {
+    }
+    -(void)basic_delegateForDictionaryChangedForSource:(NSObject<NSCopying>*)source {
+    }
+
+
+
+<SourcedProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
+    <Basic_SourcedProxiedDictionaryDelegate> owner (ivar=owner,assign,nodef)
+    NSObject<NSCopying> source (ivar=source,readonly,dealloc,nodef)
+    -(init[super init])initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource {
+        owner=aowner;
+        source=[asource retain];
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        [owner basic_willReplaceObject:fromObject withObject:toObject forKey:key source:source];
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        [owner basic_didReplaceObject:fromObject withObject:toObject forKey:key source:source];
+    }
+    -(void)stateOK {
+        [owner basic_stateOKForSource:source];
+    }
+    -(void)delegateForDictionaryChanged {
+        [owner basic_delegateForDictionaryChangedForSource:source];
+    }
+
+
+
+<Basic_SourcedProxiedDictionaryDelegate:SourcedProxiedDictionaryDelegate>
+<Basic_SourcedProxyDictionaryDelegate:SourcedProxyDictionaryDelegate>
+Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
+
+
+
+<MutableDictionaryDelegateWithEqualsCheck:MutableDictionaryDelegate>
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+        if ([[self.delegateForDictionary objectForKey:key] isEqual:object]) {
+            ret=NO;
+        }
+    }
+
+
+<MutableDictionaryDelegate>
+    NSDictionary delegateForDictionary (nodef,assign,ivar=delegateForDictionary)
+    -(void)delegateForDictionaryChanged {}
+
+    <MutableDictionaryDelegate> dictionaryDelegate (nodef,dealloc,ivar=dictionaryDelegate,readonly)
+    -(void)addDelegate:(NSObject<MutableDictionaryDelegate>*)v {
+        if (v.dictionaryDelegate) return;
+        if (v==self) return;
+        if (dictionaryDelegate) [dictionaryDelegate addDelegate:v];
+        else {
+            dictionaryDelegate=[v retain];
+            v.delegateForDictionary=self.delegateForDictionary;
+            [v delegateForDictionaryChanged];
+        }
+    }
+    -(void)removedDelegate {@-100 [dictionaryDelegate release];dictionaryDelegate=nil;}
+    -(void)removeDelegate:(NSObject<MutableDictionaryDelegate>*)v {
+        if (dictionaryDelegate) {
+            if (dictionaryDelegate==v) {
+                v.delegateForDictionary=nil;
+                dictionaryDelegate=[v.dictionaryDelegate retain];
+                [v removedDelegate];
+                [v delegateForDictionaryChanged];
+                [v release];
+            }
+            else [dictionaryDelegate removeDelegate:v];
+        }
+    }
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {@-999 
+        bool ret=YES;
+        @100 if (ret&&dictionaryDelegate) ret=[dictionaryDelegate shouldAddObject:object forKey:key];
+        @999 return(ret);
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        @100 [dictionaryDelegate willReplaceObject:fromObject withObject:toObject forKey:key];
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        @100 [dictionaryDelegate didReplaceObject:fromObject withObject:toObject forKey:key];
+    }
+    -(void)stateOK {
+        @100 [dictionaryDelegate stateOK];
+    }
+
+
+
+
+
+<MinimalMutableDictionary:Dictionary,MutableDictionaryDelegate,ObjectEquate>
+    NSMutableDictionary __mutableDictionary (nodef,readonly,ivar=__mutableDictionary)
+
+    -(init) {
+        self.delegateForDictionary=self;
+    }
+
+    long version=1
+    -(void)stateOK {@-100 version++;}
+
+    -(void)dealloc {@-100 [self removeAllObjects];}
+
+    //Creating a Mutable Dictionary
+    +(id)dictionaryWithCapacity:(NSUInteger)numItems {
+        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+    }
+    -(init)init {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithContentsOfFile:(NSString*)file {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfFile:file];
+    }
+    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfURL:url];
+    }
+    -(init[super init])initWithDictionary:(NSDictionary*)dictionary {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary];
+    }
+    -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:copy];
+    }
+    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(NSUInteger)count {
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count];
+    }
+    -(init[super init])initWithCapacity:(NSUInteger)numItems {
+        @-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCapacity:numItems];
+    }
+
+
+    -(void)setObject:(id)object forKey:(id<NSCopying>)key {
+        if ([self _setObject:object forKey:key]) [self stateOK];
+    }
+    -(void)removeObjectForKey:(id<NSCopying>)key {
+        if ([self _removeObjectForKey:key]) [self stateOK];
+    }
+
+
+    -(bool)_setObject:(id)object forKey:(id<NSCopying>)key {
+        if (!object) return([self _removeObjectForKey:key]);
+        id was=[__dictionary objectForKey:key];
+        if (was==object) return(NO);
+        if (![self shouldAddObject:object forKey:key]) return(NO);
+        if (was) {
+            [was retain];
+            [self willReplaceObject:was withObject:object forKey:key];
+            [__mutableDictionary setObject:object forKey:key];
+            [self didReplaceObject:was withObject:object forKey:key];
+            [was release];
+        }
+        else {
+            [self willReplaceObject:nil withObject:object forKey:key];
+            [__mutableDictionary setObject:object forKey:key];
+            [self didReplaceObject:nil withObject:object forKey:key];
+        }
+        return(YES);
+    }
+
+    -(bool)_removeObjectForKey:(id<NSCopying>)key {
+        id object=[__dictionary objectForKey:key];
+        if (!object) return(NO);
+        [self willReplaceObject:object withObject:nil forKey:key];
+        [__mutableDictionary removeObjectForKey:key];
+        [self didReplaceObject:object withObject:nil forKey:key];
+        return(YES);
+    }
+
+
+
+<MutableDictionary:MinimalMutableDictionary>
+    -(void)setValue:(id)object forKey:(NSString*)key {
+        if ([self _setValue:object forKey:key]) [self stateOK];
+    }
+    -(void)addEntriesFromDictionary:(NSDictionary*)dictionary {
+        if ([self _addEntriesFromDictionary:dictionary]) [self stateOK];
+    }
+    -(void)setDictionary:(NSDictionary*)dictionary {
+        if ([self _setDictionary:dictionary]) [self stateOK];
+    }
+    -(void)removeAllObjects {
+        if ([self _removeAllObjects]) [self stateOK];
+    }
+    -(void)removeObjectsForKeys:(NSArray*)keys {
+        if ([self _removeObjectsForKeys:keys]) [self stateOK];
+    }
+
+    -(bool)_setValue:(id)object forKey:(NSString*)key {
+        if (![self shouldAddObject:object forKey:key]) return(NO);
+        id was=[__dictionary valueForKey:key];
+        if (was==object) return(NO);
+        if (was) {
+            [was retain];
+            [self willReplaceObject:was withObject:object forKey:key];
+            [__mutableDictionary setValue:object forKey:key];
+            [self didReplaceObject:was withObject:object forKey:key];
+            [was release];
+        }
+        else {
+            [self willReplaceObject:nil withObject:object forKey:key];
+            [__mutableDictionary setValue:object forKey:key];
+            [self didReplaceObject:nil withObject:object forKey:key];
+        }
+        return(YES);
+    }
+    -(bool)_addEntriesFromDictionary:(NSDictionary*)dictionary {
+        bool ret=NO;
+        for (id<NSCopying> key in dictionary) {
+            if ([self _setObject:[dictionary objectForKey:key] forKey:key]) ret=YES;
+        }
+        return(ret);
+    }
+        
+
+    -(bool)_setDictionary:(NSDictionary*)dictionary {
+        bool ret=NO;
+        NSMutableArray *toRemove=nil;
+        for (id<NSCopying> key in __dictionary) {
+            if (![dictionary objectForKey:key]) {
+                if (!toRemove) toRemove=[[MutableArray alloc] initWithCapacity:dictionary.count];
+                [toRemove addObject:key];
+            }
+        }
+        if (toRemove) {
+            ret=YES;
+            for (id<NSCopying> key in toRemove) [self _removeObjectForKey:key];
+            [toRemove release];
+        }
+        if ([self _addEntriesFromDictionary:dictionary]) ret=YES;
+        return(ret);
+    }
+      
+    
+    -(bool)_removeAllObjects {
+        if (!__dictionary.count) return(NO);
+        NSDictionary *was=__dictionary.copy;
+        for (id<NSCopying> key in was) {
+            [self willReplaceObject:[was objectForKey:key] withObject:nil forKey:key];
+        }
+        [__mutableDictionary removeAllObjects];
+        for (id<NSCopying> key in was) {
+            [self didReplaceObject:[was objectForKey:key] withObject:nil forKey:key];
+        }
+        [was release];
+        return(YES);
+    }
+        
+    -(bool)_removeObjectsForKeys:(NSArray*)keys {
+        bool ret=NO;
+        for (id<NSCopying> key in keys) {
+            if ([self _removeObjectForKey:key]) ret=YES;
+        }
+        return(ret);
+    }
+    
+    
+    
+    
+
+<WeakMutableDictionary>
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
+        [fromObject retain];
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
+        [toObject release];
+    }
+
+<ModelMutableDictionary>
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {@-200 
+        if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
+        [toObject modeladd];
+        @900
+        [fromObject modelsub];
+    }
+
+
+
+<NotifiedByDictionary>
+    -(void)markDirtyByDictionary {[self markDirty];}
+    -(void)markDirty {}
+
+<NotifyingMutableDictionary>
+    notifyingDictionary -s< <NotifiedByDictionary> dictionaryWatcher
+
+    -(void)stateOK {@100 
+        for (NSObject<NotifiedByDictionary>*w in self.dictionaryWatchers) {
+            [w markDirtyByDictionary];
+        }
+    }
+
+
+
+
+    
+    
+
+
+
+
+
+
+<MutableDictionaryKeyFollower:BasicTester>
+    NSMutableDictionary __dictionaryObjectKeys=[NSMutableDictionary dictionary] (ivar=__dictionaryObjectKeys)
+    
+
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-950
+        if (toObject) {
+            NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)toObject];
+            if (!keys) [__dictionaryObjectKeys setObject:keys=[MutableSet set] forWeakKey:toObject];
+            else if ([keys containsObject:key]) [self passFail:NO format:@"!!!dk Key exists\n"];
+            [keys addObject:key];
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@950
+        if (fromObject) {
+            NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)fromObject];
+            if (!keys) {
+                [self passFail:NO format:@"!!!dk Object not known\n"];
+            }
+            if (![keys containsObject:key]) {
+                [self passFail:NO format:@"!!!dk Key doesn't exist\n"];
+            }
+            if (keys.count==1) [__dictionaryObjectKeys removeObjectForKey:(id<NSCopying>)fromObject];
+            else [keys removeObject:key];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
+    NSString keyPrefix=
+        {return(keyPrefix);}
+        -v{
+            [keyPrefix release];keyPrefix=[v retain];
+            [self refreshFollowerDictionary];
+        } (nodef,dealloc,ivar=keyPrefix)
+    int keepKeyPrefixSuffixLength=
+        {return(keepKeyPrefixSuffixLength);}
+        -v{
+            keepKeyPrefixSuffixLength=v;
+            [self refreshFollowerDictionary];
+        } (nodef,ivar=keepKeyPrefixSuffixLength)
+    NSString filterKeyPrefix=
+        {return(filterKeyPrefix);}
+        -v{
+            [filterKeyPrefix release];filterKeyPrefix=[v retain];
+            [self refreshFollowerDictionary];
+        } (nodef,dealloc,ivar=filterKeyPrefix)
+
+    -(id<NSCopying>)keyForObject:(id)object key:(id<NSCopying>)key {
+        if (![(NSObject*)key isKindOfClass:[NSString class]]) return(nil);
+        NSString *skey=(NSString*)key;
+        if (filterKeyPrefix) {
+            if (![skey hasPrefix:filterKeyPrefix]) return(skey);
+            skey=[skey substringFromIndex:filterKeyPrefix.length];
+            if ([skey hasPrefix:filterKeyPrefix]) return(skey);
+            if (!keyPrefix) return(skey);
+            if ([skey hasPrefix:keyPrefix]) return([skey substringFromIndex:(keyPrefix.length>keepKeyPrefixSuffixLength?keyPrefix.length-keepKeyPrefixSuffixLength:0)]);
+            return(nil);
+        }
+        if (!keyPrefix) return(skey);
+        if ([skey hasPrefix:keyPrefix]) return([skey substringFromIndex:(keyPrefix.length>keepKeyPrefixSuffixLength?keyPrefix.length-keepKeyPrefixSuffixLength:0)]);
+        return(nil);
+    }
+
+
+
+
+
+MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
+    -(id)objectForObject:(id)object key:(id<NSCopying>)key {return(object);}
+    -(id<NSCopying>)keyForObject:(id)object key:(id<NSCopying>)key {return(key);}
+
+    NSMutableDictionary __mapk=[[NSMutableDictionary alloc] init] (readonly,ivar=mapk,dealloc)
+    NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] (readonly,ivar=mapv,dealloc)
+    <MutableDictionary> followerDictionary=
+        {return(followerDictionary);}
+        -v{[followerDictionary release];followerDictionary=[v retain];[self refreshFollowerDictionary];} (ivar=followerDictionary,dealloc)
+
+    -(void)delegateForDictionaryChanged {
+        [self refreshFollowerDictionary];
+    }
+
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@500
+        if (fromObject) {
+            id k=[mapk objectForKey:key];
+            id o=[mapv objectForKey:key];
+            if (o&&k) {
+                [o retain];
+                [followerDictionary _removeObjectForKey:k];
+                [mapk removeObjectForKey:key];
+                [mapv removeObjectForKey:key];
+            }
+        }
+        if (toObject) {
+            [self followerWillAddObject:toObject forKey:key];
+        }
+    }
+    -(void)followerWillAddObject:(id)object forKey:(id<NSCopying>)key {
+        if ([mapk objectForKey:key]||[mapv objectForKey:key]) {
+            ERR("Shouldn't have key");
+            return;
+        }
+        id k=[self keyForObject:object key:key];
+        id o=[self objectForObject:object key:key];
+        if (o&&k) {
+            [mapk setObject:k forKey:key];
+            [mapv setObject:o forKey:key];
+            [followerDictionary _setObject:o forKey:k];
+            [o release];
+        }
+    }
+
+    -(void)stateOK {@100 
+        [followerDictionary stateOK];
+    }
+
+
+    -(void)refreshFollowerDictionary {
+        [self _refreshFollowerDictionary];
+        [followerDictionary stateOK];
+    }
+    -(void)_refreshFollowerDictionary {
+        for (kid key in mapv) [[mapv objectForKey:key] retain];
+        [mapk removeAllObjects];
+        [mapv removeAllObjects];
+        
+        [followerDictionary _removeAllObjects];
+        
+        if (self.delegateForDictionary) {
+            for (kid key in self.delegateForDictionary) [self followerWillAddObject:[self.delegateForDictionary objectForKey:key] forKey:key];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+MutableDictionaryUnionDelegate1<MutableDictionaryDelegate>
+    MutableDictionaryUnionDelegate owner (nodef,readonly,ivar=owner)
+    NSUInteger depth (nodef)
+
+    -(init[super init])initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(NSUInteger)adepth {
+        owner=aowner;depth=adepth;
+    }
+
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@500
+        [self.owner unionWillReplaceObject1:fromObject withObject:toObject forKey:key depth:depth];
+    }
+
+    -(void)stateOK {
+        [self.owner stateOK];
+    }
+
+
+MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
+    -(NSObject<MutableDictionary>*)dictionaryForObject:(id)object {@-999 NSObject<MutableDictionary> *ret=([object conformsToProtocol:@protocol(MutableDictionary)]?(NSObject<MutableDictionary>*)object:nil);
+        @999 return(ret);
+    }
+
+
+    NSMutableArray __mapdicts=[[NSMutableArray alloc] init] (readonly,ivar=mapdicts,dealloc)
+    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
+
+    <MutableDictionary> unionDictionary=
+        {return(unionDictionary);}
+        -v{[unionDictionary release];unionDictionary=[v retain];[self refreshUnionDictionary];} (ivar=unionDictionary,dealloc)
+
+    //-(void)setDelegateInArray:(NSObject<NSArray>*)v {@500 
+    //    if (unionDictionary) [self refreshUnionDictionary];
+    //}
+
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@500
+        if (object) {
+            [self unionWillAddObject:object withIndex:index];
+        }
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@500
+        if (object) {
+            MutableDictionary *d=[mapdicts objectAtIndex:index];
+            if (d) {
+                for (kid key in d) {
+                    [self unionWillReplaceObject1:[d objectForKey:key] withObject:nil forKey:key depth:index];
+                }
+                for (NSObject<MutableDictionaryDelegate> *del=d.dictionaryDelegate;del;del=del.dictionaryDelegate) {
+                    if ([del isKindOfClass:[MutableDictionaryUnionDelegate1 class]]&&(((MutableDictionaryUnionDelegate1*)del).owner==self)) {
+                        [d removeDelegate:del];
+                        break;
+                    }
+                }
+                [mapdicts removeObjectAtIndex:index];
+            }
+        }
+    }
+    -(void)unionWillAddObject:(id)object withIndex:(NSUInteger)index {
+        NSObject<MutableDictionary>* d=[self dictionaryForObject:object];
+        if (d) {
+            [d addDelegate:[[[MutableDictionaryUnionDelegate1 alloc] initWithOwner:self depth:index] autorelease]];
+            [mapdicts insertObject:d atIndex:index];
+            for (kid key in d) {
+                [self unionWillReplaceObject1:nil withObject:[d objectForKey:key] forKey:key depth:index];
+            }
+        }
+    }
+    -(void)unionWillReplaceObject1:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key depth:(NSUInteger)index {
+        if (fromObject) {
+            NSUInteger i=0;
+            id newo=nil;
+            for (MutableDictionary *d in mapdicts) {
+                if ((i<index)&&[d objectForKey:key]) {fromObject=nil;break;}
+                else if ((i++>index)&&((newo=[d objectForKey:key]))) break;
+            }
+            if (fromObject) {
+                if (newo) [unionDictionary _setObject:newo forKey:key];
+                else [unionDictionary _removeObjectForKey:key];
+            }
+        }
+        if (toObject) {
+            NSUInteger i=0;
+            for (MutableDictionary *d in mapdicts) {
+                if (i++==index) {
+                    [unionDictionary _setObject:toObject forKey:key];
+                    break;
+                }
+                else if ([d objectForKey:key]) break;
+            }
+        }
+    }
+
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        if (fromIndex!=toIndex) {
+            MutableDictionary *fromd=[[mapdicts objectAtIndex:fromIndex] retain];
+            MutableDictionary *tod=[[mapdicts objectAtIndex:toIndex] retain];
+            for (kid key in fromd) [self unionWillReplaceObject1:[fromd objectForKey:key] withObject:nil forKey:key depth:fromIndex];
+            [mapdicts removeObjectAtIndex:fromIndex];
+            if (toIndex>fromIndex) toIndex--;
+            for (kid key in tod) [self unionWillReplaceObject1:[tod objectForKey:key] withObject:nil forKey:key depth:toIndex-(toIndex>fromIndex?1:0)];
+            [mapdicts replaceObjectAtIndex:toIndex-(toIndex>fromIndex?1:0) withObject:fromd];
+            for (kid key in fromd) [self unionWillReplaceObject1:nil withObject:[fromd objectForKey:key] forKey:key depth:toIndex-(toIndex>fromIndex?1:0)];
+            [mapdicts insertObject:tod atIndex:fromIndex];
+            for (kid key in tod) [self unionWillReplaceObject1:nil withObject:[tod objectForKey:key] forKey:key depth:fromIndex];
+            [fromd release];
+            [tod release];
+        }
+    }
+
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+    }
+    -(void)allObjectsMoved {
+        [self _refreshUnionDictionary];
+    }
+
+
+
+    -(void)stateOK {@100 
+        [unionDictionary stateOK];
+    }
+
+
+    -(void)refreshUnionDictionary {
+        [self _refreshUnionDictionary];
+        [unionDictionary stateOK];
+    }
+    -(void)_refreshUnionDictionary {
+        for (MutableDictionary *d in mapdicts) {
+            for (NSObject<MutableDictionaryDelegate> *del=d.dictionaryDelegate;del;del=del.dictionaryDelegate) {
+                if ([del isKindOfClass:[MutableDictionaryUnionDelegate1 class]]&&(((MutableDictionaryUnionDelegate1*)del).owner==self)) {
+                    [d removeDelegate:del];
+                    break;
+                }
+            }
+        }
+        [mapdicts removeAllObjects];
+        
+        [unionDictionary _removeAllObjects];
+        NSUInteger index=0;
+        for (id object in self.delegateForArray) [self unionWillAddObject:object withIndex:index++];
+    }
+
+
+
+
+
+
+    

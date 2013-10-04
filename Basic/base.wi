@@ -1,0 +1,118 @@
+"<objc/runtime.h>"
+
+
+/*top:
+    extern int __bpc,__breakAtBP;
+    void BPoint();
+    void ERR(const char *format,...);
+*/
+/*top:impl:
+    int __bpc=0,__breakAtBP=0;
+    void BPoint() {
+        if (__breakAtBP==++__bpc) {
+            printf("\n>>>>>>Breakpoint %d\n",__bpc);
+        }
+    }
+    void ERR(const char *format,...) {
+        va_list pArgs;
+        va_start(pArgs, format);
+        vprintf(format, pArgs);
+        va_end(pArgs);
+        printf("\n");
+    }
+*/
+/*protocols:
+#define CHECKZOMBIE(fn) {if ([self respondsToSelector:@selector(isZombie)]&&[(id<Object>)self isZombie]) ERR("Zombie call to %p: " #fn,self);}
+*/
+
+
+
+
+<DebugRetain>
+    int __rc=1,__arc=0;
+
+    //NSString __description={return([self respondsToSelector:@selector(description)]?self.description:[NSString stringWithFormat:@"Obj:%p",self]);}
+
+    -(id)retain {
+        __rc++;
+        DEB(printf("%d -> %d retain %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
+    }
+    -(void)dealloc {@-999 
+        DEB(printf("%d -> %d dealloc %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
+    }
+    -(void)release {
+        __rc--;
+        if (__arc>__rc) __arc--;
+        DEB(printf("%d -> %d release %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
+    }
+    -(id)autorelease {
+        __arc++;
+        DEB(printf("%d -> %d autorelease %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
+    }
+
+<BaseClass>
+    +(id)get;
+    +(id)getWithDictionary:(NSDictionary*)d;
+
+
+<EssentialBaseView>
+    -(void)layoutSubviews {@-500 [super layoutSubviews];}
+<BaseView:EssentialBaseView>
+    -(init)initWithFrame:(CGRect)frame {}
+    -(init)initWithCoder:(NSCoder*)aDecoder {}
+    -(init)init {}
+
+<BaseObject>
+    NSDictionary *__initUsingDictionary (nodef,readonly,ivar=__initUsingDictionary)
+    
+    //int __rc=1,__arc=0;
+    -(init)init {}
+    /*-(init[super init])initWithDictionary:(NSDictionary*)d {/ *-950* /__initUsingDictionary=d;
+        / *950* /__initUsingDictionary=nil;
+    }*/
+    -(void)setWithDictionary:(NSDictionary*)d {}
+    +(__Class__*)get {return([[[__Class__ alloc] init] autorelease]);}
+    /*+(__Class__*)getWithDictionary:(NSDictionary*)d {
+        NSObject<BaseObject> *o=[[ObjectRegistry getDefault].allObjects objectForKey:d];
+        if (o) return([o isKindOfClass:[__Class__ class]]?(__Class__*)o:nil);
+        return([[[__Class__ alloc] initWithDictionary:d] autorelease]);
+    }*/
+
+    //-(void)addGraph:(NSMutableSet*)s {@-999 
+    //    if ([s containsObject:self]) return;
+    //    [s addObject:[ObjectPointer dataForObject:self]];
+    //}
+
+    //NSMutableDictionary *asNewDictionary={@-999 
+    //    NSMutableDictionary *ret=[MutableDictionary dictionary];
+    //    [ret setObject:[NSString stringWithFormat:@"%s",class_getName([self class])] forKey:@"___class"];
+    //    [ret setObject:[ObjectPointer dataForObject:self] forKey:@"___id"];
+    //    @999 return(ret);
+    //}
+
+
+
+
+<DerivedBaseObject>
+    -(init)init {}
+    //-(init)initWithDictionary:(NSDictionary*)d {}
+
+    +(__Class__*)get {return([[[__Class__ alloc] init] autorelease]);}
+    /*+(__Class__*)getWithDictionary:(NSDictionary*)d {
+        NSObject<BaseObject> *o=[[ObjectRegistry getDefault].allObjects objectForKey:d];
+        if (o) return([o isKindOfClass:[__Class__ class]]?(__Class__*)o:nil);
+        return([[[__Class__ alloc] initWithDictionary:d] autorelease]);
+    }*/
+
+    //-(void)setWithDictionary:(NSDictionary*)d {@-900 [super setWithDictionary:d];}
+    //-(void)addGraph:(NSMutableSet*)s {@-999 
+    //    if ([s containsObject:self]) return;
+    //    [super addGraph:s];
+    //}
+
+    //NSMutableDictionary *asNewDictionary={@-999 
+    //    NSMutableDictionary *ret=super.asNewDictionary;
+    //    @999 return(ret);
+    //} (noivar)
+
+

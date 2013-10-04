@@ -1,0 +1,410 @@
+
+ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
+
+<Model>
+    ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] (ivar=objectsOwnedOnlyByModels)
+
+    -(void)startOfAutoreleasePool {
+        for (NSObject<RefCountedObject> *o in objectsOwnedOnlyByModels) o.noMOForNextRetain=YES;
+        NSMutableSet *s=[objectsOwnedOnlyByModels getAndClear];
+        for (NSObject<RefCountedObject> *o in s) [o retract];
+        [s removeAllObjects];
+        [s release];
+    }
+
+
+<RefCountedObject>
+    int retainCount=1,modelRetaincount=0 (readonly)
+    bool noMOForNextRetain=NO
+
+    -(void)dealloc {
+        if (modelRetaincount&&(retainCount==modelRetaincount)) {
+            [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
+        }
+    }
+    -(void)release {
+        if (modelRetaincount&&(retainCount==modelRetaincount+1)) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
+            modelRetaincount=c;
+        }
+        retainCount--;
+    }
+    -(id)retain {
+        retainCount++;
+        if (noMOForNextRetain) noMOForNextRetain=NO;
+        else if (modelRetaincount&&(retainCount==modelRetaincount+1)) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
+            modelRetaincount=c;
+        }
+    }
+    -(void)modeladd {
+        if ((++modelRetaincount)&&(retainCount==modelRetaincount)) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
+            modelRetaincount=c;
+        }
+    }
+    -(void)modelsub {
+        if (modelRetaincount&&(retainCount==modelRetaincount)) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
+            modelRetaincount=c;
+        }
+        modelRetaincount--;
+    }
+    -(void)modelrelease {
+        modelRetaincount--;
+        [self release];
+    }
+    -(void)modelautorelease {
+        modelRetaincount--;
+        if (!modelRetaincount) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
+            modelRetaincount=c;
+        }
+        else if (retainCount==modelRetaincount) {
+            int c=modelRetaincount;modelRetaincount=0;
+            [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
+            modelRetaincount=c;
+        }
+        [self autorelease];
+    }
+    -(id)modelretain {
+        modelRetaincount++;
+        return([self retain]);
+    }
+
+    bool onlyOwnedByModels={return(retainCount==modelRetaincount);}
+
+    -(void)retract {
+        noMOForNextRetain=NO;
+    }
+
+
+
+
+
+<Commitable:RefCountedObject>
+    bool modelObjectHasChanged,alwaysChangedIfSourceChanged (nodef)
+    long version=1
+    CommitStage commitStage={return([Model getDefault].commitStage);}
+    ULL commitFrame=1
+    bool _doneStage=NO,doneStage={return(_doneStage);}
+
+    sourceCommitter >s< <Commitable> sinkCommitter
+
+    -(int)commitProperties:(int)substageIndex {@-999 int implementedStages=1@-990 ;
+        @-5 switch(substageIndex) {case 0:
+            modelObjectHasChanged=alwaysChangedIfSourceChanged;{
+        @5 }break;case 1:{@15 }break;case 2:{@25 }break;case 3:{@35 }break;case 4:{@45 }break;case 5:{@55 }break;case 6:{@65 }break;case 7:{@75 }break;case 8:{@85 }break;case 9:{@95 }break;case 10:{@105 }default:break;}
+        @900 int ret;for (ret=substageIndex+1;(ret<=10)&&!(implementedStages&shiftOne[ret]);ret++);
+        if (ret>10) {
+            ret=-1;
+        @910 if (modelObjectHasChanged) version++;
+        @950 }
+        @999 return((ret<0)||(ret>10)?-1:ret);
+    }
+    -(void)startCommit {}
+    -(void)willCommit {}
+    -(void)commit {}
+    -(void)didCommit {}
+    -(void)finishCommit {}
+
+    -(void)cleanupCommit {
+        modelObjectHasChanged=NO;
+    }
+
+    bool _isDirty=NO,isDirty={return(_isDirty);}
+    -(void)markDirty {@-900 
+        if (_isDirty) {
+            //prnt("%s already dirty\n",[Util cnameFor:self]);
+            return;
+        }
+        self.dirtyInModel=[Model getDefault];
+        _isDirty=YES;
+        //prnt("%s marked dirty with %d sinks\n",[Util cnameFor:self],self.sinkCommitters.count);
+        @-1 
+        for (NSObject<Commitable>*c in self.sinkCommitters) [c markDirty];
+    }
+            
+SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
+    <Commitable> owner (nodef,readonly,ivar=owner)
+    -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
+        owner=aowner;
+    }
+    -(void)didAddObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            [self.owner markDirty];
+            [self.owner addSourceCommitter:(NSObject<Commitable>*)object];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            [self.owner markDirty];
+            [self.owner removeSourceCommitter:(NSObject<Commitable>*)object];
+        }
+    }
+            
+SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
+    <Commitable> owner (nodef,readonly,ivar=owner)
+    -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
+        owner=aowner;
+    }
+    -(void)didAddObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            [self.owner markDirty];
+            [self.owner addSinkCommitter:(NSObject<Commitable>*)object];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            [self.owner markDirty];
+            [self.owner removeSinkCommitter:(NSObject<Commitable>*)object];
+        }
+    }
+
+            
+SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
+    <Commitable> owner (nodef,readonly,ivar=owner)
+
+    -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
+        owner=aowner;
+    }
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+        [self.owner markDirty];
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            if (![delegateForArray containsObject:object]) {
+                [self.owner addSourceCommitter:(NSObject<Commitable>*)object];
+            }
+        }
+    }
+    -(void)didRemoveObject:(id)object {
+        [self.owner markDirty];
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            if (![delegateForArray containsObject:object]) {
+                [self.owner removeSourceCommitter:(NSObject<Commitable>*)object];
+            }
+        }
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        [self.owner markDirty];
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        [self.owner markDirty];
+    }
+    -(void)allObjectsMoved {
+        [self.owner markDirty];
+    }
+
+            
+SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
+    <Commitable> owner (nodef,readonly,ivar=owner)
+
+    -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
+        owner=aowner;
+    }
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+        [self.owner markDirty];
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            if (![delegateForArray containsObject:object]) {
+                [self.owner addSinkCommitter:(NSObject<Commitable>*)object];
+            }
+        }
+    }
+    -(void)didRemoveObject:(id)object {
+        [self.owner markDirty];
+        if ([object conformsToProtocol:@protocol(Commitable)]) {
+            if (![delegateForArray containsObject:object]) {
+                [self.owner removeSinkCommitter:(NSObject<Commitable>*)object];
+            }
+        }
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        [self.owner markDirty];
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        [self.owner markDirty];
+    }
+    -(void)allObjectsMoved {
+        [self.owner markDirty];
+    }
+
+            
+DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject> "fn:model"
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        NSUInteger i=0;
+        for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        NSUInteger i=0;
+        for (id o in delegateForArray) if ((i++>index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        id o=[delegateForArray objectAtIndex:fromIndex];
+        if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+        o=[delegateForArray objectAtIndex:toIndex];
+        if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        NSUInteger i=0,index=(toLocation<fromRange.location?toLocation:fromRange.location);
+        for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+    }
+    -(void)allObjectsMoved {
+        for (id o in delegateForArray) if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
+    }
+
+
+
+DirtyObjectSetDelegate<MutableSetDelegate,BaseObject> "fn:model"
+    -(void)didAddObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)object markDirty];
+    }
+    -(void)willRemoveObject:(id)object {
+        if ([object conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)object markDirty];
+    }
+
+
+
+DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            if ([toObject conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)toObject markDirty];
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            if ([fromObject conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)fromObject markDirty];
+        }
+    }
+
+
+/*interfaces:
+extern Model *_Model_default;
+*/
+/*interfaces:impl:
+Model *_Model_default=nil;
+*/
+
+Model<Model,Ticker,Waiter> "fn:model"
+    dirtyInModel -s< <Commitable> dirtyObject
+
+    -(init)init {}
+    -(init) {
+        //[MutableSetDebuggerDelegate attachTo:self.dirtyObjects named:@"Dirty objects"];
+    }
+
+    bool inCommit=NO (readonly)
+
+    CommitStage commitStage=stage_none (readonly)
+    ULL commitFrame=1
+
+    +(void)delayCommitsForSeconds:(double)sec {
+        [[Model getDefault] waitForSeconds:sec];
+    }
+    +(bool)commit {
+        return([[Model getDefault] _commit]);
+    }
+    -(bool)_commit {@-999 
+        NSSet *_dirties;
+        @synchronized (self) {
+            if (!self.waiterEnabled) return(NO);
+            if (inCommit) return(NO);
+            inCommit=YES;
+            _dirties=[v_dirtyObjects getAndClear];
+        }
+        if (_dirties.count) {
+            prnt("Committing\n");
+            
+            //prnt("Commit:{ ");for (NSObject<Commitable>* o in _dirties) prnt("%s ",[Util cnameFor:o]);prnt("}\n");
+
+            commitFrame++;
+            for (NSObject<Commitable>* o in _dirties) {
+                o._isDirty=o._doneStage=NO;
+                o.commitFrame=commitFrame;
+            }
+
+            @0 
+            commitStage=stage_commitProperties;
+            NSMutableSet *changed=[[MutableSet alloc] initWithCapacity:_dirties.count];
+            for (int nxt=1,now=0;nxt>=0;now=nxt) {
+                nxt=-1;
+                for (NSObject<Commitable>* o in _dirties) if (!o.doneStage) {
+                    int i=[o commitProperties:now];
+                    if (i>now) {
+                        if ((nxt==-1)||(nxt>i)) nxt=i;
+                    }
+                    else {
+                        o._doneStage=YES;
+                    }
+                }
+            }
+            for (NSObject<Commitable>* o in _dirties) {
+                if (o.modelObjectHasChanged) [changed addObject:o];
+                o._doneStage=NO;
+            }
+
+            if (changed.count) {
+                //prnt("Commit 1\n");
+                //prnt("Changed:{ ");for (NSObject<Commitable>* o in changed) prnt("%s ",[Util cnameFor:o]);prnt("}\n");
+                commitStage=stage_startCommit;
+                for (NSObject<Commitable>* o in changed) {[o startCommit];o._doneStage=YES;}
+                for (NSObject<Commitable>* o in changed) o._doneStage=NO;
+                //prnt("Commit 2\n");
+                commitStage=stage_willCommit;
+                for (NSObject<Commitable>* o in changed) {[o willCommit];o._doneStage=YES;}
+                for (NSObject<Commitable>* o in changed) o._doneStage=NO;
+                commitStage=stage_commit;
+                //prnt("Commit 3\n");
+                for (NSObject<Commitable>* o in changed) {[o commit];o._doneStage=YES;}
+                for (NSObject<Commitable>* o in changed) o._doneStage=NO;
+                commitStage=stage_didCommit;
+                //prnt("Commit 4\n");
+                for (NSObject<Commitable>* o in changed) {[o didCommit];o._doneStage=YES;}
+                for (NSObject<Commitable>* o in changed) o._doneStage=NO;
+                commitStage=stage_finishCommit;
+                //prnt("Commit 5\n");
+                for (NSObject<Commitable>* o in changed) {[o finishCommit];o._doneStage=YES;}
+                for (NSObject<Commitable>* o in changed) o._doneStage=NO;
+                //prnt("Commit 6\n");
+            }
+            commitStage=stage_cleanupCommit;
+            //prnt("Clean:{ ");for (NSObject<Commitable>* o in _dirties) prnt("%s ",[Util cnameFor:o]);prnt("}\n");
+            for (NSObject<Commitable>* o in _dirties) {[o cleanupCommit];o.modelObjectHasChanged=NO;o._doneStage=YES;}
+            //for (NSObject<Commitable>* o in _dirties) o._doneStage=NO;
+            commitStage=stage_none;
+
+            //prnt("Commit c\n");
+            //[changed removeAllObjects];
+            [changed release];
+
+            //prnt("Commited\n");
+        }
+        //[_dirties removeAllObjects];
+        [_dirties release];
+        @999 
+        @synchronized (self) {
+            inCommit=NO;
+            return(YES);
+        }
+            //prnt("Commit o\n");
+    }
+
+    +(Model*)getDefault {
+        if (!_Model_default) {
+            ADDSINGLETON(_Model_default=[[[Model alloc] init] autorelease]);
+        }
+        return(_Model_default);
+    }
+
+    -(void)tick {@-100 
+        [self startOfAutoreleasePool];
+        //@autoreleasepool {
+            @-1 
+            [self _commit];
+            @100 
+        //}
+    }
+

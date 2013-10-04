@@ -1,0 +1,278 @@
+
+<LinkEndpoint>
+    id owner (nodef,readonly,nonatomic,ivar=v_owner)
+    bool retains (nodef,readonly,nonatomic)
+    SEL otherEndObjectToEndpoint,acceptableSel (nodef,readonly,nonatomic)
+
+    -(bool)unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performSelector:acceptableSel withObject:obj]));}
+
+    -(NSObject<LinkEndpoint>*)endpointForObject:(id)obj {
+        if (obj) return((NSObject<LinkEndpoint>*)[self.owner performSelector:otherEndObjectToEndpoint withObject:obj]);
+        else return(nil);
+    }
+
+    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep;
+    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep;
+
+    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        @-900 
+        v_owner=aowner;
+        retains=aretains;
+        acceptableSel=aacceptableSel;
+        otherEndObjectToEndpoint=aotherEndObjectToEndpoint;
+    }
+    
+
+
+<MutableValueDelegate>
+    bool retainsAsValueDelegate=YES
+    <MutableValueDelegate> parentValueDelegate (nodef,ivar=parentValueDelegate,assign)
+    <MutableValueDelegate> valueDelegate (nodef,ivar=valueDelegate,assign)
+    -(void)addDelegate:(NSObject<MutableValueDelegate>*)v {
+        if (v.valueDelegate) return;
+        if (v==self) return;
+        if (valueDelegate) [valueDelegate addDelegate:v];
+        else {
+            valueDelegate=(v.retainsAsValueDelegate?[v retain]:v);
+            valueDelegate.parentValueDelegate=self;
+        }
+    }
+    -(void)removedDelegate {}
+    -(void)removeDelegate:(NSObject<MutableValueDelegate>*)v {
+        if (valueDelegate) {
+            if (valueDelegate==v) {
+                v.parentValueDelegate=nil;
+
+                if (v.valueDelegate) {
+                    valueDelegate=v.valueDelegate;
+                    v.valueDelegate=nil;
+                    valueDelegate.parentValueDelegate=self;
+                }
+                else valueDelegate=nil;
+                v.parentValueDelegate=nil;
+                
+                [v removedDelegate];
+
+                if (v.retainsAsValueDelegate) [v release];
+            }
+            else [valueDelegate removeDelegate:v];
+        }
+    }
+    -(void)dealloc {@-500 [self unlinkValueDelegate];}
+    -(void)unlinkValueDelegate {
+        [parentValueDelegate removeDelegate:self];
+        if (valueDelegate) {
+            valueDelegate.parentValueDelegate=nil;
+            if (valueDelegate.retainsAsValueDelegate) [valueDelegate release];
+            valueDelegate=nil;
+        }
+        if (parentValueDelegate) ERR("Bad");
+        parentValueDelegate=nil;
+    }
+    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+        @100 [valueDelegate willChangeValueFrom:fromObject to:toObject];
+    }
+    -(void)didSetValueTo:(id)object {
+        @100 [valueDelegate didSetValueTo:object];
+    }
+
+
+<ValueLinkEndpoint:MutableValueDelegate>
+    id value=
+        {return([[v_value retain] autorelease]);}
+        -v{
+            if ((v_value==v)||(v&&[self unacceptable:v])) return;
+            [self willChangeValueFrom:v_value to:v];
+            if (v_value) {
+                [[self endpointForObject:v_value] _removeReferrer:self];
+                if (retains) [v_value release];
+            }
+            if ((v_value=v)) {
+                if (![[self endpointForObject:v] _addReferrer:self]) {
+                    v_value=nil;
+                }
+                else if (retains) [v retain];
+            }
+            [self didSetValueTo:v];
+        } (assign,ivar=v_value)
+    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (!v) return(NO);
+        if (v_value==v) return(YES);
+        [self willChangeValueFrom:v_value to:v];
+        if (v_value) {
+            [[self endpointForObject:v_value] _removeReferrer:self];
+            if (retains) [v_value release];
+        }
+        if ((v_value=v)) {
+            if (retains) [v retain];
+        }
+        [self didSetValueTo:v];
+        return(YES);
+    }
+    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (v&&(v==v_value)) {
+            [self willChangeValueFrom:v_value to:nil];
+            if (retains) [v_value release];
+            v_value=nil;
+            [self didSetValueTo:nil];
+        }
+    }
+
+
+
+
+<SetLinkEndpoint:MutableSet>
+    bool __restrictRef=NO
+
+    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        @-900 
+        __set=__mutableSet=[[MutableSet alloc] init];
+    }
+    -(bool)shouldAddObject:(id)object {
+        if ((!__restrictRef)&&([self containsObject:object]||[self unacceptable:object])) ret=NO;
+    }
+    -(void)didAddObject:(id)object {@900 
+        if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
+        if (!retains) [object release];
+    }
+    -(void)willRemoveObject:(id)object {@-900 
+        if (!retains) [object retain];
+        if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
+    }
+
+    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (!v) return(NO);
+        bool r=__restrictRef;
+        __restrictRef=YES;
+        [self addObject:v];
+        __restrictRef=r;
+        return(YES);
+    }
+    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (v) {
+            bool r=__restrictRef;
+            __restrictRef=YES;
+            [self removeObject:v];
+            __restrictRef=r;
+        }
+    }
+
+
+
+<ArrayLinkEndpoint:MutableArrayIndexFollower>
+    bool __restrictRef=NO
+
+    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        @-900 
+        __array=__mutableArray=[[MutableArray alloc] init];
+    }
+    -(bool)shouldAddObject:(id)object {
+        if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@900 
+        if (!__restrictRef) {
+            [[self endpointForObject:object] _addReferrer:self];
+        }
+        if (!retains) [object release];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
+        if (!retains) [object retain];
+        if (!__restrictRef) {
+            [[self endpointForObject:object] _removeReferrer:self];
+        }
+    }
+
+    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (!v) return(NO);
+        bool r=__restrictRef;
+        __restrictRef=YES;
+        [self addObject:v];
+        __restrictRef=r;
+        return(YES);
+    }
+    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (v) {
+            bool r=__restrictRef;
+            __restrictRef=YES;
+            [self removeObject:v];
+            __restrictRef=r;
+        }
+    }
+
+
+
+<DictionaryLinkEndpoint:MutableDictionaryKeyFollower>
+    bool __restrictRef=NO
+
+    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        @-900 
+        __dictionary=__mutableDictionary=[[MutableDictionary alloc] init];
+    }
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+        if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
+        if (toObject) {
+            if (!__restrictRef) [[self endpointForObject:toObject] _addReferrer:self];
+            if (!retains) [toObject release];
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
+        if (fromObject) {
+            if (!retains) [fromObject retain];
+            if (!__restrictRef) [[self endpointForObject:fromObject] _removeReferrer:self];
+        }
+    }
+
+    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (!v) return(NO);
+        bool r=__restrictRef;
+        __restrictRef=YES;
+        [self setObject:v forWeakKey:v];
+        __restrictRef=r;
+        return(YES);
+    }
+    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+        id v=ep.owner;
+        if (v) {
+            bool r=__restrictRef;
+            __restrictRef=YES;
+            NSSet *keys=[self.__dictionaryObjectKeys objectForKey:v];
+            if (keys) [self removeObjectsForKeys:keys.allObjects];
+            __restrictRef=r;
+        }
+    }
+
+
+
+
+
+
+
+Endpoint1:NSObject<LinkEndpoint,ValueLinkEndpoint>
+    +(Endpoint1*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        return((Endpoint1*)[[[Endpoint1 alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+    }
+
+EndpointS:NSMutableSet<LinkEndpoint,SetLinkEndpoint,MutableSet>
+    +(EndpointS*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        return((EndpointS*)[[[EndpointS alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+    }
+
+EndpointA:NSMutableArray<LinkEndpoint,ArrayLinkEndpoint,MutableArray>
+    +(EndpointA*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        return((EndpointA*)[[[EndpointA alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+    }
+
+EndpointD:NSMutableDictionary<LinkEndpoint,DictionaryLinkEndpoint,MutableDictionary>
+    +(EndpointD*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+        return((EndpointD*)[[[EndpointD alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+    }
+

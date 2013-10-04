@@ -1,0 +1,113 @@
+
+UIImage
+    -(bool)writeImageToFileWithPath:(NSString*)path {
+        NSString *pathLowered=path.lowercaseString;
+        if ([pathLowered hasSuffix:@".jpeg"]||[pathLowered hasSuffix:@".jpg"]) {
+            return([UIImageJPEGRepresentation(self, 1.0) writeToFile:path atomically:YES]);
+        }
+        else if ([pathLowered hasSuffix:@".png"]) {
+            return([UIImagePNGRepresentation(self) writeToFile:path atomically:YES]);
+        }
+        else return(NO);
+    }
+
+
+ImageFromCGImage:UIImage
+    CGImageRef sourceImage (nodef)
+    +(__Class__*)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
+        return([[[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation] autorelease]);
+    }
+    -(init)initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
+        sourceImage=CGImageRetain(imageRef);
+    }
+    -(void)dealloc {
+        if (sourceImage) CGImageRelease(sourceImage);
+    }
+
+
+/*interfaces:
+#undef UIONLY
+#define UIONLY(...) __VA_ARGS__
+#undef NOTUI
+#define NOTUI(...)
+*/
+
+Singletons
+    FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);} (ivar=fontList,dealloc,readonly)
+
+FontList <BaseObject>
+    +(FontList*)getDefault {return(g_singletons.fontList);}
+
+    NSArray fontNames (nodef,readonly,dealloc,ivar=fontNames)
+
+    -(init) {
+        {
+            MutableArray *a=[MutableArray array];
+            NSArray *familyNames=[UIFont familyNames];
+            for (NSString *familyName in familyNames) {
+                NSArray *names=[UIFont fontNamesForFamilyName:familyName];
+                for (NSString *name in names) {
+                    if (![a containsObject:name]) {
+                        [a addObject:name];
+                    }
+                }
+            }
+            fontNames=[[a sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    NSString *s1=(NSString*)obj1;
+                    NSString *s2=(NSString*)obj2;
+                  return(s1.length<s2.length?NSOrderedAscending:
+                    (s1.length>s2.length?NSOrderedDescending:
+                        [s1 compare:s2]));
+              }] retain];
+        }
+    }
+    -(NSString*)fontNameMatchingPattern:(NSString*)pattern {
+        return([self fontNameMatchingPattern:pattern orDefault:@"Helvetica"]);
+    }
+    -(NSString*)fontNameMatchingPattern:(NSString*)pattern orDefault:(NSString*)def {
+        for (NSString *name in fontNames) {
+            if ([self fontName:name matchesPattern:pattern]) return(name);
+        }
+        return(def);
+    }
+    -(bool)fontName:(NSString*)name matchesPattern:(NSString*)pattern {
+        NSData *nd=[name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+        if (!nd) return(NO);
+        NSUInteger nlen=nd.length;
+        const char *ncs=(const char*)nd.bytes;
+        
+        for (int pi=0,ni=0;pi<pattern.length;pi++) {
+            char pc=[pattern characterAtIndex:pi];
+            if ((pc>='a')&&(pc<='z')) pc-='a'-'A';
+            while ((ni<nlen)&&(ncs[ni]-((ncs[ni]>='a')&&(ncs[ni]<='z')?'a'-'A':0)!=pc)) ni++;
+            if (ni++==nlen) return(NO);
+        }
+        return(YES);
+    }
+
+
+
+<ViewUtilities>
+    +(id)loadViewOfClass:(Class)clas withTag:(int)tag fromNibWithName:(NSString*)nibName {@-999 
+        id ret=nil;
+        if (nibName) {
+            NSArray *topLevelObjects=[[NSBundle mainBundle] loadNibNamed:nibName owner:nil options:nil];
+            for (id obj in topLevelObjects) {
+                if ([obj isKindOfClass:clas]&&
+                    ((![obj isKindOfClass:[UIView class]])||(((UIView*)obj).tag==tag))) {
+                    ret=obj;
+                    break;
+                }
+            }
+        }
+        @999 return(ret);
+    }
+
+ViewUtilities<ViewUtilities>
+
+
+<PermissiveGestureRecognizerDelegate:UIGestureRecognizerDelegate>
+    - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+        return(YES);
+    }
+

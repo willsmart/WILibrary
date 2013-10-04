@@ -1,0 +1,38 @@
+
+WIMyClass
+    Endpoint1 *hisname_endpoint=[[Endpoint1 alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (dealloc,readonly,nonatomic)
+    WIHisClass hisname=
+        {return((NSHisClass)v_hisname_endpoint.value);}
+        -v{[v_hisname_endpoint setValue:v];} (noivar)
+
+    -(void)die {self.hisname=nil;} 
+    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(mynames)]);}
+
+    NSSet *keysInHisname=
+        {
+            if (!v_hisname_endpoint.value) return([NSSet set]);
+            NSMutableDictionary<DictionaryLinkEndpoint> *hisname_ep=(NSMutableDictionary<DictionaryLinkEndpoint>*)[self hisnameToEndpoint:v_hisname_endpoint.value];
+            return((NSSet*)[hisname_ep.__dictionaryObjectKeys objectForKey:self]);
+        }
+        -v{
+            NSMutableDictionary<DictionaryLinkEndpoint> *hisname_ep=(NSMutableDictionary<DictionaryLinkEndpoint>*)[self hisnameToEndpoint:v_hisname_endpoint.value];
+            NSSet *hisname_keys_were=self.keysInHisname,*hisname_inss,*hisname_dels;
+            if ([Util getInsertsAndDeletesForSetWhenChanging:hisname_keys_were to:v inss:&hisname_inss dels:&hisname_dels]) {
+                for (id<NSCopying> key in hisname_dels) [hisname_ep removeObjectForKey:key];
+                for (id<NSCopying> key in hisname_inss) [hisname_ep setObject:self forKey:key];
+                [hisname_inss release];
+                [hisname_dels release];
+            }
+        }
+    kid keyInHisname=
+        {
+            for (id<NSCopying> key in self.keysInHisname) return(key);
+            return(nil);
+        }
+        -v{
+            self.keysInHisname=[NSSet setWithObject:v];
+        } (retain)
+
+    -(void)retract {self.hisname=nil;}
+

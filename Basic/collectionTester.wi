@@ -1,0 +1,1237 @@
+
+
+    
+
+<BasicTester>
+    NSMutableString *errs=[NSMutableString string]
+
+    -(bool)passFail:(bool)pass format:(NSString*)format,... {
+        va_list args;va_start(args,format);
+        NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+        if (pass) printf("pass: %s\n",s.UTF8String);
+        else {
+            printf("!!FAIL: %s\n",s.UTF8String);
+            [self.errs appendFormat:@"%@\n",s];
+            BPoint();
+        }
+        return(pass);
+    }
+
+
+
+/*top:
+extern NSString *testKey;
+*/
+/*top:impl:
+NSString *testKey=nil;
+*/
+CollectionTestObject
+    int intValue (nodef,readonly)
+    NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
+    <Tester> tester (nodef,assign)
+
+    -(init) {
+        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"std"];
+        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"strong"];
+        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"weak"];
+    }
+
+    NSString description={
+        NSMutableString *s=[NSMutableString stringWithFormat:@"(o%d",intValue];
+        for (NSString *key in subObjects) [s appendFormat:@" %@:%@",key,((CollectionTestSubObject*)[subObjects objectForKey:key]).description];
+        [s appendFormat:@")"];
+        return(s);
+    }
+    -(init[super init])initWithInt:(int)v tester:(NSObject<Tester>*)atester {
+        intValue=v;
+        self.tester=atester;
+    }
+    -(id)retain {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) [so _retain];
+        }
+        //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+    -(void)release {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) [so _release];
+        }
+        //printf("release %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+    -(id)autorelease {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) [so _autorelease];
+        }
+        //printf("autorelease %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+    -(void)willAdd {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) so.willAddCount++;
+        }
+    }
+    -(void)didAdd {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) so.willAddCount--;
+        }
+    }
+    -(void)willRemove {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) so.willRemoveCount++;
+        }
+    }
+    -(void)didRemove {
+        if (testKey) {
+            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
+            if (so) so.willRemoveCount--;
+        }
+    }
+
+CollectionTestSubObject
+    int willAddCount=0,willRemoveCount=0;
+    int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
+    int rcInner=0
+    CollectionTestObject *testObject (nodef,assign,ivar=testObject)
+
+    NSString description={return([NSString stringWithFormat:@"%d->%d  ",self.rcIs,self.rcWillBe]);}
+
+    -(init[super init])initWithTestObject:(CollectionTestObject*)atestObject {
+        self.testObject=atestObject;
+    }
+
+    -(void)_retain {
+        __rc++;
+        //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+    -(void)_release {
+        __rc--;
+        if (__arc>__rc) __arc--;
+        if (self.rcWillBe<0) [testObject.tester passFail:NO format:@"Object %@ was too released",testObject.description];
+        //printf("release %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+    -(void)_autorelease {
+        __arc++;
+        if (self.rcWillBe<0) [testObject.tester passFail:NO format:@"Object %@ was too autoreleased",testObject.description];
+        //printf("autorelease %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
+    }
+
+
+<Tester:BasicTester>
+    NSArray _allObjects,_allKeys (nodef)
+    NSMutableArray _objectArray=nil,objectArray={if (!v__objectArray) self._objectArray=self.randArray;return(v__objectArray);}
+    NSMutableDictionary _dictionary=nil,dictionary={if (!v__dictionary) self._dictionary=self.randDictionary;return(v__dictionary);}
+    NSMutableArray _keyArray=nil,keyArray={if (!v__keyArray) self._keyArray=self.randKeyArray;return(v__keyArray);}
+    NSMutableSet _objectSet=nil,objectSet={if (!v__objectSet) self._objectSet=self.randSet;return(v__objectSet);}
+    NSMutableIndexSet _indexes=nil,indexes={if (!v__indexes) self._indexes=self.randInternalIndexSet;return(v__indexes);}
+    id _object=nil (assign,ivar=v__object)
+    id object={if (!v__object) self._object=self.randObject;return(v__object);}
+    id _object2=nil (assign,ivar=v__object2)
+    id object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
+    NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
+    NSRange _range,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);} (nodef)
+    NSUInteger _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
+    NSUInteger _index1=NSNotFound,index1={return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
+
+    NSDictionary *collections=[NSDictionary dictionary]
+
+    /*top:
+    #define ITERATECOLLECTIONS(typ,v,...) \
+    for (NSString *key in self.collections) { \
+        @autoreleasepool {} \
+        testKey=key; \
+        typ v=[self.collections objectForKey:key]; \
+        @autoreleasepool { \
+            NSObject *ret=nil; \
+            __VA_ARGS__ \
+            for (CollectionTestObject *o in self._allObjects) { \
+                CollectionTestSubObject *so=[o.subObjects objectForKey:key]; \
+                int opN=0; \
+                if ([ret isKindOfClass:[NSSet class]]) { \
+                    if ([(NSSet*)ret containsObject:o]) opN=1; \
+                } \
+                if ([ret isKindOfClass:[NSArray class]]) { \
+                    for (id o2 in (NSArray*)ret) if (o==o2) opN++; \
+                } \
+                if ([ret isKindOfClass:[NSDictionary class]]) { \
+                    for (id k in (NSDictionary*)ret) if ([(NSDictionary*)ret  objectForKey:k]==o) opN++; \
+                } \
+                so.rcInner=so.rcWillBe-opN; \
+            } \
+        } \
+        testKey=nil; \
+    }
+    */
+
+    -(void)clearTest {
+        [self._keyArray removeAllObjects];
+        [self._objectArray removeAllObjects];
+        [self._objectSet removeAllObjects];
+        [self._dictionary removeAllObjects];
+        [self._indexes removeAllIndexes];
+        
+        self._key=nil;
+        self._keyArray=nil;
+        self._dictionary=nil;
+        self._object=nil;
+        self._object2=nil;
+        self._objectArray=nil;
+        self._objectSet=nil;
+        self._indexes=nil;
+        
+        _index=_index1=NSNotFound;
+        _range=NSMakeRange(NSNotFound,0);
+    }
+
+    -(void)nextTest {
+        [self clearTest];
+    }
+
+
+    -(void)verifyWillOpCounts {
+        for (CollectionTestObject *o in self._allObjects) {
+            for (CollectionTestSubObject *so in o.subObjects.allValues) {
+                if (so.willAddCount) {
+                    [self passFail:NO format:@"Object %@ has willAddCount",o.description];
+                }
+                if (so.willRemoveCount) {
+                    [self passFail:NO format:@"Object %@ has willRemoveCount",o.description];
+                }
+            }
+        }
+    }
+
+
+    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {
+        if ([set isEqualToString:@"weak"]) return(0);
+        return(N);
+    }
+
+    -(void)verifyRC {
+        for (CollectionTestObject *o in self._allObjects) {
+            int N=0;
+            if ([a isKindOfClass:[NSSet class]]) {
+                if ([(NSSet*)a containsObject:o]) N=1;
+            }
+            if ([a isKindOfClass:[NSArray class]]) {
+                for (id o2 in (NSArray*)a) if (o==o2) N++;
+            }
+            if ([a isKindOfClass:[NSDictionary class]]) {
+                for (id k in (NSDictionary*)a) if ([(NSDictionary*)a objectForKey:k]==o) N++;
+            }
+            for (NSString *key in o.subObjects) {
+                CollectionTestSubObject *so=[o.subObjects objectForKey:key];
+                int expRefCnt=[self expectNForSet:key givenBaseN:N];
+                if ((expRefCnt>=0)&&(expRefCnt!=so.rcWillBe)) {
+                    [self passFail:NO format:@"Outer: Object %@ key %@ should have rc of %d",o.description,key,expRefCnt];
+                }                
+                if ((expRefCnt>=0)&&(expRefCnt!=so.rcInner)) {
+                    [self passFail:NO format:@"Inner: Object %@ key %@ should have rc of %d",o.description,key,expRefCnt];
+                }                
+            }
+        }
+    }
+
+    -(init) {
+        _range=NSMakeRange(NSNotFound,0);
+        NSMutableArray *array=[NSMutableArray arrayWithCapacity:100];
+        NSMutableArray *arrayk=[NSMutableArray arrayWithCapacity:100];
+        for (int i=0;i<100;i++) {
+            CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
+            [array addObject:o];
+            [o release];
+            [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
+            printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
+        }
+        self._allObjects=array;
+        self._allKeys=arrayk;
+        [self verifyWillOpCounts];
+    }
+
+    -(NSString*)steps:(int)N {
+        srand(1);
+        while (N-->0) {
+            [self nextTest];
+            @autoreleasepool {
+                [self step];
+                [self verifyWillOpCounts];
+                [self clearTest];
+            }
+            [self verifyRC];
+            //printf(">%s\n",[self.a.description cStringUsingEncoding:NSASCIIStringEncoding]);
+        }
+        return(b.errs.length||self.errs.length?[NSString stringWithFormat:@"Errors:\n%@\n\n%@\n",b.errs,self.errs]:nil);
+    }
+
+
+
+    id randObject=
+        {return([self._allObjects objectAtIndex:rand()%self._allObjects.count]);}
+    NSString randKey=
+        {return((NSString*)[self._allKeys objectAtIndex:rand()%self._allKeys.count]);}
+
+    NSMutableDictionary randDictionary=
+        {
+            NSMutableDictionary *d=[NSMutableDictionary dictionary];
+            NSUInteger count=rand()%10;
+            for (int i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
+            return(d);
+        }
+    NSMutableSet randSet=
+        {
+            NSMutableSet *objects=[MutableSet set];
+            NSUInteger count=rand()%10;
+            for (int i=0;i<count;i++) [objects addObject:self.randObject];
+            return(objects);
+        }
+    NSMutableArray randArray=
+        {
+            NSMutableArray *objects=[NSMutableArray array];
+            NSUInteger count=rand()%10;
+            for (int i=0;i<count;i++) [objects addObject:self.randObject];
+            return(objects);
+        }
+    NSMutableArray randKeyArray=
+        {
+            NSMutableArray *keys=[NSMutableArray array];
+            NSUInteger count=rand()%10;
+            for (int i=0;i<count;i++) [keys addObject:self.randKey];
+            return(keys);
+        }
+    -(NSMutableIndexSet*)randIndexSetWithCount:(NSUInteger)count max:(NSUInteger)max {
+        NSMutableIndexSet *indexes=[NSMutableIndexSet indexSet];
+        if (count) {
+            for (NSUInteger i=0;i<count;i++) {
+                NSUInteger j,ii=(rand()%((max+1)-i));
+                for (j=0;[indexes containsIndex:j]||(ii--);j++);
+                [indexes addIndex:j];
+            }
+        }
+        return(indexes);
+    }
+    NSMutableIndexSet randInternalIndexSet={return([self randIndexSetWithCount:rand()%(a.count+1) max:a.count-1]);}
+    NSRange randInternalRange=
+        {
+            NSUInteger location=rand()%a.count,length=rand()%(a.count-location);
+            return(NSMakeRange(location,length));
+        }
+
+
+    -(bool)passFailWithFormat:(NSString*)format,... {
+        bool pass=self.stateGood;
+        va_list args;va_start(args,format);
+        NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+        if (pass) printf("pass: %s\n",s.UTF8String);
+        else {
+            printf("!!FAIL: %s\n",s.UTF8String);
+            [self.errs appendFormat:@"%@\n",s];
+            BPoint();
+        }
+        return(pass);
+    }
+
+
+
+<TesterCounter>
+    -(void)add:(int)c toWillAddCountForObject:(id)object {
+        if ([object isKindOfClass:[CollectionTestObject class]]) {
+            CollectionTestObject *o=(CollectionTestObject*)object;
+            if (c==-1) [o didAdd];
+            else if (c==1) [o willAdd];
+        }
+    }
+    -(void)add:(int)c toWillRemoveCountForObject:(id)object {
+        if ([object isKindOfClass:[CollectionTestObject class]]) {
+            CollectionTestObject *o=(CollectionTestObject*)object;
+            if (c==-1) [o didRemove];
+            else if (c==1) [o willRemove];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<MutableSetMirrorTester:MutableSet,BasicTester,TesterCounter>
+    NSMutableSet __mirrorSet=[MutableSet set] (ivar=__mirrorSet)
+    int __addingToMirrorSet=0,__removingFromMirrorSet=0
+    
+    -(void)willAddObject:(id)object {@900 
+        if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st will add while removing\n"];
+        [__mirrorSet addObject:object];
+        __addingToMirrorSet++;
+        [self add:1 toWillAddCountForObject:object];
+    }
+    -(void)didAddObject:(id)object {@900 
+        if (!__addingToMirrorSet) [self passFail:NO format:@"!!!st did add while not adding\n"];
+        if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st did add while removing\n"];
+        __addingToMirrorSet--;
+        [self add:-1 toWillAddCountForObject:object];
+        [self verifyMirrorSet];
+    }
+    
+    -(void)willRemoveObject:(id)object {@900 
+        if (__addingToMirrorSet) [self passFail:NO format:@"!!!st will remove while adding\n"];
+        [__mirrorSet removeObject:object];
+        __removingFromMirrorSet++;
+        [self add:1 toWillRemoveCountForObject:object];
+    }
+    
+    -(void)didRemoveObject:(id)object {@900 
+        if (__addingToMirrorSet) [self passFail:NO format:@"!!! did remove while adding\n"];
+        if (!__removingFromMirrorSet) [self passFail:NO format:@"!!!st did remove while not removing\n"];
+        __removingFromMirrorSet--;
+        [self add:-1 toWillRemoveCountForObject:object];
+        [self verifyMirrorSet];
+    }
+    
+    
+    -(void)verifyMirrorSet {
+        if (![__set isEqualToSet:__mirrorSet]) [self passFail:NO format:@"!!! mirror set is different\n"];
+    }
+    
+
+
+
+
+
+
+
+
+SetTester <Tester>
+    NSMutableSet a=[MutableSet set] (ivar=a)
+    MutableSetMirrorTesterImpl b=[MutableSetMirrorTesterImpl set] (ivar=b)
+    WeakMutableSetMirrorTesterImpl c=[WeakMutableSetMirrorTesterImpl set] (ivar=c)
+
+    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+        if ([set isEqualToString:@"weak"]) return(N);
+        if ([set isEqualToString:@"strong"]) return(2*N);
+        return(-1);
+    }
+
+    -(init)init {
+    }
+    -(init) {
+        @10 self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
+    }
+
+    -(void)step {
+        switch (rand()%25) {
+            case 0:[self setByAddingObject];break;
+            case 2:[self setByAddingObjectsFromSet];break;
+            case 3:[self setByAddingObjectsFromArray];break;
+            case 4:case 1:[self count];break;
+            case 5:[self allObjects];break;
+            case 6:[self containsObject];break;
+            case 7:[self member];break;
+            case 8:[self isSubsetOfSet];break;
+            case 9:[self intersectsSet];break;
+            case 10:[self isEqualToSet];break;
+            case 11:case 19:case 20:case 21:case 22:[self addObject];break;
+            case 12:case 23:case 24:[self removeObject];break;
+            case 13:[self removeAllObjects];break;
+            case 14:[self addObjectsFromArray];break;
+            case 15:[self unionSet];break;
+            case 16:[self minusSet];break;
+            case 17:[self intersectSet];break;
+            case 18:[self setSet];break;
+            default:break;
+        }
+    }
+
+    bool stateGood={return([a isEqualToSet:b]);}
+
+
+    -(void)setByAddingObject {
+        [self passFail:[[a setByAddingObject:self.object] isEqualToSet:[b setByAddingObject:self.object]] format:@"setByAddingObject"];
+    }
+    -(void)setByAddingObjectsFromSet {
+        [self passFail:[[a setByAddingObjectsFromSet:self.objectSet] isEqualToSet:[b setByAddingObjectsFromSet:self.objectSet]] format:@"setByAddingObjectsFromSet"];
+    }
+    -(void)setByAddingObjectsFromArray {
+        [self passFail:[[a setByAddingObjectsFromArray:self.objectArray] isEqualToSet:[b setByAddingObjectsFromArray:self.objectArray]] format:@"setByAddingObjectsFromArray"];
+    }
+
+
+    // Counting Entries
+    -(void)count {
+        [self passFail:a.count==b.count format:@"count"];
+    }
+
+
+    // Accessing Set Members
+    -(void)allObjects {
+        [self passFail:[[NSSet setWithArray:a.allObjects] isEqualToSet:[NSSet setWithArray:b.allObjects]] format:@"allObjects"];
+    }
+    -(void)containsObject {
+        [self passFail:[a containsObject:self.object]==[b containsObject:self.object] format:@"containsObject"];
+    }
+    -(void)member {
+        [self passFail:[a member:self.object]==[b member:self.object] format:@"member"];
+    }
+
+
+    //Comparing Sets
+    -(void)isSubsetOfSet {
+        [self passFail:[a isSubsetOfSet:self.objectSet]==[b isSubsetOfSet:self.objectSet] format:@"isSubsetOfSet"];
+    }
+    -(void)intersectsSet {
+        [self passFail:[a intersectsSet:self.objectSet]==[b intersectsSet:self.objectSet] format:@"intersectsSet"];
+    }
+    -(void)isEqualToSet {
+        [self passFail:[a isEqualToSet:self.objectSet]==[b isEqualToSet:self.objectSet] format:@"isEqualToSet"];
+    }
+    
+    
+    
+    
+    //Adding and Removing Entries
+    -(void)addObject {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v addObject:self.object];)
+        [self passFailWithFormat:@"addObject"];
+    }
+    -(void)removeObject {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v removeObject:self.object];)
+        [self passFailWithFormat:@"removeObject"];
+    }
+    -(void)removeAllObjects {
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v removeAllObjects];)
+        [self passFailWithFormat:@"removeAllObjects"];
+    }
+    -(void)addObjectsFromArray {
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v addObjectsFromArray:self.objectArray];)
+        [self passFailWithFormat:@"addObjectsFromArray"];
+    }
+    
+    
+    //Combining and Recombining Sets
+    -(void)unionSet {
+        [self objectSet];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v unionSet:self.objectSet];)
+        [self passFailWithFormat:@"unionSet"];
+    }
+    -(void)minusSet {
+        [self objectSet];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v minusSet:self.objectSet];)
+        [self passFailWithFormat:@"minusSet"];
+    }
+    -(void)intersectSet {
+        [self objectSet];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v intersectSet:self.objectSet];)
+        [self passFailWithFormat:@"intersectSet"];
+    }
+    -(void)setSet {
+        [self objectSet];
+        ITERATECOLLECTIONS(NSMutableSet*,v,[v setSet:self.objectSet];)
+        [self passFailWithFormat:@"setSet"];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<MutableDictionaryMirrorTester:MutableDictionaryKeyFollower,MutableDictionary,TesterCounter>
+    int __addingToMirrorDictionary=0,__removingFromMirrorDictionary=0
+    
+
+
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@100
+        if (fromObject) {
+            [self add:1 toWillRemoveCountForObject:fromObject];
+            __removingFromMirrorDictionary++;
+        }
+
+        if (toObject) {
+            __addingToMirrorDictionary++;
+            [self add:1 toWillAddCountForObject:toObject];
+        }
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@100 
+        if (toObject) {
+            if (!__addingToMirrorDictionary) [self passFail:NO format:@"!!!dkt did add while not adding\n"];
+            [self add:-1 toWillAddCountForObject:toObject];
+            __addingToMirrorDictionary--;
+        }
+        if (fromObject) {
+            if (!__removingFromMirrorDictionary) [self passFail:NO format:@"!!!dkt did remove while not removing\n"];
+            [self add:-1 toWillRemoveCountForObject:fromObject];
+            __removingFromMirrorDictionary--;
+        }
+    }
+
+
+    -(void)stateOK {
+        if (__addingToMirrorDictionary) [self passFail:NO format:@"!!!dkt adding when state ok\n"];
+        if (__removingFromMirrorDictionary) [self passFail:NO format:@"!!!dkt removing when state ok\n"];
+        [self verifyMirrorDictionary];
+    }
+
+
+    
+    -(void)verifyMirrorDictionary {
+        int c=0;
+        for (id<NSCopying> key in __dictionaryObjectKeys) c+=((NSSet*)[__dictionaryObjectKeys objectForKey:key]).count;
+        if (c!=__dictionary.count) [self passFail:NO format:@"!!!dkt count mismatch\n"];
+        else {
+            for (id<NSCopying> key in __dictionary) {
+                id object=[__dictionary objectForKey:key];
+                NSSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
+                if (!keys) [self passFail:NO format:@"!!!dkt Object not known\n"];
+                if (![keys containsObject:key]) [self passFail:NO format:@"!!!dkt Key doesn't exist\n"];
+            }
+        }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DictionaryTester <Tester>
+    NSMutableDictionary a=[NSMutableDictionary dictionary] (ivar=a)
+    MutableDictionaryMirrorTesterImpl b=[MutableDictionaryMirrorTesterImpl dictionary] (ivar=b)
+    WeakMutableDictionaryMirrorTesterImpl c=[WeakMutableDictionaryMirrorTesterImpl dictionary] (ivar=c)
+
+
+    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+        if ([set isEqualToString:@"weak"]) return(0);
+        if ([set isEqualToString:@"strong"]) return(N);
+        return(-1);
+    }
+
+
+    -(init)init {
+    }
+    -(init) {
+        self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
+    }
+
+    -(void)step {
+        switch (rand()%15) {
+            case 0:[self  count];break;
+            case 1:[self isEqualToDictionary];break;
+            case 2:[self allKeys];break;
+            case 3:[self allKeysForObject];break;
+            case 4:[self allValues];break;
+            case 5:[self objectForKey];break;
+            case 6:[self objectsForKeysNotFoundMarker];break;
+            case 7:[self valueForKey];break;
+            case 8:[self setObjectForKey];break;
+            case 9:[self setValueForKey];break;
+            case 10:[self addEntriesFromDictionary];break;
+            case 11:[self setDictionary];break;
+            case 12:[self removeObjectForKey];break;
+            case 13:[self removeAllObjects];break;
+            case 14:[self removeObjectsForKeys];break;
+        }
+    }
+
+    bool stateGood={return([a isEqualToDictionary:b]);}
+
+
+
+
+
+
+
+
+
+    //Counting Entries
+    -(void)count {
+        [self passFail:a.count==b.count format:@"count"];
+    }
+    
+    
+    //Comparing Dictionaries
+    -(void)isEqualToDictionary {
+        [self passFail:[a isEqualToDictionary:self.dictionary]==[b isEqualToDictionary:self.dictionary] format:@"isEqualToDictionary"];
+    }
+    
+    
+    //Accessing Keys and Values
+    -(void)allKeys {
+        [self passFail:[[NSSet setWithArray:a.allKeys] isEqualToSet:[NSSet setWithArray:b.allKeys]] format:@"allKeys"];
+    }
+    -(void)allKeysForObject {
+        [self passFail:[[NSSet setWithArray:[a allKeysForObject:self.object]] isEqualToSet:[NSSet setWithArray:[b allKeysForObject:self.object]]] format:@"allKeysForObject"];
+    }
+    
+    -(void)allValues {
+        [self passFail:[[NSSet setWithArray:a.allValues] isEqualToSet:[NSSet setWithArray:b.allValues]] format:@"allValues"];
+    }
+    //-(void)getObjects:(id __unsafe_unretained [])objects andKeys:(id __unsafe_unretained [])keys {
+    -(void)objectForKey {
+        [self passFail:[a objectForKey:self.key]==[b objectForKey:self.key] format:@"objectForKey"];
+    }
+    -(void)objectsForKeysNotFoundMarker {
+        [self passFail:[[NSSet setWithArray:[a objectsForKeys:self.objectArray notFoundMarker:[NSNull null]]] isEqualToSet:[NSSet setWithArray:[b objectsForKeys:self.objectArray notFoundMarker:[NSNull null]]]] format:@"objectsForKeysNotFoundMarker"];
+    }
+    -(void)valueForKey {
+    }
+    
+    
+    //Enumerating Dictionaries
+    //NSEnumerator keyEnumerator={return([__dictionary keyEnumerator]);}
+    //NSEnumerator objectEnumerator={return([__dictionary objectEnumerator]);}
+    //-(void)enumerateKeysAndObjectsUsingBlock:(void (^)(id key, id obj, BOOL *stop))block {
+    //-(void)enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id key, id obj, BOOL *stop))block {
+    
+    
+    //Sorting Dictionaries
+    //-(NSArray*)keysSortedByValueUsingSelector:(SEL)selector {
+    //-(NSArray*)keysSortedByValueUsingComparator:(NSComparator)cmptr {
+    //-(NSArray*)keysSortedByValueWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+    
+    
+    //Filtering Dictionaries
+    //-(NSSet *)keysOfEntriesPassingTest:(BOOL (^)(id key, id obj, BOOL *stop))predicate {
+    //-(NSSet *)keysOfEntriesWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id key, id obj, BOOL *stop))predicate {
+    
+    
+    //Storing Dictionaries
+    //-(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
+    //-(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
+    
+    
+
+
+    //Adding Entries to a Mutable Dictionary
+    -(void)setObjectForKey {
+        [self object];
+        [self key];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v setObject:self.object forKey:self.key];)
+        [self passFailWithFormat:@"setObjectForKey"];
+    }
+    -(void)setValueForKey {
+        [self object];
+        [self key];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v setValue:self.object forKey:self.key];)
+        [self passFailWithFormat:@"setValueForKey"];
+    }
+    -(void)addEntriesFromDictionary {
+        [self dictionary];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v addEntriesFromDictionary:self.dictionary];)
+        [self passFailWithFormat:@"addEntriesFromDictionary"];
+    }
+        
+        
+    -(void)setDictionary {
+        [self dictionary];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v setDictionary:self.dictionary];)
+        [self passFailWithFormat:@"setDictionary"];
+    }
+      
+    
+    //Removing Entries From a Mutable Dictionary
+    -(void)removeObjectForKey {
+        [self key];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v removeObjectForKey:self.key];)
+        [self passFailWithFormat:@"removeObjectForKey"];
+    }
+    -(void)removeAllObjects {
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v removeAllObjects];)
+        [self passFailWithFormat:@"removeAllObjects"];
+    }
+    -(void)removeObjectsForKeys {
+        [self keyArray];
+        ITERATECOLLECTIONS(NSMutableDictionary*,v,[v removeObjectsForKeys:self.keyArray];)
+        [self passFailWithFormat:@"removeObjectsForKeys"];
+    }
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<MutableArrayMirrorTester:MutableArrayIndexFollower,MutableArray,TesterCounter>
+    int __addingToMirrorArray=0,__removingFromMirrorArray=0
+
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@100 
+        __addingToMirrorArray++;
+        [self add:1 toWillAddCountForObject:object];
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@100 
+        if (!__addingToMirrorArray) [self passFail:NO format:@"!!!ait did add while not adding\n"];
+        [self add:-1 toWillAddCountForObject:object];
+        __addingToMirrorArray--;
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@100 
+        [self add:1 toWillRemoveCountForObject:object];
+        __removingFromMirrorArray++;
+    }
+    -(void)didRemoveObject:(id)object {@100 
+        if (!__removingFromMirrorArray) [self passFail:NO format:@"!!!ait did remove while not removing\n"];
+        [self add:-1 toWillRemoveCountForObject:object];
+        __removingFromMirrorArray--;
+    }
+
+    -(void)stateOK {
+        if (__addingToMirrorArray) [self passFail:NO format:@"!!!ait adding when state ok\n"];
+        if (__removingFromMirrorArray) [self passFail:NO format:@"!!!ait removing when state ok\n"];
+        [self verifyMirrorArray];
+    }
+    
+    -(void)verifyMirrorArray {
+        int c=0;
+        for (PointerKey *key in __arrayObjectIndexes) c+=((NSIndexSet*)[__arrayObjectIndexes objectForKey:key]).count;
+        if (c!=__array.count) [self passFail:NO format:@"!!!ait count mismatch\n"];
+        else {
+            NSUInteger index=0;
+            for (id object in __array) {
+                NSIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
+                if (!indexes) [self passFail:NO format:@"!!!ait Object not known\n"];
+                if (![indexes containsIndex:index]) [self passFail:NO format:@"!!!ait Index doesn't exist\n"];
+                index++;
+            }
+        }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ArrayTester <Tester>
+    NSMutableArray a=[NSMutableArray array] (ivar=a)
+    MutableArrayMirrorTesterImpl b=[MutableArrayMirrorTesterImpl array] (ivar=b)
+    WeakMutableArrayMirrorTesterImpl c=[WeakMutableArrayMirrorTesterImpl array] (ivar=c)
+
+
+    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+        if ([set isEqualToString:@"weak"]) return(0);
+        if ([set isEqualToString:@"strong"]) return(N);
+        return(-1);
+    }
+
+    -(init)init {
+    }
+    -(init) {
+        self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
+    }
+
+    -(void)step {
+        switch (rand()%36) {
+            case 0:[self containsObject];break;
+            case 1:[self count];break;
+            case 2:[self getObjects];break;
+            case 3:[self lastObject];break;
+            case 4:[self objectAtIndex];break;
+            case 5:[self objectsAtIndexes];break;
+            case 6:[self indexOfObject];break;
+            case 7:[self indexOfObjectInRange];break;
+            case 8:[self indexOfObjectIdenticalTo];break;
+            case 9:[self indexOfObjectIdenticalToInRange];break;
+            case 10:[self firstObjectCommonWithArray];break;
+            case 11:[self isEqualToArray];break;
+            case 12:[self arrayByAddingObject];break;
+            case 13:[self arrayByAddingObjectsFromArray];break;
+            case 14:[self subarrayWithRange];break;
+            case 15:[self componentsJoinedByString];break;
+            case 16:[self addObject];break;
+            case 17:[self addObjectsFromArray];break;
+            case 18:[self insertObjectAtIndex];break;
+            case 19:[self insertObjectsAtIndexes];break;
+            case 20:[self removeAllObjects];break;
+            case 21:[self removeLastObject];break;
+            case 22:[self removeObject];break;
+            case 23:[self removeObjectInRange];break;
+            case 24:[self removeObjectAtIndex];break;
+            case 25:[self removeObjectsAtIndexes];break;
+            case 26:[self removeObjectIdenticalTo];break;
+            case 27:[self removeObjectIdenticalToInRange];break;
+            case 28:[self removeObjectsInArray];break;
+            case 29:[self removeObjectsInRange];break;
+            case 30:[self replaceObjectAtIndexWithObject];break;
+            case 31:[self replaceObjectsAtIndexesWithObjects];break;
+            case 32:[self replaceObjectsInRangeWithObjectsFromArrayRange];break;
+            case 33:[self replaceObjectsInRangeWithObjectsFromArray];break;
+            case 34:[self setArray];break;
+            case 35:[self exchangeObjectAtIndexWithObjectAtIndex];break;
+        }
+    }
+
+    bool stateGood={return([a isEqualToArray:b]);}
+
+
+
+
+
+
+
+
+    -(void)containsObject {
+        [self passFail:[a containsObject:self.object]==[b containsObject:self.object] format:@"containsObject"];
+    }
+    -(void)count {
+        [self passFail:a.count==b.count format:@"count"];
+    }
+    -(void)getObjects {
+    }
+    -(void)lastObject {
+        [self passFail:a.lastObject==b.lastObject format:@"lastObject"];
+    }
+    -(void)objectAtIndex {
+        if (!a.count) return;
+        [self passFail:[a objectAtIndex:self.index]==[b objectAtIndex:self.index] format:@"objectAtIndex"];
+    }
+    -(void)objectsAtIndexes {
+        //[self passFail:[[a objectsAtIndexes:self.indexes] isEqualToArray:[b objectsAtIndexes:self.indexes]] format:@"objectsAtIndexes"];
+    }
+    //NSEnumerator objectEnumerator={return([__array objectEnumerator]);}
+    //NSEnumerator reverseObjectEnumerator={return([__array reverseObjectEnumerator]);}
+
+
+    //Finding Objects in an Array
+    -(void)indexOfObject {
+        [self passFail:[a indexOfObject:self.object]==[b indexOfObject:self.object] format:@"indexOfObject"];
+    }
+    -(void)indexOfObjectInRange {
+        if (!a.count) return;
+        [self passFail:[a indexOfObject:self.object inRange:self.range]==[b indexOfObject:self.object inRange:self.range] format:@"indexOfObjectInRange"];
+    }
+    -(void)indexOfObjectIdenticalTo {
+        [self passFail:[a indexOfObjectIdenticalTo:self.object]==[b indexOfObjectIdenticalTo:self.object] format:@"indexOfObjectIdenticalTo"];
+    }
+    -(void)indexOfObjectIdenticalToInRange {
+        if (!a.count) return;
+        [self passFail:[a indexOfObjectIdenticalTo:self.object inRange:self.range]==[b indexOfObjectIdenticalTo:self.object inRange:self.range] format:@"indexOfObjectIdenticalToInRange"];
+    }
+    //-(void)indexOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
+
+
+    //Sending Messages to Elements
+    //-(void)makeObjectsPerformSelector:(SEL)selector {
+    //-(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
+    //-(void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    //-(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    //-(void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+
+
+    //Comparing Arrays
+    -(void)firstObjectCommonWithArray {
+        [self passFail:[a firstObjectCommonWithArray:self.objectArray]==[b firstObjectCommonWithArray:self.objectArray] format:@"firstObjectCommonWithArray"];
+    }
+    -(void)isEqualToArray {
+        [self passFail:[a isEqualToArray:self.objectArray]==[b isEqualToArray:self.objectArray] format:@"isEqualToArray"];
+    }
+
+
+    //Deriving New Arrays
+    -(void)arrayByAddingObject {
+        NSArray *aa=[[a arrayByAddingObject:self.object] retain];
+        NSArray *bb=[[b arrayByAddingObject:self.object] retain];
+        [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObject"];
+        [aa release];
+        [bb release];
+    }
+    -(void)arrayByAddingObjectsFromArray {
+        NSArray *aa=[[a arrayByAddingObjectsFromArray:self.objectArray] retain];
+        NSArray *bb=[[b arrayByAddingObjectsFromArray:self.objectArray] retain];
+        [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObjectsFromArray"];
+        [aa release];
+        [bb release];
+    }
+    //-(void)filteredArrayUsingPredicate:(NSPredicate *)predicate {
+    -(void)subarrayWithRange {
+        if (!a.count) return;
+        NSArray *aa=[[a subarrayWithRange:self.range] retain];
+        NSArray *bb=[[b subarrayWithRange:self.range] retain];
+        [self passFail:[aa isEqualToArray:bb] format:@"subarrayWithRange"];
+        [aa release];
+        [bb release];
+    }
+
+
+    //Sorting
+    //-(NSData*)sortedArrayHint {
+    //-(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
+    //-(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+    //-(NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
+    //-(void)sortedArrayUsingSelector:(SEL)selector {
+    //-(NSArray *)sortedArrayUsingComparator:(NSComparator)cmptr {
+    //-(NSArray *)sortedArrayWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+
+
+    //Working with String Elements
+    -(void)componentsJoinedByString {
+        [self passFail:[[a componentsJoinedByString:@" -.- "] isEqualToString:[b componentsJoinedByString:@" -.- "]] format:@"componentsJoinedByString"];
+    }
+
+
+    //Creating a Description
+    //NSString description={return([__array description]);}
+    //-(NSString *)descriptionWithLocale:(id)locale {
+    //-(NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+    //-(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
+    //-(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
+
+
+    //Collecting Paths
+    //-(NSArray *)pathsMatchingExtensions:(NSArray *)filterTypes {
+
+
+    //Key-Value Observing
+    //-(void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+    //-(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
+    //-(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
+    //-(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath context:(void *)context {
+    //-(void)addObserver:(NSObject *)observer toObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+    //-(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath {
+
+
+    //Key-Value Coding
+    //-(void)setValue:(id)value forKey:(NSString *)key {
+    //-(void)valueForKey:(NSString*)key {
+
+
+
+    //Adding Objects
+    -(void)addObject {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v addObject:self.object];)
+        [self passFailWithFormat:@"addObject"];
+    }
+    -(void)addObjectsFromArray {
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v addObjectsFromArray:self.objectArray];)
+        [self passFailWithFormat:@"addObjectsFromArray"];
+    }
+    -(void)insertObjectAtIndex {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v insertObject:self.object atIndex:self.index1];)
+        [self passFailWithFormat:@"insertObjectAtIndex"];
+    }
+    -(void)insertObjectsAtIndexes {
+        NSIndexSet *indexes=[self randIndexSetWithCount:self.objectArray.count max:self.objectArray.count+a.count-1];
+        [self objectArray];
+        [self indexes];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v insertObjects:self.objectArray atIndexes:indexes];)
+        [self passFailWithFormat:@"insertObjectsAtIndexes"];
+    }
+    
+    
+    //Removing Objects
+    -(void)removeAllObjects {
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeAllObjects];)
+        [self passFailWithFormat:@"removeAllObjects"];
+    }
+    -(void)removeLastObject {
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeLastObject];)
+        [self passFailWithFormat:@"removeLastObject"];
+    }
+    -(void)removeObject {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObject:self.object];)
+        [self passFailWithFormat:@"removeObject"];
+    }
+    -(void)removeObjectInRange {
+        if (!a.count) return;
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObject:self.object inRange:self.range];)
+        [self passFailWithFormat:@"removeObjectInRange"];
+    }
+
+    -(void)removeObjectAtIndex {
+        if (!a.count) return;
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectAtIndex:self.index];)
+        [self passFailWithFormat:@"removeObjectAtIndex"];
+    }
+    -(void)removeObjectsAtIndexes {
+        [self indexes];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectsAtIndexes:self.indexes];)
+        [self passFailWithFormat:@"removeObjectsAtIndexes"];
+    }
+    -(void)removeObjectIdenticalTo {
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectIdenticalTo:self.object];)
+        [self passFailWithFormat:@"removeObjectIdenticalTo"];
+    }
+    -(void)removeObjectIdenticalToInRange {
+        if (!a.count) return;
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectIdenticalTo:self.object inRange:self.range];)
+        [self passFailWithFormat:@"removeObjectIdenticalToInRange"];
+    }
+    -(void)removeObjectsInArray {
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectsInArray:self.objectArray];)
+        [self passFailWithFormat:@"removeObjectsInArray"];
+    }
+    -(void)removeObjectsInRange {
+        if (!a.count) return;
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v removeObjectsInRange:self.range];)
+        [self passFailWithFormat:@"removeObjectsInRange"];
+    }
+    
+    
+    //Replacing Objects
+    -(void)replaceObjectAtIndexWithObject {
+        if (!a.count) return;
+        [self object];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectAtIndex:self.index withObject:self.object];)
+        [self passFailWithFormat:@"replaceObjectAtIndexWithObject"];
+    }
+    -(void)replaceObjectsAtIndexesWithObjects {
+        if (self.objectArray.count>a.count) return;
+        NSIndexSet *indexes=[self randIndexSetWithCount:self.objectArray.count max:a.count-1];
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsAtIndexes:indexes withObjects:self.objectArray];)
+        [self passFailWithFormat:@"replaceObjectsAtIndexesWithObjects"];
+    }
+    -(void)replaceObjectsInRangeWithObjectsFromArrayRange {
+        if (!a.count) return;
+        if (!self.objectArray.count) return;
+        NSUInteger i=rand()%(self.objectArray.count+1);
+        NSRange r=NSMakeRange(rand()%(self.objectArray.count+1-i),i);
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsInRange:self.range withObjectsFromArray:self.objectArray range:r];)
+        [self passFailWithFormat:@"replaceObjectsInRangeWithObjectsFromArrayRange"];
+    }
+    -(void)replaceObjectsInRangeWithObjectsFromArray {
+        if (!a.count) return;
+        if (!self.objectArray.count) return;
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsInRange:self.range withObjectsFromArray:self.objectArray];)
+        [self passFailWithFormat:@"replaceObjectsInRangeWithObjectsFromArray"];
+    }
+    -(void)setArray {
+        [self objectArray];
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v setArray:self.objectArray];)
+        [self passFailWithFormat:@"setArray"];
+    }
+    
+    
+    //Filtering Content
+    //-(void)filterUsingPredicate:(NSPredicate *)predicate {
+    
+    
+    //Rearranging Content
+    -(void)exchangeObjectAtIndexWithObjectAtIndex {
+        if (!a.count) return;
+        NSUInteger i=rand()%a.count;
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v exchangeObjectAtIndex:i withObjectAtIndex:self.index];)
+        [self passFailWithFormat:@"exchangeObjectAtIndexWithObjectAtIndex"];
+    }
+    //-(void)sortUsingDescriptors:(NSArray*)sortDescriptors {
+    //-(void)sortUsingComparator:(NSComparator)cmptr {
+    //-(void)sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+    //-(void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context {
+    //-(void)sortUsingSelector:(SEL)selector {
+
+
+
+

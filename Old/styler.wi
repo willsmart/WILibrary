@@ -1,0 +1,781 @@
+"<Foundation/Foundation.h>"
+"<QuartzCore/QuartzCore.h>"
+
+
+// summary of links and vars:
+Styler
+    styler -a< <StyledObject> object
+    NSMutableDictionary keysAndValues=[MutableDictionary dictionary] (ivar=keysAndValues)
+    NSMutableSet usedKeys=[MutableSet set] (ivar=usedKeys)
+
+
+
+<StyledObject>
+    NSString _stylerPrefix=@"??",stylerPrefix=
+        {return(self._stylerPrefix);}
+        -v{
+            if (![self._stylerPrefix isEqualToString:v]) {
+                self._stylerPrefix=v;
+                [self restyle];
+            }
+        }
+
+
+    -(void)restyle {}
+
+    -(init) {
+        @1 self.styler=[Styler getDefault];
+    }
+
+    -(NSString*)getOrSetStringForKeySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+        return([self.styler getOrSetStringForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
+    }
+    -(double)getOrSetDoubleForKeySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+        return([self.styler getOrSetDoubleForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
+    }
+    -(UIColor*)getOrSetColorForKeySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+        return([self.styler getOrSetColorForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
+    }
+    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        return([self styleLabel:label usingPrefix:prefix usingColorPrefix:prefix y:y ytype:ytype]);
+    }
+    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
+        return([self.styler styleLabel:label usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
+    }
+    -(float)styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        return([self.styler styleTextField:field usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
+    }
+    -(float)styleTextView:(UITextView *)view usingPrefix:(NSString *)prefix y:(float)y ytype:(char)ytype {
+        return([self.styler styleTextView:view usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
+    }
+    -(float)styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        return([self.styler styleSwitch:swtch usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
+    }
+    -(float)styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
+        return([self.styler styleOuterButton:button usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype innerControls:controls]);
+    }
+    -(void)styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
+        return([self.styler styleTable:table usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix)]);
+    }
+
+    -(float)styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y
+    {
+        return([self.styler styleCell:cell usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) innerControls:controls y:y]);
+    }
+    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
+        return([self styleToolbar:toolbar usingPrefix:prefix usingColorPrefix:prefix]);
+    }
+    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
+        return([self.styler styleToolbar:toolbar usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) usingColorPrefix:(self.stylerPrefix?(colPrefix?[self.stylerPrefix stringByAppendingString:colPrefix]:self.stylerPrefix):colPrefix)]);    
+    }
+
+
+/*interfaces:
+extern Styler *_Styler_default;
+*/
+/*interfaces:impl:
+Styler *_Styler_default=nil;
+*/
+
+
+Styler <BaseObject>
+
+
+    +(Styler*)getDefault {
+        if (!_Styler_default) {
+            ADDSINGLETON(_Styler_default=[Styler get]);
+        }
+        return(_Styler_default);
+    }
+
+    -(void)trimKeys {
+        NSMutableSet *remove=[MutableSet set];
+        for (NSString *key in keysAndValues.allKeys) if (![usedKeys containsObject:key]) [remove addObject:key];
+        for (NSString *key in remove) [keysAndValues removeObjectForKey:key];
+    }
+
+    +(NSString*)sylerFileName {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        return([documentsDirectory stringByAppendingPathComponent:@"styler.txt"]);
+    }
+
+    -(void)notifyAllStyledObjects {
+        for (NSObject<StyledObject> *obj in self.objects) [obj restyle];    
+    }
+
+    -(void) read {
+        @try {
+            NSError *err=nil;
+            NSString *s=[NSString stringWithContentsOfFile:[Styler sylerFileName] encoding:NSUTF8StringEncoding error:&err];
+            if (err) {
+                NSLog(@"%@\n",err.localizedDescription);
+            }
+            else {
+                self.asURL=s;
+            }
+        }
+        @catch (NSException *e) {
+            NSLog(@"%@\n",[e reason]);
+        }
+    }
+
+    -(void)write {
+        @try {
+            NSString *s=self.asURL;
+            NSError *err=nil;
+            [s writeToFile:[Styler sylerFileName] atomically:YES encoding:NSUTF8StringEncoding error:&err];
+            if (err) {
+                NSLog(@"%@\n",err.localizedDescription);
+            }
+        }
+        @catch (NSException *e) {
+            NSLog(@"%@\n",[e reason]);
+        }    
+    }
+
+    -(void)destroyFile {
+        @try {
+            NSError *err=nil;
+            [@"" writeToFile:[Styler sylerFileName] atomically:YES encoding:NSUTF8StringEncoding error:&err];
+            if (err) {
+                NSLog(@"%@\n",err.localizedDescription);
+            }
+        }
+        @catch (NSException *e) {
+            NSLog(@"%@\n",[e reason]);
+        }    
+    }
+
+    NSString asURL=
+        {
+            NSMutableString *s=[NSMutableString stringWithString:@"bbookmarks://style"];
+            char sep='?';
+            @synchronized (self) {
+                NSArray *keys=[[keysAndValues allKeys] sortedArrayUsingComparator:^(id obj1, id obj2) {
+                    NSString *s1=obj1,*s2=obj2;
+                    return([s1 compare:s2]);
+                }];
+                for (NSString *key in keys) {
+                    NSString *value=[keysAndValues objectForKey:key];
+                    [s appendFormat:@"%c%@=%@",sep,[key urlEncodeUsingEncoding:NSUTF8StringEncoding],[value urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                    sep='&';
+                }
+            }
+            return([NSString stringWithString:s]);
+        }
+        -value{
+            if ([value hasPrefix:@"bbookmarks://style?"]) {
+                @synchronized (self) {
+                    int st=@"bbookmarks://style?".length;
+                    for (NSRange en=[value rangeOfString:@"&" options:0 range:NSMakeRange(st, value.length-st)];en.location!=NSNotFound;st=en.location+en.length,en=[value rangeOfString:@"&" options:0 range:NSMakeRange(st, value.length-st)]) {
+                        NSString *s=[value substringWithRange:NSMakeRange(st, en.location-st)];
+                        NSRange eqr=[s rangeOfString:@"="];
+                        if (eqr.location!=NSNotFound) {
+                            NSString *key=[[s substringToIndex:eqr.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                            NSString *value=[[s substringFromIndex:eqr.location+eqr.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                            [keysAndValues setObject:value forKey:key];
+                        }
+                    }
+                    NSString *s=[value substringFromIndex:st];
+                    NSRange eqr=[s rangeOfString:@"="];
+                    if (eqr.location!=NSNotFound) {
+                        NSString *key=[[s substringToIndex:eqr.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        NSString *value=[[s substringFromIndex:eqr.location+eqr.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        [keysAndValues setObject:value forKey:key];
+                    }
+                }
+                [self notifyAllStyledObjects];
+            }
+        }
+
+    +(int)hexFromChar:(char)c {
+        switch (c) {
+            case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':return(c-'0');
+            case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':return(c+10-'a');
+            case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':return(c+10-'A');
+            default:return(-1);
+        }
+    }
+    +(int)byteInString:(NSString*)s atIndex:(int)i {
+        if ((!s)||(i<0)||(i+1>=s.length)) return(-1);
+        int h=[Styler hexFromChar:[s characterAtIndex:i]],l=[Styler hexFromChar:[s characterAtIndex:i+1]];
+        return((h==-1)||(l==-1)?-1:((h<<4)|l));
+    }
+    +(int)hexInString:(NSString*)s atIndex:(int)i {
+        if ((!s)||(i<0)||(i>=s.length)) return(-1);
+        int l=[Styler hexFromChar:[s characterAtIndex:i]];
+        return(l==-1?-1:l);
+    }
+
+    +(UIColor*)colorFromString:(NSString*)s {
+        int r,g,b,a,i=0;
+        if (s) {
+            if ((s.length==3)||(s.length==4)) {
+                if (((r=[Styler hexInString:s atIndex:i])>=0)&&
+                    ((g=[Styler hexInString:s atIndex:i+1])>=0)&&
+                    ((b=[Styler hexInString:s atIndex:i+2])>=0)) {
+                    if ((a=[Styler hexInString:s atIndex:i+3])==-1) a=0xf;
+                    return([UIColor colorWithRed:r*1.0/0xf green:g*1.0/0xf blue:b*1.0/0xf alpha:a*1.0/0xf]);
+                }
+            }
+            else if (
+                ((r=[Styler byteInString:s atIndex:i])>=0)&&
+                ((g=[Styler byteInString:s atIndex:i+2])>=0)&&
+                ((b=[Styler byteInString:s atIndex:i+4])>=0)) {
+                if ((a=[Styler byteInString:s atIndex:i+6])==-1) a=0xff;
+                return([UIColor colorWithRed:r*1.0/0xff green:g*1.0/0xff blue:b*1.0/0xff alpha:a*1.0/0xff]);
+            }
+        }
+        return(nil);
+    }
+    +(NSString*)stringFromColor:(UIColor*)col {
+        if (!col) return(nil);
+        float r,g,b,a;
+        const float *comp=CGColorGetComponents(col.CGColor);
+        if (CGColorGetNumberOfComponents(col.CGColor)==2) {r=g=b=comp[0];a=comp[1];}
+        else {r=comp[0];g=comp[1];b=comp[2];a=comp[3];}
+        return((((int)(a*0xff))&0xff)==0xff?[NSString stringWithFormat:@"%02x%02x%02x",((int)(r*0xff))&0xff,((int)(g*0xff))&0xff,((int)(b*0xff))&0xff]:[NSString stringWithFormat:@"%02x%02x%02x%02x",((int)(r*0xff))&0xff,((int)(g*0xff))&0xff,((int)(b*0xff))&0xff,((int)(a*0xff))&0xff]);
+    }
+    +(double)doubleFromString:(NSString*)s {
+        return(s?[s doubleValue]:0);
+    }
+    +(NSString*)stringFromDouble:(double)v {
+        NSString *s=[NSString stringWithFormat:@"%.5f",v];
+        if ([s rangeOfString:@"."].location!=NSNotFound) {
+            int zi=s.length-1;for (;[s characterAtIndex:zi]=='0';zi--);
+            if ([s characterAtIndex:zi]=='.') zi--;
+            if (zi<s.length-1) s=[s substringToIndex:zi+1];
+        }
+        return(s);
+    }
+
+    -(NSString*)getOrSetStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            if (changed&&![s isEqualToString:def]) *changed=true;
+            return(s);
+        }
+        else {
+            if (!def) def=@"";
+            [keysAndValues setObject:def forKey:key];
+            return(def);
+        }
+    }
+    -(double)getOrSetDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            double d=[Styler doubleFromString:s];
+            if (changed&&(fabs(def-d)>0.001)) *changed=true;
+            return(d);
+        }
+        else {
+            if (!def) def=0;
+            [keysAndValues setObject:[Styler stringFromDouble:def] forKey:key];
+            return(def);
+        }
+    }
+    -(UIColor*)getOrSetColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            UIColor *col=[Styler colorFromString:s];
+            if (changed&&![col isEqual:def]) *changed=true;
+            return(col);
+        }
+        else {
+            if (!def) def=[UIColor clearColor];
+            [keysAndValues setObject:[Styler stringFromColor:def] forKey:key];
+            return(def);
+        }
+    }
+
+    -(NSString*)getStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            if (changed&&![s isEqualToString:def]) *changed=true;
+            return(s);
+        }
+        else {
+            if (!def) def=@"";
+            return(def);
+        }
+    }
+    -(double)getDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            double d=[Styler doubleFromString:s];
+            if (changed&&(fabs(def-d)>0.001)) *changed=true;
+            return(d);
+        }
+        else {
+            if (!def) def=0;
+            return(def);
+        }
+    }
+    -(UIColor*)getColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
+        [usedKeys addObject:key];
+        NSString *s=[keysAndValues objectForKey:key];
+        if (s) {
+            UIColor *col=[Styler colorFromString:s];
+            if (changed&&![col isEqual:def]) *changed=true;
+            return(col);
+        }
+        else {
+            if (!def) def=[UIColor clearColor];
+            return(def);
+        }
+    }
+    -(NSString*)getOrSetStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+        return([self getOrSetStringForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+    -(double)getOrSetDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+        return([self getOrSetDoubleForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+    -(UIColor*)getOrSetColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+        return([self getOrSetColorForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+    -(NSString*)getStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+        return([self getStringForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+    -(double)getDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+        return([self getDoubleForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+    -(UIColor*)getColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+        return([self getColorForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
+    }
+
+
+    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        return([self styleLabel:label usingPrefix:prefix usingColorPrefix:prefix y:y ytype:ytype]);
+    }
+    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
+        if (!label) {
+            bool changed=false;
+            NSString *fontName=[self getStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:@"Helvetica" didChange:&changed];
+            float fontSize=[self getDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:12 didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            UIFont *font=[UIFont fontWithName:fontName size:fontSize];
+            int numLines=[self getDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:1 didChange:&changed];
+            double hpad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:2 didChange:&changed];
+            
+            float pxHeight=[@"Hg" sizeWithFont:font].height;
+            float height=numLines*pxHeight+hpad*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            return(topy+height);
+        }
+        else {
+            bool changed=false;
+            NSString *fontName=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:label.font.fontName didChange:&changed];
+            float fontSize=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:label.font.pointSize didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            if (changed) label.font=[UIFont fontWithName:fontName size:fontSize];
+            
+            changed=false;
+            UIColor *col=[self getOrSetColorForKeyPrefix:colPrefix keySuffix:@"Color" defaultValue:label.textColor didChange:&changed];
+            if (changed) label.textColor=col;
+            
+            changed=false;
+            UIColor *scol=[self getOrSetColorForKeyPrefix:colPrefix keySuffix:@"ShadowColor" defaultValue:label.shadowColor didChange:&changed];
+            if (changed) label.shadowColor=scol;
+            
+            changed=false;
+            double sx=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"ShadowX" defaultValue:label.shadowOffset.width didChange:&changed];
+            double sy=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"ShadowY" defaultValue:label.shadowOffset.height didChange:&changed];
+            if (changed) label.shadowOffset=CGSizeMake(sx,sy);
+            
+            changed=false;
+            int numLines=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:label.numberOfLines didChange:&changed];
+            if (changed) label.numberOfLines=numLines;
+            
+            changed=false;
+            NSString *alignDef;
+            switch (label.textAlignment) {
+                case NSTextAlignmentLeft:default:alignDef=@"left";break;
+                case NSTextAlignmentCenter:alignDef=@"center";break;
+                case NSTextAlignmentRight:alignDef=@"right";break;
+            }
+            NSString *alignStr=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Align" defaultValue:alignDef didChange:&changed];
+            if (changed) {
+                NSTextAlignment align=NSTextAlignmentLeft;
+                if ([alignStr isEqualToString:@"centre"]||[alignStr isEqualToString:@"center"]) align=NSTextAlignmentCenter;
+                if ([alignStr isEqualToString:@"right"]) align=NSTextAlignmentRight;
+                label.textAlignment=align;
+            }
+            
+            changed=false;
+            double hpad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:2 didChange:&changed];
+            
+            float pxHeight=[@"Hg" sizeWithFont:label.font].height;
+            float height=label.numberOfLines*pxHeight+hpad*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            if ((fabs(height-label.frame.size.height)>0.01)||(fabs(topy-label.frame.origin.y)>0.01)) {
+                label.frame=CGRectMake(label.frame.origin.x, topy, label.frame.size.width, height);
+            }
+            return(topy+height);
+        }
+    }
+
+    -(float)styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        if (!field) {
+            bool changed=false;
+            
+            NSString *fontName=[self getStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:@"Helvetica" didChange:&changed];
+            float fontSize=[self getDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:12 didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            UIFont *font=[UIFont fontWithName:fontName size:fontSize];
+            double hpad=[self getDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:3 didChange:&changed];
+            double lw=[self getDoubleForKeyPrefix:prefix keySuffix:@"BorderWidth" defaultValue:1 didChange:&changed];
+            
+            float pxHeight=[@"Hg" sizeWithFont:font].height;
+            float height=pxHeight+hpad*2+lw*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            return(topy+height);
+        }
+        else {
+            bool changed=false;
+            
+            float pxHeight=[@"Hg" sizeWithFont:field.font].height;
+            
+            NSString *fontName=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:field.font.fontName didChange:&changed];
+            float fontSize=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:field.font.pointSize didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            if (changed) field.font=[UIFont fontWithName:fontName size:fontSize];
+            
+            changed=false;
+            UIColor *bgcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BackgroundColor" defaultValue:field.backgroundColor didChange:&changed];
+            if (changed) field.backgroundColor=bgcol;
+            
+            changed=false;
+            UIColor *col=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"Color" defaultValue:field.textColor didChange:&changed];
+            if (changed) field.textColor=col;
+            
+            changed=false;
+            UIColor *bordcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BorderColor" defaultValue:[UIColor colorWithCGColor:field.layer.borderColor] didChange:&changed];
+            if (changed) field.layer.borderColor=[bordcol CGColor];
+            
+            changed=false;
+            double rad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderRadius" defaultValue:field.layer.cornerRadius didChange:&changed];
+            if (changed) field.layer.cornerRadius=rad;
+            
+            changed=false;
+            double lw=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderWidth" defaultValue:field.layer.borderWidth didChange:&changed];
+            if (changed) field.layer.borderWidth=lw;
+            
+            NSString *alignDef;
+            switch (field.textAlignment) {
+                case NSTextAlignmentLeft:default:alignDef=@"left";break;
+                case NSTextAlignmentCenter:alignDef=@"center";break;
+                case NSTextAlignmentRight:alignDef=@"right";break;
+            }
+            NSString *alignStr=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Align" defaultValue:alignDef didChange:&changed];
+            if (changed) {
+                NSTextAlignment align=NSTextAlignmentLeft;
+                if ([alignStr isEqualToString:@"centre"]||[alignStr isEqualToString:@"center"]) align=NSTextAlignmentCenter;
+                if ([alignStr isEqualToString:@"right"]) align=NSTextAlignmentRight;
+                field.textAlignment=align;
+            }
+            
+            changed=false;
+            double hpad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:(field.frame.size.height-pxHeight)*0.5-lw didChange:&changed];
+            
+            
+            pxHeight=[@"Hg" sizeWithFont:field.font].height;
+            float height=pxHeight+hpad*2+lw*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            if ((fabs(height-field.frame.size.height)>0.01)||(fabs(topy-field.frame.origin.y)>0.01)) {
+                field.frame=CGRectMake(field.frame.origin.x, topy, field.frame.size.width, height);
+            }
+            return(topy+height);
+        }
+    }
+
+
+
+    -(float)styleTextView:(UITextView*)view usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        if (!view) {
+            bool changed=false;
+            
+            NSString *fontName=[self getStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:@"Helvetica" didChange:&changed];
+            float fontSize=[self getDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:12 didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            UIFont *font=[UIFont fontWithName:fontName size:fontSize];
+            double hpad=[self getDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:3 didChange:&changed];
+            double lw=[self getDoubleForKeyPrefix:prefix keySuffix:@"BorderWidth" defaultValue:1 didChange:&changed];
+            
+            float pxHeight=[@"Hg" sizeWithFont:font].height;
+            float height=pxHeight+hpad*2+lw*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            return(topy+height);
+        }
+        else {
+            bool changed=false;
+            
+            float pxHeight=[@"Hg" sizeWithFont:view.font].height;
+            
+            NSString *fontName=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:view.font.fontName didChange:&changed];
+            float fontSize=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:view.font.pointSize didChange:&changed];
+            if (fontSize<4) {fontSize=4;changed=true;}
+            if (changed) view.font=[UIFont fontWithName:fontName size:fontSize];
+            
+            changed=false;
+            UIColor *bgcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BackgroundColor" defaultValue:view.backgroundColor didChange:&changed];
+            if (changed) view.backgroundColor=bgcol;
+            
+            changed=false;
+            UIColor *col=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"Color" defaultValue:view.textColor didChange:&changed];
+            if (changed) view.textColor=col;
+            
+            changed=false;
+            UIColor *bordcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BorderColor" defaultValue:[UIColor colorWithCGColor:view.layer.borderColor] didChange:&changed];
+            if (changed) view.layer.borderColor=[bordcol CGColor];
+            
+            changed=false;
+            double rad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderRadius" defaultValue:view.layer.cornerRadius didChange:&changed];
+            if (changed) view.layer.cornerRadius=rad;
+            
+            changed=false;
+            double lw=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderWidth" defaultValue:view.layer.borderWidth didChange:&changed];
+            if (changed) view.layer.borderWidth=lw;
+            
+            NSString *alignDef;
+            switch (view.textAlignment) {
+                case NSTextAlignmentLeft:default:alignDef=@"left";break;
+                case NSTextAlignmentCenter:alignDef=@"center";break;
+                case NSTextAlignmentRight:alignDef=@"right";break;
+            }
+            NSString *alignStr=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"Align" defaultValue:alignDef didChange:&changed];
+            if (changed) {
+                NSTextAlignment align=NSTextAlignmentLeft;
+                if ([alignStr isEqualToString:@"centre"]||[alignStr isEqualToString:@"center"]) align=NSTextAlignmentCenter;
+                if ([alignStr isEqualToString:@"right"]) align=NSTextAlignmentRight;
+                view.textAlignment=align;
+            }
+            
+            changed=false;
+            double hpad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:(view.frame.size.height-pxHeight)*0.5-lw didChange:&changed];
+            
+            
+            pxHeight=[@"Hg" sizeWithFont:view.font].height;
+            float height=pxHeight+hpad*2+lw*2;
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            height=view.frame.size.height;
+            if ((ytype!='x')&&((fabs(height-view.frame.size.height)>0.01)||(fabs(topy-view.frame.origin.y)>0.01))) {
+                view.frame=CGRectMake(view.frame.origin.x, topy, view.frame.size.width, height);
+            }
+            return(topy+height);
+        }
+    }
+
+
+    -(float)styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+        bool changed=false;
+        
+
+        if (!swtch) {
+            double height=[self getDoubleForKeyPrefix:prefix keySuffix:@"Height" defaultValue:27 didChange:&changed];
+     
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            return(topy+height);
+        }
+        else {
+            
+            if ([swtch respondsToSelector:@selector(onTintColor)]) {
+                UIColor *ontint=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"OnTint" defaultValue:swtch.onTintColor didChange:&changed];
+                if (changed) swtch.onTintColor=ontint;
+            }
+            
+            double height=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Height" defaultValue:swtch.frame.size.height didChange:&changed];
+
+            float topy;
+            switch (ytype) {
+                case 't':default:topy=y;break;
+                case 'm':topy=y-height*0.5;break;
+                case 'b':topy=y-height;break;
+            }
+            if ((fabs(height-swtch.frame.size.height)>0.01)||(fabs(topy-swtch.frame.origin.y)>0.01)) {
+                swtch.frame=CGRectMake(swtch.frame.origin.x, topy, swtch.frame.size.width, height);
+            }
+            return(topy+height);
+        }
+    }
+
+
+    -(float)styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
+        bool changed=false;
+
+        if (!button) return(NAN);
+        
+        UIColor *col=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"Color" defaultValue:button.backgroundColor didChange:&changed];
+        if (changed) button.backgroundColor=col;
+        
+        button.layer.masksToBounds=YES;
+        
+        changed=false;
+        UIColor *bordcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BorderColor" defaultValue:[UIColor colorWithCGColor:button.layer.borderColor] didChange:&changed];
+        if (changed) button.layer.borderColor=[bordcol CGColor];
+        
+        changed=false;
+        double rad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderRadius" defaultValue:button.layer.cornerRadius didChange:&changed];
+        if (changed) button.layer.cornerRadius=rad;
+        
+        changed=false;
+        double lw=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"BorderWidth" defaultValue:button.layer.borderWidth didChange:&changed];
+        if (changed) button.layer.borderWidth=lw;
+        
+        changed=false;
+        double pad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Pad" defaultValue:5 didChange:&changed];
+        
+        double miny=0,maxy=0;
+        if (controls.count) {
+            miny=((UIView*)[controls objectAtIndex:0]).frame.origin.y;
+            maxy=miny;
+            for (UIView *v in controls) {
+                if (miny>v.frame.origin.y) miny=v.frame.origin.y;
+                if (maxy<v.frame.origin.y+v.frame.size.height) maxy=v.frame.origin.y+v.frame.size.height;
+            }
+        }
+        
+        float height=lw*2+pad*2+(maxy-miny);
+        float topy;
+        switch (ytype) {
+            case 't':default:topy=y;break;
+            case 'm':topy=y-height*0.5;break;
+            case 'b':topy=y-height;break;
+        }
+        if ((ytype!='x')&&((fabs(height-button.frame.size.height)>0.01)||(fabs(topy-button.frame.origin.y)>0.01))) {
+            button.frame=CGRectMake(button.frame.origin.x, topy, button.frame.size.width, height);
+        }
+        double addy=button.frame.origin.y+lw+pad-miny;
+        if ((ytype!='x')&&(fabs(addy)>0.01)) {
+            for (UIView *v in controls) {
+                v.frame=CGRectMake(v.frame.origin.x, v.frame.origin.y+addy, v.frame.size.width, v.frame.size.height);
+            }
+        }
+        return(topy+height);
+    }
+
+    -(void)styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
+        bool changed=false;
+        
+        if (table) {
+            UIColor *bgcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BackgroundColor" defaultValue:table.backgroundColor didChange:&changed];
+            if (changed) table.backgroundColor=bgcol;
+            
+            UIColor *sepcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"LineColor" defaultValue:table.separatorColor didChange:&changed];
+            if (changed) table.separatorColor=sepcol;
+            
+            changed=false;
+            NSString *sepStyle;
+            switch (table.separatorStyle) {
+                case UITableViewCellSeparatorStyleNone:sepStyle=@"none";break;
+                case UITableViewCellSeparatorStyleSingleLine:default:sepStyle=@"line";break;
+                case UITableViewCellSeparatorStyleSingleLineEtched:sepStyle=@"etched";break;
+            }
+            NSString *newSepStyle=[self getOrSetStringForKeyPrefix:prefix keySuffix:@"LineStyle" defaultValue:sepStyle didChange:&changed];
+            if (changed) table.separatorStyle=([newSepStyle isEqualToString:@"none"]?UITableViewCellSeparatorStyleNone:([newSepStyle isEqualToString:@"etched"]?UITableViewCellSeparatorStyleSingleLineEtched:UITableViewCellSeparatorStyleSingleLine));
+        }    
+    }
+
+    -(float)styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y {
+        bool changed=false;
+        
+        if (!cell) return(NAN);
+        
+        UIColor *bgcol=[self getOrSetColorForKeyPrefix:prefix keySuffix:@"BackgroundColor" defaultValue:cell.backgroundColor didChange:&changed];
+        if (changed) cell.backgroundColor=bgcol;
+        
+        changed=false;
+        double pad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Pad" defaultValue:5 didChange:&changed];
+        
+        double miny=0,maxy=0;
+        if (controls.count) {
+            miny=((UIView*)[controls objectAtIndex:0]).frame.origin.y;
+            maxy=miny;
+            for (UIView *v in controls) {
+                if (miny>v.frame.origin.y) miny=v.frame.origin.y;
+                if (maxy<v.frame.origin.y+v.frame.size.height) maxy=v.frame.origin.y+v.frame.size.height;
+            }
+        }
+
+        float lw=1;
+        float height=y+lw*2+pad*2+(maxy-miny);
+        double addy=pad+lw+y-miny;
+        if (fabs(addy)>0.01) {
+            for (UIView *v in controls) {
+                v.frame=CGRectMake(v.frame.origin.x, v.frame.origin.y+addy, v.frame.size.width, v.frame.size.height);
+            }
+        }   
+        return(height);
+    }
+
+    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
+        return([self styleToolbar:toolbar usingPrefix:prefix usingColorPrefix:prefix]);
+    }
+    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
+        bool changed=false;
+        
+        if (!toolbar) {
+            if (prefix) {
+                changed=false;
+                double height=[self getDoubleForKeyPrefix:prefix keySuffix:@"Height" defaultValue:44 didChange:&changed];
+                if (height<4) {height=4;changed=true;}
+                return(height);
+            }
+            else return(NAN);
+        }
+        else {
+            UIColor *tint=[self getOrSetColorForKeyPrefix:colPrefix keySuffix:@"Tint" defaultValue:toolbar.tintColor didChange:&changed];
+            if (changed) toolbar.tintColor=tint;
+            
+            if (prefix) {
+                changed=false;
+                double height=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Height" defaultValue:toolbar.bounds.size.height didChange:&changed];
+                if (height<4) {height=4;changed=true;}
+                if (changed) {
+                    toolbar.frame=CGRectMake(0, 0, toolbar.bounds.size.width, height);
+                }
+                return(height);
+            }
+            else return(toolbar.frame.size.height);
+        }
+    }

@@ -1,0 +1,392 @@
+//
+//  RecordVideo.m
+//  Fractal surfer
+//
+//  Created by Jen on 27/12/11.
+//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//
+
+
+"<Foundation/Foundation.h>"
+"<AVFoundation/AVVideoSettings.h>"
+"<AVFoundation/AVMediaFormat.h>"
+"<AVFoundation/AVAssetWriterInput.h>"
+"<AVFoundation/AVAssetWriter.h>"
+"<OpenGLES/ES1/gl.h>"
+"<OpenGLES/ES1/glext.h>"
+"<OpenGLES/ES2/gl.h>"
+"<OpenGLES/ES2/glext.h>"
+
+"<QuartzCore/QuartzCore.h>"
+"<MobileCoreServices/UTCoreTypes.h>"
+"<AssetsLibrary/AssetsLibrary.h>"
+
+sys AVAssetWriterInputPixelBufferAdaptor
+sys AVAssetWriterInput
+sys AVAssetWriter
+type CVPixelBufferRef
+
+/*interfaces:impl:
+    void MyPixelBufferReleaseBytesCallback(void *releaseRefCon, const void *baseAddress) {
+    }
+*/
+/*interfaces:
+    void MyPixelBufferReleaseBytesCallback(void *releaseRefCon, const void *baseAddress);
+*/
+
+RecordVideo
+
+    CGSize size (nodef)
+    bool going (nodef)
+    float speedup=1.5
+
+    AVAssetWriterInputPixelBufferAdaptor pixelBufferAdaptor (nodef,readonly,dealloc,ivar=pixelBufferAdaptor)
+    AVAssetWriterInput assetWriterInput (nodef,readonly,dealloc,ivar=assetWriterInput)
+    AVAssetWriter assetWriter (nodef,readonly,dealloc,ivar=assetWriter)
+    NSMutableData pixelData=[NSMutableData dataWithLength:1]
+    NSMutableData pixelData2=[NSMutableData dataWithLength:1]
+    CVPixelBufferRef pixBuf (nodef,readonly,ivar)
+    NSDate startedAt (nodef,readonly,dealloc,ivar=startedAt)
+
+    -(void)dealloc {@-100 
+        [self stop];
+        if (self.pixBuf) CVPixelBufferRelease(self.pixBuf);
+    }
+
+
+    -(id)initWithURL:(NSURL*)url size:(CGSize)asize {
+        if (!(self=[super init])) return(nil);    
+       // AVCaptureVideoDataOutput *output = [[[AVCaptureVideoDataOutput alloc] init] autorelease];// output for 32BGRA pixel format, with me as the delegate and a suitable dispatch queue affixed.
+        //[output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+        //output.videoSettings=     [NSDictionary dictionaryWithObjectsAndKeys:
+        //                           [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], 
+        //                           kCVPixelBufferPixelFormatTypeKey,
+        //                           nil];
+
+        size=asize;
+        
+        NSError* error = nil;
+        assetWriter = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeQuickTimeMovie error:&error];
+        NSParameterAssert(assetWriter);
+        
+
+        @100 
+        
+      //  NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
+                                           //    [NSNumber numberWithDouble:1024.0*1024.0], AVVideoAverageBitRateKey,
+    //                                           [NSNumber numberWithDouble:0.0],
+    //                                           AVVideoQualityKey,
+                                               //[NSNumber numberWithInt:100],
+                                               //AVVideoMaxKeyFrameIntervalKey,
+        //                                       nil ];
+        
+        NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       AVVideoCodecH264, AVVideoCodecKey,
+                                       [NSNumber numberWithInt:size.width], AVVideoWidthKey,
+                                       [NSNumber numberWithInt:size.height], AVVideoHeightKey,
+                                      // videoCompressionProps, AVVideoCompressionPropertiesKey,
+                                       nil];
+        
+        assetWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
+        
+        NSParameterAssert(assetWriterInput);
+        assetWriterInput.expectsMediaDataInRealTime = YES;
+        NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];
+        
+        pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
+        
+        //add input
+        [assetWriter addInput:assetWriterInput];
+        [assetWriter startWriting];
+        [assetWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
+        startedAt = [[NSDate date] retain];
+        
+    //    _recording=true;
+        
+        going=true;
+        
+        
+        
+        /*
+        
+        / * to prepare for output; I'll output 640x480 in H.264, via an asset writer * /
+            NSDictionary *outputSettings =
+            [NSDictionary dictionaryWithObjectsAndKeys:
+             
+             [NSNumber numberWithInt:size.width], AVVideoWidthKey,
+             [NSNumber numberWithInt:size.height], AVVideoHeightKey,
+             AVVideoCodecH264, AVVideoCodecKey,
+             
+             nil];
+        
+        assetWriterInput = [[AVAssetWriterInput 
+                                                assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                outputSettings:outputSettings] retain];
+        
+        / * I'm going to push pixel buffers to it, so will need a 
+         AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
+         asked the AVCaptureVideDataOutput to supply * /
+        pixelBufferAdaptor =
+        [[AVAssetWriterInputPixelBufferAdaptor alloc] 
+         initWithAssetWriterInput:assetWriterInput 
+         sourcePixelBufferAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], 
+          kCVPixelBufferPixelFormatTypeKey,
+          nil]];
+        
+        / * that's going to go somewhere, I imagine you've got the URL for that sorted,
+         so create a suitable asset writer; we'll put our H.264 within the normal
+         MPEG4 container * /
+        //NSURL *url=[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"vid" ofType:@"avc"]];
+        NSError *err=nil;
+        assetWriter = [[AVAssetWriter alloc]
+                                      initWithURL:url
+                                      fileType:AVFileTypeMPEG4
+                                      error:&err];
+        [assetWriter addInput:assetWriterInput];
+        
+        / * we need to warn the input to expect real time data incoming, so that it tries
+         to avoid being unavailable at inopportune moments * /
+        assetWriterInput.expectsMediaDataInRealTime = YES;
+
+        going=true;
+        [assetWriter startWriting];
+        [assetWriter startSessionAtSourceTime:CMTimeMakeWithSeconds(CACurrentMediaTime()/speedup, 25)];
+            */
+        int w=size.width,h=size.height;
+        if (self.pixelData.length<4*w*h) [self.pixelData setLength:4*w*h+4];
+        if (self.pixelData2.length<4*w*h) [self.pixelData2 setLength:4*w*h+4];
+        GLubyte *bytes=(GLubyte*)self.pixelData.mutableBytes;
+        CVPixelBufferCreateWithBytes(nil, w,h, kCVPixelFormatType_32ARGB, bytes, size.width*4, MyPixelBufferReleaseBytesCallback, nil,nil, &pixBuf);
+        
+        return(self);
+    }
+    /*
+    -(void*)addFrameFromTexture:(Texture2D*)tex {
+        glFramebufferTexture2DOES(￼, ￼, ￼, ￼, ￼)
+        //    [assetWriter finishWriting];
+        
+        int w=size.width,h=size.height;
+        
+        CVPixelBufferLockBaseAddress (pixBuf,0);
+        GLubyte *base=CVPixelBufferGetBaseAddress(pixBuf);
+        //    GLubyte *base2=self.pixelData2.mutableBytes;
+        //    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _storeRenderbuffer); 
+        if (base) {
+            glReadPixels(0, 0, w,h, GL_RGBA, GL_UNSIGNED_BYTE, base);
+            //        for (int r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
+            // GLenum err=glGetError();
+            
+            //GLuint buf[1000];
+            //memcpy(buf,base,1000);
+            
+            / *
+             float x,y;int ox,oy,i,oi;
+             for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
+             for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
+             i=4*(((int)y*w)+(int)x);
+             obytes[oi]=bytes[i+2];
+             obytes[oi+1]=bytes[i+1];
+             obytes[oi+2]=bytes[i];
+             obytes[oi+3]=bytes[i+3];
+             }
+             * /
+            
+            static int frameNumber=0;
+            //CMTime tim=CMTimeMakeWithSeconds(CACurrentMediaTime(), 50);
+            if(assetWriterInput.readyForMoreMediaData)
+                [pixelBufferAdaptor appendPixelBuffer:pixBuf
+                                      withPresentationTime:CMTimeMakeWithSeconds(CACurrentMediaTime()/speedup, 50)];
+            frameNumber++;
+        }
+        CVPixelBufferUnlockBaseAddress(pixBuf, 0);
+        
+    }*/
+
+
+    -(void)addFrameFromGLFrameBufferWithScale:(CGSize)scale {
+        int w=size.width,h=size.height;
+
+       // if (self.pixelData.length<w*h*2) self.pixelData.length=w*h*2;
+       // GLubyte *pixs=self.pixelData.mutableBytes;
+        
+       // glPixelStorei(GL_PACK_ALIGNMENT,8);
+
+    //glReadPixels(0, 0, 480,320-1, GL_RGBA, GL_UNSIGNED_BYTE, pixs); 
+       // GLenum err=glGetError();
+
+        while (![assetWriterInput isReadyForMoreMediaData]) [NSThread sleepForTimeInterval:0.01];
+    //        //NSLog(@"Not ready for video data");
+    //    }
+    //    else
+        {
+            @synchronized (self) {
+        
+                static int frame=0;frame++;
+                static float millisWas=0,avfps=0;
+                static double niceMillis=0;
+                float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+                float atten=1.0/(1+fmin(frame,20));
+                avfps=avfps*(1-atten)+atten*1000.0/(millisElapsed-millisWas);
+                NSLog(@"%f fps",avfps);
+                millisWas=millisElapsed;
+                
+                niceMillis+=1000/avfps;
+                
+
+                CVPixelBufferRef pixelBuffer = NULL;
+                
+                int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
+                if(status != 0){
+                    //could not get a buffer from the pool
+                    NSLog(@"Error creating pixel buffer:  status=%d", status);
+                }
+                // set image data into pixel buffer
+                CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
+                uint8_t* destPixels = (uint8_t*)CVPixelBufferGetBaseAddress(pixelBuffer);
+                glPixelStorei(GL_PACK_ALIGNMENT,8);
+                *destPixels=255;
+                glReadPixels(0, 0, w,h-1, GL_RGBA, GL_UNSIGNED_BYTE, destPixels);
+                
+                if(status == 0){
+                    BOOL success = [pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:CMTimeMake((int)niceMillis, 1000)];
+                    if (!success)NSLog(@"Warning:  Unable to write buffer to video");
+                }
+                
+                //clean up
+                CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+                CVPixelBufferRelease( pixelBuffer );
+                
+                
+                
+                
+                /*
+                 
+                 CVPixelBufferLockBaseAddress (pixBuf,0);
+                 GLubyte *base=CVPixelBufferGetBaseAddress(pixBuf);
+                 GLubyte *base2=self.pixelData2.mutableBytes;
+                 //    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _storeRenderbuffer); 
+                 if (base) {
+                 glPixelStorei(GL_PACK_ALIGNMENT,4);
+                 glReadPixels(0, 0, w,h, GL_RGBA, GL_UNSIGNED_BYTE, base2);
+                 *base=255;
+                 memcpy(base+1,base2,4*w*h-1);
+                 //        for (int r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
+                 GLenum err=glGetError();
+                 
+                 //GLuint buf[1000];
+                 //memcpy(buf,base,1000);
+                 
+                 / *
+                 float x,y;int ox,oy,i,oi;
+                 for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
+                 for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
+                 i=4*(((int)y*w)+(int)x);
+                 obytes[oi]=bytes[i+2];
+                 obytes[oi+1]=bytes[i+1];
+                 obytes[oi+2]=bytes[i];
+                 obytes[oi+3]=bytes[i+3];
+                 }
+                 * /
+                 
+                 static int frameNumber=0;
+                 //CMTime tim=CMTimeMakeWithSeconds(CACurrentMediaTime(), 50);
+                 if(assetWriterInput.readyForMoreMediaData)
+                 [pixelBufferAdaptor appendPixelBuffer:pixBuf
+                 withPresentationTime:CMTimeMakeWithSeconds(CACurrentMediaTime()/speedup, 50)];
+                 frameNumber++;
+                 }
+                 CVPixelBufferUnlockBaseAddress(pixBuf, 0);*/
+            }
+        }
+    }
+
+    /*    
+        -(void)captureOutput:(AVCaptureOutput*)captureOutput
+    didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+    fromConnection:(AVCaptureConnection*)connection
+        {
+            CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+            
+            // a very dense way to keep track of the time at which this frame
+            // occurs relative to the output stream, but it's just an example!
+            frameNumber++;
+        }
+        */
+
+    -(void)stop {
+        if (going) {
+            going=false;
+            //NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+            
+            [assetWriterInput markAsFinished];
+            
+            // Wait for the video
+            int status = assetWriter.status;
+            while (status == AVAssetWriterStatusUnknown) {
+                NSLog(@"Waiting...");
+                [NSThread sleepForTimeInterval:0.5f];
+                status = assetWriter.status;
+            }
+            
+            @synchronized(self) {
+                [assetWriter finishWritingWithCompletionHandler:^(void) {
+                    if (assetWriter.status==AVAssetWriterStatusFailed) NSLog(@"finishWriting failed");
+                    else if (assetWriter.status==AVAssetWriterStatusCompleted) {
+                        [pixelBufferAdaptor release];
+                        pixelBufferAdaptor=nil;
+                        [assetWriterInput release];
+                        assetWriterInput=nil;
+                        [assetWriter release];
+                        assetWriter=nil;
+                        
+                        //id delegateObj = self.delegate;
+                        //NSString *outputPath = [[NSString alloc] initWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], @"output.mp4"];
+                        //NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
+                        
+                        //NSLog(@"Completed recording, file is stored at:  %@", outputURL);
+                        //if ([delegateObj respondsToSelector:@selector(recordingFinished:)]) {
+                        //    [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:/(success ? outputURL : nil) waitUntilDone:YES];
+                        // }
+                        
+                        // [outputPath release];
+                        // [outputURL release];
+                    }
+                }];
+            }
+            
+            //[pool drain];
+        }
+    }
+
+    +(NSURL*)nextRecordURL {
+        static int i=1;NSString *path;
+        NSDate *today = [NSDate date];
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd--a-hh-mm"];
+        
+        NSString *folder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];// stringByAppendingPathComponent:@"Captured video"];
+        do {
+            path=[folder stringByAppendingPathComponent:[NSString stringWithFormat:@"Recorded-video--%@--%d.mp4",[dateFormat stringFromDate:today],i++]];
+        } while ([[NSFileManager defaultManager] fileExistsAtPath:path]);
+        return [NSURL fileURLWithPath:path];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

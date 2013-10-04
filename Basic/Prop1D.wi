@@ -1,0 +1,20 @@
+
+WIMyClass
+    EndpointD *hisnames (nodef,readonly,nonatomic,dealloc)
+
+    -(void)die {[v_hisnames removeAllObjects];}
+
+    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(myname_endpoint)]);}
+
+    -(init) {@-950 
+        v_hisnames=[[EndpointD alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)];
+    }
+
+    -(NSHisClass)hisnameForKey:(id<NSCopying>)key {return([v_hisnames objectForKey:key]);}
+    -(void)removeAllHisnames {[v_hisnames removeAllObjects];}
+    -(void)setHisname:(id)v forKey:(id<NSCopying>)key {[v_hisnames setObject:v forKey:key];}
+    //-(void)removeHisname:(id)v {[v_hisnames removeObject:v];}
+    -(void)removeHisnameForKey:(id<NSCopying>)key {[v_hisnames removeObjectForKey:key];}
+
+    -(void)retract {[self.hisnames removeAllObjects];}

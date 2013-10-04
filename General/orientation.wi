@@ -1,0 +1,182 @@
+"<CoreLocation/CoreLocation.h>"
+"<CoreMotion/CoreMotion.h>"
+
+
+sys CLLocationManager
+sys CMMotionManager
+
+
+Orientation<BaseObject>
+    Mat44 zeroMat (nodef)
+
+    float magAdjustDegrees,magAdjustFactor,rotateMin (nodef)
+    bool mat44Inited (nodef)
+    bool useReferenceFrame (nodef)
+
+    float zoomScale=0.1
+    int zoomLevels=10
+    float currentZoom=1,currentRotateDegrees=0
+    CGPoint currentPan (nodef)
+    float rotateMin=2 (readonly,ivar)
+    float rotateScale=0.08 (readonly,ivar)
+
+    CLLocationManager locManager=[[CLLocationManager alloc] init] (readonly,dealloc,ivar=locManager)
+    CMMotionManager motManager=[[CMMotionManager alloc] init] (readonly,dealloc,ivar=motManager)
+
+
+    -(void)dealloc {@-100 
+        [locManager stopUpdatingHeading];
+        [motManager stopDeviceMotionUpdates];
+    }
+
+    -(init) {
+        locManager.headingFilter=kCLHeadingFilterNone;
+        locManager.desiredAccuracy=kCLLocationAccuracyBest;
+        [locManager startUpdatingHeading];
+    
+        if (useReferenceFrame) {
+            [motManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXTrueNorthZVertical];
+            magAdjustFactor=0;
+        }
+        else {
+            [motManager startDeviceMotionUpdates];
+            magAdjustFactor=0.2;
+        }
+        
+        [Matrix44 identityMat44:&zeroMat];
+        zeroMat=self.mat44;
+    
+        [NSTimer timerWithTimeInterval:0.1 target:self selector:@selector(magAdjust) userInfo:nil repeats:YES];
+    }
+
+
+    -(bool)initMat44 {
+        if (mat44Inited) return(YES);
+        else if (motManager.deviceMotion==nil) return(NO);
+        else if (useReferenceFrame) {
+            mat44Inited=YES;
+            zeroMat=self.mat44;
+            return(YES);
+        }        
+        else if (locManager.heading==nil) return(NO);
+        else {
+            mat44Inited=YES;
+            float f=magAdjustFactor;
+            magAdjustDegrees=0;
+            magAdjustFactor=1;
+            [self magAdjust];
+            magAdjustFactor=f;
+            zeroMat=self.mat44;
+            return(YES);
+        }
+    }
+
+
+    Mat44 mat44={// real to device
+        Mat44 ret={{1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}};
+        if (![self initMat44]) return(ret);
+        CMRotationMatrix m=motManager.deviceMotion.attitude.rotationMatrix;
+        float xx=1,yy=1,xy=0,yx=0;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        switch (orientation) {
+            case UIInterfaceOrientationPortrait:break;
+            case UIInterfaceOrientationPortraitUpsideDown:xx=-1;yy=-1;break;
+            case UIInterfaceOrientationLandscapeLeft:xx=yy=0;xy=1;yx=-1;break;
+            case UIInterfaceOrientationLandscapeRight:xx=yy=0;xy=-1;yx=1;break;
+        }
+        Mat44 mm={
+            {m.m11*xx+m.m21*xy,m.m11*yx+m.m21*yy,m.m31,0,
+             m.m12*xx+m.m22*xy,m.m12*yx+m.m22*yy,m.m32,0,
+             m.m13*xx+m.m23*xy,m.m13*yx+m.m23*yy,m.m33,0, 0,0,0,1}
+        };
+      //  if (magAdjustDegrees) {
+      //      [Matrix44 rotzMat44:&rm degrees:magAdjustDegrees];
+      //      [Matrix44 multiplyMat44:&mm byMat44:&rm toMat44:&ret];
+      //      return(ret);
+      //  }
+        
+        return(mm);
+    }
+
+    -(void)magAdjust {
+        if (!magAdjustFactor) return;
+        
+        Mat44 mm=self.mat44,imm;
+        if (!mat44Inited) return;
+        
+        [Matrix44 inverseOfMat44:&mm toMat44:&imm];
+        Vec4 magv={{locManager.heading.x,locManager.heading.y,locManager.heading.z,1}},magvt;
+        [Matrix44 multiplyMat44:&imm byVec4:&magv toVec4:&magvt];
+        float magd=sqrt(magvt.v[0]*magvt.v[0]+magvt.v[1]*magvt.v[1]);
+        if (magd) {
+            float magdeg=atan2(magvt.v[0],magvt.v[1])*180/M_PI;
+            magAdjustDegrees-=magAdjustFactor*magdeg;
+            magAdjustDegrees-=floor(magAdjustDegrees/360.0+0.5)*360.0;
+            //NSLog(@"Magdeg :\n%f %f %f     %f\n",magvt.v[0],magvt.v[1],magvt.v[2],magdeg);
+        }
+        
+    }
+
+
+    CGPoint direction={
+        Vec4 v={{0,0,1,1}},v2;
+        Mat44 mat=self.mat44,imat;
+        if (mat.m[15]<0.5) return(CGPointMake(0,0));
+        [Matrix44 inverseOfMat44:&mat toMat44:&imat];
+        [Matrix44 multiplyMat44:&imat byVec4:&v toVec4:&v2];
+        [Matrix44 multiplyMat44:&zeroMat byVec4:&v2 toVec4:&v];
+        return(CGPointMake(v.v[0],v.v[1]));
+    }
+
+
+    Mat44 rotZoomTransform={
+        float zoom=self.currentZoom;//orientation.zoom;
+        float rot=(self.rotateDegrees+self.currentRotateDegrees)*M_PI/180.0;
+        CGPoint centrePt=CGPointMake(self.direction.x+self.currentPan.x,self.direction.y+self.currentPan.y);
+        float centrePow=1.5,rotPow=0.9;
+        centrePt=CGPointMake((centrePt.x<0?-1:1)*pow(fabs(centrePt.x),centrePow),(centrePt.y<0?-1:1)*pow(fabs(centrePt.y),centrePow));
+        rot=(rot<0?-1:1)*pow(fabs(rot),rotPow);
+        Mat44 rotZoomTransform={{
+            zoom*cos(rot),zoom*-sin(rot),0,0,  
+            zoom*sin(rot),zoom*cos(rot),0,0,
+            0,0,0,0,
+            centrePt.x*0.3,centrePt.y*0.2,0,1}};
+        return(rotZoomTransform);
+    }
+
+
+    float zoom={
+        float svol=volume/(0.5*zoomLevels);
+        svol=(svol<0?-pow(-svol,2):pow(svol,2));
+        return(1.0/(1.0+fmax(-0.99,svol*zoomScale)));
+    }
+    float volume=
+        {
+            return(volume*1.0/zoomLevels);
+        }
+        -v{
+            volume=(int)fmin(zoomLevels,fmax(0,v*zoomLevels));
+        } (ivar)
+
+    float rotateDegrees={
+        Vec4 xv={{1,0,0,1}},v2,yv={{0,1,0,1}};
+        Mat44 mat=self.mat44,imat;
+        if (!mat44Inited) return(0);
+        [Matrix44 inverseOfMat44:&mat toMat44:&imat];
+        [Matrix44 multiplyMat44:&imat byVec4:&xv toVec4:&v2];
+        [Matrix44 multiplyMat44:&zeroMat byVec4:&v2 toVec4:&xv];
+        [Matrix44 multiplyMat44:&imat byVec4:&yv toVec4:&v2];
+        [Matrix44 multiplyMat44:&zeroMat byVec4:&v2 toVec4:&yv];
+        float dy=sqrt(yv.v[0]*yv.v[0]+yv.v[1]*yv.v[1]);
+        float dx=sqrt(xv.v[0]*xv.v[0]+xv.v[1]*xv.v[1]);
+        float deg=atan2(yv.v[0]*dy-xv.v[1]*dx,yv.v[1]*dy+xv.v[0]*dx)*180/M_PI;
+        deg=deg-floor((deg+180.0)/360.0)*360.0;
+        if (deg<-rotateMin) deg+=rotateMin;
+        else if (deg>rotateMin) deg-=rotateMin;
+        else deg=0;
+        
+        return(deg*rotateScale);
+    }
+
+
+

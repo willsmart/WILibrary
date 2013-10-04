@@ -1,0 +1,362 @@
+//
+//  WReader.h
+//  WInterface
+//
+//  Created by Will Smart on 3/10/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//
+
+WReader <BaseObject> "fn:token"
+    NSString _fileString=@"",_fileName=@""
+    NSString fileString=
+        {return(v__fileString);}
+        -v{
+            self._fileString=[(v?[v.copy autorelease]:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+            for (NSString *from in replaces.allKeys) {
+                NSString *to=[replaces objectForKey:from];
+                self._fileString=[v__fileString stringByReplacingOccurrencesOfString:from withString:to];
+            }
+            [lines release];
+            lines=[[v componentsSeparatedByString:@"\n"] retain];
+            self.tokenizer.str=v;
+            
+            pos=-1;
+        }
+
+    NSString fileName=
+        {return(v__fileName);}
+        -v{
+            NSError *err=nil;
+            self._fileName=v;
+            NSString *s=[NSString stringWithContentsOfFile:v encoding:NSUTF8StringEncoding error:&err];
+            self.fileString=s;
+        }
+
+
+    NSArray lines=[[NSArray alloc] init] (readonly,dealloc,ivar=lines)
+    int pos (nodef)
+    -(init) {
+        pos=-1;
+    }
+
+    MutableDictionary replaces=[[MutableDictionary alloc] init] (readonly,dealloc,ivar=replaces)
+
+    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (readonly,dealloc,ivar=tokenizer)
+
+
+    WReaderToken nextToken={
+        if (pos>=tokenizer.tokens.count) return(nil);
+        pos++;
+        return(self.currentToken);
+    }
+
+    WReaderToken currentToken={
+        if (pos<0) pos=0;
+        if (pos>=tokenizer.tokens.count) return(nil);
+        return([tokenizer.tokens objectAtIndex:pos]);
+    }
+
+
+
+    -(NSString*)stringWithTokensInRange:(NSRange)r {
+        NSMutableString *s=[NSMutableString string];
+        for (int i=MAX(0,(int)r.location);i<MIN(tokenizer.tokens.count,r.location+r.length);i++) {
+            [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];
+        }
+        return(s);
+    }
+
+    NSString localString={
+        NSMutableString *s=[NSMutableString string];
+        int range=30;
+        for (int i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
+            if (i==pos) [s appendString:@">here>"];
+    //        [s appendFormat:@"(%c)%@",((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).type,((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
+            [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];
+            if (i==pos) [s appendString:@"<here<"];
+        }
+        return(s);
+    }
+
+
+
+
+
+
+
+
+WReaderToken "fn:token"
+    NSString str (nodef)
+    int bracketCount (nodef)
+    char type (nodef)
+
+
+    -(init[super init])initWithString:(NSString*)astr bracketCount:(int)bc type:(char)atype {
+        self.str=[astr.copy autorelease];
+        bracketCount=bc;
+        type=atype;
+    }
+
+    NSString *description={
+        return([NSString stringWithFormat:@"<Token:%c:%d:%@>",type,bracketCount,self.str]);
+    }
+
+
+
+
+
+
+
+
+WReaderTokenizer <BaseObject> "fn:token"
+
+    NSMutableArray tokens=[[MutableArray alloc] init] (readonly,dealloc,ivar=tokens)
+    NSString _str=@""
+    NSString str=
+        {
+            return(v__str);
+        }
+        -v{
+            self._str=(v?[v.copy autorelease]:@"");
+            const char *mat[]={
+                "     r  w  n  .  +  -  *  /  \\  Q  q  _  ? ",
+                "z zz rr ww nn .o +o -o zo co zo qs ss ww zo",
+                "r rr rr ww nn .o +o -o zo co zo qs ss ww zo",
+                "w zz rr ww ww .o +o -o zo co zo qs ss ww zo",
+                "n zz rr ww nn Nn zo zo zo co zo qs ss ww zo",
+                "N zz rr ww Nn zo zo zo zo co zo qs ss ww zo",
+                ". zz rr ww n< .o +o -o zo co zo qs ss ww zo",
+                "+ zz rr ww n< .o +o -o zo co zo qs ss ww zo",
+                "- zz rr ww n< .o +o -o zo co zo qs ss ww zo",
+                "s ss ss ss ss ss ss ss ss ss Ss ss zs ss ss",
+                "S ss ss ss ss ss ss ss ss ss ss ss ss ss ss",
+                "q qs qs qs qs qs qs qs qs qs Qs zs qs qs qs",
+                "Q qs qs qs qs qs qs qs qs qs qs qs qs qs qs",
+                "c zz rr ww nn .o +o -o b< l< zo qs ss ww zo",
+                "C bc bc bc bc bc bc bc bc Cc bc bc bc bc bc",
+                "b bc bc bc bc bc bc bc Bc bc bc bc bc bc bc",
+                "B bc bc bc bc bc bc bc Bc zc bc bc bc bc bc",
+                "l lc rr lc lc lc lc lc lc lc lc lc lc lc lc"
+            };
+            int cols=14;
+            int rows=17;
+
+            int colForC[256];
+            for (int _c=0;_c<256;_c++) {
+                int c=(((_c>='a')&&(_c<='z'))||((_c>='A')&&(_c<='Z'))?'w':
+                       ((_c>='0')&&(_c<='9')?'n':
+                        (_c=='\"'?'Q':
+                            (_c=='\''?'q':
+                                (_c=='\n'?'r':_c)))));
+                for (colForC[_c]=0;(colForC[_c]<cols-1)&&(mat[0][2+3*colForC[_c]]!=c);colForC[_c]++);
+            }
+            
+            int rowForC[256];
+            for (int _c=0;_c<256;_c++) {
+                for (rowForC[_c]=0;(rowForC[_c]<rows-1)&&(mat[rowForC[_c]+1][0]!=_c);rowForC[_c]++);
+                if (rowForC[_c]==rows) rowForC[_c]=-1;
+            }
+
+            char state='z';
+            NSData *csd=[v dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+            const char *cs=(const char*)csd.bytes;
+            
+            NSMutableData *d=[NSMutableData dataWithLength:v.length];
+            char *types=(char*)[d mutableBytes];
+            
+            int ci=0;
+            while (ci<csd.length) {
+                int col=colForC[cs[ci]];
+                int row=rowForC[state];
+                if (row<0) {NSLog(@"Unknown state %c",state);break;}
+                types[ci]=mat[row+1][3+3*col];
+                state=mat[row+1][2+3*col];
+               // printf("%c%c%c:%d:%d:%d ",cs[ci],types[ci],state,ci,col,row);
+                if (types[ci]=='<') ci--;
+                else if (types[ci]!='.') ci++;
+                
+            }
+            
+
+            int typeWas=0,bc=0,indent=0,_indent=0;
+            [self.tokens removeAllObjects];
+            NSMutableString *s=[NSMutableString string];
+            for (ci=0;ci<v.length;ci++) {
+                if (cs[ci]=='\n') _indent=0;
+                else if ((_indent>=0)&&(cs[ci]==' ')) _indent++;
+                else if (_indent>=0) {indent=_indent;_indent=-1;}
+                if ((!ci)||((typeWas!='o')&&(types[ci]==typeWas))) {
+                    typeWas=types[ci];
+                    [s appendFormat:@"%c",[v characterAtIndex:ci]];
+                }
+                else {
+                    if ([s isEqualToString:@"}"]) bc--;
+                    if ((typeWas=='c')&&[s hasPrefix:@"/*"]&&((s.length<4)||![s hasSuffix:@"*/"])) [s appendString:@"*/"];
+                    [self.tokens addObject:[[[WReaderToken alloc] initWithString:s bracketCount:bc+indent type:typeWas] autorelease]];
+                    if ([s isEqualToString:@"{"]) bc++;
+                    [s setString:@""];
+                    [s appendFormat:@"%c",[v characterAtIndex:ci]];
+                    typeWas=types[ci];
+                }
+            }
+            if (s.length) {
+                if ([s isEqualToString:@"}"]) bc--;
+                [self.tokens addObject:[[[WReaderToken alloc] initWithString:s bracketCount:bc type:typeWas] autorelease]];
+                if ((typeWas=='c')&&[s hasPrefix:@"//"]) {
+                    [self.tokens addObject:[[[WReaderToken alloc] initWithString:@"\n" bracketCount:bc type:'r'] autorelease]];
+                }
+            }
+
+        }
+
+    NSString tokenStr={
+        NSMutableString *s=[NSMutableString string];
+        for (WReaderToken *t in tokens) {
+            [s appendFormat:@"%c:%d:\"%@\"\n",t.type,t.bracketCount,t.str];
+        }
+        return(s);
+    }
+
+
+JsonParser
+    +(NSObject*)unpackString:(NSString*)s {
+        WReaderTokenizer *tk=[[WReaderTokenizer alloc] init];
+        tk.str=s;
+        NSMutableArray *a=[[NSMutableArray alloc] init];
+        for (WReaderToken *t in tk.tokens) {
+            if ((t.type!='s')&&(t.type!='n')&&
+            !(
+                [t.str isEqualToString:@"true"]||
+                [t.str isEqualToString:@"false"]||
+                [t.str isEqualToString:@"undefined"]||
+                [t.str isEqualToString:@"null"]||
+                [t.str isEqualToString:@"{"]||
+                [t.str isEqualToString:@"}"]||
+                [t.str isEqualToString:@"["]||
+                [t.str isEqualToString:@"]"]||
+                [t.str isEqualToString:@"-"]||
+                [t.str isEqualToString:@":"]||
+                [t.str isEqualToString:@","]
+              )) continue;
+            [a addObject:t];
+        }
+        NSUInteger used=0;
+        NSObject *ret=a.count?[__Class__ _unpack:a from:0 to:a.count-1 used:&used]:nil;
+        if (used!=a.count) ret=nil;
+        [a release];
+        [tk release];
+        return(ret);
+    }
+
+    +(NSObject*)_unpack:(NSArray*)tokens from:(NSUInteger)from to:(NSUInteger)to used:(NSUInteger*)pused {
+        if (to<from) {*pused=0;return([NSNull null]);}
+        WReaderToken *t0=[tokens objectAtIndex:from];
+        if (t0.type=='n') {*pused=1;return([NSNumber numberWithDouble:t0.str.doubleValue]);}
+        if (t0.type=='s') {
+            NSString *s=[[t0.str substringWithRange:NSMakeRange(1,t0.str.length-2)] stringByDecodingCEscapes];
+            *pused=1;
+            return(s);
+        }
+        if ([t0.str isEqualToString:@"true"]) {*pused=1;return([NSNumber numberWithBool:YES]);}
+        if ([t0.str isEqualToString:@"false"]) {*pused=1;return([NSNumber numberWithBool:NO]);}
+        if ([t0.str isEqualToString:@"null"]) {*pused=1;return([NSNull null]);}
+        if ([t0.str isEqualToString:@"undefined"]) {*pused=1;return([NSNull null]);}
+
+        if (to>from) {
+            WReaderToken *t1=[tokens objectAtIndex:from+1];
+            if ([t0.str isEqualToString:@"-"]&&(t1.type=='n')) {
+                *pused=2;
+                return([NSNumber numberWithDouble:-t1.str.doubleValue]);
+            }
+            if ([t0.str isEqualToString:@"{"]) {
+                NSMutableDictionary *ret=[[NSMutableDictionary alloc] init];
+                NSUInteger fromWas=from;
+                from++;
+                WReaderToken *t=[tokens objectAtIndex:from];
+                if ([t.str isEqualToString:@"}"]) {
+                    *pused=from+1-fromWas;
+                    return([ret autorelease]);
+                }
+                NSUInteger used;
+                while (from<=to) {
+                    NSObject *k=[__Class__ _unpack:tokens from:from to:to used:&used];
+                    if (!(k&&[k conformsToProtocol:@protocol(NSCopying)])) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from+=used;
+                    if (from>to) {
+                        [ret release];
+                        return(nil);
+                    }
+                    t=[tokens objectAtIndex:from];
+                    if (![t.str isEqualToString:@":"]) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from++;
+                    NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
+                    if (!v) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from+=used;
+                    if (from>to) {
+                        [ret release];
+                        return(nil);
+                    }
+                    [ret setObject:v forKey:(kid)k];
+                    t=[tokens objectAtIndex:from];
+                    if ([t.str isEqualToString:@"}"]) {
+                        *pused=from+1-fromWas;
+                        return([ret autorelease]);
+                    }
+                    if (![t.str isEqualToString:@","]) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from++;
+                }
+                [ret release];
+                return(nil);
+            }
+            if ([t0.str isEqualToString:@"["]) {
+                NSMutableArray *ret=[[NSMutableArray alloc] init];
+                NSUInteger fromWas=from;
+                from++;
+                WReaderToken *t=[tokens objectAtIndex:from];
+                if ([t.str isEqualToString:@"]"]) {
+                    *pused=from+1-fromWas;
+                    return([ret autorelease]);
+                }
+                NSUInteger used;
+                while (from<=to) {
+                    NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
+                    if (!v) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from+=used;
+                    if (from>to) {
+                        [ret release];
+                        return(nil);
+                    }
+                    [ret addObject:v];
+                    t=[tokens objectAtIndex:from];
+                    if ([t.str isEqualToString:@"]"]) {
+                        *pused=from+1-fromWas;
+                        return([ret autorelease]);
+                    }
+                    if (![t.str isEqualToString:@","]) {
+                        [ret release];
+                        return(nil);
+                    }
+                    from++;
+                }
+                [ret release];
+                return(nil);
+            }
+        }
+        return(nil);
+        
+    }

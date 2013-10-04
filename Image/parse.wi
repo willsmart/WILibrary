@@ -1,0 +1,173 @@
+@interface AShader : NSObject
+
+-(void)renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(AShaderData*)data standardUniforms:(NSSet*)sus;
+
+@property (readonly) AShaderProgram *shaderProgram;
+@property (readonly) Parse *parse;
+@property (retain,nonatomic) NSString *expressionRaw;
+@property (readonly) NSString *expression;
+@property (readonly) NSString *compileErrors;
+
+@end
+
+@interface AShaderData : NSObject
+
+@end
+
+
+
+
+@interface SHUniform : NSObject {
+    union {
+        char c[128];
+        float f[64];
+        int i[64];
+    } _buf;
+    enum UniformType _type;
+    bool _enabled;
+}
+-(id)initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
+
+@property bool enabled;
+@property (assign,nonatomic) AShaderProgram *program;
+@property GLuint glname;
+@property (retain,nonatomic) NSString *name;
+@property bool transpose;
+@property enum UniformType type;
+@property (readonly) void *buf;
+@property bool asBool;
+@property bool *asBVec2,*asBVec3,*asBVec4;
+@property int asInt;
+@property int *asIVec2,*asIVec3,*asIVec4;
+@property float asFloat;
+@property float *asVec2,*asVec3,*asVec4;
+@property float *asMat2,*asMat3,*asMat4;
+@property int asSampler2D,asSamplerCube;
+
+-(void)set;
+
+@property (readonly) NSString *shaderString;
+
+@end
+
+@interface SHAttribute : NSObject {
+    union {
+        char c[1024];
+        float f[256];
+        int i[256];
+    } _buf;
+    enum UniformType _type;
+    bool _enabled;
+}
+-(id)initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
+
+@property bool enabled;
+@property (assign,nonatomic) AShaderProgram *program;
+@property GLuint glname;
+@property (retain,nonatomic) NSString *name;
+@property enum UniformType type;
+@property (readonly) void *buf;
+@property bool *asBool;
+@property bool *asBVec2,*asBVec3,*asBVec4;
+@property int *asInt;
+@property int *asIVec2,*asIVec3,*asIVec4;
+@property float *asFloat;
+@property float *asVec2,*asVec3,*asVec4;
+@property float *asMat2,*asMat3,*asMat4;
+
+-(void)set;
+@property (readonly) NSString *shaderString_vert,*shaderString_frag,*assignString_vert;
+
+@end
+
+@interface AShaderProgram : NSObject {
+    GLuint _shaderProgram;
+    NSMutableDictionary *uniforms;
+    NSMutableDictionary *attributes;
+    bool _changed;
+}
+
+@property int vertexCount;
+
+@property (nonatomic,readonly) GLuint baseShaderProgram;
+@property (nonatomic,retain) NSMutableDictionary *uniforms;
+@property (nonatomic,retain) NSMutableDictionary *attributes;
+
+-(id)init;
+
+-(SHAttribute*)getAttribute:(NSString*)name;
+-(SHUniform*)getUniform:(NSString*)name;
+-(SHUniform*)removeUniform:(NSString*)name;
+-(NSString*)getMacroWithName:(NSString*)name;
+-(void)setMacroWithName:(NSString*)name toValue:(NSString*)value;
+-(void)clearAttributes;
+-(void)clearUniforms;
+
+-(void)set;
+@property (retain,nonatomic) NSDictionary *macros;
+@property (retain,nonatomic) NSString *filename;
+@property (readonly) NSString *fragShaderString,*vertShaderString;
+
+-(void)changed;
+@property (readonly) bool valid;
+-(void)reloadShader;
+
+-(void)render;
+
+@end
+
+
+
+enum UniformType {
+    un_none,un_any,un_noValue,
+    un_bool,un_float,un_int,un_sampler2D,un_samplerCube,
+    un_vec2,un_vec3,un_vec4,
+    un_ivec2,un_ivec3,un_ivec4,
+    un_bvec2,un_bvec3,un_bvec4,
+    un_mat2,un_mat3,un_mat4
+};
+
+
+#define UNTYPENAME(type) (type==un_float?@"float": \
+(type==un_int?@"int": \
+(type==un_bool?@"bool": \
+(type==un_vec2?@"vec2": \
+(type==un_ivec2?@"ivec2": \
+(type==un_bvec2?@"bvec2": \
+(type==un_vec3?@"vec3": \
+(type==un_ivec3?@"ivec3": \
+(type==un_bvec3?@"bvec3": \
+(type==un_vec4?@"vec4": \
+(type==un_ivec4?@"ivec4": \
+(type==un_bvec4?@"bvec4": \
+(type==un_mat2?@"mat2": \
+(type==un_mat3?@"mat3": \
+(type==un_mat4?@"mat4": \
+(type==un_none?@"!!none!!": \
+(type==un_any?@"!!any!!": \
+(type==un_noValue?@"!!novalue!!":@"!!??!!"))))))))))))))))))
+
+#define UNCODETYPENAME(type) (type==un_float?@"highp float": \
+(type==un_int?@"highp int": \
+(type==un_bool?@"bool": \
+(type==un_vec2?@"highp vec2": \
+(type==un_ivec2?@"highp ivec2": \
+(type==un_bvec2?@"bvec2": \
+(type==un_vec3?@"highp vec3": \
+(type==un_ivec3?@"highp ivec3": \
+(type==un_bvec3?@"bvec3": \
+(type==un_vec4?@"highp vec4": \
+(type==un_ivec4?@"highp ivec4": \
+(type==un_bvec4?@"bvec4": \
+(type==un_mat2?@"highp mat2": \
+(type==un_mat3?@"highp mat3": \
+(type==un_mat4?@"highp mat4": \
+(type==un_none?nil: \
+(type==un_any?nil: \
+(type==un_noValue?@"":nil))))))))))))))))))
+
+
+
+
+#endif
+

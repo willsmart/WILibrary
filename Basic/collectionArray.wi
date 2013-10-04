@@ -1,0 +1,897 @@
+
+
+
+MutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester> {}
+WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMutableArray> {}
+
+
+
+
+<Array>
+    NSArray __array (nodef,readonly,dealloc,ivar=__array)
+
+
+    // initializing a set
+
+    -(init)init {
+        @-100 __array=[[NSArray alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @-100 __array=[[NSArray alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithArray:(NSArray*)array {
+        @-100 __array=[[NSArray alloc] initWithArray:array];
+    }
+    -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
+        @-100 __array=[[NSArray alloc] initWithArray:array copyItems:copy];
+    }
+    -(init[super init])initWithContentsOfFile:(NSString*)file {
+        @-100 __array=[[NSArray alloc] initWithContentsOfFile:file];
+    }
+    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+        @-100 __array=[[NSArray alloc] initWithContentsOfURL:url];
+    }
+    -(init[super init])initWithObjects:(id*)objects count:(NSUInteger)count {
+        @-100 __array=[[NSArray alloc] initWithObjects:objects count:count];
+    }
+
+
+    -(void)encodeWithCoder:(NSCoder*)coder {
+        [__array encodeWithCoder:coder];
+    }
+
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[ImmutableArray allocWithZone:zone] initWithArray:__array]);
+    }
+    -(id)mutableCopyWithZone:(NSZone*)zone {
+        return([[MutableArray allocWithZone:zone] initWithArray:__array]);
+    }
+
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+        return([__array countByEnumeratingWithState:state objects:stackbuf count:len]);
+    }
+
+
+
+    // Creating an array
+    +(__WIClass__*)array {return([[[__WIClass__ alloc] init] autorelease]);}
+    +(__WIClass__*)arrayWithArray:(NSArray*)array {return([[[__WIClass__ alloc] initWithArray:array] autorelease]);}
+    +(__WIClass__*)arrayWithContentsOfFile:(NSString*)file {return([[[__WIClass__ alloc] initWithContentsOfFile:file] autorelease]);}
+    +(__WIClass__*)arrayWithContentsOfURL:(NSURL*)url {return([[[__WIClass__ alloc] initWithContentsOfURL:url] autorelease]);}
+    +(__WIClass__*)arrayWithObject:(id)object {return([[[__WIClass__ alloc] initWithObjects:&object count:1] autorelease]);}
+    //+(__WIClass__*)arrayWithObjects:( {return([[[__WIClass__ alloc] init] autorelease]);}
+    +(__WIClass__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects count:count] autorelease]);}
+
+
+
+
+
+
+    //Querying an Array
+    -(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
+    NSUInteger count={return([__array count]);}
+    -(void)getObjects:(id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
+    id lastObject={return([__array lastObject]);}
+    -(id)objectAtIndex:(NSUInteger)index {
+        if (index>=__array.count) ERR("Index %d is out of bounds [0,%d)",int(index),int(__array.count));
+        return([__array objectAtIndex:index]);
+    }
+    -(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {return([__array objectsAtIndexes:indexes]);}
+    NSEnumerator objectEnumerator={return([__array objectEnumerator]);}
+    NSEnumerator reverseObjectEnumerator={return([__array reverseObjectEnumerator]);}
+
+
+    //Finding Objects in an Array
+    -(NSUInteger)indexOfObject:(id)object {
+        return([__array indexOfObject:object]);
+    }
+    -(NSUInteger)indexOfObject:(id)object inRange:(NSRange)range {
+        return([__array indexOfObject:object inRange:range]);
+    }
+    -(NSUInteger)indexOfObjectIdenticalTo:(id)object {
+        return([__array indexOfObjectIdenticalTo:object]);
+    }
+    -(NSUInteger)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
+        return([__array indexOfObjectIdenticalTo:object inRange:range]);
+    }
+    -(NSUInteger)indexOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexOfObjectPassingTest:predicate]);
+    }
+    -(NSUInteger)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexOfObjectWithOptions:opts passingTest:predicate]);
+    }
+    -(NSUInteger)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
+    }
+    -(NSIndexSet*)indexesOfObjectsPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexesOfObjectsPassingTest:predicate]);
+    }
+    -(NSIndexSet*)indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexesOfObjectsWithOptions:opts passingTest:predicate]);
+    }
+    -(NSIndexSet*)indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+        return([__array indexesOfObjectsAtIndexes:indexSet options:opts passingTest:predicate]);
+    }
+    -(NSUInteger)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
+        return([__array indexOfObject:obj inSortedRange:r options:opts usingComparator:cmp]);
+    }
+
+
+    //Sending Messages to Elements
+    -(void)makeObjectsPerformSelector:(SEL)selector {
+        [__array makeObjectsPerformSelector:selector];
+    }
+    -(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
+        [__array makeObjectsPerformSelector:selector withObject:object];
+    }
+    -(void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+        [__array enumerateObjectsUsingBlock:block];
+    }
+    -(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+        [__array enumerateObjectsWithOptions:opts usingBlock:block];
+    }
+    -(void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+        [__array enumerateObjectsAtIndexes:indexSet options:opts usingBlock:block];
+    }
+
+
+    //Comparing Arrays
+    -(id)firstObjectCommonWithArray:(NSArray*)array {
+        return([__array firstObjectCommonWithArray:array]);
+    }
+    -(BOOL)isEqualToArray:(NSArray*)array {
+        return([__array isEqualToArray:array]);
+    }
+
+
+    //Deriving New Arrays
+    -(NSArray*)arrayByAddingObject:(id)object {
+        return([__array arrayByAddingObject:object]);
+    }
+    -(NSArray*)arrayByAddingObjectsFromArray:(NSArray*)array {
+        return([__array arrayByAddingObjectsFromArray:array]);
+    }
+    -(NSArray*)filteredArrayUsingPredicate:(NSPredicate *)predicate {
+        return([__array filteredArrayUsingPredicate:predicate]);
+    }
+    -(NSArray*)subarrayWithRange:(NSRange)r {
+        return([__array subarrayWithRange:r]);
+    }
+
+
+    //Sorting
+    -(NSData*)sortedArrayHint {
+        return([__array sortedArrayHint]);
+    }
+    -(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
+        return([__array sortedArrayUsingFunction:comparator context:context]);
+    }
+    -(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+        return([__array sortedArrayUsingFunction:comparator context:context hint:hint]);
+    }
+    -(NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
+        return([__array sortedArrayUsingDescriptors:sortDescriptors]);
+    }
+    -(NSArray*)sortedArrayUsingSelector:(SEL)selector {
+        return([__array sortedArrayUsingSelector:selector]);
+    }
+    -(NSArray *)sortedArrayUsingComparator:(NSComparator)cmptr {
+        return([__array sortedArrayUsingComparator:cmptr]);
+    }
+    -(NSArray *)sortedArrayWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+        return([__array sortedArrayWithOptions:opts usingComparator:cmptr]);
+    }
+
+
+    //Working with String Elements
+    -(NSString *)componentsJoinedByString:(NSString *)separator {
+        return([__array componentsJoinedByString:separator]);
+    }
+
+
+    //Creating a Description
+    NSString description={return([__array description]);}
+    -(NSString *)descriptionWithLocale:(id)locale {
+        return([__array descriptionWithLocale:locale]);
+    }
+    -(NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+        return([__array descriptionWithLocale:locale indent:level]);
+    }
+    -(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
+        return([__array writeToFile:path atomically:flag]);
+    }
+    -(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
+        return([__array writeToURL:url atomically:flag]);
+    }
+
+
+    //Collecting Paths
+    -(NSArray *)pathsMatchingExtensions:(NSArray *)filterTypes {
+        return([__array pathsMatchingExtensions:filterTypes]);
+    }
+
+
+    //Key-Value Observing
+    -(void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+        [__array addObserver:observer forKeyPath:keyPath options:options context:context];
+    }
+    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
+        [__array removeObserver:observer forKeyPath:keyPath];
+    }
+    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
+        [__array removeObserver:observer forKeyPath:keyPath context:context];
+    }
+    -(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath context:(void *)context {
+        [__array removeObserver:observer fromObjectsAtIndexes:indexes forKeyPath:keyPath context:context];
+    }
+    -(void)addObserver:(NSObject *)observer toObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+        [__array addObserver:observer toObjectsAtIndexes:indexes forKeyPath:keyPath options:options context:context];
+    }
+    -(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath {
+        [__array removeObserver:observer fromObjectsAtIndexes:indexes forKeyPath:keyPath];
+    }
+
+
+    //Key-Value Coding
+    -(void)setValue:(id)value forKey:(NSString *)key {
+        [__array setValue:value forKey:key];
+    }
+    -(id)valueForKey:(NSString*)key {
+        return([__array valueForKey:key]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+<MutableArrayDelegate>
+    NSArray delegateForArray (nodef,assign,ivar=delegateForArray)
+    -(void)delegateForArrayChanged {}
+
+    <MutableArrayDelegate> arrayDelegate (nodef,dealloc,ivar=arrayDelegate,readonly)
+    -(void)addDelegate:(NSObject<MutableArrayDelegate>*)v {
+        if (v.arrayDelegate) return;
+        if (v==self) return;
+        if (arrayDelegate) [arrayDelegate addDelegate:v];
+        else {
+            arrayDelegate=[v retain];
+            v.delegateForArray=self.delegateForArray;
+            [v delegateForArrayChanged];
+        }
+    }
+    -(void)removedDelegate {@-100 [arrayDelegate release];arrayDelegate=nil;}
+    -(void)removeDelegate:(NSObject<MutableArrayDelegate>*)v {
+        if (arrayDelegate) {
+            if (arrayDelegate==v) {
+                v.delegateForArray=nil;
+                arrayDelegate=[v.arrayDelegate retain];
+                [v removedDelegate];
+                [v delegateForArrayChanged];
+                [v release];
+            }
+            else [arrayDelegate removeDelegate:v];
+        }
+    }
+
+    -(void)willTryToAddObjectsWithCount:(NSUInteger)count {
+        @100 [arrayDelegate willTryToAddObjectsWithCount:count];
+    }
+    -(void)willRemoveObjectsWithCount:(NSUInteger)count {
+        @100 [arrayDelegate willRemoveObjectsWithCount:count];
+    }
+    -(bool)shouldAddObject:(id)object {@-999 
+        bool ret=YES;
+        @100 if (ret&&arrayDelegate) ret=[arrayDelegate shouldAddObject:object];
+        @999 return(ret);
+    }
+    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index {
+        @100 [arrayDelegate wontAddObject:object withIndex:index];
+    }
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+        @100 [arrayDelegate willAddObject:object withIndex:index];
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        @100 [arrayDelegate didAddObject:object withIndex:index];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        @100 [arrayDelegate willRemoveObject:object fromIndex:index];
+    }
+    -(void)didRemoveObject:(id)object {
+        @100 [arrayDelegate didRemoveObject:object];
+    }
+
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        @100 [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        @100 [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
+    }
+    -(void)allObjectsMoved {
+        @100 [arrayDelegate allObjectsMoved];
+    }
+    -(void)stateOK {
+        @100 [arrayDelegate stateOK];
+    }
+
+
+
+
+
+<MinimalMutableArray:Array,MutableArrayDelegate,ObjectEquate>
+    NSMutableArray __mutableArray (nodef,readonly,ivar=__mutableArray)
+
+    -(init) {
+        self.delegateForArray=self;
+    }
+
+    long version=1
+    -(void)stateOK {@-100 version++;}
+
+    -(void)dealloc {@-100 [self removeAllObjects];}
+
+    //Creating a Mutable Array
+    +(id)arrayWithCapacity:(NSUInteger)numItems {
+        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+    }
+    -(init)init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithArray:(NSArray*)array {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array];
+    }
+    -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array copyItems:copy];
+    }
+    -(init[super init])initWithContentsOfFile:(NSString*)file {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfFile:file];
+    }
+    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfURL:url];
+    }
+    -(init[super init])initWithObjects:(id*)objects count:(NSUInteger)count {
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithObjects:objects count:count];
+    }
+    -(init[super init])initWithCapacity:(NSUInteger)numItems {
+        @-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCapacity:numItems];
+    }
+    
+    
+    //Adding Objects
+    -(void)addObject:(id)object {
+        [self insertObject:object atIndex:__mutableArray.count];
+    }
+    -(void)removeLastObject {
+        if (__array.count) [self removeObjectAtIndex:__array.count-1];
+    }
+    -(void)insertObject:(id)object atIndex:(NSUInteger)index {
+        if ([self _insertObject:object atIndex:index]) [self stateOK];
+    }
+    -(void)removeObjectAtIndex:(NSUInteger)index {
+        if ([self _removeObjectAtIndex:index]) [self stateOK];
+    }
+    -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)object {
+        if ([self _replaceObjectAtIndex:index withObject:object]) [self stateOK];
+    }
+
+    -(bool)_insertObject:(id)object atIndex:(NSUInteger)index {
+        if (index==NSNotFound) return(NO);
+        if (index>__array.count) {
+            ERR("%d outside bounds [0,%d]\n",int(index),int(__array.count));
+            return(NO);
+        }
+        [self willTryToAddObjectsWithCount:1];
+        if (![self shouldAddObject:object]) [self wontAddObject:object withIndex:index];
+        else {
+            [self willAddObject:object withIndex:index];
+            [__mutableArray insertObject:object atIndex:index];
+            if (index!=__array.count) [self objectsMovedFromRange:NSMakeRange(index,__array.count-(index+1)) toLocation:index+1];
+            [self didAddObject:object withIndex:index];
+            return(YES);
+        }
+        return(NO);
+    }
+    -(bool)_removeObjectAtIndex:(NSUInteger)index {
+        if (index!=NSNotFound) {
+            if (index>=__array.count) {
+                ERR("%d outside bounds [0,%d)\n",int(index),int(__array.count));
+                return(NO);
+            }
+            id object=[[__array objectAtIndex:index] retain];
+            [self willRemoveObjectsWithCount:1];
+            [self willRemoveObject:object fromIndex:index];
+            [__mutableArray removeObjectAtIndex:index];
+            [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
+            [self didRemoveObject:object];
+            [object release];
+            return(YES);
+        }
+        else return(NO);
+    }
+
+    -(bool)_replaceObjectAtIndex:(NSUInteger)index withObject:(id)object {
+        if (index==NSNotFound) return(NO);
+        if (index>=__array.count) {
+            ERR("%d outside bounds [0,%d)\n",int(index),int(__array.count));
+            return(NO);
+        }
+        [self willTryToAddObjectsWithCount:1];
+        id object2=[__array objectAtIndex:index];
+        if (object==object2) return(NO);
+                
+        if (![self shouldAddObject:object]) [self wontAddObject:object withIndex:index];
+        else {
+            [self willRemoveObjectsWithCount:1];
+            [self willRemoveObject:[object2 retain] fromIndex:index];
+            [__mutableArray removeObjectAtIndex:index];
+            [self didRemoveObject:object2];
+            [object2 release];
+
+            [self willAddObject:object withIndex:index];
+            [__mutableArray insertObject:object atIndex:index];
+            [self didAddObject:object withIndex:index];
+            return(YES);
+        }
+        return(NO);
+    }
+
+
+
+
+
+
+
+<MutableArray:MinimalMutableArray>
+    -(void)insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
+        if ([self _insertObjects:objects atIndexes:indexes]) [self stateOK];
+    }
+    -(void)addObjectsFromArray:(NSArray*)array {
+        if ([self _addObjectsFromArray:array]) [self stateOK];
+    }
+    -(void)removeAllObjects {
+        if ([self _removeAllObjects]) [self stateOK];
+    }
+    -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
+        if ([self _removeObjectsAtIndexes:indexes]) [self stateOK];
+    }
+
+
+    -(bool)_addObjectsFromArray:(NSArray*)array {
+        if (array.count) {
+            NSUInteger cwas=__array.count,added=0;
+            [self willTryToAddObjectsWithCount:array.count];
+            for (id object in array) {
+                if (![self shouldAddObject:object]) [self wontAddObject:object withIndex:cwas+added];
+                else {
+                    [self willAddObject:object withIndex:cwas+added];
+                    [__mutableArray addObject:object];
+                    [self didAddObject:object withIndex:cwas+added];
+                    added++;
+                }
+            }
+            return(added>0);
+        }
+        else return(NO);
+    }
+    -(bool)_insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
+        bool ret=NO;
+        if (objects.count!=indexes.count) {
+            ERR("Bad count");
+            return(NO);
+        }
+        NSUInteger skipped=0,move=0,index=[indexes firstIndex],prvIndex;
+
+        NSMutableIndexSet *addedInds=[[NSMutableIndexSet alloc] init];
+        
+        [self willTryToAddObjectsWithCount:objects.count];
+        for (id object in objects) {
+            if (![self shouldAddObject:object]) {
+                [self wontAddObject:object withIndex:index];
+                skipped++;
+            }
+            else {
+                [addedInds addIndex:index];
+                [self willAddObject:object withIndex:index-skipped];
+                [__mutableArray insertObject:object atIndex:index-skipped];
+                move++;
+            }
+            index=[indexes indexGreaterThanIndex:index];
+        }
+        if (move) {
+            for (prvIndex=__mutableArray.count+indexes.count-skipped,index=indexes.lastIndex;index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
+                if ([addedInds containsIndex:index]) {
+                    [self objectsMovedFromRange:NSMakeRange(index-skipped,prvIndex-(index-skipped)) toLocation:(index-skipped)+move];
+                    prvIndex=index-skipped;
+                    move--;
+                }
+                else skipped--;
+            }
+
+            index=indexes.firstIndex;
+            for (id object in objects) {
+                if ([addedInds containsIndex:index]) {
+                    [self didAddObject:object withIndex:index-skipped];
+                }
+                else skipped++;
+            }
+            ret=YES;
+        }
+        [addedInds release];
+        return(ret);
+    }
+    
+    
+    //Removing Objects
+    -(bool)_removeAllObjects {
+        if (!self.count) return(NO);
+        NSArray *was=[__array copy];
+        [self willRemoveObjectsWithCount:was.count];
+        for (int i=int(was.count)-1;i>=0;i--) {
+            [self willRemoveObject:[was objectAtIndex:i] fromIndex:i];
+        }
+        [__mutableArray removeAllObjects];
+        for (id object in was) [self didRemoveObject:object];
+        [was release];
+        return(YES);
+    }
+
+    /*-(void)removeObject:(id)object {
+        int i=0,oi=NSNotFound;
+        NSMutableArray *toRemove=nil;
+        for (id object2 in self) {
+            if ([object2 isEqual:object]) {
+                oi=i;
+                [self willRemoveObject:object2 fromIndex:i];
+                if (!toRemove) toRemove=[[NSMutableArray alloc] initWithCapacity:self.count];
+                [toRemove addObject:object2];
+            }
+            i++;
+        }
+        if (toRemove) {
+            [__mutableArray removeObject:object];
+            for (id object2 in toRemove) [self didRemoveObject:object2];
+            if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
+            else [self allObjectsMoved];
+            [toRemove release];
+        }
+        [self stateOK];
+    }*/
+    /*-(void)removeObject:(id)object inRange:(NSRange)r {
+        int i=0,oi=NSNotFound;
+        NSMutableArray *toRemove=nil;
+        for (id object2 in self) {
+            if (i>=r.location) {
+                if (i>=r.location+r.length) break;
+                if ([object2 isEqual:object]) {
+                    oi=i;
+                    [self willRemoveObject:object2 fromIndex:i];
+                    if (!toRemove) toRemove=[[NSMutableArray alloc] initWithCapacity:self.count];
+                    [toRemove addObject:object2];
+                }
+            }
+            i++;
+        }
+        if (toRemove) {
+            [__mutableArray removeObject:object inRange:r];
+            for (id object2 in toRemove) [self didRemoveObject:object2];
+            if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
+            else [self allObjectsMoved];
+            [toRemove release];
+        }
+        [self stateOK];
+    }*/
+
+    -(bool)_removeObjectsAtIndexes:(NSIndexSet*)indexes {
+        [self willRemoveObjectsWithCount:indexes.count];
+        for (NSUInteger index=[indexes lastIndex];index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
+            id object=[[__array objectAtIndex:index] retain];
+            [self willRemoveObject:object fromIndex:index];
+            [__mutableArray removeObjectAtIndex:index];
+            [self didRemoveObject:object];
+            [object release];
+        }
+        for (NSUInteger index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
+            NSUInteger nxtIndex=[indexes indexGreaterThanIndex:index];
+            if (nxtIndex==NSNotFound) nxtIndex=__mutableArray.count+indexes.count;
+            if (nxtIndex>index+1) [self objectsMovedFromRange:NSMakeRange(index+1,nxtIndex-(index+1)) toLocation:index-i];
+        }
+        return(indexes.count>0);
+    }
+    /*-(void)removeObjectIdenticalTo:(id)object {
+        [object retain];
+        int i=0,c=0,oi=NSNotFound;
+        for (id object2 in __array) {
+            if (object2==object) {
+                oi=i;
+                [self willRemoveObject:object fromIndex:i];
+                c++;
+            }
+            i++;
+        }
+        [__mutableArray removeObjectIdenticalTo:object];
+        for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
+        [object release];
+        if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
+        else [self allObjectsMoved];
+        [self stateOK];
+    }*/
+    /*-(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
+        [object retain];
+        int i=0,c=0,oi=NSNotFound;
+        for (id object2 in __array) {
+            if (i>=r.location) {
+                if (i>=r.location+r.length) break;
+                if (object2==object) {
+                    oi=i;
+                    [self willRemoveObject:object fromIndex:i];
+                    c++;
+                }
+            }
+            i++;
+        }
+        [__mutableArray removeObjectIdenticalTo:object inRange:r];
+        for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
+        [object release];
+        if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
+        else [self allObjectsMoved];
+        [self stateOK];
+    }*/
+    /*-(void)removeObjectsInArray:(NSArray*)array {
+        for (id object in array) [self removeObject:object];
+    }*/
+    /*-(void)removeObjectsInRange:(NSRange)r {
+        for (int i=((int)r.length)-1;i>=0;i--) {
+            id object=[[__array objectAtIndex:r.location+i] retain];
+            [self willRemoveObject:object fromIndex:r.location+i];
+            [__mutableArray removeObjectAtIndex:r.location+i];
+            [self didRemoveObject:object];
+            [object release];
+        }
+        [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
+        [self stateOK];
+    }*/
+    
+    
+    //Replacing Objects
+    /*-(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
+        NSUInteger index=[indexes firstIndex];
+        for (id object in array) {
+            [self replaceObjectAtIndex:index withObject:object];
+            index=[indexes indexGreaterThanIndex:index];
+        }
+        [self stateOK];
+    }*/
+    /*-(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
+        NSIndexSet *inss,*dels;
+        NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
+        for (NSUInteger i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
+        NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
+        for (NSUInteger i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
+        bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
+        [subArray release];
+        [asubArray release];
+        if (!__changed) return;
+        if (r.location) {
+            NSMutableIndexSet *indexes=dels.mutableCopy;
+            [indexes shiftIndexesStartingAtIndex:0 by:r.location];
+            [dels release];
+            dels=indexes;
+        }
+        [self removeObjectsAtIndexes:dels];
+        for (NSUInteger index=inss.firstIndex;index!=NSNotFound;index=[inss indexGreaterThanIndex:index]) {
+            [self insertObject:[array objectAtIndex:index+arrayRange.location] atIndex:index+r.location];
+        }
+        [self allObjectsMoved];        
+        [self stateOK];
+    }*/
+    /*-(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
+        NSIndexSet *inss,*dels;
+        NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
+        for (NSUInteger i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
+        bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
+        [subArray release];
+        if (!__changed) return;
+        if (r.location) {
+            NSMutableIndexSet *indexes=dels.mutableCopy;
+            [indexes shiftIndexesStartingAtIndex:0 by:r.location];
+            [dels release];
+            dels=indexes;
+        }
+        [self removeObjectsAtIndexes:dels];
+        for (NSUInteger index=inss.firstIndex;index!=NSNotFound;index=[inss indexGreaterThanIndex:index]) {
+            [self insertObject:[array objectAtIndex:index] atIndex:index+r.location];
+        }
+        [self allObjectsMoved];
+        [self stateOK];
+    }*/
+
+
+
+    -(void)setArray:(NSArray*)array {
+        NSIndexSet *inss,*dels;
+        if (![Util getInsertsAndDeletesAsIndexSetWhenChanging:__array to:array inss:&inss dels:&dels]) return;
+        [self _removeObjectsAtIndexes:dels];
+        NSArray *objs=[array objectsAtIndexes:inss];
+        [self _insertObjects:objs atIndexes:inss];
+        [inss release];
+        [dels release];
+        [self stateOK];
+    }
+    
+    
+    //Filtering Content
+    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+        NSMutableIndexSet *toRemove=nil;
+        NSUInteger index=0;
+        for (id object in __array) {
+            if (![predicate evaluateWithObject:object]) {
+                if (!toRemove) toRemove=[[NSMutableIndexSet alloc] init];
+                [toRemove addIndex:index];
+            }
+            index++;
+        }
+        if (toRemove) {
+            [self _removeObjectsAtIndexes:toRemove];
+            [toRemove release];
+            [self stateOK];
+        }
+    }
+    
+    
+    //Rearranging Content
+    -(void)exchangeObjectAtIndex:(NSUInteger)fromi withObjectAtIndex:(NSUInteger)toi {
+        if (fromi!=toi) {
+            [__mutableArray exchangeObjectAtIndex:fromi withObjectAtIndex:toi];
+            [self objectsSwappedWithIndex:fromi andIndex:toi];
+            [self stateOK];
+        }
+    }
+    -(void)sortUsingDescriptors:(NSArray*)sortDescriptors {
+        [__mutableArray sortUsingDescriptors:sortDescriptors];
+        [self allObjectsMoved];
+        [self stateOK];
+    }
+    -(void)sortUsingComparator:(NSComparator)cmptr {
+        [__mutableArray sortUsingComparator:cmptr];
+        [self allObjectsMoved];
+        [self stateOK];
+    }
+    -(void)sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+        [__mutableArray sortWithOptions:opts usingComparator:cmptr];
+        [self allObjectsMoved];
+        [self stateOK];
+    }
+    -(void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context {
+        [__mutableArray sortUsingFunction:compare context:context];
+        [self allObjectsMoved];
+        [self stateOK];
+    }
+    -(void)sortUsingSelector:(SEL)selector {
+        [__mutableArray sortUsingSelector:selector];
+        [self allObjectsMoved];
+        [self stateOK];
+    }
+
+
+
+
+
+<WeakMutableArray>
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@900 
+        [object release];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
+        [object retain];
+    }
+
+
+
+<ModelMutableArray>
+    -(bool)shouldAddObject:(id)object {
+        if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        [object modeladd];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        [object modelsub];
+    }
+    
+
+
+
+<NotifiedByArray>
+    -(void)markDirtyByArray {[self markDirty];}
+    -(void)markDirty {}
+
+<NotifyingMutableArray>
+    notifyingArray -s< <NotifiedByArray> arrayWatcher
+
+    -(void)stateOK {@100 
+        for (NSObject<NotifiedByArray>*w in self.arrayWatchers) {
+            [w markDirtyByArray];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+<MutableArrayIndexFollower:BasicTester>
+    NSMutableDictionary __arrayObjectIndexes=[NSMutableDictionary dictionary] (ivar=__arrayObjectIndexes)
+    
+
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@-950 
+        //[self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
+        [self doAddIndex:index forObject:object];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@950 
+        [self doRemoveIndex:index forObject:object];
+        //[self objectsMovedFromRange:NSMakeRange(index+1,__array.count-1-index) toLocation:index];
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        id object1=[__array objectAtIndex:toIndex];
+        id object2=[__array objectAtIndex:fromIndex];
+        if (object1!=object2) {
+            [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
+            [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
+        }
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        for (NSUInteger i=0;i<fromRange.length;i++) {
+            NSUInteger j=(toLocation>fromRange.location?fromRange.length-1-i:i);
+            id object=[__array objectAtIndex:toLocation+j];
+            [self doChangeIndex:fromRange.location+j toIndex:toLocation+j forObject:object];
+        }
+    }
+    -(void)allObjectsMoved {
+        [__arrayObjectIndexes removeAllObjects];
+        NSUInteger index=0;
+        for (id object in __array) {
+            [self doAddIndex:index++ forObject:object];
+        }
+    }
+    
+    
+    -(void)doAddIndex:(NSUInteger)index forObject:(id)object {
+        NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
+        if (!indexes) [__arrayObjectIndexes setObject:indexes=[NSMutableIndexSet indexSet] forWeakKey:object];
+        else if ([indexes containsIndex:index]) {[self passFail:NO format:@"!!!ai Index exists\n"];ERR("a");}
+        [indexes addIndex:index];
+    }
+    -(void)doRemoveIndex:(NSUInteger)index forObject:(id)object {
+        NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
+        if (!indexes) {[self passFail:NO format:@"!!!ai Object not known\n"];ERR("a");}
+        if (![indexes containsIndex:index]) {[self passFail:NO format:@"!!!ai Index doesn't exist\n"];ERR("a");}
+        if (indexes.count==1) [__arrayObjectIndexes removeObjectForKey:(id<NSCopying>)object];
+        else [indexes removeIndex:index];
+    }
+    -(void)doChangeIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex forObject:(id)object {
+        NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
+        if (!indexes) {[self passFail:NO format:@"!!!ai Object not known (2)\n"];ERR("a");}
+        if (![indexes containsIndex:fromIndex]) {[self passFail:NO format:@"!!!ai Index doesn't exist (2)\n"];ERR("a");}
+        [indexes removeIndex:fromIndex];
+        if ([indexes containsIndex:toIndex]) {[self passFail:NO format:@"!!!ai Index exists (2)\n"];ERR("a");}
+        [indexes addIndex:toIndex];
+    }
+
+
+
+
+
+
+
+

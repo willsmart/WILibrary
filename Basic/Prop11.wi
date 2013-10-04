@@ -1,0 +1,12 @@
+
+WIMyClass
+    Endpoint1 *hisname_endpoint=[[Endpoint1 alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (dealloc,readonly,nonatomic)
+    WIHisClass hisname=
+        {return((NSHisClass)v_hisname_endpoint.value);}
+        -v{[v_hisname_endpoint setValue:v];} (noivar)
+
+    -(void)die {self.hisname=nil;} 
+    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(myname_endpoint)]);}
+
+    -(void)retract {self.hisname=nil;}

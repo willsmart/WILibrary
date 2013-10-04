@@ -1,0 +1,15 @@
+
+WIMyClass
+    EndpointS *hisnames=[[EndpointS alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (readonly,nonatomic,dealloc)
+
+    -(void)die {[v_hisnames removeAllObjects];}
+
+    -(void)addHisname:(NSHisClass)v {[v_hisnames addObject:v];}
+    -(void)removeHisname:(NSHisClass)v {[v_hisnames removeObject:v];}
+    -(void)removeAllHisnames {[v_hisnames removeAllObjects];}
+
+    -(void)retract {[self.hisnames removeAllObjects];}
+
+    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(mynames)]);}
+

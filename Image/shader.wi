@@ -1,0 +1,1591 @@
+"<Foundation/Foundation.h>"
+"<OpenGLES/EAGL.h>"
+"<OpenGLES/ES1/gl.h>"
+"<OpenGLES/ES1/glext.h>"
+"<OpenGLES/ES2/gl.h>"
+"<OpenGLES/ES2/glext.h>"
+
+/*top:
+#define INVALIDSHADER (0xffff)
+#define SHADERDEBUG
+*/
+
+// overall
+Shader <BaseObject> "fn:shader"
+    shader ~- ShaderProgram program
+        program ~m< SHUniform uniform
+        program ~m< SHAttribute attribute
+        fragProgram ~m< SHFn fragFn
+        vertProgram ~m< SHFn vertFn
+
+    shader ~- Parse parse
+
+
+
+
+
+
+
+<StandardUniformProtocol>
+    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {}
+    -(void)setup {}
+    -(void)tearDown {}
+
+
+<GLObject>
+    GLuint _glname=INVALIDSHADER,glname={return(_glname);}
+    -(void)dealloc {
+        if (_glname!=INVALIDSHADER) glDeleteProgram(_glname);
+    }
+
+
+
+ShaderData <BaseObject> {}
+Parse <BaseObject> {}
+
+Shader
+    int numberOfVertices=
+        {return(self.program.vertexCount);}
+        -v{self.program.vertexCount=v;}
+    NSString expressionRaw=nil,expression=nil,compileErrors=nil
+
+    -(init) {@-100 
+        self.parse=[Parse get];
+        self.program=[ShaderProgram get];
+    }
+    
+    -(void)renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(ShaderData*)data standardUniforms:(NSSet*)sus {
+        if (sus) for (NSObject<StandardUniformProtocol> *su in sus) {
+            [su setInShaderProgram:self.program withData:data frameBufferRect:frameBufferRect drawRect:drawRect];
+        }
+        if ([self conformsToProtocol:@protocol(StandardUniformProtocol)]) {
+            [(NSObject<StandardUniformProtocol>*)self setInShaderProgram:self.program withData:data frameBufferRect:frameBufferRect drawRect:drawRect];
+        }
+        [self.program render];
+    }
+
+
+<AutoShader:StandardUniformProtocol>
+    -(init) {
+        @-10 
+        for (NSDictionary *d in self.uniformVars) {
+            SHUniform *u;
+            NSString *className=[d objectForKey:@"class"];
+            if (!className) u=[SHUniform get];
+            else {
+                Class<BaseClass> c=NSClassFromString(className);
+                u=[c get];
+            }
+            u.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
+            if (u.type!=un_none) [self.program setUniform:u forKey:[d objectForKey:@"name"]];
+        }
+        for (NSDictionary *d in self.attributeVars) {
+            SHAttribute *a;
+            NSString *className=[d objectForKey:@"class"];
+            if (!className) a=[SHAttribute get];
+            else {
+                Class<BaseClass> c=NSClassFromString(className);
+                a=[c get];
+            }
+            a.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
+            if (a.type!=un_none) [self.program setAttribute:a forKey:[d objectForKey:@"name"]];
+        }
+        for (NSString *v in self.fragFunctionNames) {
+            NSDictionary *d=[self performSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
+            SHFn *fn=[SHFn get];
+            fn.body=[d objectForKey:@"body"];
+            [self.program setFragFn:fn forKey:[[d objectForKey:@"signature"] substringFromIndex:1]];
+        }
+        for (NSString *v in self.vertFunctionNames) {
+            NSDictionary *d=[self performSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
+            SHFn *fn=[SHFn get];
+            fn.body=[d objectForKey:@"body"];
+            [self.program setVertFn:fn forKey:[[d objectForKey:@"signature"] substringFromIndex:1]];
+        }
+    }
+
+    NSSet uniformVars (vars_uniform)
+    NSSet attributeVars (vars_attribute)
+    NSSet fragFunctionNames (varnames_fragFunction)
+    NSSet vertFunctionNames (varnames_vertFunction)
+    
+    NSDictionary mainFragFn (fragFunction,-void main()/*frag*/;)
+    -void main()/*frag*/ {@-999 
+        lowp vec4 colour=lowp vec4(0.9,0.0,1.0,1.0);
+        @999 gl_FragColor=colour;
+    }
+    
+    NSDictionary mainVertFn (vertFunction,-void main()/*vert*/;)
+    -void main()/*vert*/ {@-100 
+        ASSIGN_ATTRIBUTES
+    }
+
+    ShaderData shaderData (nodef,assign)
+    CGRect frameBufferRect,drawRect (nodef)
+
+    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {
+        frameBufferRect=aframeBufferRect;
+        drawRect=adrawRect;
+
+        self.shaderData=data;
+        
+        for (NSDictionary *d in self.uniformVars) {
+            SHUniform *u=[self.program uniformForKey:[d objectForKey:@"name"]];
+            if (!u) {
+                u=[SHUniform get];
+                u.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
+                [self.program setUniform:u forKey:[d objectForKey:@"name"]];
+            }
+            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"-(NSObject*)%@AsObject",[d objectForKey:@"name"]]);
+            //if ([self respondsToSelector:sel]) {
+              //  NSObject *o=[self performSelector:sel];
+              //  u.asObject=o;
+            //}
+        }
+        for (NSDictionary *d in self.attributeVars) {
+            SHAttribute *a=[self.program attributeForKey:[d objectForKey:@"name"]];
+            if (!a) {
+                a=[SHAttribute get];
+                a.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
+                [self.program setAttribute:a forKey:[d objectForKey:@"name"]];
+            }
+            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"-(NSObject*)%@AsObject",[d objectForKey:@"name"]]);
+            //if ([self respondsToSelector:sel]) {
+                //NSObject *o=[self performSelector:sel];
+               // a.asObject=o;
+            //}
+        }
+        
+        self.shaderData=nil;
+    }
+
+
+
+
+
+
+
+
+
+
+
+SHFn <BaseObject> "fn:shader"
+    NSString sig=
+        {return((NSString*)(self.fragProgram?self.keyInFragProgram:self.keyInVertProgram));}
+        -v{
+            if (self.fragProgram) self.keyInFragProgram=v;
+            if (self.vertProgram) self.keyInVertProgram=v;
+        }
+    NSString body=@""
+
+    bool enabled=
+        {return(enabled);}
+        -v{
+            if (enabled!=v) {
+                enabled=v;
+                [self.fragProgram markChanged];
+                [self.vertProgram markChanged];
+            }
+        } (ivar=enabled)
+    -(init) {
+        enabled=YES;
+    }
+
+    NSString shaderString={
+        if (!enabled) return(@"");
+        return([NSString stringWithFormat:@"%@ {%@}",self.sig,self.body]);
+    }
+    NSString shaderDeclString={
+        if (!enabled) return(@"");
+        return([NSString stringWithFormat:@"%@;",self.sig]);
+    }
+    
+
+
+
+
+
+
+
+
+
+type sampler2D
+type samplerCube
+type vec2
+type vec3
+type vec4
+type ivec2
+type ivec3
+type ivec4
+type bvec2
+type bvec3
+type bvec4
+type mat2
+type mat3
+type mat4
+
+type UniformType "typedef:enum {
+    un_none=0,un_any,un_noValue,
+    un_bool,un_float,un_int,un_sampler2D,un_samplerCube,
+    un_vec2,un_vec3,un_vec4,
+    un_ivec2,un_ivec3,un_ivec4,
+    un_bvec2,un_bvec3,un_bvec4,
+    un_mat2,un_mat3,un_mat4
+}
+"
+UniformTypeFunctions "fn:shader"
+    +(UniformType)typeForString:(NSString*)s {
+        NSArray *a=[NSArray arrayWithObjects:@"none",@"any",@"noValue",@"bool",@"float",@"int",@"sampler2D",@"samplerCube",@"vec2",@"vec3",@"vec4",@"ivec2",@"ivec3",@"ivec4",@"bvec2",@"bvec3",@"bvec4",@"mat2",@"mat3",@"mat4",nil];
+        NSUInteger v=[a indexOfObject:s];
+        return(v==NSNotFound?un_none:(UniformType)v);
+    }
+    +(NSString*)stringForType:(UniformType)type {
+        switch (type) {
+            case un_float:return(@"float");
+            case un_bool:return(@"bool");
+            case un_int:return(@"int");
+            case un_bvec2:return(@"bvec2");
+            case un_bvec3:return(@"bvec3");
+            case un_bvec4:return(@"bvec4");
+            case un_ivec2:return(@"ivec2");
+            case un_ivec3:return(@"ivec3");
+            case un_ivec4:return(@"ivec4");
+            case un_vec2:return(@"vec2");
+            case un_vec3:return(@"vec3");
+            case un_vec4:return(@"vec4");
+            case un_mat2:return(@"mat2");
+            case un_mat3:return(@"mat3");
+            case un_mat4:return(@"mat4");
+            default:return(@"none");
+        }
+    }
+
+type Union128byte "typedef:
+    union {
+        char c[128];
+        float f[32];
+        int i[32];
+    }
+"
+
+SHUniform <BaseObject> "fn:shader"
+    Union128byte _buf (nodef)
+    Union128byte buf={return(_buf);}
+    NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
+    NSString *description={[ret appendFormat:@":%@",self.asString];}
+    UniformType type=
+        {return(type);}
+        -v{
+            if (v!=type) {
+                memset(_buf.c,0,128);
+                self.transpose=NO;
+                type=v;
+                [self.program markChanged];
+            }    
+        } (ivar=type)
+    bool enabled=
+        {return(enabled);}
+        -v{
+            if (enabled!=v) {
+                enabled=v;
+                [self.program markChanged];
+            }
+        } (ivar=enabled)
+
+    -(void)copyFrom:(SHUniform*)copy {
+        self.type=copy.type;
+        enabled=copy.enabled;
+        int len=0;
+        switch (type) {
+            case un_bool:len=sizeof(bool)*1;break;
+            case un_bvec2:len=sizeof(bool)*2;break;
+            case un_bvec3:len=sizeof(bool)*3;break;
+            case un_bvec4:len=sizeof(bool)*4;break;
+            case un_int:len=sizeof(int)*1;break;
+            case un_ivec2:len=sizeof(int)*2;break;
+            case un_ivec3:len=sizeof(int)*3;break;
+            case un_ivec4:len=sizeof(int)*4;break;
+            case un_float:len=sizeof(float)*1;break;
+            case un_vec2:len=sizeof(float)*2;break;
+            case un_vec3:len=sizeof(float)*3;break;
+            case un_vec4:len=sizeof(float)*4;break;
+            case un_mat2:len=sizeof(float)*4;break;
+            case un_mat3:len=sizeof(float)*9;break;
+            case un_mat4:len=sizeof(float)*16;break;
+            default:break;
+        }
+        memcpy(_buf.c,copy._buf.c,len);
+    }
+    NSString *asJson=
+        {
+            bool *bufb=(bool*)_buf.c;
+            switch (type) {
+                case un_bool:return([NSString stringWithFormat:@"%@",bufb[0]?@"true":@"false"]);
+                case un_bvec2:return([NSString stringWithFormat:@"[%@,%@]",bufb[0]?@"true":@"false",bufb[1]?@"true":@"false"]);
+                case un_bvec3:return([NSString stringWithFormat:@"[%@,%@,%@]",bufb[0]?@"true":@"false",bufb[1]?@"true":@"false",bufb[2]?@"true":@"false"]);
+                case un_bvec4:return([NSString stringWithFormat:@"[%@,%@,%@,%@]",bufb[0]?@"true":@"false",bufb[1]?@"true":@"false",bufb[2]?@"true":@"false",bufb[3]?@"true":@"false"]);
+                case un_int:return([NSString stringWithFormat:@"%d",_buf.i[0]]);
+                case un_ivec2:return([NSString stringWithFormat:@"[%d,%d]",_buf.i[0],_buf.i[1]]);
+                case un_ivec3:return([NSString stringWithFormat:@"[%d,%d,%d]",_buf.i[0],_buf.i[1],_buf.i[2]]);
+                case un_ivec4:return([NSString stringWithFormat:@"[%d,%d,%d,%d]",_buf.i[0],_buf.i[1],_buf.i[2],_buf.i[3]]);
+                case un_float:return([NSString stringWithFormat:@"%f",_buf.f[0]]);
+                case un_vec2:return([NSString stringWithFormat:@"[%f,%f]",_buf.f[0],_buf.f[1]]);
+                case un_vec3:return([NSString stringWithFormat:@"[%f,%f,%f]",_buf.f[0],_buf.f[1],_buf.f[2]]);
+                case un_vec4:return([NSString stringWithFormat:@"[%f,%f,%f,%f]",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3]]);
+                case un_mat2:return([NSString stringWithFormat:@"[[%f,%f],[%f,%f]]",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3]]);
+                case un_mat3:return([NSString stringWithFormat:@"[[%f,%f,%f],[%f,%f,%f],[%f,%f,%f]]",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3],_buf.f[4],_buf.f[5],_buf.f[6],_buf.f[7],_buf.f[8]]);
+                case un_mat4:return([NSString stringWithFormat:@"[[%f,%f,%f,%f],[%f,%f,%f,%f],[%f,%f,%f,%f],[%f,%f,%f,%f]]",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3],_buf.f[4],_buf.f[5],_buf.f[6],_buf.f[7],_buf.f[8],_buf.f[9],_buf.f[10],_buf.f[11],_buf.f[12],_buf.f[13],_buf.f[14],_buf.f[15]]);
+                default:return(@"undefined");
+            }
+        }
+    NSString *asString=
+        {
+            bool *bufb=(bool*)_buf.c;
+            switch (type) {
+                case un_bool:return([NSString stringWithFormat:@"%c",bufb[0]?'t':'f']);
+                case un_bvec2:return([NSString stringWithFormat:@"<%c,%c>",bufb[0]?'t':'f',bufb[1]?'t':'f']);
+                case un_bvec3:return([NSString stringWithFormat:@"<%c,%c,%c>",bufb[0]?'t':'f',bufb[1]?'t':'f',bufb[2]?'t':'f']);
+                case un_bvec4:return([NSString stringWithFormat:@"<%c,%c,%c,%c>",bufb[0]?'t':'f',bufb[1]?'t':'f',bufb[2]?'t':'f',bufb[3]?'t':'f']);
+                case un_int:return([NSString stringWithFormat:@"i%d",_buf.i[0]]);
+                case un_ivec2:return([NSString stringWithFormat:@"i<%d,%d>",_buf.i[0],_buf.i[1]]);
+                case un_ivec3:return([NSString stringWithFormat:@"i<%d,%d,%d>",_buf.i[0],_buf.i[1],_buf.i[2]]);
+                case un_ivec4:return([NSString stringWithFormat:@"i<%d,%d,%d,%d>",_buf.i[0],_buf.i[1],_buf.i[2],_buf.i[3]]);
+                case un_float:return([NSString stringWithFormat:@"%f",_buf.f[0]]);
+                case un_vec2:return([NSString stringWithFormat:@"<%f,%f>",_buf.f[0],_buf.f[1]]);
+                case un_vec3:return([NSString stringWithFormat:@"<%f,%f,%f>",_buf.f[0],_buf.f[1],_buf.f[2]]);
+                case un_vec4:return([NSString stringWithFormat:@"<%f,%f,%f,%f>",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3]]);
+                case un_mat2:return([NSString stringWithFormat:@"<<%f,%f>,<%f,%f>>",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3]]);
+                case un_mat3:return([NSString stringWithFormat:@"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3],_buf.f[4],_buf.f[5],_buf.f[6],_buf.f[7],_buf.f[8]]);
+                case un_mat4:return([NSString stringWithFormat:@"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",_buf.f[0],_buf.f[1],_buf.f[2],_buf.f[3],_buf.f[4],_buf.f[5],_buf.f[6],_buf.f[7],_buf.f[8],_buf.f[9],_buf.f[10],_buf.f[11],_buf.f[12],_buf.f[13],_buf.f[14],_buf.f[15]]);
+                default:return([NSString string]);
+            }
+        }
+        -v{
+            const char *pc=v.UTF8String;
+            Union128byte buf;
+            bool *bufb=(bool*)buf.c;
+            
+            if ((sscanf(pc,"%c",buf.c)==1)&&((buf.c[0]=='t')||(buf.c[0]=='f'))) self.asBool=(buf.c[0]=='f'?NO:YES);
+            else if (sscanf(pc,"i%d",buf.i)==1) self.asInt=buf.i[0];
+            else if (sscanf(pc,"%f",buf.f)==1) self.asFloat=buf.f[0];
+            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8,buf.f+9,buf.f+10,buf.f+11,buf.f+12,buf.f+13,buf.f+14,buf.f+15)==16) self.asMat4=buf.f;
+            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8)==9) self.asMat3=buf.f;
+            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) self.asMat2=buf.f;
+            else if (sscanf(pc,"<%f,%f,%f,%f>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) self.asVec4=buf.f;
+            else if (sscanf(pc,"<%f,%f,%f>",buf.f,buf.f+1,buf.f+2)==3) self.asVec3=buf.f;
+            else if (sscanf(pc,"<%f,%f>",buf.f,buf.f+1)==2) self.asVec2=buf.f;
+            else if (sscanf(pc,"i<%d,%d,%d,%d>",buf.i,buf.i+1,buf.i+2,buf.i+3)==4) self.asIVec4=buf.i;
+            else if (sscanf(pc,"i<%d,%d,%d>",buf.i,buf.i+1,buf.i+2)==3) self.asIVec3=buf.i;
+            else if (sscanf(pc,"i<%d,%d>",buf.i,buf.i+1)==2) self.asIVec2=buf.i;
+            else if (sscanf(pc,"<%c,%c,%c,%c>",buf.c,buf.c+1,buf.c+2,buf.c+3)==4) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');bufb[2]=(buf.c[2]!='f');bufb[3]=(buf.c[3]!='f');self.asBVec4=bufb;}
+            else if (sscanf(pc,"<%c,%c,%c>",buf.c,buf.c+1,buf.c+2)==3) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');bufb[2]=(buf.c[2]!='f');self.asBVec3=bufb;}
+            else if (sscanf(pc,"<%c,%c>",buf.c,buf.c+1)==2) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');self.asBVec2=bufb;}
+            else self.type=un_none;
+        }
+    +(NSString*)clearValuesInString:(NSString*)v {
+            const char *pc=v.UTF8String;
+            Union128byte buf;
+            
+            if ((sscanf(pc,"%c",buf.c)==1)&&((buf.c[0]=='t')||(buf.c[0]=='f'))) return(@"f");
+            else if (sscanf(pc,"i%d",buf.i)==1) return(@"i0");
+            else if (sscanf(pc,"%f",buf.f)==1) return(@"0.0");
+            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8,buf.f+9,buf.f+10,buf.f+11,buf.f+12,buf.f+13,buf.f+14,buf.f+15)==16) return(@"<<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>>");
+            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8)==9) return(@"<<0.0,0.0,0.0>,<0.0,0.0,0.0>,<0.0,0.0,0.0>>");
+            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) return(@"<<0.0,0.0>,<0.0,0.0>>");
+            else if (sscanf(pc,"<%f,%f,%f,%f>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) return(@"<0.0,0.0,0.0,0.0>");
+            else if (sscanf(pc,"<%f,%f,%f>",buf.f,buf.f+1,buf.f+2)==3) return(@"<0.0,0.0,0.0>");
+            else if (sscanf(pc,"<%f,%f>",buf.f,buf.f+1)==2) return(@"<0.0,0.0>");
+            else if (sscanf(pc,"i<%d,%d,%d,%d>",buf.i,buf.i+1,buf.i+2,buf.i+3)==4) return(@"<0,0,0,0>");
+            else if (sscanf(pc,"i<%d,%d,%d>",buf.i,buf.i+1,buf.i+2)==3) return(@"<0,0,0>");
+            else if (sscanf(pc,"i<%d,%d>",buf.i,buf.i+1)==2) return(@"<0,0>");
+            else if (sscanf(pc,"<%c,%c,%c,%c>",buf.c,buf.c+1,buf.c+2,buf.c+3)==4) return(@"<f,f,f,f>");
+            else if (sscanf(pc,"<%c,%c,%c>",buf.c,buf.c+1,buf.c+2)==3) return(@"<f,f,f>");
+            else if (sscanf(pc,"<%c,%c>",buf.c,buf.c+1)==2) return(@"<f,f>");
+            else return(@"none");
+        }
+
+    ULL ullHash={
+        int len=0;
+        switch (type) {
+            case un_bvec2:len=sizeof(bool)*2;break;
+            case un_bvec3:len=sizeof(bool)*3;break;
+            case un_bvec4:len=sizeof(bool)*4;break;
+            case un_ivec2:len=sizeof(int)*2;break;
+            case un_ivec3:len=sizeof(int)*3;break;
+            case un_ivec4:len=sizeof(int)*4;break;
+            case un_vec2:len=sizeof(float)*2;break;
+            case un_vec3:len=sizeof(float)*3;break;
+            case un_vec4:len=sizeof(float)*4;break;
+            case un_mat2:len=sizeof(float)*4;break;
+            case un_mat3:len=sizeof(float)*9;break;
+            case un_mat4:len=sizeof(float)*16;break;
+            default:break;
+        }
+        return(3698534789LL+charHashCodes[type][0]*2+makeArrayHashCode(_buf.c,len));
+    }
+        
+    bool transpose=NO
+    int glname=INVALIDSHADER
+
+    -(init) {
+        enabled=YES;
+        type=un_none;
+    }
+    int asSampler2D=
+        {self.type=un_sampler2D;return(*(int*)_buf.c);}
+        -v{self.type=un_sampler2D;(*(int*)_buf.c)=v;}
+        
+    int asSamplerCube=
+        {self.type=un_samplerCube;return(*(int*)_buf.c);}
+        -v{self.type=un_samplerCube;(*(int*)_buf.c)=v;}
+
+    bool asBool=
+        {self.type=un_bool;return(*(bool*)_buf.c);}
+        -v{self.type=un_bool;(*(bool*)_buf.c)=v;}
+    bool *asBVec2=
+        {self.type=un_bvec2;return((bool*)_buf.c);}
+        -v{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2);}
+    bool *asBVec3=
+        {self.type=un_bvec3;return((bool*)_buf.c);}
+        -v{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3);}
+    bool *asBVec4=
+        {self.type=un_bvec4;return((bool*)_buf.c);}
+        -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4);}
+
+    int asInt=
+        {self.type=un_int;return(*(int*)_buf.c);}
+        -v{self.type=un_int;(*(int*)_buf.c)=v;}
+    int *asIVec2=
+        {self.type=un_ivec2;return((int*)_buf.c);}
+        -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2);}
+    int *asIVec3=
+        {self.type=un_ivec3;return((int*)_buf.c);}
+        -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3);}
+    int *asIVec4=
+        {self.type=un_ivec4;return((int*)_buf.c);}
+        -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4);}
+
+    float asFloat=
+        {self.type=un_float;return(*(float*)_buf.c);}
+        -v{self.type=un_float;(*(float*)_buf.c)=v;}
+    float *asVec2=
+        {self.type=un_vec2;return((float*)_buf.c);}
+        -v{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2);}
+    float *asVec3=
+        {self.type=un_vec3;return((float*)_buf.c);}
+        -v{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3);}
+    float *asVec4=
+        {self.type=un_vec4;return((float*)_buf.c);}
+        -v{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4);}
+
+    float *asMat2=
+        {self.type=un_mat2;return((float*)_buf.c);}
+        -v{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4);}
+    float *asMat3=
+        {self.type=un_mat3;return((float*)_buf.c);}
+        -v{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9);}
+    float *asMat4=
+        {self.type=un_mat4;return((float*)_buf.c);}
+        -v{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16);}
+
+    NSObject asObject=
+        {
+            NSObject *value;
+            switch (type) {
+                case un_none:case un_any:case un_noValue:value=[NSNull null];break;
+                case un_sampler2D:case un_samplerCube:case un_int:value=[NSNumber numberWithInt:*(int*)_buf.c];break;
+                case un_bool:value=[NSNumber numberWithBool:*(bool*)_buf.c];break;
+                case un_float:value=[NSNumber numberWithFloat:*(float*)_buf.c];break;
+                default:
+                    {
+                        int len=0;
+                        switch (type) {
+                            case un_bvec2:len=sizeof(bool)*2;break;
+                            case un_bvec3:len=sizeof(bool)*3;break;
+                            case un_bvec4:len=sizeof(bool)*4;break;
+                            case un_ivec2:len=sizeof(int)*2;break;
+                            case un_ivec3:len=sizeof(int)*3;break;
+                            case un_ivec4:len=sizeof(int)*4;break;
+                            case un_vec2:len=sizeof(float)*2;break;
+                            case un_vec3:len=sizeof(float)*3;break;
+                            case un_vec4:len=sizeof(float)*4;break;
+                            case un_mat2:len=sizeof(float)*4;break;
+                            case un_mat3:len=sizeof(float)*9;break;
+                            case un_mat4:len=sizeof(float)*16;break;
+                            default:break;
+                        }
+                        value=[NSData dataWithBytes:_buf.c length:len];
+                    }
+                    break;
+            }
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:type],@"type",nil]);
+        }
+        -v{
+            UniformType typ=type;
+            if (v&&[v isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *d=(NSDictionary*)v;
+                NSObject *o=[d objectForKey:@"type"];
+                if (o&&[o isKindOfClass:[NSNumber class]]) {
+                    typ=(UniformType)((NSNumber*)o).intValue;
+                    if (typ>un_mat4) return;
+                }
+                v=[d objectForKey:@"value"];
+            }
+            if (v) switch (typ) {
+                case un_none:case un_any:case un_noValue:type=typ;break;
+                case un_sampler2D:case un_samplerCube:case un_int:
+                    if ([v isKindOfClass:[NSNumber class]]) {
+                        *(int*)_buf.c=((NSNumber*)v).intValue;
+                        type=typ;
+                    }
+                    break;
+                case un_bool:v=[NSNumber numberWithBool:self.asBool];
+                    if ([v isKindOfClass:[NSNumber class]]) {
+                        *(bool*)_buf.c=((NSNumber*)v).boolValue;
+                        type=typ;
+                    }
+                    break;
+                case un_float:v=[NSNumber numberWithFloat:self.asFloat];
+                    if ([v isKindOfClass:[NSNumber class]]) {
+                        *(float*)_buf.c=((NSNumber*)v).floatValue;
+                        type=typ;
+                    }
+                    break;
+                default:
+                    {
+                        int len=0,N=0;
+                        switch (typ) {
+                            case un_bvec2:len=sizeof(bool)*(N=2);break;
+                            case un_bvec3:len=sizeof(bool)*(N=3);break;
+                            case un_bvec4:len=sizeof(bool)*(N=4);break;
+                            case un_ivec2:len=sizeof(int)*(N=2);break;
+                            case un_ivec3:len=sizeof(int)*(N=3);break;
+                            case un_ivec4:len=sizeof(int)*(N=4);break;
+                            case un_vec2:len=sizeof(float)*(N=2);break;
+                            case un_vec3:len=sizeof(float)*(N=3);break;
+                            case un_vec4:len=sizeof(float)*(N=4);break;
+                            case un_mat2:len=sizeof(float)*(N=4);break;
+                            case un_mat3:len=sizeof(float)*(N=9);break;
+                            case un_mat4:len=sizeof(float)*(N=16);break;
+                            default:return;
+                        }
+                        if ([v isKindOfClass:[NSData class]]&&(((NSData*)v).length==len)) {
+                            memcpy(_buf.c,((NSData*)v).bytes,len);
+                            type=typ;
+                        }
+                        else if ([v isKindOfClass:[NSArray class]]&&(((NSArray*)v).count==N)) {
+                            NSArray *a=(NSArray*)v;
+                            for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
+                            type=typ;
+                            int i=0;
+                            switch (typ) {
+                                case un_bvec2:case un_bvec3:case un_bvec4:
+                                    for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
+                                    break;
+                                case un_ivec2:case un_ivec3:case un_ivec4:
+                                    for (NSNumber *n in a) ((int*)_buf.c)[i++]=n.intValue;
+                                    break;
+                                default:
+                                    for (NSNumber *n in a) ((float*)_buf.c)[i++]=n.floatValue;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+       
+    -(void)set {
+        if (!enabled) return;
+        if (glname==INVALIDSHADER) return;
+        switch (type) {
+            default:case un_none:break;
+            case un_sampler2D:glUniform1i(glname, *(int*)_buf.c);break;
+            case un_samplerCube:glUniform1i(glname, *(int*)_buf.c);break;
+            case un_bool:glUniform1i(glname,*(bool*)_buf.c);break;
+            case un_bvec2:{
+                int is[2]={((bool*)_buf.c)[0],((bool*)_buf.c)[1]};
+                glUniform2iv(glname,1,is);
+                }break;
+            case un_bvec3:{
+                int is[3]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2]};
+                glUniform3iv(glname,1,is);
+                }break;
+            case un_bvec4:{
+                int is[4]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2],((bool*)_buf.c)[3]};
+                glUniform4iv(glname,1,is);
+                }break;
+            case un_int:glUniform1i(glname,*(int*)_buf.c);break;
+            case un_ivec2:glUniform2iv(glname,1,(int*)_buf.c);break;
+            case un_ivec3:glUniform3iv(glname,1,(int*)_buf.c);break;
+            case un_ivec4:glUniform4iv(glname,1,(int*)_buf.c);break;
+            case un_float:glUniform1f(glname,*(float*)_buf.c);break;
+            case un_vec2:glUniform2fv(glname,1,(float*)_buf.c);break;
+            case un_vec3:glUniform3fv(glname,1,(float*)_buf.c);break;
+            case un_vec4:glUniform4fv(glname,1,(float*)_buf.c);break;
+            case un_mat2:glUniformMatrix2fv(glname,1,transpose,(float*)_buf.c);break;
+            case un_mat3:glUniformMatrix3fv(glname,1,transpose,(float*)_buf.c);break;
+            case un_mat4:glUniformMatrix4fv(glname,1,transpose,(float*)_buf.c);break;
+        }
+    }
+    
+    NSString shaderString={
+        if (!enabled) return(@"");
+        NSString *typeStr;
+        switch (type) {
+            default:case un_none:return(@"");
+            case un_sampler2D:typeStr=@"sampler2D";break;
+            case un_samplerCube:typeStr=@"samplerCube";break;
+            case un_bool:typeStr=@"bool";break;
+            case un_bvec2:typeStr=@"bvec2";break;
+            case un_bvec3:typeStr=@"bvec3";break;
+            case un_bvec4:typeStr=@"bvec4";break;
+            case un_int:typeStr=@"highp int";break;
+            case un_ivec2:typeStr=@"highp ivec2";break;
+            case un_ivec3:typeStr=@"highp ivec3";break;
+            case un_ivec4:typeStr=@"highp ivec4";break;
+            case un_float:typeStr=@"highp float";break;
+            case un_vec2:typeStr=@"highp vec2";break;
+            case un_vec3:typeStr=@"highp vec3";break;
+            case un_vec4:typeStr=@"highp vec4";break;
+            case un_mat2:typeStr=@"highp mat2";break;
+            case un_mat3:typeStr=@"highp mat3";break;
+            case un_mat4:typeStr=@"highp mat4";break;
+        }
+        return([NSString stringWithFormat:@"uniform %@ %@;\n",typeStr,self.name]);
+    }
+    
+    
+type Union1024byte "typedef:
+    union {
+        char c[1024];
+        float f[256];
+        int i[256];
+    }
+"
+
+
+SHAttribute <BaseObject> "fn:shader"
+    Union1024byte _buf (nodef)
+    Union1024byte buf={return(_buf);}
+    NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
+    UniformType type=
+        {return(type);}
+        -v{
+            if (v!=type) {
+                memset(&_buf,0,sizeof(_buf));
+                self.transpose=NO;
+                type=v;
+                [self.program markChanged];
+            }    
+        } (ivar=type)
+    bool enabled=
+        {return(enabled);}
+        -v{
+            if (enabled!=v) {
+                enabled=v;
+                [self.program markChanged];
+            }
+        } (ivar=enabled)
+    bool transpose=NO
+    int glname=INVALIDSHADER
+
+    -(void)copyFrom:(SHAttribute*)copy {
+        self.type=copy.type;
+        enabled=copy.enabled;
+        memcpy(_buf.c,copy._buf.c,sizeof(_buf.c));
+    }
+
+    -(init) {
+        enabled=YES;
+        type=un_none;
+    }
+    int *asSampler2D=
+        {self.type=un_sampler2D;return((int*)_buf.c);}
+        -v{self.type=un_sampler2D;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+        
+    int *asSamplerCube=
+        {self.type=un_samplerCube;return((int*)_buf.c);}
+        -v{self.type=un_samplerCube;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+
+    bool *asBool=
+        {self.type=un_bool;return((bool*)_buf.c);}
+        -v{self.type=un_bool;memcpy(_buf.c,v,sizeof(bool)*self.program.vertexCount);}
+    bool *asBVec2=
+        {self.type=un_bvec2;return((bool*)_buf.c);}
+        -v{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2*self.program.vertexCount);}
+    bool *asBVec3=
+        {self.type=un_bvec3;return((bool*)_buf.c);}
+        -v{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3*self.program.vertexCount);}
+    bool *asBVec4=
+        {self.type=un_bvec4;return((bool*)_buf.c);}
+        -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4*self.program.vertexCount);}
+
+    int *asInt=
+        {self.type=un_int;return((int*)_buf.c);}
+        -v{self.type=un_int;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+    int *asIVec2=
+        {self.type=un_ivec2;return((int*)_buf.c);}
+        -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2*self.program.vertexCount);}
+    int *asIVec3=
+        {self.type=un_ivec3;return((int*)_buf.c);}
+        -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3*self.program.vertexCount);}
+    int *asIVec4=
+        {self.type=un_ivec4;return((int*)_buf.c);}
+        -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4*self.program.vertexCount);}
+
+    float *asFloat=
+        {self.type=un_float;return((float*)_buf.c);}
+        -v{self.type=un_float;memcpy(_buf.c,v,sizeof(float)*self.program.vertexCount);}
+    float *asVec2=
+        {self.type=un_vec2;return((float*)_buf.c);}
+        -v{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2*self.program.vertexCount);}
+    float *asVec3=
+        {self.type=un_vec3;return((float*)_buf.c);}
+        -v{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3*self.program.vertexCount);}
+    float *asVec4=
+        {self.type=un_vec4;return((float*)_buf.c);}
+        -v{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
+
+    float *asMat2=
+        {self.type=un_mat2;return((float*)_buf.c);}
+        -v{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
+    float *asMat3=
+        {self.type=un_mat3;return((float*)_buf.c);}
+        -v{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9*self.program.vertexCount);}
+    float *asMat4=
+        {self.type=un_mat4;return((float*)_buf.c);}
+        -v{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16*self.program.vertexCount);}
+
+    NSObject asObject=
+        {
+            NSObject *value;
+            switch (type) {
+                case un_none:case un_any:case un_noValue:value=[NSNull null];break;
+                default:
+                    {
+                        int len=0;
+                        switch (type) {
+                            case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);break;
+                            case un_bool:len=sizeof(bool);break;
+                            case un_float:len=sizeof(float);break;
+                            case un_bvec2:len=sizeof(bool)*2;break;
+                            case un_bvec3:len=sizeof(bool)*3;break;
+                            case un_bvec4:len=sizeof(bool)*4;break;
+                            case un_ivec2:len=sizeof(int)*2;break;
+                            case un_ivec3:len=sizeof(int)*3;break;
+                            case un_ivec4:len=sizeof(int)*4;break;
+                            case un_vec2:len=sizeof(float)*2;break;
+                            case un_vec3:len=sizeof(float)*3;break;
+                            case un_vec4:len=sizeof(float)*4;break;
+                            case un_mat2:len=sizeof(float)*4;break;
+                            case un_mat3:len=sizeof(float)*9;break;
+                            case un_mat4:len=sizeof(float)*16;break;
+                            default:break;
+                        }
+                        value=[NSData dataWithBytes:_buf.c length:len*self.program.shader.numberOfVertices];
+                    }
+                    break;
+            }
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:type],@"type",nil]);
+        }
+        -v{
+            UniformType typ=type;
+            if (v&&[v isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *d=(NSDictionary*)v;
+                NSObject *o=[d objectForKey:@"type"];
+                if (o&&[o isKindOfClass:[NSNumber class]]) {
+                    typ=(UniformType)((NSNumber*)o).intValue;
+                    if (typ>un_mat4) return;
+                }
+                v=[d objectForKey:@"value"];
+            }
+            if (v) switch (typ) {
+                case un_none:case un_any:case un_noValue:type=typ;break;
+                default:
+                    {
+                        int len=0,N=0,Nv=self.program.shader.numberOfVertices;
+                        switch (typ) {
+                            case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);N=1;break;
+                            case un_bool:len=sizeof(bool);N=1;break;
+                            case un_float:len=sizeof(float);N=1;break;
+                            case un_bvec2:len=sizeof(bool)*(N=2);break;
+                            case un_bvec3:len=sizeof(bool)*(N=3);break;
+                            case un_bvec4:len=sizeof(bool)*(N=4);break;
+                            case un_ivec2:len=sizeof(int)*(N=2);break;
+                            case un_ivec3:len=sizeof(int)*(N=3);break;
+                            case un_ivec4:len=sizeof(int)*(N=4);break;
+                            case un_vec2:len=sizeof(float)*(N=2);break;
+                            case un_vec3:len=sizeof(float)*(N=3);break;
+                            case un_vec4:len=sizeof(float)*(N=4);break;
+                            case un_mat2:len=sizeof(float)*(N=4);break;
+                            case un_mat3:len=sizeof(float)*(N=9);break;
+                            case un_mat4:len=sizeof(float)*(N=16);break;
+                            default:return;
+                        }
+                        if ([v isKindOfClass:[NSData class]]&&(((NSData*)v).length==len*Nv)) {
+                            memcpy(_buf.c,((NSData*)v).bytes,len*Nv);
+                            type=typ;
+                        }
+                        else if ([v isKindOfClass:[NSArray class]]&&(((NSArray*)v).count==N*Nv)) {
+                            NSArray *a=(NSArray*)v;
+                            for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
+                            type=typ;
+                            int i=0;
+                            switch (typ) {
+                                case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
+                                    for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
+                                    break;
+                                case un_sampler2D:case un_samplerCube:case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
+                                    for (NSNumber *n in a) ((int*)_buf.c)[i++]=n.intValue;
+                                    break;
+                                default:
+                                    for (NSNumber *n in a) ((float*)_buf.c)[i++]=n.floatValue;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+
+    -(void)set {
+        if (!enabled) return;
+        if (glname==INVALIDSHADER) return;
+        int number;
+        GLenum gltype;
+        switch (type) {
+            default:case un_none:case un_sampler2D:case un_samplerCube:
+            case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
+            case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
+            case un_mat2:case un_mat3:case un_mat4:
+                glDisableVertexAttribArray(glname);
+                return;
+            case un_float:gltype=GL_FLOAT;number=1;break;
+            case un_vec2:gltype=GL_FLOAT;number=2;break;
+            case un_vec3:gltype=GL_FLOAT;number=3;break;
+            case un_vec4:gltype=GL_FLOAT;number=4;break;
+        }
+        glVertexAttribPointer(glname, number, gltype, 0, 0, _buf.c);
+        glEnableVertexAttribArray(glname);
+    }
+    
+    NSString shaderString_frag={
+        if (!enabled) return(@"");
+        NSString *typeStr;
+        switch (type) {
+            default:case un_none:case un_sampler2D:case un_samplerCube:
+            case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
+            case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
+            case un_mat2:case un_mat3:case un_mat4:
+                return(@"");
+            case un_float:typeStr=@"highp float";break;
+            case un_vec2:typeStr=@"highp vec2";break;
+            case un_vec3:typeStr=@"highp vec3";break;
+            case un_vec4:typeStr=@"highp vec4";break;
+        }
+        if ([self.name isEqualToString:@"position"]) return(@"");
+        return([NSString stringWithFormat:@"varying %@ %@;\n",typeStr,self.name]);
+    }
+
+    NSString shaderString_vert={
+        if (!enabled) return(@"");
+        NSString *typeStr;
+        switch (type) {
+            default:case un_none:case un_sampler2D:case un_samplerCube:
+            case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
+            case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
+            case un_mat2:case un_mat3:case un_mat4:
+                return(@"");
+            case un_float:typeStr=@"highp float";break;
+            case un_vec2:typeStr=@"highp vec2";break;
+            case un_vec3:typeStr=@"highp vec3";break;
+            case un_vec4:typeStr=@"highp vec4";break;
+        }
+        if ([self.name isEqualToString:@"position"]) return(@"attribute highp vec4 __input_position;\n");
+        return([NSString stringWithFormat:@"attribute %@ __input_%@;\n  varying %@ %@;\n",typeStr,self.name,typeStr,self.name]);
+    }
+
+    NSString assignString_vert={
+        if (!enabled) return(@"");
+        switch (type) {
+            default:case un_none:case un_sampler2D:case un_samplerCube:
+            case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
+            case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
+            case un_mat2:case un_mat3:case un_mat4:
+                return(@"");
+            case un_float:case un_vec2:case un_vec3:case un_vec4:break;
+        }
+        if ([self.name isEqualToString:@"position"]) return(@"gl_Position = __input_position;");
+        return([NSString stringWithFormat:@"%@ = __input_%@;",self.name,self.name]);
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ShaderProgram <BaseObject,GLObject> "fn:shader"
+    bool _changed=YES,changed={return(_changed);}
+    bool valid={return(_glname!=INVALIDSHADER);}
+
+    int vertexCount=4
+
+    ULL uniformHash={
+        ULL ret=734897389745LL;
+        for (NSString *key in self.uniforms) {
+            ret+=obfuscateULL(makeStringHashCode(key.UTF8String)*3+[self uniformForKey:key].ullHash);
+        }
+        return(ret);
+    }
+
+    NSString _filename=nil
+    NSString filename={return(self._filename);}-v{self._filename=v;[self markChanged];}
+
+    NSString fragShaderStringWas=@"",vertShaderStringWas=@""
+    NSString _fragShaderString=nil,fragShaderString={[self makeShaderStrings];return(self._fragShaderString);}
+    NSString _vertShaderString=nil,vertShaderString={[self makeShaderStrings];return(self._vertShaderString);}
+
+    MutableDictionary macros=[[MutableDictionary alloc] init] (readonly,dealloc,ivar=macros)
+
+    -(NSString*)macroForKey:(NSObject*)key {return([macros objectForKey:(NSObject<NSCopying>*)key]);}
+    -(void)removeMacroForKey:(NSObject*)key {
+        [self setMacro:nil forKey:key];
+    }
+    -(void)setMacro:(NSString*)value forKey:(NSObject*)key {
+        if (!value) [macros removeObjectForKey:(NSObject<NSCopying>*)key];
+        else [macros setObject:value forKey:(NSObject<NSCopying>*)key];
+        [self markChanged];
+    }
+
+
+    -(init) {
+    }
+
+    -(void)set {
+        for (NSString *uniform in self.uniforms) [[self uniformForKey:uniform] set];
+        for (NSString *attribute in self.attributes) [[self attributeForKey:attribute] set];
+    }
+
+    -(void)markChanged {
+    }
+
+    -(void)reloadShader {
+        NSString *frag=self.fragShaderString,*vert=self.vertShaderString;
+        if (!(frag&&vert)) {
+            if (_glname!=INVALIDSHADER) {
+                glDeleteProgram(_glname);
+                _glname=INVALIDSHADER;
+            }
+            return;
+        }
+        if (!(self.vertShaderStringWas&&[vert isEqualToString:self.vertShaderStringWas]&&
+            self.fragShaderStringWas&&[frag isEqualToString:self.fragShaderStringWas])) {
+            self.vertShaderStringWas=vert;
+            self.fragShaderStringWas=frag;
+            [self loadShaderWithVert:vert frag:frag];
+        }
+    }
+
+    -(void)render {
+        [self reloadShader];
+        if ((!self.vertexCount)||(_glname==INVALIDSHADER)) return;
+        glUseProgram(_glname);
+        [self set];
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, self.vertexCount);
+    }
+
+
+    -(NSString*)macroStringForString:(NSString*)s {
+        return([[s stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"] stringByReplacingOccurrencesOfString:@"\n" withString:@" \\\n"]);
+    }
+    -(void)makeShaderStrings {
+        if (_changed||!(self._fragShaderString&&self._vertShaderString)) {
+            _changed=NO;
+            //if (!self.filename) {self._vertShaderString=self._fragShaderString=nil;}
+            //else {
+                NSMutableString *s=[NSMutableString string];
+                NSArray *uniformNames=[self.uniforms.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    return([(NSString*)obj1 compare:obj2]);
+                }];
+                NSArray *attributeNames=[self.attributes.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    return([(NSString*)obj1 compare:obj2]);
+                }];
+                NSArray *macroNames=[macros.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    return([(NSString*)obj1 compare:obj2]);
+                }];
+            
+                for (NSString *name in macroNames) {
+                    if (!([name isEqualToString:@"TOP"]||[name isEqualToString:@"TOPV"]||
+                        [name isEqualToString:@"VARS"]||[name isEqualToString:@"VARSV"]||
+                        [name isEqualToString:@"FNS"]||[name isEqualToString:@"FNSV"]||
+                        [name isEqualToString:@"BOT"]||[name isEqualToString:@"BOTV"])) {
+                        [s appendFormat:@"#define %@ __parseparans__ %@\n",name,[self macroStringForString:[self macroForKey:name]]];
+                    }
+                }
+
+                {
+                    NSString *m=[macros objectForKey:@"TOP"];
+                    if (m) {
+                        [s appendFormat:@"\n//TOP\n%@\n",m];
+                    }
+                }
+                {
+                    NSString *m=[macros objectForKey:@"TOPV"];
+                    if (m) {
+                        [s appendFormat:@"\n//TOPV\n%@\n",m];
+                    }
+                }
+
+                for (NSString *name in uniformNames) [s appendFormat:@"%@",[self uniformForKey:name].shaderString];
+                NSMutableString *s2=[s.mutableCopy autorelease];
+            
+                NSMutableString *assignStr=[NSMutableString string];
+
+                for (NSString *name in attributeNames) {
+                    [s appendFormat:@"%@",[self attributeForKey:name].shaderString_frag];
+                    [s2 appendFormat:@"%@",[self attributeForKey:name].shaderString_vert];
+                    [assignStr appendFormat:@"%@",[self attributeForKey:name].assignString_vert];
+                }
+
+                [s2 appendFormat:@"#undef ASSIGN_ATTRIBUTES\n#define ASSIGN_ATTRIBUTES %@\n",assignStr];
+
+                if (self.filename) {
+                    NSString *fragShaderPathname = [[NSBundle mainBundle] pathForResource:self.filename ofType:@"fsh"];
+                    [s appendString:[NSString stringWithContentsOfFile:fragShaderPathname encoding:NSUTF8StringEncoding error:nil]];
+                    NSString *vertShaderPathname = [[NSBundle mainBundle] pathForResource:self.filename ofType:@"vsh"];
+                    [s2 appendString:[NSString stringWithContentsOfFile:vertShaderPathname encoding:NSUTF8StringEncoding error:nil]];
+                }
+            
+                {
+                    NSString *m=[macros objectForKey:@"VARS"];
+                    if (m) {
+                        [s appendFormat:@"\n//VARS\n%@\n",m];
+                    }
+                }
+                {
+                    NSString *m=[macros objectForKey:@"VARSV"];
+                    if (m) {
+                        [s appendFormat:@"\n//VARSV\n%@\n",m];
+                    }
+                }
+            
+                for (NSString *key in self.fragFns) {
+                    [s appendFormat:@"\n%@",((SHFn*)[self.fragFns objectForKey:key]).shaderDeclString];
+                }
+                for (NSString *key in self.vertFns) {
+                    [s2 appendFormat:@"\n%@",((SHFn*)[self.vertFns objectForKey:key]).shaderDeclString];
+                }
+                for (NSString *key in self.fragFns) {
+                    [s appendFormat:@"\n%@\n",((SHFn*)[self.fragFns objectForKey:key]).shaderString];
+                }
+                for (NSString *key in self.vertFns) {
+                    [s2 appendFormat:@"\n%@\n",((SHFn*)[self.vertFns objectForKey:key]).shaderString];
+                }
+            
+                {
+                    NSString *m=[macros objectForKey:@"FNS"];
+                    if (m) {
+                        [s appendFormat:@"\n//FNS\n%@\n",m];
+                    }
+                }
+                {
+                    NSString *m=[macros objectForKey:@"FNSV"];
+                    if (m) {
+                        [s appendFormat:@"\n//FNSV\n%@\n",m];
+                    }
+                }
+            
+                {
+                    NSString *m=[macros objectForKey:@"BOT"];
+                    if (m) {
+                        [s appendFormat:@"\n//BOT\n%@\n",m];
+                    }
+                }
+                {
+                    NSString *m=[macros objectForKey:@"BOTV"];
+                    if (m) {
+                        [s2 appendFormat:@"\n//BOTV\n%@\n",m];
+                    }
+                }
+
+                self._fragShaderString=[s.copy autorelease];
+                self._vertShaderString=[s2.copy autorelease];
+            //}
+        }
+    }
+
+    NSMutableString shaderLog=[NSMutableString string] (ivar=shaderLog)
+
+    -(GLuint)loadShaderWithVert:(NSString*)vert frag:(NSString*)frag {
+        GLuint vertShader=INVALIDSHADER, fragShader=INVALIDSHADER;
+    
+        //NSLog(@"Frag shader:\n%@\n\nVert shader:\n%@\n\n",frag,vert);
+    
+        if (_glname!=INVALIDSHADER) glDeleteProgram(_glname);
+        _glname=INVALIDSHADER;
+        // Create shader program.
+        _glname = glCreateProgram();
+        bool fail=true;
+        [shaderLog setString:@""];
+        
+        NSMutableString *shaderStrings=[NSMutableString string];
+        
+        do {
+
+            // Create and compile vertex shader.
+            if (![ShaderProgram compileShader:&vertShader type:GL_VERTEX_SHADER string:vert  addLogTo:shaderLog addShaderTo:shaderStrings])
+            {
+                [Log log:@"Failed to compile vertex shader:\n%@\n\nERRORS:\n%@\n\n",shaderStrings,shaderLog];
+                //ERR("Failed to compile vertex shader");
+                break;
+            }
+            
+            // Create and compile fragment shader.
+            if (![ShaderProgram compileShader:&fragShader type:GL_FRAGMENT_SHADER string:frag addLogTo:shaderLog addShaderTo:shaderStrings])
+            {
+                [Log log:@"Failed to compile fragment shader:\n%@\n\nERRORS:\n%@\n\n",shaderStrings,shaderLog];
+                //ERR("Failed to compile fragment shader");
+                break;
+            }
+            
+            // Attach vertex shader to program.
+            glAttachShader(_glname, vertShader);
+            
+            // Attach fragment shader to program.
+            glAttachShader(_glname, fragShader);
+            
+            // Bind attribute locations.
+            // This needs to be done prior to linking.
+            int i=0;
+            for (NSString *key in self.attributes) {
+                SHAttribute *attribute=[self.attributes objectForKey:key];
+                glBindAttribLocation(_glname, attribute.glname=(i++), [[NSString stringWithFormat:@"__input_%@",attribute.name] UTF8String]);
+            }
+            
+            // Link program.
+            if (![ShaderProgram linkProgram:_glname addLogTo:shaderLog])
+            {
+                NSLog(@"Failed to link program: %d", _glname);
+                break;
+            }
+            
+            for (NSString *key in self.uniforms) {
+                SHUniform *uniform=[self.uniforms objectForKey:key];
+                uniform.glname=glGetUniformLocation(_glname, [uniform.name UTF8String]);
+            }
+            fail=false;
+        } while(false);
+        
+        [shaderLog appendString:shaderStrings];
+        
+        if (vertShader!=INVALIDSHADER) glDeleteShader(vertShader);
+        if (fragShader!=INVALIDSHADER) glDeleteShader(fragShader);
+        if (fail&&(_glname!=INVALIDSHADER)) {
+            glDeleteProgram(_glname);
+            _glname = INVALIDSHADER;
+        }
+        
+        return _glname;
+    }
+
+    +(NSCharacterSet*) varCharSet {
+        return([NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"]);
+    }
+
+    +(NSString *)parseSource:(NSString *)str {
+        NSMutableString *ret=[NSMutableString stringWithString:str];
+        [__Class__ parseUSES:ret];
+        WReader *r=[WReader get];
+        r.fileString=ret;
+        //NSLog(@"local: %@",r.localString);
+        bool changed=[__Class__ parseParan:r];
+        changed=[__Class__ parsePrecision:r]||changed;
+        changed=[__Class__ parseIntToFloat:r]||changed;
+        if (changed) [ret setString:[r stringWithTokensInRange:NSMakeRange(0,r.tokenizer.tokens.count)]];
+        return(ret);
+    }
+
+    +(void)parseUSES:(NSMutableString *)str {
+        NSScanner *scanner=[NSScanner scannerWithString:str];
+        scanner.charactersToBeSkipped=[NSCharacterSet characterSetWithCharactersInString:@""];
+        NSMutableString *ret=[NSMutableString string];
+        NSString *s2;
+        NSCharacterSet *varcs=[ShaderProgram varCharSet];
+        
+        do {
+            bool hasUSES=false;
+            while ([scanner scanString:@" " intoString:&s2]);
+            if ([scanner scanString:@"USES::" intoString:&s2]) {
+                hasUSES=true;
+                bool fst=true;
+                do {
+                    s2=@"";[scanner scanUpToCharactersFromSet:[varcs invertedSet] intoString:&s2];
+                    if (fst) {fst=false;[ret appendFormat:@"#if defined(USES%@) ",s2];}
+                    else [ret appendFormat:@"|| defined(USES%@) ",s2];
+                } while([scanner scanString:@"," intoString:&s2]); 
+                [ret appendString:@"\n"];
+            }
+            s2=@"";[scanner scanUpToString:@"\n" intoString:&s2];
+            [ret appendFormat:@"%@\n",s2];
+            [scanner scanString:@"\n" intoString:&s2];
+            if (hasUSES) [ret appendString:@"#endif\n"];
+        } while (scanner.scanLocation<str.length);
+        [str setString:ret];
+    }
+
+    +(bool)parsePrecision:(WReader*)r {
+        bool hasp=NO,changed=NO;
+
+        r.pos=0;
+        for (WReaderToken *t=r.nextToken;t;t=r.nextToken) {
+            if (t.type=='w') {
+                if (
+                    [t.str isEqualToString:@"float"]||
+                    [t.str isEqualToString:@"int"]||
+                    [t.str isEqualToString:@"vec2"]||
+                    [t.str isEqualToString:@"ivec2"]||
+                    [t.str isEqualToString:@"vec3"]||
+                    [t.str isEqualToString:@"ivec3"]||
+                    [t.str isEqualToString:@"vec4"]||
+                    [t.str isEqualToString:@"ivec4"]||
+                    [t.str isEqualToString:@"mat2"]||
+                    [t.str isEqualToString:@"mat3"]||
+                    [t.str isEqualToString:@"mat4"]) {
+                    if (!hasp) {
+                        [r.tokenizer.tokens insertObject:[[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] autorelease] atIndex:r.pos++];
+                        [r.tokenizer.tokens insertObject:[[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] autorelease] atIndex:r.pos++];
+                        changed=YES;
+                    }
+                }
+                else if (
+                    [t.str isEqualToString:@"highp"]||
+                    [t.str isEqualToString:@"lowp"]||
+                    [t.str isEqualToString:@"medp"]||
+                    [t.str isEqualToString:@"mediump"]) {
+                    hasp=YES;
+                }
+                else hasp=NO;
+            }
+            else if ((t.type=='n')||(t.type=='o')) hasp=NO;
+        }
+        return(changed);
+    }
+
+
+    +(bool)parseIntToFloat:(WReader*)r {
+        bool changed=NO;
+        r.pos=0;
+        for (WReaderToken *t=r.nextToken;t;t=r.nextToken) {
+            if ((t.type=='n')&&([t.str rangeOfString:@"."].location==NSNotFound)) {
+                bool convert=YES;
+                if (r.pos+1<r.tokenizer.tokens.count) {
+                    WReaderToken *t2=[r.tokenizer.tokens objectAtIndex:r.pos+1];
+                    if ([t2.str isEqualToString:@"i"]) {
+                        [r.tokenizer.tokens removeObjectAtIndex:r.pos+1];
+                        changed=YES;
+                        convert=NO;
+                    }
+                }
+                if (convert) {
+                    t.str=[t.str stringByAppendingString:@".0"];
+                    changed=YES;
+                }
+            }
+        }
+        return(changed);
+    }
+
+
+    +(bool)parseParan:(WReader*)r {
+        bool wasw=NO,changed=NO;
+        NSMutableArray *tokens[4][16];
+
+        r.pos=0;
+        for (WReaderToken *t=r.nextToken;t;t=r.nextToken) {
+            if (t.type=='o') {
+                if ((!wasw)&&[t.str isEqualToString:@"("]) {
+                    memset(tokens,0,sizeof(tokens[0][0])*4*16);
+                    bool ismat=NO,insub=NO;
+                    int x=0,y=0,depth=1,maxx=0,maxy=0;
+                    int posWas=r.pos;
+
+                    WReaderToken *t2;
+                    while (depth&&(t2=r.nextToken)) {
+                        bool keep=(x<4)&&(y<(ismat?4:16));
+                        
+                        if (t2.type=='o') {
+                            if ([t2.str isEqualToString:@"("]) {
+                                if ((y<4)&&(!wasw)&&(depth==1)) {
+                                    ismat=insub=YES;
+                                    keep=NO;
+                                }
+                                depth++;
+                            }
+                            else if ([t2.str isEqualToString:@")"]) {
+                                --depth;
+                                if (insub&&(depth==1)) {
+                                    insub=NO;
+                                    keep=NO;
+                                }
+                            }
+                            else if ([t2.str isEqualToString:@","]) {
+                                if (depth==1) {
+                                    y++;x=0;
+                                    if (y<(ismat?4:16)) maxy=MAX(maxy,y);
+                                    keep=NO;
+                                }
+                                else if (insub&&(depth==2)) {
+                                    x++;
+                                    if (x<4) maxx=MAX(maxx,x);
+                                    keep=NO;
+                                }
+                            }
+                        }
+                        if (depth==0) break;
+                        
+                        wasw=(t2.type=='w');
+                        if ((x<4)&&(y<(ismat?4:16))) {
+                            NSMutableArray *a=tokens[x][y];
+                            if (keep) {
+                                if (!a) a=tokens[x][y]=[[MutableArray alloc] init];
+                                [a addObject:t2];
+                            }
+                        }
+                    }
+                    if (t2&&maxy) {
+                        UniformType utype;
+                        int N;
+                        if (maxy>=9) {utype=un_mat4;N=16;}
+                        else if (maxy>=4) {utype=un_mat3;N=9;}
+                        else if (ismat) {
+                            int w;
+                            if ((maxx>=3)||(maxy>=3)) {utype=un_mat4;N=16;w=4;}
+                            else if ((maxx>=2)||(maxy>=2)) {utype=un_mat3;N=9;w=3;}
+                            else {utype=un_mat2;N=4;w=2;}
+                            for (int y=1,i=w;y<w;y++) {
+                                for (int x=0;x<w;x++,i++) {
+                                    if (tokens[0][i]) [tokens[0][i] release];
+                                    tokens[0][i]=tokens[x][y];
+                                    tokens[x][y]=nil;
+                                }
+                            }
+                        }
+                        else if (maxy>=3) {utype=un_vec4;N=4;}
+                        else if (maxy>=2) {utype=un_vec3;N=3;}
+                        else {utype=un_vec2;N=2;}
+                        
+                        NSMutableArray *newTokens=[MutableArray array];
+                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] autorelease]];
+                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] autorelease]];
+                        [newTokens addObject:[[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w'] autorelease]];
+                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o'] autorelease]];
+                        for (int i=0;i<N;i++) {
+                            if (i) [newTokens addObject:[[[WReaderToken alloc] initWithString:@"," bracketCount:t.bracketCount type:'o'] autorelease]];
+                            if (tokens[0][i]) [newTokens addObjectsFromArray:tokens[0][i]];
+                            else [newTokens addObject:[[[WReaderToken alloc] initWithString:@"0.0" bracketCount:t.bracketCount type:'n'] autorelease]];
+                        }
+                        [r.tokenizer.tokens replaceObjectsInRange:NSMakeRange(posWas,r.pos-posWas) withObjectsFromArray:newTokens];
+                        changed=YES;
+                        r.pos+=3;
+                    }
+                    for (int y=0;y<16;y++) for (int x=0;x<4;x++) {
+                        if (tokens[x][y]) {
+                            [tokens[x][y] release];
+                            tokens[x][y]=nil;
+                        }
+                    }
+                }
+            }
+            if (t.type=='w') {
+                if ([t.str isEqualToString:@"__parseparans__"]) {
+                    [r.tokenizer.tokens removeObjectAtIndex:r.pos];
+                    r.pos--;
+                    wasw=NO;
+                }
+                else wasw=YES;
+            }
+            else if ((t.type=='o')||(t.type=='n')) wasw=NO;
+        }
+        return(changed);
+    }
+
+    +(bool)compileShader:(GLuint *)shader type:(GLenum)type string:(NSString*)asourcestr addLogTo:(NSMutableString*)addToLog addShaderTo:(NSMutableString*)addToShader {
+        GLint status;
+        const GLchar *source;
+        
+        NSString *sourcestr=[ShaderProgram parseSource:asourcestr];
+        
+        //NSLog(@"Shader as compiled\n%@\n\n",sourcestr);
+        [addToShader appendFormat:@"\n\nShader as compiled\n%@\n\n\n\n",sourcestr];
+        
+        source = (GLchar *)[sourcestr cStringUsingEncoding:NSASCIIStringEncoding];
+        //shader as (@"Shader:\n%@\n\n",sourcestr);
+        if (!source)
+        {
+            NSLog(@"Failed to load shader");
+            [addToLog appendFormat:@"Failed to load shader\n"];
+            *shader=INVALIDSHADER;
+            return FALSE;
+        }
+        
+        *shader = glCreateShader(type);
+        glShaderSource(*shader, 1, &source, NULL);
+        glCompileShader(*shader);
+        
+        #if defined(SHADERDEBUG)
+        GLint logLength;
+        glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0)
+        {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetShaderInfoLog(*shader, logLength, &logLength, log);
+            if (strstr(log,"ERROR:")) {
+                NSLog(@"Shader compile log:\n%s", log);
+            }
+            [addToLog appendFormat:@"Shader compile log:\n%s\n", log];
+            free(log);
+        }
+        #endif
+        
+        glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
+        if (status == 0)
+        {
+            glDeleteShader(*shader);
+            *shader=INVALIDSHADER;
+            return FALSE;
+        }
+        
+        return TRUE;    
+    }
+
+    +(BOOL)linkProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
+        GLint status;
+        
+        glLinkProgram(prog);
+        
+        #if defined(SHADERDEBUG)
+        GLint logLength;
+        glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0)
+        {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetProgramInfoLog(prog, logLength, &logLength, log);
+            if (strstr(log,"ERROR:")) {
+                NSLog(@"Program link log:\n%s", log);
+            }
+            [addToLog appendFormat:@"Program link log:\n%s\n", log];
+            free(log);
+        }
+        #endif
+        
+        glGetProgramiv(prog, GL_LINK_STATUS, &status);
+        if (status == 0)
+            return FALSE;
+        
+        return TRUE;
+
+    }
+    +(BOOL)validateProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
+        GLint logLength, status;
+        
+        glValidateProgram(prog);
+        glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0)
+        {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetProgramInfoLog(prog, logLength, &logLength, log);
+            if (strstr(log,"ERROR:")) {
+                NSLog(@"Program validate log:\n%s", log);
+            }
+            [addToLog appendFormat:@"Program validate log:\n%s\n", log];
+            free(log);
+        }
+        
+        glGetProgramiv(prog, GL_VALIDATE_STATUS, &status);
+        if (status == 0)
+            return FALSE;
+        
+        return TRUE;
+
+    }
+    +(void)printLogForShader:(GLuint)obj {
+        int infologLength = 0;
+        
+        int charsWritten  = 0;
+        char *infoLog;
+        
+        glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+        
+        if (infologLength > 0)
+        {
+            infoLog = (char *)malloc(infologLength);
+            glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+            
+            prnt("%s\n",infoLog);
+            
+            free(infoLog);
+            
+        }
+    }
+    +(NSString*)logForShader:(GLuint)obj {
+        NSMutableString *ret=[NSMutableString string];
+        
+        int infologLength = 0;
+        
+        int charsWritten  = 0;
+        char *infoLog;
+        
+        glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+        
+        if (infologLength > 0)
+        {
+            infoLog = (char *)malloc(infologLength);
+            glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+            
+            [ret appendFormat:@"%s\n",infoLog];
+            
+            free(infoLog);
+            
+        }
+        NSLog(@"l:%@",ret);
+        return(ret);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

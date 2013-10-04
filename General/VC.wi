@@ -1,0 +1,138 @@
+"<UIKit/UIKit.h>"
+
+
+
+
+<MyViewController>
+    CGRect kbRect (nodef,readonly)
+    NSString allowedOrientations
+
+    -(void)resized {
+    }
+    -(void)restyle {
+    }
+
+    UIViewController parVC (nodef,assign,nonatomic)
+
+    UIView contentView (nodef,nonatomic,IBOutlet)
+
+    NSString allowedOrientations=@"new"
+
+
+    -(init) {
+        //self.stylerPrefix=@"VC-";
+    }
+
+
+    -(void)resize {
+        [self resizeWithNavigationFaded:self.navigationController.navigationBar.alpha<0.5];
+    }
+    -(void)resizeWithNavigationFaded:(bool)ignoreNavBar {
+        CGRect r=[[UIScreen mainScreen] applicationFrame];
+        r = [self.view convertRect:r fromView:nil];   
+        r.origin.x=r.origin.y=0;
+        if ((!ignoreNavBar)&&!self.navigationController.navigationBarHidden) {
+            r.size.height-=self.navigationController.navigationBar.bounds.size.height;
+        }
+        if (ignoreNavBar&&!self.navigationController.navigationBarHidden) {
+            r.origin.y-=self.navigationController.navigationBar.bounds.size.height;
+        }
+        if (!(self.navigationController.toolbarHidden||kbRect.size.height)) r.size.height-=self.navigationController.toolbar.bounds.size.height;
+        r.size.height-=kbRect.size.height;
+        NSLog(@"---------Resize h %f y %f",r.size.height,r.origin.y);
+        [UIView animateWithDuration:0.2 animations:^{
+            self.view.frame=CGRectMake(0, 0, r.size.width, r.size.height);
+            self.contentView.frame=r;
+            //self.navigationController.navigationBar.alpha=(ignoreNavBar?0:1);
+        } completion:^(BOOL finished) {
+        //       self.view.frame=r;
+            [self resized];
+            [self restyle];
+        }];
+    }
+
+    -(void)willShowKB:(NSNotification*)inNotification {
+        kbRect = [self.view convertRect:[[[inNotification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue] fromView:nil];   
+        [self resize];
+    }
+
+
+    -(void)willHideKB:(NSNotification *)inNotification {
+        kbRect=CGRectMake(0, 0, [self.view convertRect:[[UIScreen mainScreen] applicationFrame] fromView:nil].size.width,0);
+        [self resize];
+    }
+
+    +(NSString*)stnibName{@-100 
+        bool isIPhone=([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone);
+        @-50 NSString *suffix=(isIPhone?@"_iPhone":@"_iPad"),*base=@"__WIClass__";
+        @50 NSString *ret=[base stringByAppendingString:suffix];
+        @999 return(ret);
+    }
+
+    +(__WIClass__*)getUsingNib {
+        NSString *__nibName=[__WIClass__ stnibName];
+        if (!__nibName) return(nil);
+        return([[[__WIClass__ alloc] initWithNibName:__nibName bundle:nil] autorelease]);
+    }
+
+
+    -(init)initWithCoder:(NSCoder*)aDecoder {}
+    -(init)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {}
+    -(init[super initWithNibName:nil bundle:nil])init {}
+
+    -(void)viewDidLoad {@-500 
+        [super viewDidLoad];
+        @-100 
+        [self restyle];
+    }
+
+    -(void)viewWillAppear:(BOOL)animated {@500 
+        [super viewWillAppear:animated];
+        
+        //NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        //[center addObserver:self selector:@selector(willShowKB:) name:UIKeyboardWillShowNotification object:nil];
+        //[center addObserver:self selector:@selector(willHideKB:) name:UIKeyboardWillHideNotification object:nil];
+    }
+
+    -(void)viewWillDisappear:(BOOL)animated {@500 
+        [super viewWillDisappear:animated];
+        
+        //NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        //[center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+        //[center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    }
+
+    -(BOOL)shouldAutorotate{
+        return YES;
+    }
+
+    -(NSInteger)supportedInterfaceOrientations{
+        NSInteger mask = 0;
+        if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
+            mask |= UIInterfaceOrientationMaskLandscapeRight;
+        if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
+            mask |= UIInterfaceOrientationMaskLandscapeLeft;
+        if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
+            mask |= UIInterfaceOrientationMaskPortrait;
+        if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
+            mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
+        return mask;
+    }
+
+    -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {@-999 
+        NSString *orientStr=nil;
+        switch (interfaceOrientation) {
+            case UIInterfaceOrientationPortrait:orientStr=@"n";break;
+            case UIInterfaceOrientationPortraitUpsideDown:orientStr=@"s";break;
+            case UIInterfaceOrientationLandscapeLeft:orientStr=@"e";break;
+            case UIInterfaceOrientationLandscapeRight:orientStr=@"w";break;
+        }
+        BOOL ret=((!orientStr)||([self.allowedOrientations rangeOfString:orientStr].location!=NSNotFound));
+        @999 return(ret);
+    }
+
+
+    -(void)didReceiveMemoryWarning {@900 
+        [super didReceiveMemoryWarning];
+    }
+

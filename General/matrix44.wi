@@ -1,0 +1,385 @@
+//
+//  3D.m
+//  Fractal surfer
+//
+//  Created by Jen on 3/12/11.
+//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//
+
+type Mat44 "typedef:struct Mat44"
+type Vec4 "typedef:struct Vec4"
+
+/*interfaces:impl:
+#define ThreeDCFILE
+*/
+/*interfaces:
+    #define _MatMPtr(c,r) (m->m[((r)<<2)+(c)])
+    #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)+(c)])
+    #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)
+    #define MatM1Ptr(mm,r,c) MatMPtr(mm,(r)-1,(c)-1)
+*/
+
+
+Matrix44<BaseObject>
+    Mat44 m (nodef)
+
+    -(init)init {[self identity];}
+    -(init[super init])initWithMat44:(Mat44*)mm {@20 [self copyMat44:mm];}
+    -(init[super init])initWithMatrix44:(Matrix44*)mm {@20 [self copyMatrix44:mm];}
+
+    -(Matrix44*)copyMatrix44:(Matrix44*)mm {
+        m=mm->m;
+        return(self);
+    }
+    -(Matrix44*)copyMat44:(Mat44*)mm {
+        m=*mm;
+        return(self);
+    }
+    -(Matrix44*)identity {
+        [Matrix44 identityMat44:&m];
+        return(self);
+    }
+
+    -(Matrix44*)affineWithScale:(Vec4)scale origin:(Vec4)org rotation:(Vec4)rot {
+        [Matrix44 makeAffineMat44:&m scale:scale origin:org rotation:rot];
+        return(self);
+    }
+    -(Matrix44*)rotxByDegrees:(float)deg {
+        [Matrix44 rotxMat44:&m degrees:deg];
+        return(self);
+    }
+    -(Matrix44*)rotyByDegrees:(float)deg {
+        [Matrix44 rotyMat44:&m degrees:deg];
+        return(self);
+    }
+    -(Matrix44*)rotzByDegrees:(float)deg {
+        [Matrix44 rotzMat44:&m degrees:deg];
+        return(self);
+    }
+
+    -(Matrix44*)scale:(float)ascale {
+        [Matrix44 scaleMat44:&m scale:ascale];
+        return(self);
+    }
+    -(Matrix44*)scalex:(float)scalex y:(float)scaley z:(float)scalez {
+        [Matrix44 scaleMat44:&m scalex:scalex scaley:scaley scalez:scalez];
+        return(self);
+    }
+    -(Matrix44*)translatex:(float)dx y:(float)dy z:(float)dz {
+        [Matrix44 translateMat44:&m dx:dx dy:dy dz:dz];
+        return(self);
+    }
+
+
+    -(Vec4)multiplyVec4:(Vec4*)v {
+        Vec4 ov;
+        return(*[Matrix44 multiplyMat44:&m byVec4:v toVec4:&ov]);
+    }
+    -(Matrix44*)multiplyMatrix44:(Matrix44*)ml byMatrix44:(Matrix44*)mr {
+        [Matrix44 multiplyMat44:&ml->m byMat44:&mr->m toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyMatrix44:(Matrix44*)ml byMat44:(Mat44*)mr {
+        [Matrix44 multiplyMat44:&ml->m byMat44:mr toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyMat44:(Mat44*)ml byMatrix44:(Matrix44*)mr {
+        [Matrix44 multiplyMat44:ml byMat44:&mr->m toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyMat44:(Mat44*)ml byMat44:(Mat44*)mr {
+        [Matrix44 multiplyMat44:ml byMat44:mr toMat44:&m];
+        return(self);
+    }
+
+    -(Matrix44*)multiplyByMatrix44OnRight:(Matrix44*)mm {
+        [Matrix44 multiplyMat44:&m byMat44:&mm->m toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyByMat44OnRight:(Mat44*)mm {
+        [Matrix44 multiplyMat44:&m byMat44:mm toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyByMatrix44OnLeft:(Matrix44*)mm {
+        [Matrix44 multiplyMat44:&mm->m byMat44:&m toMat44:&m];
+        return(self);
+    }
+    -(Matrix44*)multiplyByMat44OnLeft:(Mat44*)mm {
+        [Matrix44 multiplyMat44:mm byMat44:&m toMat44:&m];
+        return(self);
+    }
+
+
+    -(NSMutableString*)toString:(NSMutableString*)s {
+        return([Matrix44 toStringMat44:&m string:s sepLines:false]);
+    }
+    -(NSMutableString*)addString:(NSMutableString*)s {
+        return([Matrix44 addStringMat44:&m string:s sepLines:false]);
+    }
+    -(NSMutableString*)toString:(NSMutableString*)s sepLines:(bool)sepLines {
+        return([Matrix44 toStringMat44:&m string:s sepLines:sepLines]);
+    }
+    -(NSMutableString*)addString:(NSMutableString*)s sepLines:(bool)sepLines {
+        return([Matrix44 addStringMat44:&m string:s sepLines:sepLines]);
+    }
+
+    double determinant={
+        return([Matrix44 determinantOfMat44:&m]);
+    }
+
+    Matrix44 invert={
+        Mat44 mm=m;
+        [Matrix44 inverseOfMat44:&mm toMat44:&m];
+        return(self);
+    }
+
+
+    +(Mat44*)identityMat44:(Mat44*)m {
+        _MatMPtr(1,0)=_MatMPtr(2,0)=_MatMPtr(3,0)= _MatMPtr(0,1)=_MatMPtr(2,1)=_MatMPtr(3,1)= _MatMPtr(0,2)=_MatMPtr(1,2)=_MatMPtr(3,2)= _MatMPtr(0,3)=_MatMPtr(1,3)=_MatMPtr(2,3)=0;
+        _MatMPtr(0,0)=_MatMPtr(1,1)=_MatMPtr(2,2)=_MatMPtr(3,3)=1;
+        return(m);
+    }
+
+    +(Mat44*)makeAffineMat44:(Mat44*)m scale:(Vec4)scale origin:(Vec4)org rotation:(Vec4)rot {
+        [Matrix44 identityMat44:m];
+        _MatMPtr(0,0)=VecM(scale,0);_MatMPtr(1,1)=VecM(scale,1);_MatMPtr(2,2)=VecM(scale,2);_MatMPtr(3,3)=VecM(scale,3);
+        _MatMPtr(3,0)=VecM(org,0);_MatMPtr(3,1)=VecM(org,1);_MatMPtr(3,2)=VecM(org,2);
+        Mat44 mm;
+        [Matrix44 multiplyMat44:m byMat44:[Matrix44 rotxMat44:&mm degrees:rot.v[0]] toMat44:m];
+        [Matrix44 multiplyMat44:m byMat44:[Matrix44 rotyMat44:&mm degrees:rot.v[1]] toMat44:m];
+        [Matrix44 multiplyMat44:m byMat44:[Matrix44 rotzMat44:&mm degrees:rot.v[2]] toMat44:m];
+        return(m);
+    }
+    +(Mat44*)rotxMat44:(Mat44*)m degrees:(float)deg {
+        float rad=deg*floatPI/180;
+        [Matrix44 identityMat44:m];
+        _MatMPtr(1,1)=_MatMPtr(2,2)=cos(rad);
+        _MatMPtr(1,2)=-(_MatMPtr(2,1)=sin(rad));
+        return(m);
+    }
+    +(Mat44*)rotyMat44:(Mat44*)m degrees:(float)deg {
+        float rad=deg*floatPI/180;
+        [Matrix44 identityMat44:m];
+        _MatMPtr(0,0)=_MatMPtr(2,2)=cos(rad);
+        _MatMPtr(2,0)=-(_MatMPtr(0,2)=sin(rad));
+        return(m);
+    }
+    +(Mat44*)rotzMat44:(Mat44*)m degrees:(float)deg {
+        float rad=deg*floatPI/180;
+        [Matrix44 identityMat44:m];
+        _MatMPtr(0,0)=_MatMPtr(1,1)=cos(rad);
+        _MatMPtr(1,0)=-(_MatMPtr(0,1)=sin(rad));
+        return(m);
+    }
+
+    +(Mat44*)scaleMat44:(Mat44*)m scale:(float)s {
+        [Matrix44 identityMat44:m];
+        _MatMPtr(0,0)*=s;_MatMPtr(1,1)*=s;_MatMPtr(2,2)*=s;
+        return(m);
+    }
+    +(Mat44*)scaleMat44:(Mat44*)m scalex:(float)sx scaley:(float)sy scalez:(float)sz {
+        [Matrix44 identityMat44:m];
+        _MatMPtr(0,0)*=sx;_MatMPtr(1,1)*=sy;_MatMPtr(2,2)*=sz;
+        return(m);
+    }
+    +(Mat44*)translateMat44:(Mat44*)m dx:(float)dx dy:(float)dy dz:(float)dz {
+        [Matrix44 identityMat44:m];
+        _MatMPtr(3,0)=dx;
+        _MatMPtr(3,1)=dy;
+        _MatMPtr(3,2)=dz;
+        return(m);
+    }
+
+
+    +(Vec4*)multiplyMat44:(Mat44*)m byVec4:(Vec4*)v toVec4:(Vec4*)ov {
+        float *vp=v->v,*mp=m->m;
+        float *ovp=ov->v;
+        MULTIPLYVM(vp,mp,ovp);
+        return(ov);
+    }
+
+    +(Mat44*)multiplyMat44:(Mat44*)m1 byMat44:(Mat44*)m2 toMat44:(Mat44*)om {
+        if (m1==om) {Mat44 mm1;mm1=*m1;return([Matrix44 multiplyMat44:&mm1 byMat44:m2 toMat44:om]);}
+        if (m2==om) {Mat44 mm2;mm2=*m2;return([Matrix44 multiplyMat44:m1 byMat44:&mm2 toMat44:om]);}
+        
+        float *m1p=m1->m,*m2p=m2->m;
+        float *omp=om->m;
+        MULTIPLYMM(m1p,m2p,omp);
+        return(om);
+    }
+
+
+    +(NSMutableString*)toStringMat44:(Mat44*)m string:(NSMutableString*)s sepLines:(bool)sepLines {
+        [s init];
+        return([Matrix44 addStringMat44:m string:s sepLines:sepLines]);
+    }
+    +(NSMutableString*)addStringMat44:(Mat44*)m string:(NSMutableString*)s sepLines:(bool)sepLines             {
+        if (sepLines) {
+            [s appendFormat:@"\n {{%4.2f %4.2f %4.2f %4.2f}\n  {%4.2f %4.2f %4.2f %4.2f}\n  {%4.2f %4.2f %4.2f %4.2f}\n  {%4.2f %4.2f %4.2f %4.2f}\n}}\n",
+             _MatMPtr(0,0),_MatMPtr(0,1),_MatMPtr(0,2),_MatMPtr(0,3),
+             _MatMPtr(1,0),_MatMPtr(1,1),_MatMPtr(1,2),_MatMPtr(1,3),
+             _MatMPtr(2,0),_MatMPtr(2,1),_MatMPtr(2,2),_MatMPtr(2,3),
+             _MatMPtr(3,0),_MatMPtr(3,1),_MatMPtr(3,2),_MatMPtr(3,3)];
+        }
+        else {
+            [s appendFormat:@"{{%.2f %.2f %.2f %.2f} {%.2f %.2f %.2f %.2f} {%.2f %.2f %.2f %.2f} {%.2f %.2f %.2f %.2f}}",
+             _MatMPtr(0,0),_MatMPtr(0,1),_MatMPtr(0,2),_MatMPtr(0,3),
+             _MatMPtr(1,0),_MatMPtr(1,1),_MatMPtr(1,2),_MatMPtr(1,3),
+             _MatMPtr(2,0),_MatMPtr(2,1),_MatMPtr(2,2),_MatMPtr(2,3),
+             _MatMPtr(3,0),_MatMPtr(3,1),_MatMPtr(3,2),_MatMPtr(3,3)];
+        }
+        return(s);
+    }
+
+
+    +(double)determinantOfMat44:(Mat44*)m {
+        return(
+               (_MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4) + 
+                _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2) +
+                _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3))+
+               (_MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3) + 
+                _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4) +
+                _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1))+
+               (_MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4) + 
+                _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1) +
+                _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2))+
+               (_MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2) + 
+                _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3) +
+                _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1))-
+               (
+               (_MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3) +
+                _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4) +
+                _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2))+
+               (_MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4) + 
+                _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1) +
+                _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3))+
+               (_MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2) + 
+                _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4) +
+                _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1))+
+               (_MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3) + 
+                _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1) +
+                _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2))
+                )
+            );
+    }
+
+    +(Mat44*)inverseOfMat44:(Mat44*)m toMat44:(Mat44*)om {
+        double det=[Matrix44 determinantOfMat44:m];
+        if (det==0.0) [Matrix44 identityMat44:om];
+        else {
+            MatM1Ptr(om, 1, 1)=(
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2)+
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2))/det;
+            MatM1Ptr(om, 1, 2)=(
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3))/det;
+            MatM1Ptr(om, 1, 3)=(
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(4,2)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(4,2))/det;
+            MatM1Ptr(om, 1, 4)=(
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(3,3)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(3,4)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(3,2)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(3,4)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(3,2)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(3,3))/det;
+            MatM1Ptr(om, 2, 1)=(
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3))/det;
+            MatM1Ptr(om, 2, 2)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1))/det;
+            MatM1Ptr(om, 2, 3)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(4,3))/det;
+            MatM1Ptr(om, 2, 4)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(3,4)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,4)*_MatM1Ptr(3,1)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(3,3)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(3,3)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(3,4)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,3)*_MatM1Ptr(3,1))/det;
+            MatM1Ptr(om, 3, 1)=(
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1)+
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(2,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1))/det;
+            MatM1Ptr(om, 3, 2)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,4)*_MatM1Ptr(4,2)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,4)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2))/det;
+            MatM1Ptr(om, 3, 3)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(4,4)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(4,1)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(4,4)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(4,1))/det;
+            MatM1Ptr(om, 3, 4)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,4)*_MatM1Ptr(3,2)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(3,4)+
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,2)*_MatM1Ptr(3,1)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(3,4)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,4)*_MatM1Ptr(3,1)-
+                            _MatM1Ptr(1,4)*_MatM1Ptr(2,1)*_MatM1Ptr(3,2))/det;
+            MatM1Ptr(om, 4, 1)=(
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2)+
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(2,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(2,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(2,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2))/det;
+            MatM1Ptr(om, 4, 2)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,2)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,3)*_MatM1Ptr(4,1)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,1)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(3,3)*_MatM1Ptr(4,2)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(3,1)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(3,2)*_MatM1Ptr(4,1))/det;
+            MatM1Ptr(om, 4, 3)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(4,2)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(4,3)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(4,3)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(4,1)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(4,2))/det;
+            MatM1Ptr(om, 4, 4)=(
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,2)*_MatM1Ptr(3,3)+
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,3)*_MatM1Ptr(3,1)+
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,1)*_MatM1Ptr(3,2)-
+                            _MatM1Ptr(1,1)*_MatM1Ptr(2,3)*_MatM1Ptr(3,2)-
+                            _MatM1Ptr(1,2)*_MatM1Ptr(2,1)*_MatM1Ptr(3,3)-
+                            _MatM1Ptr(1,3)*_MatM1Ptr(2,2)*_MatM1Ptr(3,1))/det;
+        }
+        return (om);
+    }
+

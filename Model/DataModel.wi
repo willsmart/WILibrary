@@ -1,0 +1,367 @@
+
+// these are essential to get the macros going (macros can't create protocols, but can drill through them
+<__PropertyProtocol__> "nac" "multi"
+<__Property__s__model> "nac" "multi"
+<__Property____modelObject> "nac" "multi"
+<__Property____viewedObject> "nac" "multi"
+
+
+
+
+PropertyData
+    SEL getter,setter (readonly,nodef)
+    NSString name (readonly,dealloc,nodef,ivar=name)
+    Class clas (readonly,nodef)
+    bool direct (readonly,nodef)
+    NSString clasName (readonly,dealloc,nodef,ivar=clasName)
+    -(init[super init])initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect {
+        direct=adirect;
+        name=[aname retain];
+        clas=aclas;
+        clasName=[aclasName retain];
+        getter=agetter;
+        setter=asetter;
+    }
+
+
+//DataRepresentationSchema
+//    NSArray childRepresentations=[NSMutableArray array] (readonly,dealloc)
+//
+//    NSString dataBinding
+//    NSURL _metaURL (nodef)
+//    NSURL metaURL (
+
+<FieldProperty:DataModel> "nac" "multi"
+    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSObject class] clasName:@"<__PropertyProtocol__>" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+    }
+    <__PropertyProtocol__> __property__=
+        {NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    <__PropertyProtocol__> ___property__=
+        {NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+<FieldPropertyViewer:DataModelViewer> "nac" "multi"
+    <__PropertyProtocol__> __property__=
+        {NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    <__PropertyProtocol__> ___property__=
+        {NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+
+<StringProperty:DataModel> "nac" "multi"
+    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSString class] clasName:@"NSString" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+    }
+    NSString __property__=
+        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSString ___property__=
+        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+<StringPropertyViewer:DataModelViewer> "nac" "multi"
+    NSString __property__=
+        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSString ___property__=
+        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+
+<NumberProperty:DataModel> "nac" "multi"
+    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSNumber class] clasName:@"NSNumber" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+    }
+    NSNumber __property__=
+        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSNumber ___property__=
+        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+<NumberPropertyViewer:DataModelViewer> "nac" "multi"
+    NSNumber __property__=
+        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSNumber ___property__=
+        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+
+
+
+
+
+<ChildArrayPropertyModelDelegate:MutableArrayDelegate> "nac" "multi"
+    <__Property__s__model> owner (nodef,ivar=owner,assign)
+    -(init[super init])initWithOwner:(NSObject<__Property__s__model>*)aowner {owner=aowner;}
+
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        [self.owner didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:index];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        [self.owner willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:index];
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        [self.owner __property__sSwappedWithIndex:fromIndex andIndex:toIndex];
+    }
+    -(void)allObjectsMoved {
+        [self.owner all__Property__sMoved];
+    }
+
+
+
+<ChildArrayPropertyViewer:DataModelViewer> "nac" "multi"
+    //__property__s_parent ~a< <__Property____viewedObject> __property__
+    -(NSObject<__Property____viewedObject>*)make__Property__ViewedObjectForModelObject:(NSObject<__Property____modelObject>*)modelObject {@-999 NSObject<__Property____viewedObject> *ret=nil;
+        @999 return(ret);
+    }
+
+
+<ChildArrayProperty:DataModel> "nac" "multi"
+    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__s" clas:[MutableArray class] clasName:@"MutableArray" getter:@selector(__property__s) setter:nil direct:NO] autorelease] forKey:@"__property__s"];
+    }
+    //__property__s_parent ~a< <__Property____modelObject> __property__
+    -(init) {
+        [self.__property__s addDelegate:[[[__Property__s__modelDelegate alloc] initWithOwner:self] autorelease]];
+    }
+    -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {@-100 
+        {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                [vw.__property__s removeAllObjects];
+                NSUInteger index=0;
+                for (NSObject<__Property____modelObject> *object in self.__property__s) {
+                    NSObject<__Property____viewedObject> *vd=[vw make__Property__ViewedObjectForModelObject:object];
+                    if (vd) {
+                        [vw.__property__s insertObject:vd atIndex:index++];
+                    }
+                }
+            }
+        }
+    }
+    -(void)willRemoveViewer:(NSObject<DataModelViewer>*)viewer {@-100 
+        {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                [vw.__property__s removeAllObjects];
+            }
+        }
+    }
+    -(void)didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:(NSUInteger)index {@-100 
+        for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                NSObject<__Property____viewedObject> *vd=[vw make__Property__ViewedObjectForModelObject:object];
+                if (vd) {
+                    [vw.__property__s insertObject:vd atIndex:index];
+                }
+            }
+        }
+    }
+    -(void)willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:(NSUInteger)index {@-100 
+        for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                [vw.__property__s removeObjectAtIndex:index];
+            }
+        }
+    }
+    -(void)__property__sSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                [vw.__property__s exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
+            }
+        }
+    }
+    -(void)all__Property__sMoved {
+        for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+            if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
+                NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
+                [vw.__property__s removeAllObjects];
+                NSUInteger index=0;
+                for (NSObject<__Property____modelObject> *object in self.__property__s) {
+                    NSObject<__Property____viewedObject> *vd=[vw make__Property__ViewedObjectForModelObject:object];
+                    if (vd) {
+                        [vw.__property__s insertObject:vd atIndex:index++];
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+PropertyViewerDelegate<MutableSetDelegate>
+    <DataModel> owner (nodef,ivar=owner,assign)
+    -(init[super init])initWithOwner:(NSObject<DataModel>*)aowner {owner=aowner;}
+    -(void)didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
+    -(void)willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
+
+
+<DataModel:DataModelViewer>
+    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=dataModelParentFilterDel)
+    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (readonly,ivar=_dataModelParentProperties,dealloc)
+
+
+    -(init) {@15 
+        [propertyStack addObject:_dataModelParentProperties];
+        dataModelParentFilterDel.followerDictionary=_dataModelParentProperties;
+        [self.dataModelViewers addDelegate:[[[PropertyViewerDelegate alloc] initWithOwner:self] autorelease]];
+    }
+    -(void)dealloc {@-100 
+        for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) [viewer._properties removeDelegate:dataModelParentFilterDel];
+    }
+
+    dataModel -s< <DataModelViewer> dataModelViewer
+
+    -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {
+        {
+            bool changed=NO;
+            for (NSObject<NSCopying> *key in self._properties) {
+                PropertyData *d=[self.propertyDatas objectForKey:key];
+                NSObject *object=[self._properties objectForKey:key];
+                if (d?d.direct:[__Class__ isDirectObject:object]) {
+                    changed=YES;
+                    if (object) [viewer modelSetObject:object forKey:key];
+                    else [viewer modelRemovedObjectForKey:key];
+                }
+            }
+            for (NSObject<NSCopying> *key in self.propertyDatas) {
+                if (![self._properties objectForKey:key]) {
+                    PropertyData *d=[self.propertyDatas objectForKey:key];
+                    if (d?d.direct:YES) {
+                        changed=YES;
+                        [viewer modelRemovedObjectForKey:key];
+                    }
+                }
+            }
+            if (changed) [viewer modelStateOK];
+        }
+    }
+    -(void)willRemoveViewer:(NSObject<DataModelViewer>*)viewer {
+        {
+            bool changed=NO;
+            for (NSObject<NSCopying> *key in self.propertyDatas) {
+                PropertyData *d=[self.propertyDatas objectForKey:key];
+                if (d.direct) {
+                    changed=YES;
+                    [viewer modelRemovedObjectForKey:key];
+                }
+            }
+            if (changed) [viewer modelStateOK];
+        }
+    }
+
+
+    NSDictionary propertyDatas=
+        {
+            if (propertyDatas) return(propertyDatas);
+            NSDictionary *ret=[g_singletons.dataModelPropertySelectors objectForKey:NSStringFromClass([__Class__ class])];
+            if (!ret) {
+                NSMutableDictionary *d=[[NSMutableDictionary alloc] init];
+                [__Class__ addPropertySelectorsToDictionary:d];
+                ret=d.copy;[d release];
+                [g_singletons.dataModelPropertySelectors setObject:ret forKey:NSStringFromClass([__Class__ class])];
+                [ret release];
+            }
+            propertyDatas=ret;
+            return(ret);
+        } (ivar=propertyDatas)
+
+    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
+
+    +(bool)isDirectObject:(NSObject*)object {
+        return([object isKindOfClass:[NSString class]]||[object isKindOfClass:[NSNumber class]]);
+    }
+
+    bool needViewerStateOK (nodef,readonly)
+
+    -(void)property_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            PropertyData *d=[self.propertyDatas objectForKey:key];
+            if (d?d.direct:[__Class__ isDirectObject:toObject]) {
+                needViewerStateOK=YES;
+                for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+                    [viewer modelSetObject:toObject forKey:key];
+                }
+            }
+        }
+    }
+    -(void)property_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            PropertyData *d=[self.propertyDatas objectForKey:key];
+            if (d?d.direct:YES) {
+                needViewerStateOK=YES;
+                for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+                    [viewer modelRemovedObjectForKey:key];
+                }
+            }
+        }
+    }
+    -(void)property_stateOK {
+        {
+            if (needViewerStateOK) {
+                for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
+                    [viewer modelStateOK];
+                }
+                needViewerStateOK=NO;
+            }
+        }
+    }
+
+
+Singletons
+    NSMutableDictionary dataModelPropertySelectors=[[NSMutableDictionary alloc] init] (dealloc,ivar=dataModelPropertySelectors,readonly)
+
+
+<DataModelViewer:HasProperties>
+    -(void)modelSetObject:(id)object forKey:(id<NSCopying>)key {@-999
+        NSObject *setObject=(NSObject*)object;
+        kid forKey=key;
+        @999
+        if (setObject&&forKey) [self._myProperties setObject:setObject forKey:forKey];
+    }
+    -(void)modelRemovedObjectForKey:(id<NSCopying>)key {@-999
+        kid forKey=key;
+        @999
+        if (forKey) [self._myProperties removeObjectForKey:forKey];
+    }
+    -(void)modelStateOK {}
+
+
+
+
+/*
+<JSDataModelViewer:DataModelViewer>
+    -(bool)objectIsJS:(NSObject*)object {
+        return([object isKindOfClass:[NSDictionary class]]&&[[(NSDictionary*)object objectForKey:@"js"] isKindOfClass:[NSString class]]&&[[(NSDictionary*)object objectForKey:@"jsvars"] isKindOfClass:[NSDictionary class]]);
+    }
+    -(NSString*)jsForObject:(NSObject*)object {
+        if ([object isKindOfClass:[NSDictionary class]]&&[[(NSDictionary*)object objectForKey:@"js"] isKindOfClass:[NSString class]]&&[[(NSDictionary*)object objectForKey:@"vars"] isKindOfClass:[NSDictionary class]]) {
+            NSMutableString *rawjs=[((NSString*)[(NSDictionary*)object objectForKey:@"js"]).mutablecopy autorelease];
+            NSDictionary *vars=(NSDictionary*)[(NSDictionary*)object objectForKey:@"vars"];
+            for (NSString *k in vars) {
+                NSObject *v=[vars objectForKey:k];
+                NSString *vs=v.description;
+                [rawjs replaceOccurancesOfString:k withString:vs];
+            }
+            return(rawjs);
+        }
+        else return(nil);
+    }
+        
+*/
+
+
+
+
+

@@ -1,0 +1,270 @@
+"<MessageUI/MessageUI.h>"
+
+
+MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate> "fn:util"
+    UIViewController vc (nodef,assign)
+
+    -(init[super init])initWithViewController:(UIViewController*)avc {
+        self.vc=avc;
+    }
+
+    - (bool)sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML {
+        return([self sendMailWithSubject:subject content:content isHTML:isHTML attachData:nil attachMimeType:nil attachFileName:nil]);
+    }
+
+    - (bool)sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML attachData:(NSData*)attachData attachMimeType:(NSString*)attachMimeType attachFileName:(NSString*)attachFileName {
+        if ([MFMailComposeViewController canSendMail]) {
+            MFMailComposeViewController *mailer = [[[MFMailComposeViewController alloc] init] autorelease];
+            mailer.mailComposeDelegate = self;
+            [mailer setSubject:subject];
+            [mailer setMessageBody:content isHTML:isHTML];
+            if (attachData&&attachFileName&&attachMimeType) {
+                [mailer addAttachmentData:attachData mimeType:attachMimeType fileName:attachFileName];
+            }
+            [self.vc presentViewController:mailer animated:YES completion:nil];
+            return(true);
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable"
+                                                            message:@"Sorry, the device isn't set up to send mail"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+            return(false);
+        }
+    }
+
+    -(bool)sendMessageWithContent:(NSString*)content {
+        if ([MFMailComposeViewController canSendMail]) {
+            MFMessageComposeViewController *mailer = [[[MFMessageComposeViewController alloc] init] autorelease];
+            mailer.messageComposeDelegate = self;
+            [mailer setBody:content];
+            [self.vc presentViewController:mailer animated:YES completion:nil];
+            return(true);
+        }
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable"
+                                                            message:@"Sorry, the device isn't set up to send messages"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+            return(false);
+        }
+    }
+
+
+
+    - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+        NSString *alertTitle=nil,*alert=nil;
+        switch (result) {
+            case MFMailComposeResultCancelled:
+                break;
+            case MFMailComposeResultSaved:
+                alertTitle=@"Saved";alert=@"OK, the email has been saved as a draft";
+                break;
+            case MFMailComposeResultSent:
+                alertTitle=@"Sending";alert=@"OK, the email is in the queue";
+                break;
+            case MFMailComposeResultFailed:
+                alertTitle=@"Fail";alert=@"A tube is blocked";
+                break;
+            default:
+                alertTitle=@"Fail";alert=@"Unknown error";
+                break;
+        }
+        [self.vc dismissViewControllerAnimated:YES completion:nil];
+        
+        if (alertTitle&&alert) {
+            UIAlertView *al = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                         message:alert
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+            [al show];
+            [al release];
+        }        
+    }
+
+    - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+        NSString *alertTitle=nil,*alert=nil;
+        switch (result) {
+            case MessageComposeResultCancelled:
+                break;
+            case MessageComposeResultSent:
+                alertTitle=@"Sending";alert=@"OK, the message is in the queue";
+                break;
+            case MessageComposeResultFailed:
+                alertTitle=@"Fail";alert=@"A tube is blocked";
+                break;
+            default:
+                alertTitle=@"Fail";alert=@"Unknown error";
+                break;
+        }
+        [self.vc dismissViewControllerAnimated:YES completion:nil];
+        
+        if (alertTitle&&alert) {
+            UIAlertView *al = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                         message:alert
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+            [al show];
+            [al release];
+        }        
+    }
+
+
+    - (NSString*)htmlForURLString:(NSString*)urlStr title:(NSString*)title {
+        if (!title) title=urlStr;
+        return([NSString stringWithFormat:@"<a href=\"%@\">%@</a>",[[urlStr stringByEncodingCEscapes] stringByEncodingHTMLEntities],[title stringByEncodingHTMLEntities]]);
+    }
+
+    //- (NSString*)htmlForURL:(NSURL*)url {
+    //    return([self htmlForURLString:url.absoluteString title:[[WebPageTitleCache getDefault] getExistingTitleForURL:url]]);
+    //}
+
+    - (void)startItemWithHTMLString:(NSMutableString*)s depth:(int)depth {
+        if (depth>0) [s appendString:@"<li>"];    
+    }
+    - (void)endItemWithHTMLString:(NSMutableString*)s depth:(int)depth {
+        if (depth>0) [s appendString:@"</li>"];    
+    }
+    - (void)incrementIndentDepth:(int*)pdepth htmlString:(NSMutableString*)s {
+        (*pdepth)++;
+        if (*pdepth>0) [s appendString:@"<ul>"];
+    }
+    - (void)decrementIndentDepth:(int*)pdepth htmlString:(NSMutableString*)s {
+        if (*pdepth>0) [s appendString:@"</ul>"];
+        (*pdepth)--;
+    }
+    - (void)appendIndentToString:(NSMutableString*)s depth:(int)depth plusString:(NSString*)add {
+        //for (int i=0;i<=depth;i++) [s appendString:@"-"];
+        if (add) [s appendString:add];
+    }
+
+    /*- (void)addURL:(NamedURL*)url toString:(NSMutableString*)s depth:(int)depth {
+        [self startItemWithHTMLString:s depth:depth];
+        [self appendIndentToString:s depth:depth plusString:@" "];
+        [s appendFormat:@"%@<br/>",[self htmlForURL:url.url]];    
+        [self endItemWithHTMLString:s depth:depth];
+    }
+    - (void)addPattern:(NamedURLPattern*)pattern toString:(NSMutableString*)s depth:(int)depth {
+        [self startItemWithHTMLString:s depth:depth];
+        [self appendIndentToString:s depth:depth plusString:@" "];
+        NSString *patternNameStr=(pattern.patternName&&pattern.patternName.length?[[NSString stringWithFormat:@"%@: ",pattern.patternName] basicHTMLEncode]:@"");
+        
+        if (!pattern.parent) {
+            NSURL *url2=[NSURL URLWithString:pattern.url];
+            if (url2.scheme.length==0) url2=[NSURL URLWithString:[@"http://" stringByAppendingString:pattern.url]];
+            [s appendFormat:@"%@%@<br/>",patternNameStr,[self htmlForURL:url2]];
+        }
+        else {
+            if (pattern.url&&pattern.url.length) {
+                if (pattern.name&&pattern.name.length) {
+                    [s appendFormat:@"%@links matching URL: \"%@\" with text matching: \"%@\"<br/>",patternNameStr,[pattern.url basicHTMLEncode],[pattern.name basicHTMLEncode]];
+                }
+                else {
+                    [s appendFormat:@"%@links matching URL: \"%@\"<br/>",patternNameStr,[pattern.url basicHTMLEncode]];
+                }
+            }
+            else if (pattern.name&&pattern.name.length) {
+                [s appendFormat:@"%@links with text matching: \"%@\"<br/>",patternNameStr,[pattern.name basicHTMLEncode]];
+            }
+            else {
+                [s appendFormat:@"%@child links<br/>",patternNameStr];
+            }
+            NSArray *urls=pattern.matches;//[pattern firstMatchesWithCount:MAX(pattern.matches.count, 5)];
+            if (urls) for (NamedURL *url in urls) [self addURL:url toString:s depth:depth];
+        }
+        if (pattern.children.count) {
+            [self incrementIndentDepth:&depth htmlString:s];
+            for (NamedURLPattern *child in pattern.children) [self addPattern:child toString:s depth:depth];
+            [self decrementIndentDepth:&depth htmlString:s];
+        }
+        [self endItemWithHTMLString:s depth:depth];
+    }
+    - (void)addPageList:(PageList*)pl toString:(NSMutableString*)s depth:(int)depth {
+        [self startItemWithHTMLString:s depth:depth];
+        if (depth>=0) {
+            [self appendIndentToString:s depth:depth plusString:@" "];
+            [s appendFormat:@"Group \"%@\"<br/>",[pl.listName basicHTMLEncode]];
+        }
+        if (pl.rootPatterns.count) {
+            [self incrementIndentDepth:&depth htmlString:s];
+            for (NamedURLPattern *root in pl.rootPatterns) [self addPattern:root toString:s depth:depth];
+            [self decrementIndentDepth:&depth htmlString:s];
+        }
+        [self endItemWithHTMLString:s depth:depth];
+    }
+    - (void)addPLFolder:(PLFolder*)f toString:(NSMutableString*)s depth:(int)depth {
+        [self startItemWithHTMLString:s depth:depth];
+        if (depth>=0) {
+            [self appendIndentToString:s depth:depth plusString:@" "];
+            [s appendFormat:@"Folder \"%@\"<br/>",[f.folderName basicHTMLEncode]];
+        }
+        if (f.pageLists.count) {
+            [self incrementIndentDepth:&depth htmlString:s];
+            for (PageList *pl in f.pageLists) [self addPageList:pl toString:s depth:depth];
+            [self decrementIndentDepth:&depth htmlString:s];
+        }
+        if (f.children.count) {
+            [self incrementIndentDepth:&depth htmlString:s];
+            for (PLFolder *child in f.children) [self addPLFolder:child toString:s depth:depth];
+            [self decrementIndentDepth:&depth htmlString:s];
+        }
+        [self endItemWithHTMLString:s depth:depth];
+    }
+
+
+    - (bool)sendMailForPLFolder:(PLFolder*)f {
+        NSMutableString *s=[NSMutableString stringWithFormat:@"Here are some bbookmarks for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:f.asURL title:@"bbookmarks link"]];
+        [self addPLFolder:f toString:s depth:(f.folderName&&f.folderName.length?0:-1)];
+        return([self sendMailWithSubject:(f.folderName&&f.folderName.length?[NSString stringWithFormat:@"BBookmarks folder \"%@\"",f.folderName]:@"BBookmarks folder") content:s isHTML:YES attachData:[[BookmarkHTMLImporterExporter HTMLForPLFolder:f] dataUsingEncoding:NSASCIIStringEncoding] attachMimeType:@"text/html" attachFileName:@"Bookmark (folder from bbookmarks).html"]);
+    }
+
+    - (bool)sendMessageForPLFolder:(PLFolder*)f {
+        NSMutableString *s=[NSMutableString stringWithFormat:@"%@",f.asURL];
+        return([self sendMessageWithContent:s]);
+    }
+
+    - (bool)sendMailForPageList:(PageList *)pl {
+        NSMutableString *s=[NSMutableString stringWithFormat:@"Here are some bbookmarks for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:pl.asURL title:@"bbookmarks link"]];
+        [self addPageList:pl toString:s depth:0];
+        return([self sendMailWithSubject:[NSString stringWithFormat:@"BBookmarks group \"%@\"",pl.listName] content:s isHTML:YES attachData:[[BookmarkHTMLImporterExporter HTMLForPageList:pl] dataUsingEncoding:NSASCIIStringEncoding] attachMimeType:@"text/html" attachFileName:@"Bookmark (group from bbookmarks).html"]);
+    }
+
+    - (bool)sendMessageForPageList:(PageList*)pl {
+        NSMutableString *s=[NSMutableString stringWithFormat:@"%@",pl.asURL];
+        return([self sendMessageWithContent:s]);
+    }
+     
+
+
+    - (NSString*)getBBookmarkURLForURL:(NSString*)aurl title:(NSString*)title {
+        PageList *pl=[[PageList alloc] init];
+        NamedURLPattern *pattern=[[[NamedURLPattern alloc] initWithPageList:nil URL:aurl named:nil parent:nil] autorelease];
+        if (title) pl.listName=pattern.patternName=title;
+        [pl.rootPatterns addObject:pattern];
+        NSString *url=pl.asURL;
+        [pl release];
+        return(url);
+    }
+
+    - (bool)sendMailForURL:(NSString*)url withTitle:(NSString*)title {
+        NSString *bburl=[self getBBookmarkURLForURL:url title:title];
+        NSMutableString *s=[NSMutableString stringWithFormat:@"Here is a bbookmark for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:bburl title:@"bbookmarks link"]];
+        [s appendFormat:@"<ul><li>%@</li></ul>",[self htmlForURLString:url title:title]];
+        return([self sendMailWithSubject:(title?[NSString stringWithFormat:@"\"%@\"",title]:@"BBookmark") content:s isHTML:YES]);
+    }
+     
+    - (bool)sendMessageForURL:(NSString*)url withTitle:(NSString*)title {
+        NSMutableString *s;
+        if (title) s=[NSMutableString stringWithFormat:@"\"%@\"\n%@",title,url];
+        else s=[NSMutableString stringWithFormat:@"%@",url];
+        return([self sendMessageWithContent:s]);    
+    }
+    */

@@ -1,0 +1,1036 @@
+/*
+#define BP(type) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d",@#type,++__bpCount##type);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
+#define BPLOG(type,format,...) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d : " format,@#type,++__bpCount##type,__VA_ARGS__);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
+#define GLOB_BPFN(type,num) bool __bpEn##type=YES;int __bpCount##type=0,__bpTgt##type=(num);void __bpFn##type()
+#define EXTERN_BPFN(type) extern bool __bpEn##type;extern int __bpCount##type;extern int __bpTgt##type;void __bpFn##type()
+#define STAT_BPFN(type,num) static bool __bpEn##type=YES;static int __bpCount##type=0,__bpTgt##type=(num);static void __bpFn##type()
+#define BPTGT(type,num) do {__bpTgt##type=(num);}while (false)
+#define BPENABLE(type) do {__bpEn##type=YES;}while (false)
+#define BPDISABLE(type) do {__bpEn##type=NO;}while (false)
+
+#define ENLOG(...) __VA_ARGS__
+//#define ENLOG(...)
+#define LOG(o,...) ENLOG([Util logString:[NSString stringWithFormat:@ __VA_ARGS__] object:o];)
+#define LOGRECURSE(o,...) ENLOG([Util logStringRecurse:[NSString stringWithFormat:@ __VA_ARGS__] object:o];)
+
+*/
+
+<SendsSelector>
+<RecievesSelector>
+    selectorReceiver >s< <SendsSelector> selectorSender
+
+
+
+
+NSString "fn:sys"
+    -(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
+        return([(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease]);
+    }
+
+
+    -(NSString*)stringByReplacingPairs:(NSObject*)firstNeedle,... {
+        NSMutableString *s=[self.mutableCopy autorelease];
+        va_list args;va_start(args,firstNeedle);
+        for (NSObject *k=firstNeedle;k!=nil;k=va_arg(args,NSObject*)) {
+            NSObject *o=va_arg(args,NSObject*);
+            if (!o) break;
+            if ([k isKindOfClass:[NSString class]]&&[o isKindOfClass:[NSString class]]) {
+                [s replaceOccurrencesOfString:(NSString*)k withString:(NSString*)o options:0 range:NSMakeRange(0, s.length)];
+            }
+        }
+        return([s.copy autorelease]);
+    }
+
+    -(NSString*)stringByEncodingHTMLEntities {
+        return([self stringByReplacingPairs:@"&",@"&amp;",@"<",@"&lt;",@">",@"&gt;",@"\"",@"&quot;",@"\n",@"<br/>\n",nil]);
+    }
+
+    -(NSString*)stringByEncodingCEscapes {
+        return([self stringByReplacingPairs:@"\\",@"\\\\",@"\"",@"\\\"",@"\n",@"\\n",@"\r",@"\\r",@"\t",@"\\t",nil]);
+    }
+
+    NSString JSONString={return([self JSONString_useTmpDataObject:nil]);}
+
+    -(NSString*)JSONString_useTmpDataObject:(NSMutableData*)d {
+        return([__Class__ JSONStringForCString:[self cStringUsingEncoding:NSASCIIStringEncoding] withLength:self.length useTmpDataObject:d]);
+    }
+
+
+    +(NSString*)JSONStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData*)d {
+        int toLength;
+        const unichar *to=[__Class__ JSONunicharsStringForCString:from withLength:N useTmpDataObject:&d retLength:&toLength];
+        return([NSString stringWithCharacters:to length:toLength]);
+    }
+
+    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData**)pd retLength:(int*)retLength {
+        if (N<0) N=(int)strlen(from);
+        NSMutableData *d=(pd?*pd:nil);
+        if (!d) {
+            d=[[NSThread currentThread].threadDictionary objectForKey:@"JSONTmpData"];
+            if (!d) [[NSThread currentThread].threadDictionary setObject:d=[NSMutableData dataWithLength:N*6+1] forKey:@"JSONTmpData"];
+            else if (d.length<=N*6) d.length=N*6+1;
+            if (pd) *pd=d;
+        }
+        else if (d.length<=N*6) d.length=N*6+1;
+        
+        unichar *to=(unichar*)d.mutableBytes,*toWas=to;
+        for (;N;N--,from++) {
+            switch (*from) {
+                case '\\':case '"':case '/':*(to++)='\\';
+                default:*(to++)=*from;break;
+                case '\b':*to='\\';to[1]='b';to+=2;break;
+                case '\t':*to='\\';to[1]='t';to+=2;break;
+                case '\n':*to='\\';to[1]='n';to+=2;break;
+                case '\f':*to='\\';to[1]='f';to+=2;break;
+                case '\r':*to='\\';to[1]='r';to+=2;break;
+                case 0x00:case 0x01:case 0x02:case 0x03:case 0x04:case 0x05:case 0x06:case 0x07:
+                case 0x0b:case 0x0e:case 0x0f:
+                case 0x10:case 0x11:case 0x12:case 0x13:case 0x14:case 0x15:case 0x16:case 0x17:
+                case 0x18:case 0x19:case 0x1a:case 0x1b:case 0x1c:case 0x1d:case 0x1e:case 0x1f:
+                case 0x7f:*to='\\';to[1]='u';to[2]=to[3]=0;to[4]=(*from)/0x10;to[5]=(*from)&0xf;to+=6;break;
+            }
+        }
+        *to=0;
+        if (retLength) *retLength=(int)(to-toWas);
+        return(toWas);
+    }
+
+    -(NSString*)stringByDecodingCEscapes {
+        return([self stringByReplacingPairs:@"\\\\",@"\\\\ ",@"\\t",@"\t",@"\\r",@"\r",@"\\n",@"\n",@"\\\"",@"\"",@"\\'",@"'",@"\\\\ ",@"\\",nil]);
+    }
+
+
+    +(NSString*)stringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding error:(NSError**)aerr timeoutInterval:(float)timeout {
+        if (!g_singletons.online) return(nil);
+        NSURLRequest *req=[[NSURLRequest alloc]
+              initWithURL:aurl
+              cachePolicy:NSURLRequestUseProtocolCachePolicy
+              timeoutInterval:timeout];
+        NSURLResponse *response;
+        NSData *data=[NSURLConnection sendSynchronousRequest:req returningResponse:&response error:aerr];
+        return([[NSString alloc] initWithData:data encoding:encoding]);
+    }
+
+    +(StringRequestURLDelegate*)requestStringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding timeoutInterval:(float)timeout completion:(StringRequestURLDelegateCompletionBlock)completionBlock {
+        if (!g_singletons.online) {
+            completionBlock(nil,[NSError errorWithDomain:@"offline" code:1 userInfo:nil]);
+            return(nil);
+        }
+        NSURLRequest *req=[[NSURLRequest alloc]
+              initWithURL:aurl
+              cachePolicy:NSURLRequestUseProtocolCachePolicy
+              timeoutInterval:timeout];
+        StringRequestURLDelegate *del=[[StringRequestURLDelegate alloc] initWithEncoding:encoding completionBlock:completionBlock];
+        del.connection=[NSURLConnection connectionWithRequest:req delegate:del];
+        return(del);
+    }
+
+
+NSData
+    -(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse**)retresponse error:(NSError**)reterr {
+        NSError *err=nil;
+        NSURLResponse *response=nil;
+        if (reterr) *reterr=nil;
+        if (retresponse) retresponse=nil;
+        
+        if (!g_singletons.online) {
+            err=[NSError errorWithDomain:@"offline" code:1 userInfo:nil];
+            return(nil);
+        }
+
+        NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:url];
+        [request setHTTPMethod:@"POST"];
+        [request setHTTPBody:self];
+
+        response=nil;
+        NSData *ret=[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+        if (reterr) *reterr=err;
+        if (retresponse) *retresponse=response;
+        return(ret);
+    }
+
+
+
+type StringRequestURLDelegateCompletionBlock "typedef:void(^__type__)(NSString*,NSError*)"
+
+StringRequestURLDelegate<NSURLConnectionDelegate>
+    StringRequestURLDelegateCompletionBlock completionBlock (nodef)
+    NSStringEncoding encoding (nodef)
+    NSURLConnection *connection (nodef)
+    NSMutableString *partialRequestedString=[NSMutableString string]
+    bool finished (nodef)
+
+    -(void)dealloc {
+        [completionBlock release];
+    }
+
+    -(init[super init])initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock {
+        encoding=aencoding;
+        completionBlock=Block_copy(acompletionBlock);
+    }
+
+    - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
+    }
+
+    - (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
+        NSString *str=[[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+        if (str) [self.partialRequestedString appendString:str];
+    }
+
+    - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError *)error {
+        completionBlock(nil,error);
+        [self autorelease];
+        finished=YES;
+        self.connection=nil;
+    }
+
+    - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+        completionBlock(self.partialRequestedString,nil);
+        [self autorelease];
+        finished=YES;
+        self.connection=nil;
+    }
+
+    - (void)cancel {
+        if (self.connection&&!finished) {
+            [self.connection cancel];
+            [self autorelease];
+            finished=YES;
+            self.connection=nil;
+        }
+    }
+
+
+
+/*interfaces:
+extern Singletons *g_singletons;
+#ifndef UIONLY
+#define UIONLY(...)
+#endif
+#ifndef NOTUI
+#define NOTUI(...) __VA_ARGS__
+#endif
+*/
+/*interfaces:impl:
+Singletons *g_singletons=nil;
+*/
+
+
+
+
+Singletons
+    -(init)init {}
+    +(Singletons*)getDefault {
+        if (!g_singletons) {
+            ADDSINGLETON(g_singletons=[[[Singletons alloc] init] autorelease]);
+        }
+        return(g_singletons);
+    }
+
+
+
+<LogObjectProtocol>
+    NSMutableString logDescription=[NSMutableString string];
+    -(NSMutableString*) logDescriptionRecurseWithStack:(NSMutableSet*)stack;
+
+Util "fn:util"
+
+    +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray**)pinss dels:(NSArray**)pdels  {
+        NSMutableArray *dels=[[MutableArray alloc] init];
+        NSMutableArray *inss=[[MutableArray alloc] init];
+
+        *pinss=inss;
+        *pdels=dels;
+        
+        bool ret=NO;
+        if (from==nil) {
+            if (to) {
+                int i=0;
+                for (id o in to) [inss addObject:[NSNumber numberWithInt:i++]];
+                ret=(i>0);
+            }
+        }
+        else if (to==nil) {
+            int i=0;
+            for (id o in from) [dels addObject:[NSNumber numberWithInt:i++]];
+            ret=(i>0);
+        }
+        else {
+            int toi=0,fromi=0;
+            while ((toi<[to count])||(fromi<[from count])) {
+                char op=0;
+                if (fromi>=[from count]) op='i';
+                else if (toi>=[to count]) op='d';
+                else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi]]) op=0;
+                else for (int j=1;;j++) {
+                    if (toi+j>=[to count]) {op='d';break;}
+                    else if (fromi+j>=[from count]) {op='i';break;}
+                    else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi+j]]) {op='i';break;}
+                    else if ([Util objectOrString:[from objectAtIndex:fromi+j] equals:[to objectAtIndex:toi]]) {op='d';break;}
+                }
+                if (op=='d') {
+                    [dels insertObject:[NSNumber numberWithInt:fromi] atIndex:0];
+                    fromi++;
+                }
+                else if (op=='i') {
+                    [inss addObject:[NSNumber numberWithInt:toi]];
+                    toi++;
+                }
+                else {fromi++;toi++;}
+            }
+            ret=(inss.count||dels.count);
+        }
+        if (!ret) {
+            [inss release];
+            [dels release];
+            *pinss=nil;
+            *pdels=nil;
+        }
+        return(ret);
+    }
+
+    +(bool) getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet**)pinss dels:(NSIndexSet**)pdels  {
+        NSMutableArray *inss,*dels;
+        if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:&inss dels:&dels]) return(NO);
+        NSMutableIndexSet *s=[[NSMutableIndexSet alloc] init];
+        for (NSNumber *num in dels) [s addIndex:num.intValue];
+        *pdels=s;
+        s=[[NSMutableIndexSet alloc] init];
+        for (NSNumber *num in inss) [s addIndex:num.intValue];
+        *pinss=s;
+        [inss release];
+        [dels release];
+        return(YES);
+    }
+
+    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray**)pinss dels:(NSArray**)pdels {
+        if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
+        NSMutableArray *dels=[MutableArray array];
+        NSMutableArray *inss=[MutableArray array];
+        for (NSNumber *num in *pdels) [dels addObject:[NSIndexPath indexPathForRow:num.intValue inSection:section]];
+        for (NSNumber *num in *pinss) [inss addObject:[NSIndexPath indexPathForRow:num.intValue inSection:section]];
+        *pinss=inss;
+        *pdels=dels;
+        return(YES);
+    }*/
+
+    +(bool) getInsertsAndDeletesForSetWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet**)pinss dels:(NSSet**)pdels  {
+        if ([from isEqualToSet:to]) return(NO);
+        if (!(pinss||pdels)) return(YES);
+        if (pinss) [(NSMutableSet*)((*pinss=to.mutableCopy)) minusSet:from];
+        if (pdels) [(NSMutableSet*)((*pdels=from.mutableCopy)) minusSet:to];
+        return(YES);
+    }
+
+
+    +(bool) getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet**)pinss delKeys:(NSSet**)pdels changeKeys:(NSSet**)pchanges  {
+        NSSet *fromKeys=[[NSSet alloc] initWithArray:from.allKeys];
+        NSSet *toKeys=[[NSSet alloc] initWithArray:to.allKeys];
+        bool ret=[Util getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];
+        [fromKeys release];
+        [toKeys release];
+        id obj;
+        NSMutableSet *changes=nil;
+        if (from.count<to.count) {
+            for (id<NSCopying> key in from) if ((obj=[to objectForKey:key])&&![obj isEqual:[from objectForKey:key]]) {
+                if (!changes) changes=[[MutableSet alloc] init];
+                [changes addObject:key];
+            }
+        }
+        else {
+            for (id<NSCopying> key in to) if ((obj=[from objectForKey:key])&&![obj isEqual:[to objectForKey:key]]) {
+                if (!changes) changes=[[MutableSet alloc] init];
+                [changes addObject:key];
+            }
+        }
+        NSSet *imchanges=changes;
+        if (imchanges) ret=YES;
+        else if (ret) imchanges=[[NSSet alloc] init];
+        if (pchanges) *pchanges=imchanges;
+        if (ret) {
+            if (pinss&&!*pinss) *pinss=[[NSSet alloc] init];
+            if (pdels&&!*pdels) *pdels=[[NSSet alloc] init];
+        }
+        return(ret);
+    }
+
+
+    /*decl:
+        extern Util* _Util_default;
+    */
+    /*decl:impl:
+        Util* _Util_default=nil;
+    */
+    +(Util*)getDefault {
+        if (!_Util_default) _Util_default=[[Util alloc] init];
+        return(_Util_default);
+    }
+
+    +(void)clearStaticData {
+        if (_Util_default) {[_Util_default release];_Util_default=nil;}
+    }
+
+
+    //+(bool)viewIsConnected:(id)view  {
+    //    for (;view;view=view.superview) if ([view isKindOfClass:[UIWindow class]]) return(YES);
+    //    return(NO);
+    //}
+
+
+    +(void)logString:(NSString*)str object:(NSObject*)obj  {
+        if (!obj) printf("\n%s\n",str.UTF8String);
+        else {
+            printf("\n%s : obj %s\n",str.UTF8String,obj.description.UTF8String);
+            if ([obj conformsToProtocol:@protocol(LogObjectProtocol)]) {
+                printf("    %s\n",[((NSObject<LogObjectProtocol>*)obj).logDescription stringByReplacingOccurrencesOfString:@"\n" withString:@"\n     "].UTF8String);
+            }
+        }
+    }
+
+    +(void)logStringRecurse:(NSString*)str object:(NSObject*)obj  {
+        if (!obj) printf("\n%s\n",str.UTF8String);
+        else {
+            printf("\n%s : obj %s\n",str.UTF8String,obj.description.UTF8String);
+            if ([obj conformsToProtocol:@protocol(LogObjectProtocol)]) {
+                printf("    %s\n",[[((NSObject<LogObjectProtocol>*)obj) logDescriptionRecurseWithStack:[MutableSet set]] stringByReplacingOccurrencesOfString:@"\n" withString:@"\n     "].UTF8String);
+            }
+        }
+    }
+
+
+    +(bool)objectOrString:(id)a equals:(id)b {
+        if ([a respondsToSelector:@selector(isEqualToString:)]&&[b respondsToSelector:@selector(isEqualToString:)]) return([((NSString*)a) isEqualToString:(NSString*)b]);
+        else return(a==b);
+    }
+
+    +(NSString*)descriptionFor:(id)object {
+        if (!object) return(@"nil");
+        else if ([object respondsToSelector:@selector(description)]) {
+            return([object description]);
+        }
+        else return(@"?");
+    }
+    +(const char*)cdescriptionFor:(id)object {return([__Class__ descriptionFor:object].UTF8String);}
+    +(NSString*)nameFor:(id)object {
+        if (!object) return(@"[nil]");
+        if ([object respondsToSelector:@selector(objectName)]) {
+            return([object objectName]);
+        }
+        else return([__Class__ descriptionFor:object]);
+    }
+    +(const char*)cnameFor:(id)object {return([__Class__ nameFor:object].UTF8String);}
+
+/*ViewConnectionWaiter : NSObject
+
+@property (retain,nonatomic) UIView *view;
+@property (retain,nonatomic) NSObject *target,*object;
+@property SEL selector;
+@property (assign,nonatomic) NSTimer *_timer;
++(ViewConnectionWaiter*)waiterWithView:(UIView*)view target:(NSObject*)target selector:(SEL)selector object:(NSObject*)object persist:(bool)persist attemptWithInterval:(float)interval;
+
+@end
+*/
+
+
+IntCarrier "fn:util"
+    int intValue (nodef)
+    +(IntCarrier*)carrierWithInt:(int)v {
+        return([[[IntCarrier alloc] initWithInt:v] autorelease]);
+    }
+    -(init[super init])initWithInt:(int)v {
+        intValue=v;
+    }
+    NSString description={return([NSString stringWithFormat:@"%d",intValue]);}
+
+
+ULLCarrier "fn:util"
+    ULL ullValue (nodef)
+    +(ULLCarrier*)carrierWithULL:(ULL)v {
+        return([[[ULLCarrier alloc] initWithULL:v] autorelease]);
+    }
+    -(init[super init])initWithULL:(ULL)v {
+        ullValue=v;
+    }
+    NSString description={return([NSString stringWithFormat:@"%qu",ullValue]);}
+
+
+"<sys/sysctl.h>"
+"<mach/host_info.h>"
+"<mach/mach_host.h>"
+"<mach/task_info.h>"
+"<mach/task.h>"
+
+MemMonitor "fn:util"
+    +(NSString*)memString {
+        int mib[6];
+        mib[0] = CTL_HW;
+        mib[1] = HW_PAGESIZE;
+
+        int pagesize;
+        size_t length;
+        length = sizeof (pagesize);
+        if (sysctl (mib, 2, &pagesize, &length, NULL, 0) < 0)
+        {
+            fprintf (stderr, "getting page size");
+        }
+
+        mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+
+        vm_statistics_data_t vmstat;
+        if (host_statistics (mach_host_self (), HOST_VM_INFO, (host_info_t) &vmstat, &count) != KERN_SUCCESS)
+        {
+            fprintf (stderr, "Failed to get VM statistics.");
+        }
+
+        //double total = vmstat.wire_count + vmstat.active_count + vmstat.inactive_count + vmstat.free_count;
+        //double wired = vmstat.wire_count / total;
+        //double active = vmstat.active_count / total;
+        //double inactive = vmstat.inactive_count / total;
+        //double free = vmstat.free_count / total;
+
+        task_basic_info_64_data_t info;
+        unsigned size = sizeof (info);
+        task_info (mach_task_self (), TASK_BASIC_INFO_64, (task_info_t) &info, &size);
+
+        double unit = 1024 * 1024;
+        return([NSString stringWithFormat: @"Free:% 3.1f MB. Free+inactive:% 3.1f MB. Resident:% 3.1f MB", vmstat.free_count * pagesize / unit, (vmstat.free_count + vmstat.inactive_count) * pagesize / unit, info.resident_size / unit]);
+    }
+
+
+/*interfaces:
+extern URLHandlerRegistry *_URLHandlerRegistry_default;
+*/
+/*interfaces:impl:
+URLHandlerRegistry *_URLHandlerRegistry_default=nil;
+*/
+
+URLHandlerRegistry "fn:util"
+    MutableArray handlers=[[MutableArray alloc] init] (readonly,dealloc,ivar=handlers)
+
+    -(init)init {}
+
+    -(void)addHandler:(id)handler {
+        [self.handlers addObject:handler];
+    }
+
+    +(URLHandlerRegistry*)getDefault {
+        if (!_URLHandlerRegistry_default) {
+            ADDSINGLETON(_URLHandlerRegistry_default=[[[URLHandlerRegistry alloc] init] autorelease]);
+        }
+        return(_URLHandlerRegistry_default);
+    }
+
+    -(NSObject*)makeResourceFromURL:(NSURL*)url {
+        for (NSObject<URLResourceHandler> *handler in handlers) {
+            NSObject *ret=[handler makeResourceFromURL:url];
+            if (ret) return(ret);
+        }
+        return(nil);
+    }
+    
+    -(bool)actOnURL:(NSURL*)url {
+        NSObject *ret=[self makeResourceFromURL:url];
+        if (!(ret&&[ret respondsToSelector:@selector(act)])) return(NO);
+        else {
+            [(NSObject<HasAction>*)ret act];
+            return(YES);
+        }
+    }
+
+
+    
+<URLResourceHandler>
+    -(NSObject*)makeResourceFromURL:(NSURL*)url;
+
+
+
+<HasAction>
+    -(void)act;
+
+
+<URLResource>
+    +(NSString*)urlScheme;
+    +(NSString*)urlType;
+    +(NSString*)urlPrefix {
+        return([__Class__ urlType]?[[__Class__ urlScheme] stringByAppendingString:[__Class__ urlType]]:
+        [__Class__ urlScheme]);
+    }
+
+    +(NSObject*)makeResourceFromURL:(NSURL*)url {
+        NSString *s=url.absoluteString;
+        if ([s hasPrefix:[__Class__ urlPrefix]]) {
+            NSObject<URLResource> *o=[__Class__ cacheObjectForURL:url];
+            if (!o) o=[[[__Class__ alloc] init] autorelease];
+            o.asURL=url;
+            if (o.urlValid) return(o);
+        }
+        return(nil);
+    }
+
+    +(NSObject<URLResource>*)cacheObjectForURL:(NSURL*)url {@-999 NSObject<URLResource> *ret=nil;
+        @999 return(ret);
+    }
+
+    bool urlValid=NO
+    NSDictionary urlArgs=
+        {@-999 
+            NSMutableDictionary *ret=nil;
+            @999 return(ret);
+        }
+        -v {}
+    NSURL asURL=
+        {
+            NSString *urlPrefix=[__Class__ urlPrefix];
+            return(urlPrefix?[NSURL URLWithString:[urlPrefix stringByAppendingString:self.urlArgString]]:nil);
+        }
+        -v{
+            urlValid=NO;
+            NSString *urlPrefix=[__Class__ urlPrefix];
+            if (!urlPrefix) return;
+            NSString *s=v.absoluteString;
+            if ([s hasPrefix:urlPrefix]) self.urlArgString=[s substringFromIndex:urlPrefix.length];
+        }
+    NSString urlArgString=
+        {
+            NSDictionary *d=self.urlArgs;
+            if (!d) return(@"bad");
+            else {
+                NSMutableString *s=[NSMutableString string];
+                NSArray *keys=[d.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+                for (NSString *key in keys) {
+                    if (s.length) [s appendString:@"&"];
+                    if ([[d objectForKey:key] isKindOfClass:[NSNull class]]) {
+                        [s appendFormat:@"%@",[key urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                    }
+                    else {
+                        [s appendFormat:@"%@=%@",[key urlEncodeUsingEncoding:NSUTF8StringEncoding],[[__Class__ stringFromObject:(NSObject*)[d objectForKey:key]] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                    }
+                }
+                return(s);
+            }
+        }
+        -v{
+            NSArray *a=[v componentsSeparatedByString:@"&"];
+            NSMutableDictionary *d=[MutableDictionary dictionary];
+            for (NSString *kv in a) {
+                NSRange r=[kv rangeOfString:@"="];
+                NSString *key;
+                NSObject *val;
+                if (r.location==NSNotFound) {
+                    key=[kv stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    val=[NSNull null];
+                }
+                else {
+                    key=[[kv substringToIndex:r.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    val=[__Class__ objectFromString:[[kv substringFromIndex:r.location+r.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                }
+                [d setObject:val forKey:key];
+            }
+            self.urlArgs=d;
+        }
+
+    +(NSURL*)simplifiedURLForURL:(NSURL*)url {
+        return([__Class__ urlForArgDictionary:[__Class__ argDictionaryForURL:url]]);
+    }
+
+    +(NSURL*)urlForArgDictionary:(NSDictionary*)d {
+        if (!d) return(nil);
+        NSArray *keys=[d.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return([(NSString*)obj1 compare:obj2]);
+        }];
+        NSMutableString *ret=[NSMutableString stringWithString:[__Class__ urlPrefix]];
+        NSString *sep=@"";
+        for (NSString *key in keys) {
+            NSObject *val=[d objectForKey:key];
+            if ([val isKindOfClass:[NSNull class]]) {
+                [ret appendFormat:@"%@%@",sep,[key urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            }
+            else {
+                [ret appendFormat:@"%@%@=%@",sep,[key urlEncodeUsingEncoding:NSUTF8StringEncoding],[[__Class__ stringFromObject:val] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            }
+            sep=@"&";
+        }
+        return([NSURL URLWithString:ret]);
+    }
+    +(NSMutableDictionary*)argDictionaryForURL:(NSURL*)url {
+        NSString *v=url.absoluteString,*prefix=[__Class__ urlPrefix];
+        if (![v hasPrefix:prefix]) return(nil);
+        NSArray *a=[[v substringFromIndex:prefix.length] componentsSeparatedByString:@"&"];
+        NSMutableDictionary *ret=[MutableDictionary dictionary];
+        for (NSString *kv in a) {
+            NSRange r=[kv rangeOfString:@"="];
+            NSString *key;
+            NSObject *val;
+            if (r.location==NSNotFound) {
+                key=[kv stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                val=[NSNull null];
+            }
+            else {
+                key=[[kv substringToIndex:r.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                val=[__Class__ objectFromString:[[kv substringFromIndex:r.location+r.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            }
+            [ret setObject:val forKey:key];
+        }
+        return(ret);
+    }
+
+
+    +(NSURL*)urlForArgStringDictionary:(NSDictionary*)d {
+        if (!d) return(nil);
+        NSArray *keys=[d.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return([(NSString*)obj1 compare:obj2]);
+        }];
+        NSMutableString *ret=[NSMutableString stringWithString:[__Class__ urlPrefix]];
+        NSString *sep=@"";
+        for (NSString *key in keys) {
+            NSString *val=[d objectForKey:key];
+            if ([val isKindOfClass:[NSNull class]]) {
+                [ret appendFormat:@"%@%@",sep,[key urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            }
+            else {
+                [ret appendFormat:@"%@%@=%@",sep,[key urlEncodeUsingEncoding:NSUTF8StringEncoding],[val urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            }
+            sep=@"&";
+        }
+        return([NSURL URLWithString:ret]);
+    }
+    +(NSMutableDictionary*)argStringDictionaryForURL:(NSURL*)url {
+        NSString *v=url.absoluteString,*prefix=[__Class__ urlPrefix];
+        if (![v hasPrefix:prefix]) return(nil);
+        NSArray *a=[[v substringFromIndex:prefix.length] componentsSeparatedByString:@"&"];
+        NSMutableDictionary *ret=[MutableDictionary dictionary];
+        for (NSString *kv in a) {
+            NSRange r=[kv rangeOfString:@"="];
+            NSString *key;
+            NSObject *val;
+            if (r.location==NSNotFound) {
+                key=[kv stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                val=[NSNull null];
+            }
+            else {
+                key=[[kv substringToIndex:r.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                val=[[kv substringFromIndex:r.location+r.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            }
+            [ret setObject:val forKey:key];
+        }
+        return(ret);
+    }
+
+
+    +(NSString*)stringFromObject:(NSObject*)o {@-100 
+        if ([o isKindOfClass:[NSNumber class]]) return([@"N" stringByAppendingString:[Styler stringFromDouble:((NSNumber*)o).doubleValue]]);
+        else if ([o isKindOfClass:[NSString class]]) return([@"S" stringByAppendingString:(NSString*)o]);
+        else if ([o isKindOfClass:[UIColor class]]) return([@"C" stringByAppendingString:[Styler stringFromColor:(UIColor*)o]]);
+        @100 else return(nil);
+    }
+    +(NSObject*)objectFromString:(NSString*)s {@-100 
+        if ([s hasPrefix:@"N"]) return([NSNumber numberWithDouble:[Styler doubleFromString:[s substringFromIndex:1]]]);
+        else if ([s hasPrefix:@"S"]) return([s substringFromIndex:1]);
+        else if ([s hasPrefix:@"C"]) return([Styler colorFromString:[s substringFromIndex:1]]);
+        @100 else return(nil);
+    }
+
+
+
+
+
+
+<WeakList>
+    listAsHead -- <WeakListItem> headItem
+    listAsTail -- <WeakListItem> tailItem
+    NSUInteger _count=0
+    NSUInteger count={return(_count);}
+
+    -(void)dealloc {@-500 self.headItem=self.tailItem=nil;}
+    -(void)link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {
+        [item unlink];
+        item.list=self;
+        [item linkAfter:prev];
+    }
+    -(void)link:(NSObject<WeakListItem>*)item before:(NSObject<WeakListItem>*)next {
+        [item unlink];
+        item.list=self;
+        [item linkBefore:next];
+    }
+    -(void)append:(NSObject<WeakListItem>*)item {[self link:item before:nil];}
+    -(void)prepend:(NSObject<WeakListItem>*)item {[self link:item after:nil];}
+
+
+
+WeakList <BaseObject,WeakList> "fn:util"
+
+<WeakListItem>
+    next -- <WeakListItem> prev
+    <WeakList> list (assign,nodef,ivar=list)
+
+    -(void)dealloc {@-500 
+        [self unlink];
+    }
+
+    -(void)unlink {
+        if (self.prev||(self.listAsHead==self.list)) self.list._count--;
+        NSObject<WeakListItem> *n=self.next,*p=self.prev;
+        if (n) n.prev=p;
+        else if (p) p.next=n;        
+        if (self.listAsHead) self.listAsHead.headItem=n;
+        if (self.listAsTail) self.listAsTail.tailItem=p;
+    }
+    -(void)linkAfter:(NSObject<WeakListItem>*)prev {
+        if (prev?prev==self.prev:(self.list==self.listAsHead)) return;
+        [self unlink];
+        if (!prev) {
+            if (list.headItem) list.headItem.prev=self;
+            else list.tailItem=self;
+            list.headItem=self;
+        }
+        else {
+            self.list=prev.list;
+            self.next=prev.next;
+            self.prev=prev;
+            self.listAsTail=prev.listAsTail;
+        }
+        self.list._count++;
+    }
+    -(void)linkBefore:(NSObject<WeakListItem>*)next {
+        if (next?next==self.next:(self.list==self.listAsTail)) return;
+        [self unlink];
+        if (!next) {
+            if (list.tailItem) list.tailItem.next=self;
+            else list.headItem=self;
+            list.tailItem=self;
+        }
+        else {
+            self.list=next.list;
+            self.prev=next.prev;
+            self.next=next;
+            self.listAsHead=next.listAsHead;
+        }
+        self.list._count++;
+    }
+    -(void)prepend {[self linkAfter:nil];}
+    -(void)append {[self linkBefore:nil];}
+
+
+
+
+<List>
+    <ListItem> headItem (nodef)
+    <ListItem> tailItem (assign,nodef)
+    -(void)clear {
+        while (self.headItem) [self.headItem unlink];
+    }
+        
+    -(void)dealloc {@-500 [self clear];}
+
+<ListItem>
+    <List> list (assign,nodef,ivar=list)
+    <ListItem> prev (nodef,assign)
+    <ListItem> next (nodef)
+
+    -(void)unlink {
+        [[self retain] autorelease];
+        if (self.prev) self.prev.next=self.next;
+        else if (list.headItem==self) list.headItem=self.next;
+        if (self.next) self.next.prev=self.prev;
+        else if (list.tailItem==self) list.tailItem=self.prev;
+        self.prev=self.next=nil;
+    }
+    -(void)linkAfter:(NSObject<ListItem>*)prev {
+        if (prev==self) return;
+        if (prev?(prev==self.prev):(list.headItem==self)) return;
+        [self unlink];
+        if ((self.next=(prev?prev.next:list.headItem))) self.next.prev=self;
+        else list.tailItem=self;
+        if ((self.prev=prev)) prev.next=self;
+        else list.headItem=self;
+    }
+    -(void)linkBefore:(NSObject<ListItem>*)next {
+        if (next==self) return;
+        if (next?(next==self.next):(list.tailItem==self)) return;
+        [self unlink];
+        if ((self.next=next)) next.prev=self;
+        else list.tailItem=self;
+        if ((self.prev=(next?next.prev:list.tailItem))) self.prev.next=self;
+        else list.headItem=self;
+    }
+    -(void)prepend {[self linkAfter:nil];}
+    -(void)append {[self linkBefore:nil];}
+
+
+
+<Ticker>
+    NSTimer tim (nodef)
+    -(void)startWithInterval:(float)interval {
+        [self.tim invalidate];
+        self.tim=[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(tick) userInfo:nil repeats:YES];
+    }
+    bool inTick (readonly,nodef)
+    -(void)tick {@-100 
+        @synchronized (self) {
+            if (inTick) return;
+            inTick=YES;
+        }
+        @100 
+        @synchronized (self) {
+            inTick=NO;
+        }
+    }
+    -(void)stop {
+        [self.tim invalidate];
+        self.tim=nil;
+    }
+    -(void)dealloc {@-500 
+        [self stop];
+    }
+
+
+<Waiter>
+    NSTimer waitTimer (nodef)
+    double _waiterGoAtSeconds (readonly,nodef,ivar=_waiterGoAtSeconds)
+    bool waiterEnabled=YES (readonly,ivar=waiterEnabled)
+    -(void)waited {}
+    -(void)cancelledWait {}
+
+    -(void)waitForSeconds:(float)sec {
+        double time=CFAbsoluteTimeGetCurrent();
+        if (_waiterGoAtSeconds<time+sec) {
+            if (self.waitTimer) {
+                [self.waitTimer invalidate];
+            }
+            @synchronized(self) {waiterEnabled=NO;_waiterGoAtSeconds=time+sec;}
+            self.waitTimer=[NSTimer scheduledTimerWithTimeInterval:sec target:self selector:@selector(_enableWaiter:) userInfo:nil repeats:NO];
+        }
+    }
+    -(void)_enableWaiter:(NSTimer*)t {
+        if (t==self.waitTimer) {
+            @synchronized(self) {
+                _waiterGoAtSeconds=0;
+                self.waitTimer=nil;
+                waiterEnabled=YES;
+            }
+            [self waited];
+        }
+    }
+    -(void)stopWaiting {
+        if (self.waitTimer) {
+            [self.waitTimer invalidate];
+        }
+        @synchronized(self) {
+            waiterEnabled=YES;
+            _waiterGoAtSeconds=0;
+            self.waitTimer=nil;
+        }
+        [self cancelledWait];
+    }
+    -(void)dealloc {@-500 
+        [self stopWaiting];
+    }
+
+
+
+
+Singletons
+    Log log={return(log?log:(log=[[Log alloc] init]));} (dealloc,ivar=log)
+
+
+Log<BaseObject>
+    NSTimer tim (nodef,readonly,ivar=tim)
+
+    +(Log*)getDefault {return(g_singletons.log);}
+
+    NSMutableString *value=[[NSMutableString alloc] init] (readonly,dealloc,ivar=value)
+
+    +(void)log:(NSString*)format,... {
+        Log *log=[Log getDefault];
+        va_list args;va_start(args,format);
+        [log->value appendString:[[[NSString alloc] initWithFormat:format arguments:args] autorelease]];
+        va_end(args);
+        if (!log->tim) log->tim=[[NSTimer scheduledTimerWithTimeInterval:1 target:log selector:@selector(tick) userInfo:nil repeats:NO] retain];
+    }
+
+    -(void)tick {
+        NSString *s=value.copy;
+        [value setString:@""];
+        [tim release];tim=nil;
+        
+        
+        if (s.length) {
+            NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savetext.php?fn=%@_console&append=1",g_singletons.styleName]];
+
+            NSString *post =[[NSString alloc] initWithFormat:@"txt=%@",[s urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+
+            [[post dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
+        }
+    }
+
+    +(void)sendToLog:(NSString*)logName format:(NSString*)format,... {
+        va_list args;va_start(args,format);
+        NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
+        va_end(args);
+        if (s.length) {
+            NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savetext.php?fn=%@_console&append=1",[logName urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+
+            NSString *post =[[NSString alloc] initWithFormat:@"txt=%@",[s urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+
+            [[post dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
+        }
+    }
+    
+
+<Codable>
+    NSDictionary asDictionary=
+        {
+            @-999 NSMutableDictionary *ret=[NSMutableDictionary dictionary];NSDictionary *imret=ret;
+            @999 return(imret);
+        }
+        -v{
+        }
+
+<RootCodable:Codable>
+    NSData asData=
+        {return([NSKeyedArchiver archivedDataWithRootObject:self.asDictionary]);}
+        -v{self.asDictionary=[NSKeyedUnarchiver unarchiveObjectWithData:v];}
+    NSString codingFilename (nodef)
+    NSString documentsCodingFilename=
+        {return(v_documentsCodingFilename);}
+        -v{
+            [v_documentsCodingFilename release];
+            v_documentsCodingFilename=v;
+            NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
+            NSString *documentsDirectory = [paths objectAtIndex:0];
+            self.codingFilename=[documentsDirectory stringByAppendingPathComponent:v];
+        } (ivar)
+
+    -(void)loadCodable {
+        [self loadCodableFromFilename:self.codingFilename];
+    }
+    -(void)saveCodable {
+        [self saveCodableToFilename:self.codingFilename];
+    }
+    -(bool)deleteCodableFile {
+        if (self.codingFilename) {
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error=nil;
+            return([fileManager removeItemAtPath:self.codingFilename error:&error]);
+        }
+        else return(NO);
+    }
+
+    -(void)loadCodableFromFilename:(NSString*)fn {
+        if (fn) {
+            NSObject *o=[NSKeyedUnarchiver unarchiveObjectWithFile:fn];
+            if ([o isKindOfClass:[NSDictionary class]]) {
+                self.asDictionary=(NSDictionary*)o;
+            }
+        }
+    }
+    -(void)saveCodableToFilename:(NSString*)fn {
+        if (fn) {
+            NSDictionary *d=self.asDictionary;
+            [NSKeyedArchiver archiveRootObject:d toFile:fn];
+        }
+    }
+
+    -(void)saveCodableToServer {
+        [self.asData sendAsBodyOfPOSTRequestWithURL:[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savecodable.php"]] returningResponse:nil error:nil];
+    }

@@ -1,0 +1,58 @@
+
+WIMyClass
+    Endpoint1 *hisname_endpoint=[[Endpoint1 alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (dealloc,readonly,nonatomic)
+    WIHisClass hisname=
+        {return((NSHisClass)v_hisname_endpoint.value);}
+        -v{[v_hisname_endpoint setValue:v];} (noivar)
+
+    -(void)die {self.hisname=nil;} 
+    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(mynames)]);}
+
+    NSIndexSet *indexesInHisname=
+        {
+            if (!v_hisname_endpoint.value) return([NSIndexSet indexSet]);
+            NSMutableArray<ArrayLinkEndpoint> *hisname_ep=(NSMutableArray<ArrayLinkEndpoint>*)[self hisnameToEndpoint:v_hisname_endpoint.value];
+            return((NSIndexSet*)[hisname_ep.__arrayObjectIndexes objectForKey:self]);
+        }
+        -v{
+            NSMutableArray<ArrayLinkEndpoint> *hisname_ep=(NSMutableArray<ArrayLinkEndpoint>*)[self hisnameToEndpoint:v_hisname_endpoint.value];
+            NSIndexSet *hisname_indexes_were=self.indexesInHisname.copy;
+            v=v.copy;
+            NSUInteger hisname_vi=v.firstIndex,hisname_wi=hisname_indexes_were.firstIndex;
+            while ((hisname_vi!=NSNotFound)&&(hisname_wi!=NSNotFound)) {
+                if (hisname_vi==hisname_wi) {
+                    hisname_vi=[v indexGreaterThanIndex:hisname_vi];
+                    hisname_wi=[hisname_indexes_were indexGreaterThanIndex:hisname_wi];
+                }
+                else if (hisname_vi<hisname_wi) {
+                    [hisname_ep insertObject:self atIndex:hisname_vi];
+                    hisname_vi=[v indexGreaterThanIndex:hisname_vi];
+                }
+                else {
+                    [hisname_ep removeObjectAtIndex:hisname_wi];
+                    hisname_wi=[hisname_indexes_were indexGreaterThanIndex:hisname_wi];
+                }
+            }
+            while (hisname_vi!=NSNotFound) {
+                [hisname_ep insertObject:self atIndex:hisname_vi];
+                hisname_vi=[v indexGreaterThanIndex:hisname_vi];
+            }
+            while (hisname_wi!=NSNotFound) {
+                [hisname_ep removeObjectAtIndex:hisname_wi];
+                hisname_wi=[hisname_indexes_were indexGreaterThanIndex:hisname_wi];
+            }
+            [hisname_indexes_were release];
+            [v release];
+        }
+    NSUInteger indexInHisname=
+        {
+            return(self.indexesInHisname.firstIndex);
+        }
+        -v{
+            self.indexesInHisname=(v==NSNotFound?[NSIndexSet indexSet]:[NSIndexSet indexSetWithIndex:v]);
+        }
+
+    -(void)retract {self.hisname=nil;}
+
+    

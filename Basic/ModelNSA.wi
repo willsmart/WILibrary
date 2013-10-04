@@ -1,0 +1,241 @@
+
+
+    
+    
+
+
+
+WIMyClass
+    ULL hisqname_commitFrame (nodef)
+    -(void)_commitHisqnameProperties {@-500 
+        if ((hisqname_commitFrame==commitFrame)||(self.commitStage!=stage_commitProperties)) return;
+        hisqname_commitFrame=commitFrame;
+    }
+
+    -(int)commitProperties:(int)substageIndex {@-3 [self _commitHisqnameProperties];}
+
+
+    long previousHisqnamesVersion=
+        {
+            if ((hisqname_commitFrame!=commitFrame)&&(self.commitStage==stage_commitProperties)) {
+                return(hisqnames.version);
+            }
+            else return(previousHisqnamesVersion);
+        } (ivar=previousHisqnamesVersion)
+
+
+        
+    NSArray previousHisqnames=
+        {
+            [self _commitHisqnameProperties];
+            return(previousHisqnames);
+        } (dealloc,ivar=previousHisqnames)
+        
+    AtomiclyMutableArray hisqnames=
+        {
+            [self _commitHisqnameProperties];
+            return(hisqnames);
+        }
+        -v{
+            [self.hisnames setArray:v];
+        } (dealloc,ivar=hisqnames)
+
+    -(void)_commitHisqnameProperties {
+        previousHisqnamesVersion=hisqnames.version;
+        if (self.hisnames.version==hisqnames.version) {
+            previousHisqnames=[hisqnames.__array retain];
+        }
+        else {
+            previousHisqnames=hisqnames.copyAndClear;
+            [hisqnames commitArray];
+            hisqnamesChanged=modelObjectHasChanged=YES;
+        }
+    }
+
+
+    -(init) {@-200 
+        hisqnames=[[AtomiclyMutableArray alloc] init];
+        [self addSourceCommitter:hisqnames];
+        [self.hisnames addDelegate:[DirtyObjectIndexArrayDelegate get]];
+        self.hisqnames.trackerArray=self.hisnames;
+        [self.hisqnames commitArray];
+    }
+
+
+    bool hisqnamesChanged=NO
+    
+    -(void)cleanupCommit {
+        [previousHisqnames release];previousHisqnames=nil;
+        hisqnamesChanged=NO;
+    }
+
+    //NSMutableDictionary *asNewDictionary={
+        //[ret setObject:[Model representationOfObject:hisqnames] forKey:@"hisqnames"];
+    //}
+    //-(void)setWithDictionary:(NSDictionary*)d {
+    //    {
+    //        id hisqnamesValue=[Model getBaseObjectWithDictionary:[d objectForKey:@"hisqnames"]];
+    //        if (hisqnamesValue&&[hisqnamesValue isKindOfClass:[NSArray class]]) {
+    //            [self.hisqnames setArray:hisqnamesValue];
+    //        }
+    //    }
+    //}
+    
+    
+    
+    
+    
+        
+        
+
+        
+    NSIndexSet indexesOfHisqnamesThatWereAdded=
+        {
+            [self indexesOfHisqnamesThatWereRemoved];
+            return(indexesOfHisqnamesThatWereAdded);
+        } (dealloc,ivar=indexesOfHisqnamesThatWereAdded)
+        
+    NSIndexSet indexesOfHisqnamesThatWereRemoved=
+        {
+            if (self.previousHisqnames&&(self.commitStage<stage_cleanupCommit)&&!(indexesOfHisqnamesThatWereRemoved||indexesOfHisqnamesThatWereAdded)) {
+                if (![Util getInsertsAndDeletesAsIndexSetWhenChanging:self.previousHisqnames to:self.hisqnames inss:&indexesOfHisqnamesThatWereAdded dels:&indexesOfHisqnamesThatWereRemoved]) {
+                    indexesOfHisqnamesThatWereAdded=[NSIndexSet indexSet];
+                    indexesOfHisqnamesThatWereRemoved=[NSIndexSet indexSet];
+                }
+                [indexesOfHisqnamesThatWereAdded retain];
+                [indexesOfHisqnamesThatWereRemoved retain];
+            }
+            return(indexesOfHisqnamesThatWereRemoved);
+        } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
+    
+    -(void)cleanupCommit {
+        [indexesOfHisqnamesThatWereAdded release];
+        [indexesOfHisqnamesThatWereRemoved release];
+        indexesOfHisqnamesThatWereAdded=nil;
+        indexesOfHisqnamesThatWereRemoved=nil;
+    }
+
+    -(NSHisClass)hisqnameAtIndex:(int)index {return([hisqnames objectAtIndex:index]);}
+
+
+
+
+
+
+
+
+
+
+
+
+    -(JustMyClassOverride*)overrideHisqnamesAs:(NSArray*)ahisqnames forContext:(id<NSCopying>)__acontext {
+        if (!__acontext) return(nil);
+        JustMyClassOverride *ret=[self hisqnamesOverrideForKey:__acontext];
+        if (!ret) {
+            [self setHisqnamesOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
+            [ret release];
+        }
+        [ret overrideWithArray:ahisqnames];
+        return(ret);
+    }
+
+    -(AtomiclyMutableArray*)hisqnamesGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.hisqnames:hisqnames);
+    }
+    -(NSArray*)previousHisqnamesGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.previousHisqnames:previousHisqnames);
+    }
+
+    -(NSHisClass)hisqnameAtIndex:(int)index givenContext:(id<NSCopying>)__acontext {
+        return([[self hisqnamesGivenContext:__acontext] objectAtIndex:index]);
+    }
+
+    -(bool)hisqnamesChangedGivenContext:(id<NSCopying>)__acontext {
+        if (hisqnamesChanged) return(YES);
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o.modelObjectHasChanged);
+    }
+
+    -(NSIndexSet*)indexesOfHisqnamesThatWereAddedGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.indexesOfHisqnamesThatWereAdded:self.indexesOfHisqnamesThatWereAdded);
+    }
+    -(NSIndexSet*)indexesOfHisqnamesThatWereRemovedGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.indexesOfHisqnamesThatWereRemoved:self.indexesOfHisqnamesThatWereRemoved);
+    }
+
+
+
+
+JustMyClassOverride<+Commitable>
+    hisqnamesOverride >d~ WIMyClass baseWithHisqnames
+
+    -(init)init{}
+
+    NSArray previousHisqnames (nodef,dealloc,readonly,ivar=previousHisqnames)
+    AtomiclyMutableArray hisqnames=
+        {
+            [self.baseWithHisqnames _commitHisqnameProperties];
+            return(hisqnames?hisqnames:self.baseWithHisqnames.hisqnames);
+        } (dealloc,ivar=hisqnames)
+    -(void)overrideWithArray:(NSArray*)v {
+        if (!hisqnames) {
+            hisqnames=[[AtomiclyMutableArray alloc] init];
+            hisqnames.trackerArray=self.baseWithHisqnames.hisqnames.trackerArray;
+        }
+        if (v) [hisqnames setAtomicArray:v];
+        [self markDirty];
+    }
+
+
+    -(int)commitProperties:(int)substageIndex {
+        [previousHisqnames release];
+        previousHisqnames=hisqnames.copyAndClear;
+        [hisqnames release];
+        hisqnames=nil;
+        
+        modelObjectHasChanged=YES;
+    }
+    
+    -(void)cleanupCommit {
+        [previousHisqnames release];previousHisqnames=nil;
+        [self removeAllSinkCommitters];
+        self.baseWithHisqnames=nil;
+    }
+
+
+
+
+        
+    NSIndexSet indexesOfHisqnamesThatWereAdded=
+        {
+            [self indexesOfHisqnamesThatWereRemoved];
+            return(indexesOfHisqnamesThatWereAdded);
+        } (dealloc,ivar=indexesOfHisqnamesThatWereAdded)
+        
+    NSIndexSet indexesOfHisqnamesThatWereRemoved=
+        {
+            if (self.previousHisqnames&&(self.commitStage<stage_cleanupCommit)&&!(indexesOfHisqnamesThatWereRemoved||indexesOfHisqnamesThatWereAdded)) {
+                if (![Util getInsertsAndDeletesAsIndexSetWhenChanging:self.previousHisqnames to:self.hisqnames inss:&indexesOfHisqnamesThatWereAdded dels:&indexesOfHisqnamesThatWereRemoved]) {
+                    indexesOfHisqnamesThatWereAdded=[NSIndexSet indexSet];
+                    indexesOfHisqnamesThatWereRemoved=[NSIndexSet indexSet];
+                }
+                [indexesOfHisqnamesThatWereAdded retain];
+                [indexesOfHisqnamesThatWereRemoved retain];
+            }
+            return(indexesOfHisqnamesThatWereRemoved);
+        } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
+    
+    -(void)cleanupCommit {
+        [indexesOfHisqnamesThatWereAdded release];
+        [indexesOfHisqnamesThatWereRemoved release];
+        indexesOfHisqnamesThatWereAdded=nil;
+        indexesOfHisqnamesThatWereRemoved=nil;
+    }
+
+
+
+

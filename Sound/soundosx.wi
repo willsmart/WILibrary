@@ -1,0 +1,64 @@
+"sound.wi"
+
+type AudioDeviceID
+
+<AudioUnit>
+    OSType componentSubType={return(kAudioUnitSubType_HALOutput);}
+    AudioDeviceID mic=[__Class__ getAudioDeviceCalled:"Built-in Microphone"];
+    AudioDeviceID speakers=[__Class__ getAudioDeviceCalled:"Built-in Output"];
+    -(init) {
+        [__Class__ getAudioDeviceCalled:nil];
+    }
+    +(AudioDeviceID)getAudioDeviceCalled:(const char*)name {
+        AudioObjectPropertyAddress propertyAddress = { 
+            kAudioHardwarePropertyDevices, 
+            kAudioObjectPropertyScopeGlobal, 
+            kAudioObjectPropertyElementMaster
+        };
+
+        UInt32 dataSize = 0;
+        OSStatus status = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &dataSize);
+        if(kAudioHardwareNoError != status) {
+            fprintf(stderr, "AudioObjectGetPropertyDataSize (kAudioHardwarePropertyDevices) failed: %i\n", status);
+            return NULL;
+        }
+
+        UInt32 deviceCount = dataSize / sizeof(AudioDeviceID);
+
+        Array<AudioDeviceID> audioDevices;
+        audioDevices.setUpperBound(deviceCount-1);
+
+        status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &dataSize, audioDevices.a);
+        if(kAudioHardwareNoError != status) {
+            return NULL;
+        }
+
+        IterateArray(AudioDeviceID,dev,audioDevices,
+            propertyAddress.mScope = kAudioDevicePropertyScopeInput;
+            CFStringRef deviceUID = NULL;
+            dataSize = sizeof(deviceUID);
+            propertyAddress.mSelector = kAudioDevicePropertyDeviceUID;
+            status = AudioObjectGetPropertyData(dev, &propertyAddress, 0, NULL, &dataSize, &deviceUID);
+            if(kAudioHardwareNoError != status) {
+                continue;
+            }
+
+            // Query device name
+            CFStringRef deviceName = NULL;
+            dataSize = sizeof(deviceName);
+            propertyAddress.mSelector = kAudioDevicePropertyDeviceNameCFString;
+            status = AudioObjectGetPropertyData(dev, &propertyAddress, 0, NULL, &dataSize, &deviceName);
+            if(kAudioHardwareNoError != status) {
+                fprintf(stderr, "AudioObjectGetPropertyData (kAudioDevicePropertyDeviceNameCFString) failed: %i\n", status);
+                continue;
+            }
+            const char *name2=[(NSString *)deviceName UTF8String];
+            if (!name) prnt("%s\n",name2);
+            else if (!strcasecmp(name,name2)) return(dev);
+        );
+        AudioDeviceID ret=0;
+        return(ret);
+    }
+
+
+

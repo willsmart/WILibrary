@@ -1,0 +1,240 @@
+
+
+
+
+
+
+SHPositionSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
+    -(void)set {
+        {
+            float *sz=[self.program uniformForKey:@"unitSize"].asVec2;
+            float v[8]={
+                -1,-1,
+                -1+2*sz[0],-1,
+                -1,-1+2*sz[1],
+                -1+2*sz[0],-1+2*sz[1]
+                };
+            self.asVec2=v;
+        }
+        [super set];
+    }
+SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
+    -(void)set {
+        {
+            float *sz=[self.program uniformForKey:@"sizeInPixels"].asVec2;
+            float v[8]={
+                -0.49999f,-0.49999f,
+                sz[0]-0.49999f,-0.49999f,
+                -0.49999f,sz[1]-0.49999f,
+                sz[0]-0.49999f,sz[1]-0.49999f
+                };
+            self.asVec2=v;
+        }
+        [super set];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+<URLResourceShader:URLResource>
+    +(NSString*)urlType {return(@"shader?");}
+    NSDictionary urlArgs=
+        {
+            ret=[MutableDictionary dictionary];
+            for (NSString *name in self.program.uniforms) [ret setObject:[self.program uniformForKey:name] forKey:[@"u" stringByAppendingString:name]];
+            for (NSString *name in self.program.macros) [ret setObject:[self.program macroForKey:name] forKey:[@"m" stringByAppendingString:name]];
+        }
+        -v {
+            NSArray *unames=self.program.uniforms.allKeys;
+            NSArray *mnames=self.program.macros.allKeys;
+            for (NSString *name in unames) if (!([self respondsToSelector:NSSelectorFromString((NSString*)name)]||[v objectForKey:[@"u" stringByAppendingString:name]])) [self.program removeUniformForKey:name];
+            for (NSString *name in mnames) if (!([self.builtinMacros containsObject:name]||[v objectForKey:[@"m" stringByAppendingString:name]])) [self.program removeMacroForKey:name];
+            
+            for (NSString *key in v) {
+                if ([key hasPrefix:@"u"]&&[[v objectForKey:key] isKindOfClass:[SHUniform class]]) {
+                    SHUniform *vu=(SHUniform*)[v objectForKey:key];
+                    SHUniform *u=[self.program uniformForKey:[key substringFromIndex:1]];
+                    if (!u) {
+                        [self.program setUniform:vu forKey:[key substringFromIndex:1]];
+                        [self.program markChanged];
+                    }
+                    else [u copyFrom:vu];
+                }
+                else if ([key hasPrefix:@"m"]&&[[v objectForKey:key] isKindOfClass:[NSString class]]) {
+                    [self.program setMacro:(NSString*)[v objectForKey:key] forKey:[key substringFromIndex:1]];
+                }
+            }
+            urlValid=YES;
+        }
+
+    +(NSString*)stringFromObject:(NSObject*)o {
+        else if ([o isKindOfClass:[SHUniform class]]) {
+            return([@"U" stringByAppendingString:((SHUniform*)o).asString]);
+        }
+    }
+    +(NSObject*)objectFromString:(NSString*)s {
+        else if ([s hasPrefix:@"U"]) {
+            SHUniform *u=[SHUniform get];
+            u.asString=[s substringFromIndex:1];
+            //NSLog(@"!!! %@ : %@\n",[s substringFromIndex:1],u.description);
+            return(u);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
+    +(NSString*)urlType {return([ImageShader urlType]);}
+    NSURL simplifiedClearedURL,simplifiedURL (nodef)
+    -(init[super init])initWithURL:(NSURL*)url {
+        self.simplifiedClearedURL=[__Class__ _simplifiedClearedURLForURL:url];
+        self.simplifiedURL=[ImageShader simplifiedURLForURL:url];
+    }
+    float size={return(v_simplifiedURL.absoluteString.length);}
+
+    +(NSURL*)simplifiedClearedURLForURL:(NSURL*)url {
+        return(((ShaderURLConversion*)[g_singletons.shaderURLConversionCache objectForKey:url]).simplifiedClearedURL);
+    }
+    +(NSURL*)simplifiedURLForURL:(NSURL*)url {
+        return(((ShaderURLConversion*)[g_singletons.shaderURLConversionCache objectForKey:url]).simplifiedURL);
+    }
+
+
+    +(NSURL*)_simplifiedClearedURLForURL:(NSURL*)url {
+        NSMutableDictionary *d=[__Class__ argStringDictionaryForURL:url];
+        NSArray *keys=d.allKeys;
+        for (NSString *key in keys) if ([[d objectForKey:key] isKindOfClass:[NSString class]]) {
+            NSString *val=[d objectForKey:key];
+            if ([val hasPrefix:@"U"]) {
+                [d setObject:[@"U" stringByAppendingString:[SHUniform clearValuesInString:[val substringFromIndex:1]]] forKey:key];
+            }
+        }
+        return([__Class__ urlForArgStringDictionary:d]);
+    }
+
+
+
+
+
+Singletons
+    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));} (dealloc,ivar)
+    NSString description={
+        [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,self.shaderURLConversionCache.count];
+    }
+
+ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
+    float maxSize=100000
+    int maxCount=10000
+    -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {
+        if ([key isKindOfClass:[NSURL class]]) {
+            return([[[ShaderURLConversion alloc] initWithURL:(NSURL*)key] autorelease]);
+        }
+    }
+
+
+
+
+
+<RenderTicker>
+    -(void)dealloc {@-100 self.animating=NO;}
+
+    CADisplayLink displayLink (nodef)
+
+    BOOL animating=
+        {return(animating);}
+        -v{
+            if (v&&!animating) {
+                CADisplayLink *aDisplayLink = [[UIScreen mainScreen] displayLinkWithTarget:self selector:@selector(renderTick)];
+                [aDisplayLink setFrameInterval:animationFrameInterval];
+                [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                //[aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+                self.displayLink = aDisplayLink;
+                animating = TRUE;
+            }
+            else if (animating&&!v) {
+                [self.displayLink invalidate];
+                self.displayLink = nil;
+                animating = FALSE;
+            }
+        } (ivar)
+
+    NSInteger animationFrameInterval=
+        {return animationFrameInterval;}
+        -v{
+            if (v >= 1) {
+                animationFrameInterval = v;
+                if (animating) {
+                    self.animating=NO;
+                    self.animating=YES;
+                }
+            }
+        } (ivar)
+
+    -(init) {@-10 
+        animating = NO;
+        animationFrameInterval = 2;
+    }
+
+    bool inRenderTick (readonly,nodef)
+    -(void)renderTick {@-100 
+        @synchronized (self) {
+            if (inRenderTick) return;
+            inRenderTick=YES;
+        }
+        @100 
+        @synchronized (self) {
+            inRenderTick=NO;
+        }
+    }
+
+
+
+Singletons
+    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));} (dealloc,ivar)
+
+    -(void)startImageTicker {
+        [self.shaderTicker startWithInterval:0.5];
+    }
+
+
+ShaderTicker<RenderTicker,Ticker,BaseObject>
+    -(void)renderTick {[self tick];}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+"sound.wi"
+
+
+<AudioUnit>
+    OSType componentSubType={return(kAudioUnitSubType_RemoteIO);}
+

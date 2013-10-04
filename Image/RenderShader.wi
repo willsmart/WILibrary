@@ -1,0 +1,122 @@
+//Shader
+
+
+
+
+
+RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
+    vec2 sizeInPixels (uniform)
+    vec4 position (attribute)
+    vec2 unit (attribute)
+    vec2 pixel (attribute)
+    vec2 unitSize (uniform)
+    float opacity (uniform)
+    
+    UIView renderedInView (nodef,assign,ivar=renderedInView)
+    
+    -(init) {
+        self.program.vertexCount=4;
+        {
+            float v[8]={0,0,  1,0,   0,1,   1,1};
+            self.unit.asVec2=v;
+        }
+    }
+
+    NSSet builtinMacros (nodef)
+    -(init) {
+        @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
+    }
+
+    -void main()/*frag*/ {@!-999 lowp vec4 colour=lowp vec4(1,0,1,1);
+        @-500 {getColour}
+        @!999 gl_FragColor=colour;
+    }
+
+    -(init) {
+        [self.program setMacro:@"colour=(0,0,1,1);" forKey:@"getColour"];
+    }
+
+
+    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {@-10
+        {
+            float a=1;for (UIView *vw=renderedInView;vw;a*=vw.hidden?0:vw.alpha,vw=vw.superview);
+            self.opacity.asFloat=a;
+            float r2[4]={adrawRect.origin.x,adrawRect.origin.y,
+                adrawRect.size.width,adrawRect.size.height};
+            float r[4]={adrawRect.origin.x,aframeBufferRect.size.height-1-adrawRect.origin.y,
+                adrawRect.size.width,-adrawRect.size.height};
+            [self.program uniformForKey:@"sizeInPixels"].asVec2=r+2;
+        
+            {
+                float v[8]={
+                    -0.49999f+r[0],-0.49999f+r2[1],
+                    -0.49999f+r[0]+r[2],-0.49999f+r2[1],
+                    -0.49999f+r[0],-0.49999f+r2[1]+r2[3],
+                    -0.49999f+r[0]+r[2],-0.49999f+r2[1]+r2[3]
+                    };
+                [self.program attributeForKey:@"pixel"].asVec2=v;
+            }
+            r[0]/=aframeBufferRect.size.width;
+            r[1]/=aframeBufferRect.size.height;
+            r[2]/=aframeBufferRect.size.width;
+            r[3]/=aframeBufferRect.size.height;
+            [self.program uniformForKey:@"unitSize"].asVec2=r+2;
+            {
+                float v[8]={
+                    -1+2*r[0],-1+2*r[1],
+                    -1+2*(r[0]+r[2]),-1+2*r[1],
+                    -1+2*r[0],-1+2*(r[1]+r[3]),
+                    -1+2*(r[0]+r[2]),-1+2*(r[1]+r[3])
+                    };
+                [self.program attributeForKey:@"position"].asVec2=v;
+            }
+        }
+    }
+
+
+
+
+
+
+MetaEnabled
+    +(NSSet*)viewAllowedMetaChildTypes {@"RenderLoopView",}
+    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+        if ([type isEqualToString:@"RenderLoopView"]) return([RenderLoopView alloc]);
+    }
+
+
+
+RenderLoopView:RenderUIView<UIViewMetaEnabled>
+    RenderShader renderShader=[[RenderShader alloc] init] (dealloc,ivar=renderShader,readonly)
+    -(init) {
+        renderShader.renderedInView=self;
+        self.shader=renderShader;
+        [renderShader.program setMacro:@"colour=(sin(length(pixel)),0,1,opacity);" forKey:@"getColour"];
+        self.views=g_singletons.renderUIViews;
+    }
+    
+    -(id)superInitWithFrame:(CGRect)frame {
+        return([super initWithFrame:frame]);
+    }
+    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+        return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
+    }
+
+    -(init)init {}
+    -(init)initWithFrame:(CGRect)frame {}
+
+    -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
+        if ([keyStr hasPrefix:@"macro_"]) {
+            if (objectStr) {
+                [renderShader.program setMacro:objectStr forKey:[keyStr substringFromIndex:@"macro_".length]];
+            }
+            else {
+                [renderShader.program removeMacroForKey:[keyStr substringFromIndex:@"macro_".length]];
+            }
+        }
+    }
+
+
+
+
+

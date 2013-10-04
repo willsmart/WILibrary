@@ -1,0 +1,56 @@
+
+
+WIMyClass
+    -(void)die {/*__WIDERIVED__[super die]*/}
+    -(void)dealloc {@-151 [self die];@999 [super dealloc];}
+    -(init) {
+        @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
+        @999 return(self);
+    }
+
+
+
+
+
+/*
+ static NSArray *__myclass_dieList=nil; 
+ static NSArray *__myclass_initList=nil; 
+ +(void)clearPropData { 
+ if (__myclass_dieList) {[__myclass_dieList release];__myclass_dieList=nil;} 
+ if (__myclass_initList) {[__myclass_initList release];__myclass_initList=nil;} 
+ } 
+ +(NSArray*)___dieList { 
+ return
+ if (!__myclass_dieList) { 
+ unsigned int count=0,slen=strlen("___die_"); 
+ Method * mlist = class_copyMethodList(object_getClass(self), &count); 
+ NSMutableArray *ret=[NSMutableArray array]; 
+ for (int i=0;i<count;i++) { 
+ SEL sel=method_getName(mlist[i]); 
+ const char *nm=sel_getName(sel); 
+ if ((strlen(nm)>=slen)&&!memcmp(nm,"___die_",sizeof(char)*slen)) { 
+ [ret addObject:sel]; 
+ } 
+ } 
+ __myclass_dieList=[ret copy]; 
+ } 
+ return(__myclass_dieList); 
+ } 
+ +(NSArray*)___initList { 
+ if (!__myclass_initList) { 
+ unsigned int count=0,slen=strlen("___init_"); 
+ Method * mlist = class_copyMethodList(object_getClass(self), &count); 
+ NSMutableArray *ret=[NSMutableArray array]; 
+ for (int i=0;i<count;i++) { 
+ SEL sel=method_getName(mlist[i]); 
+ const char *nm=sel_getName(sel); 
+ if ((strlen(nm)>=slen)&&!memcmp(nm,"___init_",sizeof(char)*slen)) { 
+ [ret addObject:sel]; 
+ } 
+ } 
+ __myclass_initList=[ret copy]; 
+ } 
+ return(__myclass_initList); 
+ } 
+ */
+

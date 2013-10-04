@@ -1,0 +1,75 @@
+sys CADisplayLink
+
+RenderLoop <BaseObject>
+
+    -(void)dealloc {@-100 self.animating=NO;self.eaglView=nil;}
+
+    EAGLView _eaglView (nodef)
+    EAGLView eaglView=
+        {return(self._eaglView);}
+        -v{
+            if (v) {
+                [(self._eaglView=v) initContext];
+            }
+            else if (self._eaglView) {
+                if ([EAGLContext currentContext] == self.eaglView.context) {
+                    [EAGLContext setCurrentContext:nil];
+                }
+                self._eaglView.context = nil;
+                self._eaglView=nil;
+            }
+        }
+
+    CADisplayLink displayLink (nodef)
+
+    BOOL animating=
+        {return(animating);}
+        -v{
+            if (v&&!animating) {
+                CADisplayLink *aDisplayLink = [[UIScreen mainScreen] displayLinkWithTarget:self selector:@selector(drawFrame)];
+                [aDisplayLink setFrameInterval:animationFrameInterval];
+                //[aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+                self.displayLink = aDisplayLink;
+                animating = TRUE;
+            }
+            else if (animating&&!v) {
+                [self.displayLink invalidate];
+                self.displayLink = nil;
+                animating = FALSE;
+            }
+        } (ivar)
+
+    NSInteger animationFrameInterval=
+        {return animationFrameInterval;}
+        -v{
+            if (v >= 1) {
+                animationFrameInterval = v;
+                if (animating) {
+                    self.animating=NO;
+                    self.animating=YES;
+                }
+            }
+        } (ivar)
+
+    renderLoop ~- ShaderData shaderData
+
+    -(init) {
+        animating = NO;
+        animationFrameInterval = 2;
+    }
+
+
+
+    -(void)drawFrame {
+        @synchronized (self) {
+            if (self.shaderData==nil) self.shaderData=[ShaderData get];
+            
+            NSMutableDictionary *datasByView=[NSMutableDictionary dictionaryWithObject:self.shaderData forKey:[NSNull null]];
+
+            [self.eaglView setFramebuffer];
+            [self.eaglView.renderViews renderWithDatas:datasByView];
+            [self.eaglView presentFramebuffer];
+        }
+    }
+

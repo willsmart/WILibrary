@@ -1,0 +1,133 @@
+"<UIKit/UIKit.h>"
+"<OpenGLES/ES1/gl.h>"
+"<OpenGLES/ES1/glext.h>"
+"<OpenGLES/ES2/gl.h>"
+"<OpenGLES/ES2/glext.h>"
+"<QuartzCore/QuartzCore.h>"
+
+sys EAGLContext
+type GLint
+type GLuint
+
+EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
+    GLint framebufferWidth=0,framebufferHeight=0 (readonly)
+    GLuint defaultFramebuffer=0, colorRenderbuffer=0 (readonly)
+
+    -(init)initWithFrame:(CGRect)frame {}
+    -(init)initWithCoder:(NSCoder*)aDecoder {}
+
+    -(init) {
+        if( [[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+            self.contentScaleFactor = [[UIScreen mainScreen] scale];   
+        }
+    }
+    EAGLContext _context=nil,context=
+        {return(self._context);}
+        -v{
+            if (self._context != v) {
+                [self deleteFramebuffer];
+                self._context = v;
+                [EAGLContext setCurrentContext:nil];
+            }
+        }
+
+
+    -(void)setFramebuffer {
+        if (self.context) {
+            [EAGLContext setCurrentContext:self.context];
+            if (!defaultFramebuffer) [self createFramebuffer];
+            glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+            glViewport(0, 0, framebufferWidth, framebufferHeight);
+        }
+    }
+
+    -(BOOL)presentFramebuffer {
+        if (self.context) {
+            [EAGLContext setCurrentContext:self.context];
+            glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+            return([self.context presentRenderbuffer:GL_RENDERBUFFER]);
+        }
+        else return(NO);
+    }
+
+    -(BOOL)initContext {
+        self.context=nil;
+        EAGLContext *aContext = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
+        if (!aContext) {
+            NSLog(@"Failed to make context");
+            return(NO);
+        }
+        if (![EAGLContext setCurrentContext:aContext]) {
+            NSLog(@"Failed to set ES context current");
+            return(NO);
+        }
+        self.context=aContext;
+        [self setFramebuffer];
+        return(YES);
+    }
+
+    -(void)createFramebuffer {
+        if (self.context && !defaultFramebuffer) {
+            [EAGLContext setCurrentContext:self.context];
+            
+            // Create default framebuffer object.
+            glGenFramebuffers(1, &defaultFramebuffer);
+            glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+            
+            // Create color render buffer and allocate backing store.
+            glGenRenderbuffers(1, &colorRenderbuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+            [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
+            glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
+            glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
+            
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+            
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        }
+    }
+
+    -(void)deleteFramebuffer {
+        if (self.context) {
+            [EAGLContext setCurrentContext:self.context];
+            
+            if (defaultFramebuffer) {
+                glDeleteFramebuffers(1, &defaultFramebuffer);
+                defaultFramebuffer = 0;
+            }
+            
+            if (colorRenderbuffer) {
+                glDeleteRenderbuffers(1, &colorRenderbuffer);
+                colorRenderbuffer = 0;
+            }
+        }
+    }
+
+
+    -(void)dealloc {@-50 
+        [self deleteFramebuffer];
+    }
+
+    +(Class)layerClass {
+        return [CAEAGLLayer class];
+    }
+
+    -(init) {
+        @-900 CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+        eaglLayer.opaque = TRUE;
+        eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
+                                        kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+                                        nil];
+    }
+
+
+
+    -(void)layoutSubviews {
+        // The framebuffer will be re-created at the beginning of the next setFramebuffer method call.
+        [self deleteFramebuffer];
+        [super layoutSubviews];
+    }
+
+

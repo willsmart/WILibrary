@@ -1,0 +1,100 @@
+
+Singletons
+    RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));} (dealloc,readonly,ivar=renderUIViews)
+
+
+RenderUIViews <BaseObject> "fn:shader"
+    //    _views>>views -s< RenderUIView _view>>view
+    views -s< RenderUIView view
+        view ~- Shader shader
+    //    _views>>views ~s< <StandardUniformProtocol> _standardUniform>>standardUniform
+    //    _renderViews>>renderViews ~- EAGLView _eaglView>>eaglView
+    views ~s< <StandardUniformProtocol> standardUniform
+    renderViews ~- EAGLView eaglView
+
+
+
+RenderUIView : UIView<BaseObject>
+
+    CGRect rectOnEAGLView={
+        if (!self.views) return(CGRectMake(0, 0, 0, 0));
+        else return(CGRectIntersection(self.views.eaglView.bounds, [self.views.eaglView convertRect:self.bounds fromView:self]));
+    }
+
+    bool renderUIViewEnabled=YES
+
+    -(void)renderWithData:(ShaderData*)data standardUniforms:(NSSet*)sus {
+        float a=1;for (UIView *vw=self;vw;a*=vw.hidden?0:vw.alpha,vw=vw.superview);
+        if (!a) return;
+        if (!self.renderUIViewEnabled) return;
+        if (!self.views) return;
+        CGRect r=self.rectOnEAGLView,ear=self.views.eaglView.bounds;
+        if (!CGRectIsEmpty(r)) {
+            [self.shader renderOnRect:ear toRect:r data:data standardUniforms:sus];
+        }
+    }
+
+    -(init) {
+        self.views=[RenderUIViews getDefault];
+        self.renderUIViewEnabled=YES;
+    }
+
+    -(init)initWithFrame:(CGRect)frame {}
+    -(init)initWithCoder:(NSCoder*)aDecoder {}
+
+
+
+
+RenderUIViews <BaseObject>
+
+    /*decl:
+    extern RenderUIViews *_RenderUIViews_default;
+    */
+    /*decl:impl:
+    RenderUIViews *_RenderUIViews_default=nil;
+    */
+    +(RenderUIViews*)getDefault {
+        if (!_RenderUIViews_default) {
+            ADDSINGLETON(_RenderUIViews_default=[[[RenderUIViews alloc] init] autorelease]);
+        }
+        return(_RenderUIViews_default);
+    }
+
+
+    -(init) {
+        //        [self addStandardUniform:[SU_Coors get]];
+        //        [self addStandardUniform:[SU_Camera get]];
+        //        [self addStandardUniform:[SU_time get]];
+    }
+
+    -(void)renderWithDatas:(NSDictionary*)dataByView {
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        NSSet *a;NSSet *sus;
+        @synchronized (self) {a=self.views.copy;sus=self.standardUniforms.copy;}
+        ShaderData *defData=[dataByView objectForKey:[NSNull null]];
+    
+        for (NSObject<StandardUniformProtocol> *su in sus) {
+            @try{[su setup];}
+            @catch (NSException *ex) {
+                NSLog(@"Except in setup render: %@\n",ex.reason);
+            }
+        }
+        for (RenderUIView *view in a) {
+            @try {
+                ShaderData *data=[dataByView objectForKey:view];
+                if (!data) data=defData;
+                if (data) [view renderWithData:data standardUniforms:sus];
+            }
+            @catch (NSException *ex) {
+                NSLog(@"Except in render: %@\n",ex.reason);
+            }
+        }
+        for (NSObject<StandardUniformProtocol> *su in sus) {
+            @try{[su tearDown];}
+            @catch (NSException *ex) {
+                NSLog(@"Except in teardown render: %@\n",ex.reason);
+            }
+        }
+    }
+

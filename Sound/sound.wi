@@ -1,0 +1,478 @@
+"<AudioUnit/AudioUnit.h>"
+"<AudioToolbox/AudioServices.h>"
+
+type AudioComponentInstance
+
+
+
+
+type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<RecordingAudioUnit:AudioUnit,Ticker>
+    int RECORDING_SAMPLE_RATE
+    -(void)processSamplesWithCount:(int)numSamples {@-100 int *samples=recordingSamples->a;
+        @100 recordingSamplei+=numSamples;
+    }
+
+
+
+
+
+
+
+    ArrayOfInts *recordingQueue,*recordingSamples (nodef)
+    int recordingQueueSize=1048576,recordingSamplesSize=262144,recordingQueueIn=0,recordingQueueOut=0
+    -(init) {@10 
+        recordingQueue=NEW(ArrayOfInts);
+        recordingQueue->setUpperBound(recordingQueueSize-1);
+        recordingSamples=NEW(ArrayOfInts);
+        recordingSamples->setUpperBound(recordingSamplesSize-1);
+    }
+    -(void)dealloc {
+        DELETE(ArrayOfInts,recordingQueue);
+        DELETE(ArrayOfInts,recordingSamples);
+    }
+
+    int recordingQueueNum={return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
+    int _debrci=0;
+    -(void)addInts:(int*)arecordingSamples num:(int)Ns {
+        memcpy(recordingSamples->a,arecordingSamples,sizeof(int)*Ns);
+        [self processSamplesWithCount:Ns];
+        return;
+        
+        //if (_debrci++>25) {prnt("R");_debrci=0;}
+        @synchronized(self) {
+            if (recordingQueueOut-1>recordingQueueIn) {
+                int N=MIN(recordingQueueOut-1-recordingQueueIn,Ns);
+                memcpy(recordingQueue->a+recordingQueueIn,arecordingSamples,sizeof(int)*N);
+                recordingQueueIn+=N;
+            }
+            else {
+                int N=MIN(recordingQueueSize-(recordingQueueOut?0:1)-recordingQueueIn,Ns);
+                memcpy(recordingQueue->a+recordingQueueIn,arecordingSamples,sizeof(int)*N);
+                recordingQueueIn+=N;
+                if (recordingQueueIn==recordingQueueSize) {
+                    recordingQueueIn=0;
+                    if ((recordingQueueOut>1)&&(N<Ns)) {
+                        int N2=MIN(recordingQueueOut-1,Ns-N);
+                        memcpy(recordingQueue->a,arecordingSamples+N,sizeof(int)*N2);
+                        recordingQueueIn+=N2;
+                    }
+                }
+            }
+        }
+        if (!self.tim) [self tickRecording];
+    }
+
+    -(void)tick {@-14 
+        [self tickRecording];
+    }
+    -(void)tickRecording {
+        while (YES) {
+            int numSamples;
+            @synchronized(self) {
+                numSamples=MIN(self.recordingQueueNum,recordingSamplesSize);
+                if (numSamples) {
+                    int N=MIN(numSamples,recordingQueueSize-recordingQueueOut);
+                    memcpy(recordingSamples->a,recordingQueue->a+recordingQueueOut,sizeof(int)*N);
+                    recordingQueueOut+=N;
+                    if (recordingQueueOut==recordingQueueSize) {
+                        recordingQueueOut=0;
+                        if (N<numSamples) {
+                            int N2=numSamples-N;
+                            memcpy(recordingSamples->a+N,recordingQueue->a,sizeof(int)*N2);
+                            recordingQueueOut+=N2;
+                        }
+                    }
+                }
+            }
+            if (numSamples) [self processSamplesWithCount:numSamples];
+            else break;
+        }
+        //prnt(".");
+    }
+    int recordingSamplei=0
+
+
+
+
+
+
+
+    /*interfaces:
+    OSStatus recordingCallback(void *inRefCon,
+    AudioUnitRenderActionFlags *ioActionFlags,
+    const AudioTimeStamp *inTimeStamp,
+    UInt32 inBusNumber,
+    UInt32 inNumberFrames,
+    AudioBufferList *ioData);
+    */
+    /*interfaces:impl:
+    OSStatus recordingCallback(void *inRefCon,
+    AudioUnitRenderActionFlags *ioActionFlags,
+    const AudioTimeStamp *inTimeStamp,
+    UInt32 inBusNumber,
+    UInt32 inNumberFrames,
+    AudioBufferList *ioData) {prnt("r");
+        AudioBuffer buffer;
+     
+        OSStatus status;
+     
+        buffer.mDataByteSize = inNumberFrames * 4; // sample size
+        buffer.mNumberChannels = 2; // one channel
+        buffer.mData = malloc( inNumberFrames * 4 ); // buffer size
+     
+        AudioBufferList bufferList;
+        bufferList.mNumberBuffers = 1;
+        bufferList.mBuffers[0] = buffer;
+     
+        status = AudioUnitRender([(NSObject<RecordingAudioUnit>*)inRefCon audioUnit], ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames,     &bufferList);
+     
+        AudioBuffer sourceBuffer = bufferList.mBuffers[0];
+        int N=sourceBuffer.mDataByteSize/4;
+        if (N) [(NSObject<RecordingAudioUnit>*)inRefCon addInts:(int*)sourceBuffer.mData num:N];
+
+        free(bufferList.mBuffers[0].mData);
+     
+        return noErr;
+    }
+    */
+
+
+    -(void)setupAudio {
+        @10 
+        {
+            UInt32 flag=1;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioOutputUnitProperty_EnableIO,
+                      kAudioUnitScope_Input,
+                      1,
+                      &flag,
+                      sizeof(flag));
+        }
+        @20 
+        {
+            audioFormat.mSampleRate = RECORDING_SAMPLE_RATE;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioUnitProperty_StreamFormat,
+                      kAudioUnitScope_Output,
+                      1,
+                      &audioFormat,
+                      sizeof(audioFormat));
+        }
+        @30 
+        {
+            callbackStruct.inputProc = recordingCallback;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioOutputUnitProperty_SetInputCallback,
+                      kAudioUnitScope_Global,
+                      1,
+                      &callbackStruct,
+                      sizeof(callbackStruct));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<PlaybackAudioUnit:AudioUnit,Ticker>
+    int PLAYBACK_SAMPLE_RATE
+    int numChannels=2
+
+    -(void)prepareSamples:(PLAYFRAME*)to withCount:(int)toCount {
+        @100 playbackSamplei+=toCount;
+    }
+
+    ArrayOfPLAYFRAMEs *playbackQueue,*playbackSamples (nodef)
+    int playbackQueueSize=1048576,playbackSamplesSize=262144,playbackQueueIn=0,playbackQueueOut=0,playbackQueueThreshold=900000
+
+
+    -(init) {@10 
+        playbackQueue=NEW(ArrayOfPLAYFRAMEs);
+        playbackQueue->setUpperBound(playbackQueueSize-1);
+        playbackSamples=NEW(ArrayOfPLAYFRAMEs);
+        playbackSamples->setUpperBound(playbackSamplesSize-1);
+    }
+    -(void)dealloc {
+        DELETE(ArrayOfPLAYFRAMEs,playbackQueue);
+        DELETE(ArrayOfPLAYFRAMEs,playbackSamples);
+    }
+
+    int playbackQueueNum={return((playbackQueueIn-playbackQueueOut+playbackQueueSize)%playbackQueueSize);}
+
+
+
+    int playbackSamplei=0
+
+
+    int _debpbi=0;
+    -(void)getInts:(PLAYFRAME*)to withCount:(int*)pNs {
+        [self prepareSamples:to withCount:*pNs];
+        return;
+        if (_debpbi++>25) {prnt("P");_debpbi=0;}
+        @synchronized(self) {
+            int Ns=*pNs;
+            int numSamples=MIN(self.playbackQueueNum,Ns);
+            if (numSamples<Ns) {
+                [self tickPlayback];
+                numSamples=MIN(self.playbackQueueNum,Ns);
+            }
+            *pNs=Ns=numSamples;
+            if (numSamples) {
+                int N=MIN(numSamples,playbackQueueSize-playbackQueueOut);
+                memcpy(to,playbackQueue->a+playbackQueueOut,sizeof(PLAYFRAME)*N);
+                playbackQueueOut+=N;
+                if (playbackQueueOut==playbackQueueSize) {
+                    playbackQueueOut=0;
+                    if (N<numSamples) {
+                        int N2=numSamples-N;
+                        memcpy(to+N,playbackQueue->a,sizeof(PLAYFRAME)*N2);
+                        playbackQueueOut+=N2;
+                    }
+                }
+            }
+        }
+    }
+    
+    -(void)tick {@-13 
+        [self tickPlayback];
+    }
+
+    -(void)tickPlayback {
+        int Ns=MIN(playbackQueueSize-1,playbackQueueThreshold);
+        while (((playbackQueueIn-playbackQueueOut)+playbackQueueSize)%playbackQueueSize<Ns) {
+            @synchronized(self) {
+                if (playbackQueueOut-1>playbackQueueIn) {
+                    int N=MIN(playbackQueueOut-1-playbackQueueIn,playbackQueueSize-1);
+                    [self prepareSamples:playbackQueue->a+playbackQueueIn withCount:N];
+                    playbackQueueIn+=N;
+                }
+                else {
+                    int N=MIN(playbackQueueSize-(playbackQueueOut?0:1)-playbackQueueIn,Ns);
+                    [self prepareSamples:playbackQueue->a+playbackQueueIn withCount:N];
+                    playbackQueueIn+=N;
+                    if (playbackQueueIn==playbackQueueSize) {
+                        playbackQueueIn=0;
+                        if ((playbackQueueOut>1)&&(N<Ns)) {
+                            int N2=MIN(playbackQueueOut-1,Ns-N);
+                            [self prepareSamples:playbackQueue->a withCount:N2];
+                            playbackQueueIn+=N2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    /*interfaces:
+    extern int g_sampleIndex;
+    OSStatus playbackCallback(void *inRefCon,
+                                      AudioUnitRenderActionFlags *ioActionFlags,
+                                      const AudioTimeStamp *inTimeStamp,
+                                      UInt32 inBusNumber,
+                                      UInt32 inNumberFrames,
+                                      AudioBufferList *ioData);
+    */
+    /*interfaces:impl:
+    OSStatus playbackCallback(void *inRefCon,
+                                      AudioUnitRenderActionFlags *ioActionFlags,
+                                      const AudioTimeStamp *inTimeStamp,
+                                      UInt32 inBusNumber,
+                                      UInt32 inNumberFrames,
+                                      AudioBufferList *ioData)
+    {prnt("p");
+        for(UInt32 i = 0; i < ioData->mNumberBuffers; ++i)
+        {
+            int numSamples = ioData->mBuffers[i].mDataByteSize / 8,N=numSamples;
+            [(NSObject<PlaybackAudioUnit>*)inRefCon getInts:(PLAYFRAME*)ioData->mBuffers[i].mData withCount:&N];
+            if (N<numSamples) {
+                memset(((PLAYFRAME*)ioData->mBuffers[i].mData)+N,0,(numSamples-N)*sizeof(PLAYFRAME));
+            }
+        }
+
+        return noErr;
+    }
+    
+    
+    */
+
+
+
+    -(void)setupAudio {
+        @10 
+        {
+            UInt32 flag=1;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioOutputUnitProperty_EnableIO,
+                      kAudioUnitScope_Output,
+                      0,
+                      &flag,
+                      sizeof(flag));
+        }
+        @20 
+        {
+            audioFormat.mFramesPerPacket = 1;
+            audioFormat.mChannelsPerFrame = numChannels;
+            audioFormat.mBitsPerChannel = 16;
+            audioFormat.mBytesPerPacket = sizeof(PLAYFRAME);
+            audioFormat.mBytesPerFrame = sizeof(PLAYFRAME);
+            audioFormat.mSampleRate = PLAYBACK_SAMPLE_RATE;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioUnitProperty_StreamFormat,
+                      kAudioUnitScope_Input,
+                      0,
+                      &audioFormat,
+                      sizeof(audioFormat));
+        }
+        @30 
+        {
+            callbackStruct.inputProc = playbackCallback;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioUnitProperty_SetRenderCallback,
+                      kAudioUnitScope_Global,
+                      0,
+                      &callbackStruct,
+                      sizeof(callbackStruct));
+        }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<AudioUnit>
+    AudioComponentInstance audioUnit (nodef)
+
+    bool isSetup=NO,isStarted=NO (readonly)
+    
+    -(void)setupAudio {@5 
+        if (isSetup) return;
+        OSStatus status;
+
+        AudioComponentDescription desc;
+        desc.componentType = kAudioUnitType_Output;
+        desc.componentSubType = self.componentSubType;
+        desc.componentFlags = 0;
+        desc.componentFlagsMask = 0;
+        desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+        AudioComponent inputComponent = AudioComponentFindNext(NULL, &desc);
+
+        status = AudioComponentInstanceNew(inputComponent, &audioUnit);
+
+        @9 
+        {
+            UInt32 flag=0;
+            status = AudioUnitSetProperty(audioUnit,
+                      kAudioOutputUnitProperty_EnableIO,
+                      kAudioUnitScope_Output,
+                      0,
+                      &flag,
+                      sizeof(flag));
+        }
+
+        @15 
+        AudioStreamBasicDescription audioFormat;
+        audioFormat.mSampleRate = 44100;
+        audioFormat.mFormatID	= kAudioFormatLinearPCM;
+        audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+        audioFormat.mFramesPerPacket = 1;
+        audioFormat.mChannelsPerFrame = 2;
+        audioFormat.mBitsPerChannel = 16;
+        audioFormat.mBytesPerPacket = 4;
+        audioFormat.mBytesPerFrame = 4;
+
+        
+        @25 
+
+        AURenderCallbackStruct callbackStruct;
+        callbackStruct.inputProcRefCon = self;
+
+        @30 
+        status = AudioUnitInitialize(audioUnit);
+        isSetup=(status==noErr);
+    }
+    
+    -(void)startAudio {
+        if (isStarted) return;
+        [self setupAudio];
+        if (isSetup) isStarted=(AudioOutputUnitStart(audioUnit)==noErr);
+    }
+    -(void)stopAudio {
+        if (!isStarted) return;
+        AudioOutputUnitStop(audioUnit);
+        isStarted=NO;
+    }
+        
+

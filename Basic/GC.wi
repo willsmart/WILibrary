@@ -1,0 +1,25 @@
+/*<GCObject>
+    int __gcDistToModel=-1,__gcConnections=0 (readonly)
+    NSSet __gcVars (readonly)
+    NSSet ___gcVars (vars_gc)
+
+    -(void)__gc {
+        if (___gcVars) {
+            NSMutableSet *_gcVars=[NSMutableSet set];
+            for (NSDictionary *_gcd in ___gcVars) {
+                NSString *_gct=[_gcd objectForKey:@"type"];
+                NSString *_gcn=[_gcd objectForKey:@"name"];
+                if (_gct&&_gcn) {
+                    SEL _gcsel=NSSelectorFromString([NSString stringWithFormat:@"-(%@)%@",_gct,_gcn]);
+                    [_gcVars addObject:_gcsel];
+                }
+            }
+            __gcVars=_gcVars.copy;
+            self.___gcVars=nil;
+        }
+    }
+
+    - (void)__gcAddConnection:(NSObject<GCObject>*)_gco {
+        if (_gco.__gcDistToModel<
+    - (int)__gcDistToModel {
+        if (__gc*/

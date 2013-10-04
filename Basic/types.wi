@@ -1,0 +1,128 @@
+"<objc/runtime.h>"
+
+sys NSNull
+sys NSNumber
+sys NSSet
+sys NSArray
+sys NSDictionary
+sys NSIndexSet
+sys NSString
+sys NSMutableString
+sys NSMutableSet
+sys NSMutableArray
+sys NSMutableDictionary
+sys NSMutableIndexSet
+sys NSData
+sys NSComparator
+type NSEnumerationOptions
+type NSSortOptions
+type OSType
+type NSStringEncoding
+sys <NSURLConnectionDelegate>
+sys NSURLConnection
+sys NSDate
+sys NSObject
+sys UIView
+sys NSEnumerator
+sys <NSCopying>
+sys <UITableViewDataSource>
+sys <UITableViewDelegate>
+sys <UIScrollViewDelegate>
+sys UIScrollView
+sys UIImageView
+sys UIImage
+type CGImageRef
+sys UITextView
+sys UIButton
+sys UITabBar
+sys UISlider
+sys UITabBarItem
+sys NSMutableData
+type unichar
+type CFStringRef
+type char
+type constchar "typedef:const char"
+type int
+type long
+type float
+type double
+type longdouble "typedef:long double"
+type GLuint
+type GLfloat
+type GLint
+type kid "typedef:id<NSCopying>"
+type BYT "typedef:unsigned char"
+type WRD "typedef:unsigned short"
+type DWRD "typedef:unsigned int"
+type ULL "typedef:unsigned long long"
+type LL "typedef:long long"
+type bool "ntype:bool"
+type BOOL
+type SEL
+type id
+type Class
+type NSUInteger
+type NSInteger
+type void
+type CGRect
+type CGPoint
+type CGSize
+type NSRange
+sys UIViewController
+type UITableViewRowAnimation
+type UITableViewCellEditingStyle
+sys UITableView
+sys UITableViewCell
+sys UIResponder
+sys <UIApplicationDelegate>
+sys <UITabBarControllerDelegate>
+sys UINavigationController
+sys <UINavigationControllerDelegate>
+sys <AVCaptureVideoDataOutputSampleBufferDelegate>
+sys <UIGestureRecognizerDelegate>
+sys <UITabBarDelegate>
+sys UIWindow
+sys UITabBarController
+sys NSTimer
+sys NSURL
+sys NSURLRequest
+sys UIWebView
+sys UIColor
+sys UIFont
+type UILineBreakMode
+type UITextAlignment
+type NSLineBreakMode
+type NSTextAlignment
+sys UILabel
+sys UIToolbar
+sys UIBarButtonItem
+sys UITextField
+sys <MFMailComposeViewControllerDelegate>
+sys <MFMessageComposeViewControllerDelegate>
+type ArrayOfShorts "typedef:Array<short>"
+type ArrayOfInts "typedef:Array<int>"
+type ArrayOfFloats "typedef:Array<float>"
+type ArrayOfDoubles "typedef:Array<double>"
+type ArrayOfULLs "typedef:Array<unsigned long long>"
+type ArrayOfArraysOfDoubles "typedef:Array<Array<double>*>"
+type ArrayOfLongDoubles "typedef:Array<long double>"
+type QuickHashOfInts "typedef:QuickHashTable<int>"
+type OSStatus
+type OSType
+sys CADisplayLink
+sys NSRegularExpression
+sys UITapGestureRecognizer
+
+type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_willCommit,stage_commit,stage_didCommit,stage_finishCommit,stage_cleanupCommit,stage_none}"
+
+
+/*decl:impl:
+#define DEB(...) __VA_ARGS__
+NSMutableArray *singletons=nil;
+void clearSingletons() {[singletons release];singletons=nil;}
+*/
+/*decl:
+extern NSMutableArray *singletons;
+#define ADDSINGLETON(o) [(!singletons?singletons=[[NSMutableArray array] retain]:singletons) addObject:o]
+void clearSingletons();
+*/

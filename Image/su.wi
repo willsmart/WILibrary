@@ -1,0 +1,135 @@
+
+
+SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
+    -(void)set {
+        {
+            RenderUIView *view=self.program.shader.view;
+            CGRect rectOnEAGLView=view.rectOnEAGLView;
+            float v[8]={
+                rectOnEAGLView.origin.x-0.49999f,rectOnEAGLView.origin.y-0.49999f,
+                rectOnEAGLView.origin.x-0.49999f+rectOnEAGLView.size.width,rectOnEAGLView.origin.y-0.49999f,
+                rectOnEAGLView.origin.x-0.49999f,rectOnEAGLView.origin.y-0.49999f+rectOnEAGLView.size.height,
+                rectOnEAGLView.origin.x-0.49999f+rectOnEAGLView.size.width,rectOnEAGLView.origin.y-0.49999f+rectOnEAGLView.size.height};
+            self.asVec2=v;
+        }
+        [super set];
+    }
+        
+
+<XYShader>
+    vec4 position (attribute)
+    vec2 unit (attribute)
+    vec2 pixel (attribute,class=SHPixelCoorAttribute)
+
+    -(init) {
+        self.program.vertexCount=4;
+        {
+            float v[16]={-1,1,0,1,  1,1,0,1,   -1,-1,0,1,   1,-1,0,1};
+            self.position.asVec4=v;
+        }
+        {
+            float v[8]={0,0,  1,0,   0,1,   1,1};
+            self.unit.asVec2=v;
+        }
+    }
+
+
+
+
+
+
+<ScrollViewTracker:UIScrollViewDelegate,BaseObject>
+    UIScrollView uiScrollView=
+        {return(uiScrollView);}
+        -v{
+            if (uiScrollView) {
+                uiScrollView.delegate=nil;
+                [uiScrollView release];
+            }
+            uiScrollView=[v retain];
+            uiScrollView.contentSize=CGSizeMake(1000,1000);
+            uiScrollView.contentOffset=CGPointMake(500,500);
+            //uiScrollView.delegate=self;
+        } (dealloc,ivar=uiScrollView)
+
+    -(CGPoint)nearestBoundaryPointForPoint:(CGPoint)pt {@999 
+        return(pt);
+    }
+    CGPoint visibleOffset={@-999 
+        CGPoint ret=self.uiScrollView.contentOffset;
+        ret.x-=500000;ret.y-=500000;
+        @999 
+        ret.x+=500000;ret.y+=500000;
+        return(ret);
+    }
+
+    CGPoint overallNearestInnerPoint={
+        float top=0,left=0,right=0,bot=0;
+        CGPoint co=uiScrollView.contentOffset;
+        co.x-=500000;co.y-=500000;
+        CGSize cs=uiScrollView.bounds.size;
+        for (float f=0;f<=1.00001;f+=0.1) {
+            CGPoint pt=[self nearestBoundaryPointForPoint:CGPointMake(co.x+f*cs.width,co.y)];
+            top=(f==0?pt.y-co.y:MIN(top,pt.y-co.y));
+            pt=[self nearestBoundaryPointForPoint:CGPointMake(co.x,co.y+f*cs.height)];
+            left=(f==0?pt.x-co.x:MIN(left,pt.x-co.x));
+            pt=[self nearestBoundaryPointForPoint:CGPointMake(co.x+f*cs.width,co.y+cs.height)];
+            bot=(f==0?pt.y-co.y:MAX(bot,pt.y-co.y));
+            pt=[self nearestBoundaryPointForPoint:CGPointMake(co.x+cs.width,co.y+f*cs.height)];
+            right=(f==0?pt.x-co.x:MAX(right,pt.x-co.x));
+        }
+
+        if ((top<-0.0001)&&(bot<0)) bot=MAX(top,bot);
+        if ((left<-0.0001)&&(right<0)) right=MAX(left,right);
+
+        CGPoint ret=CGPointMake(0,0);
+        if (top>0.0001) ret.y+=top;
+        else if (bot<-0.0001) ret.y+=bot;
+        if (left>0.0001) ret.y+=left;
+        else if (right<-0.0001) ret.y+=right;
+        return(ret);
+    }
+
+    - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
+        CGPoint pt=self.overallNearestInnerPoint;
+        UIEdgeInsets insets={0,0,0,0};
+        bool doInsets=NO;
+        
+        if (pt.x>0.0001) {
+            doInsets=YES;
+            insets.left=uiScrollView.contentOffset.x;
+        }
+        if (pt.x<-0.0001) {
+            doInsets=YES;
+            insets.right=uiScrollView.contentSize.width+uiScrollView.bounds.size.width-uiScrollView.contentOffset.x;
+        }
+        if (pt.y>0.0001) {
+            doInsets=YES;
+            insets.top=uiScrollView.contentOffset.y;
+        }
+        if (pt.y<-0.0001) {
+            doInsets=YES;
+            insets.bottom=uiScrollView.contentSize.height+uiScrollView.bounds.size.height-uiScrollView.contentOffset.y;
+        }
+        if (doInsets) uiScrollView.contentInset=insets;
+    }
+                
+ScrollViewTracker<ScrollViewTracker> {}
+
+
+ScrollViewTrackerUniform : SHUniform<DerivedBaseObject>
+    <ScrollViewTracker> tracker=nil
+    -(void)set {
+        if (!self.tracker) return;
+        CGPoint pt=self.tracker.visibleOffset;
+        float v[2]={(float)floor(pt.x),(float)floor(pt.y)};
+        self.asVec2=v;
+        [super set];
+    }
+        
+
+
+
+
+
+

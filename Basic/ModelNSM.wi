@@ -1,0 +1,271 @@
+
+
+
+    
+
+
+
+WIMyClass
+    ULL hisqname_commitFrame (nodef)
+    -(void)_commitHisqnameProperties {@-500 
+        if ((hisqname_commitFrame==commitFrame)||(self.commitStage!=stage_commitProperties)) return;
+        hisqname_commitFrame=commitFrame;
+    }
+
+    -(int)commitProperties:(int)substageIndex {@-3 [self _commitHisqnameProperties];}
+
+
+
+    long previousHisqnamesVersion=
+        {
+            if ((hisqname_commitFrame!=commitFrame)&&(self.commitStage==stage_commitProperties)) {
+                return(hisqnames.version);
+            }
+            else return(previousHisqnamesVersion);
+        } (ivar=previousHisqnamesVersion)
+
+
+        
+    NSDictionary previousHisqnames=
+        {
+            [self _commitHisqnameProperties];
+            return(previousHisqnames);
+        } (dealloc,ivar=previousHisqnames)
+        
+    AtomiclyMutableDictionary hisqnames=
+        {
+            [self _commitHisqnameProperties];
+            return(hisqnames);
+        }
+        -v{
+            [self.hisnames setDictionary:v];
+        } (dealloc,ivar=hisqnames)
+
+    -(void)_commitHisqnameProperties {
+        [previousHisqnames release];
+        previousHisqnamesVersion=hisqnames.version;
+        if (self.hisnames.version==hisqnames.version) {
+            previousHisqnames=[hisqnames.__dictionary retain];
+        }
+        else {
+            previousHisqnames=hisqnames.copyAndClear;
+            [self.hisqnames commitDictionary];
+            hisqnamesChanged=modelObjectHasChanged=YES;
+        }
+    }
+
+
+    -(init) {@-200 
+        hisqnames=[[AtomiclyMutableDictionary alloc] init];
+        [self addSourceCommitter:hisqnames];
+        [self.hisnames addDelegate:[DirtyObjectDictionaryDelegate get]];
+        self.hisqnames.trackerDictionary=self.hisnames;
+        [self.hisqnames commitDictionary];
+    }
+
+
+    bool hisqnamesChanged=NO
+    
+    -(void)cleanupCommit {
+        [previousHisqnames release];previousHisqnames=nil;
+        hisqnamesChanged=NO;
+    }
+
+    //NSMutableDictionary *asNewDictionary={
+        //[ret setObject:[Model representationOfObject:hisqnames] forKey:@"hisqnames"];
+    //}
+    //-(void)setWithDictionary:(NSDictionary*)d {
+    //    {
+    //        id hisqnamesValue=[Model getBaseObjectWithDictionary:[d objectForKey:@"hisqnames"]];
+    //        if (hisqnamesValue&&[hisqnamesValue isKindOfClass:[NSDictionary class]]) {
+    //            [self.hisqnames setDictionary:hisqnamesValue];
+    //        }
+    //    }
+    //}
+    
+    
+    
+    
+    
+        
+        
+        
+
+    NSSet hisqnamesThatChanged=
+        {
+            [self hisqnamesThatWereRemoved];
+            return(hisqnamesThatChanged);
+        } (dealloc,ivar=hisqnamesThatChanged)
+        
+        
+    NSSet hisqnamesThatWereAdded=
+        {
+            [self hisqnamesThatWereRemoved];
+            return(hisqnamesThatWereAdded);
+        } (dealloc,ivar=hisqnamesThatWereAdded)
+        
+    NSSet hisqnamesThatWereRemoved=
+        {
+            if (self.previousHisqnames&&(self.commitStage<stage_cleanupCommit)&&!(hisqnamesThatWereRemoved||hisqnamesThatWereAdded)) {
+                if (![Util getInsertsDeletesAndChangesForDictionaryWhenChanging:self.previousHisqnames to:self.hisqnames insKeys:&hisqnamesThatWereAdded delKeys:&hisqnamesThatWereRemoved changeKeys:&hisqnamesThatChanged]) {
+                    hisqnamesThatWereAdded=[[NSSet alloc] init];
+                    hisqnamesThatWereRemoved=[[NSSet alloc] init];
+                    hisqnamesThatChanged=[[NSSet alloc] init];
+                }
+            }
+            return(hisqnamesThatWereRemoved);
+        } (dealloc,ivar=hisqnamesThatWereRemoved)
+    
+    -(void)cleanupCommit {
+        [hisqnamesThatWereAdded release];
+        [hisqnamesThatWereRemoved release];
+        [hisqnamesThatChanged release];
+        hisqnamesThatWereAdded=nil;
+        hisqnamesThatWereRemoved=nil;
+        hisqnamesThatChanged=nil;
+    }
+    
+    -(NSHisClass)hisqnameForKey:(id<NSCopying>)key {return([hisqnames objectForKey:key]);}
+
+
+
+
+
+
+
+
+
+
+
+    -(JustMyClassOverride*)overrideHisqnamesAs:(NSDictionary*)ahisqnames forContext:(id<NSCopying>)__acontext {
+        if (!__acontext) return(nil);
+        JustMyClassOverride *ret=[self hisqnamesOverrideForKey:__acontext];
+        if (!ret) {
+            [self setHisqnamesOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
+            [ret release];
+        }
+        [ret overrideWithDictionary:ahisqnames];
+        return(ret);
+    }
+
+    -(AtomiclyMutableDictionary*)hisqnamesGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.hisqnames:hisqnames);
+    }
+    -(NSDictionary*)previousHisqnamesGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.previousHisqnames:previousHisqnames);
+    }
+
+    -(bool)hisqnamesChangedGivenContext:(id<NSCopying>)__acontext {
+        if (hisqnamesChanged) return(YES);
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o.modelObjectHasChanged);
+    }
+
+    -(NSHisClass)hisqnameForKey:(id<NSCopying>)key givenContext:(id<NSCopying>)__acontext {
+        return([[self hisqnamesGivenContext:__acontext] objectForKey:key]);
+    }
+
+
+ 
+
+    -(NSSet*)hisqnamesThatChangedGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.hisqnamesThatChanged:self.hisqnamesThatChanged);
+    }
+        
+        
+    -(NSSet*)hisqnamesThatWereAddedGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.hisqnamesThatWereAdded:self.hisqnamesThatWereAdded);
+    }
+        
+    -(NSSet*)hisqnamesThatWereRemovedGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnamesOverrideForKey:__acontext]);
+        return(o?o.hisqnamesThatWereRemoved:self.hisqnamesThatWereRemoved);
+    }
+
+
+
+
+
+JustMyClassOverride<+Commitable>
+    hisqnamesOverride >d~ WIMyClass baseWithHisqnames
+
+    -(init)init{}
+
+    NSDictionary previousHisqnames (nodef,dealloc,readonly,ivar=previousHisqnames)
+
+    NSArray previousHisqnames (nodef,dealloc,readonly,ivar=previousHisqnames)
+    AtomiclyMutableDictionary hisqnames=
+        {
+            [self.baseWithHisqnames _commitHisqnameProperties];
+            return(hisqnames?hisqnames:self.baseWithHisqnames.hisqnames);
+        } (dealloc,ivar=hisqnames)
+    -(void)overrideWithDictionary:(NSDictionary*)v {
+        if (!hisqnames) {
+            hisqnames=[[AtomiclyMutableDictionary alloc] init];
+            hisqnames.trackerDictionary=self.baseWithHisqnames.hisqnames.trackerDictionary;
+        }
+        if (v) [hisqnames setAtomicDictionary:v];
+        [self markDirty];
+    }
+
+
+    -(int)commitProperties:(int)substageIndex {
+        [previousHisqnames release];
+        previousHisqnames=hisqnames.copyAndClear;
+        [hisqnames release];
+        hisqnames=nil;
+        
+        modelObjectHasChanged=YES;
+    }
+
+    -(void)cleanupCommit {
+        [previousHisqnames release];previousHisqnames=nil;
+        [self removeAllSinkCommitters];
+        self.baseWithHisqnames=nil;
+    }
+
+
+
+
+
+    NSSet hisqnamesThatChanged=
+        {
+            [self hisqnamesThatWereRemoved];
+            return(hisqnamesThatChanged);
+        } (dealloc,ivar=hisqnamesThatChanged)
+        
+        
+    NSSet hisqnamesThatWereAdded=
+        {
+            [self hisqnamesThatWereRemoved];
+            return(hisqnamesThatWereAdded);
+        } (dealloc,ivar=hisqnamesThatWereAdded)
+        
+    NSSet hisqnamesThatWereRemoved=
+        {
+            if (self.previousHisqnames&&(self.commitStage<stage_cleanupCommit)&&!(hisqnamesThatWereRemoved||hisqnamesThatWereAdded)) {
+                if (![Util getInsertsDeletesAndChangesForDictionaryWhenChanging:self.previousHisqnames to:self.hisqnames insKeys:&hisqnamesThatWereAdded delKeys:&hisqnamesThatWereRemoved changeKeys:&hisqnamesThatChanged]) {
+                    hisqnamesThatWereAdded=[[NSSet alloc] init];
+                    hisqnamesThatWereRemoved=[[NSSet alloc] init];
+                    hisqnamesThatChanged=[[NSSet alloc] init];
+                }
+            }
+            return(hisqnamesThatWereRemoved);
+        } (dealloc,ivar=hisqnamesThatWereRemoved)
+    
+    -(void)cleanupCommit {
+        [hisqnamesThatWereAdded release];
+        [hisqnamesThatWereRemoved release];
+        [hisqnamesThatChanged release];
+        hisqnamesThatWereAdded=nil;
+        hisqnamesThatWereRemoved=nil;
+        hisqnamesThatChanged=nil;
+    }
+
+
+
+

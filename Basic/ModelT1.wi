@@ -1,0 +1,132 @@
+
+
+
+
+WIMyClass
+    NSHisClass previousNSHisqname (nodef,readonly,ivar=previousNSHisqname)
+    BaseHisClass previousHisqname (nodef,readonly,ivar=previousHisqname)
+    NSHisClass nshisqname=
+        {return(nshisqname);}
+        -v{
+            self.hisname=[BaseHisClass:v:BaseHisClass];
+        } (dealloc,ivar=nshisqname)
+    BaseHisClass hisqname=
+        {return(hisqname);}
+        -v{
+            self.hisname=v;
+        } (ivar=hisqname)
+    -(void)slylySetHisqname:(BaseHisClass)v {
+        hisqname=v;
+    }
+    -(int)commitProperties:(int)substageIndex {
+        previousNSHisqname=nshisqname;
+        previousHisqname=hisqname;
+        hisqname=self.hisname;
+        nshisqname=[[NSHisClass:hisqname:NSHisClass] retain];
+        
+        if (previousHisqname!=hisqname) modelObjectHasChanged=YES;
+    }
+    
+    -(void)cleanupCommit {
+        [previousNSHisqname release];previousNSHisqname=nil;
+        memset(&previousHisqname,0,sizeof(previousHisqname));
+    }
+
+    //NSMutableDictionary *asNewDictionary={
+        //[ret setObject:[Model representationOfObject:nshisqname] forKey:@"hisqname"];
+    //}
+    //-(void)setWithDictionary:(NSDictionary*)d {
+    //    {
+    //        id hisqnameValue=[Model getBaseObjectWithDictionary:[d objectForKey:@"hisqname"]];
+    //        if (hisqnameValue) self.nshisqname=([hisqnameValue isKindOfClass:[NSHisClass_noStar class]]?(NSHisClass)hisqnameValue:nil);
+    //    }
+    //}
+    
+    
+
+    -(JustMyClassOverride*)overrideNSHisqnameAs:(NSHisClass)anshisqname forContext:(id<NSCopying>)__acontext {
+        if (!__acontext) return(nil);
+        JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
+        if (!ret) {
+            [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
+            [ret release];
+        }
+
+        ret.nshisqname=anshisqname;
+        return(ret);
+    }
+
+    -(JustMyClassOverride*)overrideHisqnameAs:(BaseHisClass)ahisqname forContext:(id<NSCopying>)__acontext {
+        if (!__acontext) return(nil);
+        JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
+        if (!ret) {
+            [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
+            [ret release];
+        }
+
+        ret.hisqname=ahisqname;
+        return(ret);
+    }
+
+    -(NSHisClass)nshisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.nshisqname:nshisqname);
+    }
+    -(NSHisClass)previousNSHisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.previousNSHisqname:previousNSHisqname);
+    }
+
+    -(BaseHisClass)hisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.hisqname:hisqname);
+    }
+    -(BaseHisClass)previousHisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.previousHisqname:previousHisqname);
+    }
+
+
+
+
+JustMyClassOverride<Commitable>
+    hisqnameOverride >d~ WIMyClass baseWithHisqname
+
+    -(init)init{}
+
+    bool useMyHisqname=NO
+
+    BaseHisClass previousHisqname (nodef,dealloc,readonly,ivar=previousHisqname)
+    BaseHisClass hisqname=
+        {return(useMyHisqname?hisqname:self.baseWithHisqname.hisqname);}
+        -v{hisqname=v;hisqname=[NSHisClass:v:NSHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
+
+    NSHisClass previousNSHisqname (nodef,dealloc,readonly,ivar=previousNSHisqname)
+    NSHisClass nshisqname=
+        {return(useMyHisqname?nshisqname:self.baseWithHisqname.nshisqname);}
+        -v{nshisqname=[v retain];hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
+
+    -(int)commitProperties:(int)substageIndex {
+        [previousNSHisqname release];
+        previousNSHisqname=nshisqname;
+        previousHisqname=hisqname;
+        nshisqname=nil;
+        memset(&hisqname,0,sizeof(hisqname));
+        useMyHisqname=NO;
+        
+        modelObjectHasChanged=YES;
+    }
+    
+    -(void)cleanupCommit {
+        [previousNSHisqname release];previousNSHisqname=nil;
+        memset(&previousHisqname,0,sizeof(previousHisqname));
+        useMyHisqname=NO;
+        [self removeAllSinkCommitters];
+        self.baseWithHisqname=nil;
+    }
+
+    
+
+
+
+

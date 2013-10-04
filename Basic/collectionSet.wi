@@ -1,0 +1,623 @@
+
+
+
+
+
+MutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester> ()
+WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableSet> ()
+
+
+
+
+
+
+<Set>
+    NSSet __set (nodef,readonly,dealloc,ivar=__set)
+
+    // initializing a set
+
+    -(init)init {
+        @-100 __set=[[NSSet alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @-100 __set=[[NSSet alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithArray:(NSArray*)array {
+        @-100 __set=[[NSSet alloc] initWithArray:array];
+    }
+    -(init[super init])initWithObjects:(id*)objects count:(NSUInteger)count {
+        @-100 __set=[[NSSet alloc] initWithObjects:objects count:count];
+    }
+    -(init[super init])initWithSet:(NSSet*)set {
+        @-100 __set=[[NSSet alloc] initWithSet:set];
+    }
+    -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
+        @-100 __set=[[NSSet alloc] initWithSet:set copyItems:copy];
+    }
+
+
+    -(void)encodeWithCoder:(NSCoder*)coder {
+        [__set encodeWithCoder:coder];
+    }
+
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[ImmutableSet allocWithZone:zone] initWithSet:__set]);
+    }
+    -(id)mutableCopyWithZone:(NSZone*)zone {
+        return([[MutableSet allocWithZone:zone] initWithSet:__set]);
+    }
+
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+        return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
+    }
+
+
+
+    // Creating a set
+    +(__WIClass__*)set {return([[[__WIClass__ alloc] init] autorelease]);}
+    +(__WIClass__*)setWithArray:(NSArray*)array {return([[[__WIClass__ alloc] initWithArray:array] autorelease]);}
+    +(__WIClass__*)setWithObject:(id)object {return([[[__WIClass__ alloc] initWithObjects:&object count:1] autorelease]);}
+    //+(__WIClass__*)setWithObjects:( {return([[[__WIClass__ alloc] init] autorelease]);}
+    +(__WIClass__*)setWithSet:(NSSet*)set {return([[[__WIClass__ alloc] initWithSet:set] autorelease]);}
+    -(NSSet*)setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
+    //-(NSSet*)setByAddingObjects: {return([__set setByAddingObject:object]);}
+    -(NSSet*)setByAddingObjectsFromSet:(NSSet*)set {return([__set setByAddingObjectsFromSet:set]);}
+    -(NSSet*)setByAddingObjectsFromArray:(NSArray*)array {return([__set setByAddingObjectsFromArray:array]);}
+
+
+    // Counting Entries
+    NSUInteger count={return([__set count]);}
+
+
+    // Accessing Set Members
+    NSArray allObjects={return([__set allObjects]);}
+    id anyObject={return([__set anyObject]);}
+    -(BOOL)containsObject:(id)object {return([__set containsObject:object]);}
+    -(NSSet*)filteredSetUsingPredicate:(NSPredicate *)predicate {return([__set filteredSetUsingPredicate:predicate]);}
+    -(void)makeObjectsPerformSelector:(SEL)selector {[__set makeObjectsPerformSelector:selector];}
+    -(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {[__set makeObjectsPerformSelector:selector withObject:object];}
+    -(id)member:(id)object {return([__set member:object]);}
+    NSEnumerator objectEnumerator={return([__set objectEnumerator]);}
+    -(void)enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block {
+        [__set enumerateObjectsUsingBlock:block];
+    }
+    -(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, BOOL *stop))block {
+        [__set enumerateObjectsWithOptions:opts usingBlock:block];
+    }
+
+    -(NSSet*)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsPassingTest:predicate]);}
+    -(NSSet*)objectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsWithOptions:opts passingTest:predicate]);}
+
+
+    //Comparing Sets
+    -(BOOL)isSubsetOfSet:(NSSet*)set {return([__set isSubsetOfSet:set]);}
+    -(BOOL)intersectsSet:(NSSet*)set {return([__set intersectsSet:set]);}
+    -(BOOL)isEqualToSet:(NSSet*)set {return([__set isEqualToSet:set]);}
+    -(void)setValue:(id)value forKey:(NSString *)key {[__set setValue:value forKey:key];}
+    -(id)valueForKey:(NSString*)key {return([__set valueForKey:key]);}
+
+
+    //Creating a Sorted Array
+    -(NSArray*)sortedArrayUsingDescriptors:(NSArray*)sortDescriptors {return([__set sortedArrayUsingDescriptors:sortDescriptors]);}
+
+
+    //Key-Value Observing
+    -(void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+        [__set addObserver:observer forKeyPath:keyPath options:options context:context];
+    }
+    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
+        [__set removeObserver:observer forKeyPath:keyPath];
+    }
+    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
+        [__set removeObserver:observer forKeyPath:keyPath context:context];
+    }
+
+
+    //Describing a Set
+    NSString description={return([__set description]);}
+    -(NSString*)descriptionWithLocale:(id)locale {return([__set descriptionWithLocale:locale]);}
+
+
+
+
+
+
+
+
+
+
+
+
+
+<MutableSetDelegate>
+    NSSet delegateForSet (nodef,assign,ivar=delegateForSet)
+    -(void)delegateForSetChanged {}
+
+    <MutableSetDelegate> setDelegate (nodef,dealloc,ivar=setDelegate,readonly)
+    -(void)addDelegate:(NSObject<MutableSetDelegate>*)v {
+        if (v.setDelegate) return;
+        if (v==self) return;
+        if (setDelegate) [setDelegate addDelegate:v];
+        else {
+            setDelegate=[v retain];
+            v.delegateForSet=self.delegateForSet;
+            [v delegateForSetChanged];
+        }
+    }
+    -(void)removedDelegate {@-100 [setDelegate release];setDelegate=nil;}
+    -(void)removeDelegate:(NSObject<MutableSetDelegate>*)v {
+        if (setDelegate) {
+            if (setDelegate==v) {
+                v.delegateForSet=nil;
+                setDelegate=[v.setDelegate retain];
+                [v removedDelegate];
+                [v delegateForSetChanged];
+                [v release];
+            }
+            else [setDelegate removeDelegate:v];
+        }
+    }
+    -(bool)shouldAddObject:(id)object {@-999 
+        bool ret=YES;
+        @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object];
+        @999 return(ret);
+    }
+    -(void)willAddObject:(id)object {
+        @100 [setDelegate willAddObject:object];
+    }
+    -(void)didAddObject:(id)object {
+        @100 [setDelegate didAddObject:object];
+    }
+    -(void)willRemoveObject:(id)object {
+        @100 [setDelegate willRemoveObject:object];
+    }
+    -(void)didRemoveObject:(id)object {
+        @100 [setDelegate didRemoveObject:object];
+    }
+
+
+
+<MutableSet:Set,MutableSetDelegate,ObjectEquate>
+
+    NSMutableSet __mutableSet (nodef,readonly,ivar=__mutableSet)
+
+    -(init) {
+        self.delegateForSet=self;
+    }
+
+    long version=1
+    -(void)stateOK {@-100 version++;}
+
+
+    -(void)dealloc {@-100 [self removeAllObjects];}
+
+
+    //Creating a Mutable Set
+    +(id)setWithCapacity:(NSUInteger)numItems {
+        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+    }
+    -(init)init {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] init];
+    }
+    -(init[super init])initWithCoder:(NSCoder*)coder {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCoder:coder];
+    }
+    -(init[super init])initWithArray:(NSArray*)array {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithArray:array];
+    }
+    -(init[super init])initWithObjects:(id*)objects count:(NSUInteger)count {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithObjects:objects count:count];
+    }
+    -(init[super init])initWithSet:(NSSet*)set {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set];
+    }
+    -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
+        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set copyItems:copy];
+    }
+    -(init[super init])initWithCapacity:(NSUInteger)numItems {
+        @-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCapacity:numItems];
+    }
+        
+
+    -(NSMutableSet*)getAndClear {
+        NSMutableSet *ret=__mutableSet;
+        for (id o in ret) [self willRemoveObject:o];
+        __set=__mutableSet=[[NSMutableSet alloc] init];
+        for (id o in ret) [self didRemoveObject:o];
+        return(ret);
+    }
+
+
+
+
+    -(void)addObject:(id)object {
+        if ([self _addObject:object]) [self stateOK];
+    }
+    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+        if ([self _filterUsingPredicate:predicate]) [self stateOK];
+    }
+    -(void)removeObject:(id)object {
+        if ([self _removeObject:object]) [self stateOK];
+    }
+    -(void)removeAllObjects {
+        if ([self _removeAllObjects]) [self stateOK];
+    }
+    -(void)addObjectsFromArray:(NSArray*)array {
+        if ([self _addObjectsFromArray:array]) [self stateOK];
+    }
+    -(void)unionSet:(NSSet*)set {
+        if ([self _unionSet:set]) [self stateOK];
+    }
+    -(void)minusSet:(NSSet*)set {
+        if ([self _minusSet:set]) [self stateOK];
+    }
+    -(void)intersectSet:(NSSet*)set {
+        if ([self _intersectSet:set]) [self stateOK];
+    }
+    -(void)setSet:(NSSet*)set {
+        if ([self _setSet:set]) [self stateOK];
+    }
+
+
+    
+    //Adding and Removing Entries
+    -(bool)_addObject:(id)object {
+        if ((![__set containsObject:object])&&[self shouldAddObject:object]) {
+            [self willAddObject:object];
+            [__mutableSet addObject:object];
+            [self didAddObject:object];
+            return(YES);
+        }
+        else return(NO);
+    }
+    -(bool)_filterUsingPredicate:(NSPredicate *)predicate {
+        bool ret=NO;
+        NSMutableSet *toRemove=nil;
+        for (id object in __set) if (![predicate evaluateWithObject:object]) {
+            if (!toRemove) toRemove=[[NSMutableSet alloc] initWithCapacity:__set.count];
+            [toRemove addObject:object];
+        }
+        if (toRemove) {
+            if ([self _minusSet:toRemove]) ret=YES;
+            [toRemove release];
+        }
+        return(ret);
+    }
+    -(bool)_removeObject:(id)object {
+        if ([__set containsObject:object]) {
+            [self willRemoveObject:object];
+            [__mutableSet removeObject:object];
+            [self didRemoveObject:object];
+            return(YES);
+        }
+        else return(NO);
+    }
+    -(bool)_removeAllObjects {
+        if (!self.count) return(NO);
+        NSSet *was=[__set copy];
+        for (id object in was) [self willRemoveObject:object];
+        [__mutableSet removeAllObjects];
+        for (id object in was) [self didRemoveObject:object];
+        [was release];
+        return(YES);
+    }
+    -(bool)_addObjectsFromArray:(NSArray*)array {
+        bool ret=NO;
+        for (id object in array) if ([self _addObject:object]) ret=YES;
+        return(ret);
+    }
+    -(bool)_unionSet:(NSSet*)set {
+        bool ret=NO;
+        for (id object in set) if ([self _addObject:object]) ret=YES;
+        return(ret);
+    }
+    -(bool)_minusSet:(NSSet*)set {
+        bool ret=NO;
+        for (id object in set) if ([self _removeObject:object]) ret=YES;
+        return(ret);
+    }
+    -(bool)_intersectSet:(NSSet*)set {
+        bool ret=NO;
+        NSMutableSet *toRemove=nil;
+        for (id object in __set) if (![set containsObject:object]) {
+            if (!toRemove) toRemove=[[NSMutableSet alloc] initWithCapacity:__set.count];
+            [toRemove addObject:object];
+        }
+        if (toRemove) {
+            if ([self _minusSet:toRemove]) ret=YES;
+            [toRemove release];
+        }
+        return(ret);
+    }
+    -(bool)_setSet:(NSSet*)set {
+        bool ret=[self _intersectSet:set];
+        if ([self _unionSet:set]) ret=YES;
+        return(ret);
+    }
+
+
+
+
+
+
+<WeakMutableSet>
+    -(void)didAddObject:(id)object {@900 
+        [object release];
+    }
+    -(void)willRemoveObject:(id)object {@-900 
+        [object retain];
+    }
+
+<ModelMutableSet>
+    -(bool)shouldAddObject:(id)object {@-200 
+        if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
+    }
+    -(void)didAddObject:(id)object {
+        [object modeladd];
+    }
+    -(void)willRemoveObject:(id)object {
+        [object modelsub];
+    }
+
+
+
+
+<NotifiedBySet>
+    -(void)markDirtyBySet {[self markDirty];}
+    -(void)markDirty {}
+
+<NotifyingMutableSet>
+    notifyingSet -s< <NotifiedBySet> setWatcher
+
+    -(void)stateOK {@100 
+        for (NSObject<NotifiedBySet>*w in self.setWatchers) {
+            [w markDirtyBySet];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
+    -(id)objectForObject:(id)object {@-999 id ret=nil;
+        @999 return(ret);
+    }
+    -(NSSet*)objectsForObject:(id)object {@-999 NSMutableSet *s=[NSMutableSet set];NSSet *ret=s;
+        @999 return(ret);
+    }
+
+    NSMutableDictionary __map1=[[NSMutableDictionary alloc] init] (readonly,ivar=map1,dealloc)
+    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets,dealloc)
+    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
+    MutableSet followerSet=
+        {return(followerSet);}
+        -v{[followerSet release];followerSet=[v retain];[self refreshFollowerSet];} (ivar=followerSet,dealloc)
+
+    -(void)delegateForSetChanged {
+        if (followerSet) [self refreshFollowerSet];
+    }
+
+    -(void)willAddObject:(id)object {@500 
+        [self followerWillAddObject:object];
+    }
+    -(void)followerWillAddObject:(id)object {
+        if ([mapsets objectForKey:object]||[map1 objectForKey:object]) {
+            ERR("Shouldn't have object");
+            return;
+        }
+        id o=[self objectForObject:object];
+        if (o) {
+            [map1 setObject:o forKey:[PointerKey keyWithObject:object]];
+            [o release];
+
+            IntCarrier *c=[ocounts objectForKey:o];
+            if (c) c.intValue++;
+            else {
+                [ocounts setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:o]];
+                [followerSet _addObject:o];
+            }
+        }
+        else {
+            NSSet *s=[self objectsForObject:object];
+            if (s) {
+                [mapsets setObject:s forKey:[PointerKey keyWithObject:object]];
+                for (id o in s) {
+                    [o release];
+
+                    IntCarrier *c=[ocounts objectForKey:o];
+                    if (c) c.intValue++;
+                    else {
+                        [ocounts setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:o]];
+                        [followerSet _addObject:o];
+                    }
+                }
+            }
+        }
+    }
+    -(void)willRemoveObject:(id)object {@500 
+        id o=[map1 objectForKey:object];
+        if (o) {
+            IntCarrier *c=[ocounts objectForKey:o];
+            if (!--c.intValue) {
+                [ocounts removeObjectForKey:o];
+                [followerSet _removeObject:o];
+            }
+
+            [o retain];
+            [map1 removeObjectForKey:object];
+        }
+        else {
+            NSSet *s=[mapsets objectForKey:object];
+            if (s) {
+                for (id o in s) {
+                    IntCarrier *c=[ocounts objectForKey:o];
+                    if (!--c.intValue) {
+                        [ocounts removeObjectForKey:o];
+                        [followerSet _removeObject:o];
+                    }
+
+                    [o retain];
+                }
+                [mapsets removeObjectForKey:object];
+            }
+            else {
+                ERR("Should have object");
+            }
+        }
+    }
+
+
+    -(void)stateOK {@100 
+        [followerSet stateOK];
+    }
+
+
+    -(void)refreshFollowerSet {
+        [self _refreshFollowerSet];
+        [followerSet stateOK];
+    }
+    -(void)_refreshFollowerSet {
+        [ocounts removeAllObjects];
+        for (kid key in map1) [[map1 objectForKey:key] retain];
+        [map1 removeAllObjects];
+        for (kid key in mapsets) {
+            NSSet *s=[mapsets objectForKey:key];
+            for (id o in s) [o retain];
+        }
+        [mapsets removeAllObjects];
+        
+        [followerSet _removeAllObjects];
+        for (id object in self.delegateForSet) [self followerWillAddObject:object];
+    }
+
+
+
+
+
+
+MutableSetUnionDelegate1<MutableSetDelegate>
+    MutableSetUnionDelegate owner (nodef,readonly,ivar=owner)
+    -(init[super init])initWithOwner:(MutableSetUnionDelegate*)aowner {
+        owner=aowner;
+    }
+
+    -(void)willAddObject:(id)object {@500 
+        [self.owner unionWillAddObject1:object];
+    }
+    -(void)willRemoveObject:(id)object {@500 
+        [self.owner unionWillRemoveObject1:object];
+    }
+
+    -(void)stateOK {
+        [self.owner stateOK];
+    }
+
+
+MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
+    -(NSObject<MutableSet>*)setForObject:(id)object {@-999 NSObject<MutableSet> *ret=([object conformsToProtocol:@protocol(MutableSet)]?(NSObject<MutableSet>*)object:nil);
+        @999 return(ret);
+    }
+
+
+    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets,dealloc)
+    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
+
+    MutableSet unionSet=
+        {return(unionSet);}
+        -v{[unionSet release];unionSet=[v retain];[self refreshUnionSet];} (ivar=unionSet,dealloc)
+
+    -(void)delegateForSetChanged {
+        if (unionSet) [self refreshUnionSet];
+    }
+
+    -(void)willAddObject:(id)object {@500 
+        [self unionWillAddObject:object];
+    }
+    -(void)unionWillAddObject:(id)object {
+        if ([mapsets objectForKey:object]) {
+            ERR("Shouldn't have object");
+            return;
+        }
+        NSObject<MutableSet>* s=[self setForObject:object];
+        if (s) {
+            [s addDelegate:[[[MutableSetUnionDelegate1 alloc] initWithOwner:self] autorelease]];
+            [mapsets setObject:s forKey:[PointerKey keyWithObject:object]];
+            for (id o in s) {
+                [self unionWillAddObject1:o];
+            }
+        }
+    }
+    -(void)unionWillAddObject1:(id)o {
+        IntCarrier *c=[ocounts objectForKey:o];
+        if (c) c.intValue++;
+        else {
+            [ocounts setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:o]];
+            [unionSet _addObject:o];
+        }
+    }
+
+    -(void)willRemoveObject:(id)object {@500 
+        MutableSet *s=[mapsets objectForKey:object];
+        if (s) {
+            for (id o in s) {
+                [self unionWillRemoveObject1:o];
+            }
+            for (NSObject<MutableSetDelegate> *del=s.setDelegate;del;del=del.setDelegate) {
+                if ([del isKindOfClass:[MutableSetUnionDelegate1 class]]&&(((MutableSetUnionDelegate1*)del).owner==self)) {
+                    [s removeDelegate:del];
+                    break;
+                }
+            }
+            [mapsets removeObjectForKey:object];
+        }
+    }
+
+    -(void)unionWillRemoveObject1:(id)o {
+        IntCarrier *c=[ocounts objectForKey:o];
+        if (!--c.intValue) {
+            [unionSet _removeObject:o];
+            [ocounts removeObjectForKey:o];
+        }
+    }
+
+
+
+    -(void)stateOK {@100 
+        [unionSet stateOK];
+    }
+
+
+    -(void)refreshUnionSet {
+        [self _refreshUnionSet];
+        [unionSet stateOK];
+    }
+    -(void)_refreshUnionSet {
+        [ocounts removeAllObjects];
+        for (kid key in mapsets) {
+            MutableSet *s=[mapsets objectForKey:key];
+            for (NSObject<MutableSetDelegate> *del=s.setDelegate;del;del=del.setDelegate) {
+                if ([del isKindOfClass:[MutableSetUnionDelegate1 class]]&&(((MutableSetUnionDelegate1*)del).owner==self)) {
+                    [s removeDelegate:del];
+                    break;
+                }
+            }
+        }
+        [mapsets removeAllObjects];
+        
+        [unionSet _removeAllObjects];
+        for (id object in self.delegateForSet) [self unionWillAddObject:object];
+    }
+
+
+
+
+
+    

@@ -1,0 +1,801 @@
+UnionSetsMutableSetDelegate<MutableSetDelegate,BaseObject>
+    setsDelegate -~ <UnionArray> owner
+    -(bool)shouldAddObject:(id)object {
+        if (ret) ret=[object isKindOfClass:[NSMutableSet class]]&&[object conformsToProtocol:@protocol(MutableSetDelegate)];
+    }
+    
+    -(void)stateOK {
+        [self.owner refresh];
+    }
+    
+    -(void)didAddObject:(id)object {
+        [self.owner addSetDelegate:[[UnionSetDelegate alloc] initWithSet:(NSMutableSet<MutableSetDelegate>*)object]];
+    }
+    -(void)willRemoveObject:(id)object {
+        for (UnionSetDelegate del in self.owner.setDelegates) if (del.delegateForSet==object) {del.owner=nil;break;}
+    }
+
+
+
+
+UnionSetDelegate<MutableSetDelegate,BaseObject>
+    setDelegate >s~ <UnionSet> owner
+
+    -(init[super init])initWithSet:(NSMutableSet<MutableSetDelegate>*)aset {
+        [aset addDelegate:self];
+    }
+
+    NSMutableSet shouldAddObjects=[[NSMutableSet alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    
+    -(bool)shouldAddObject:(id)object {
+        if (ret&&[self.owner shouldAddObject:object fromDelegate:self]) {
+            [shouldAddObjects addObject:[PointerKey keyWithObject:object]];
+        }
+    }
+    -(void)willAddObject:(id)object {
+        if ([shouldAddObjects containsObject:object]) {
+            [self.owner willAddObject:object fromDelegate:self];
+        }
+    }
+    -(void)didAddObject:(id)object {
+        if ([shouldAddObjects containsObject:object]) {
+            [self.owner didAddObject:object fromDelegate:self];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        [self.owner willRemoveObject:object fromDelegate:self];
+    }
+    -(void)didRemoveObject:(id)object {
+        [self.owner didRemoveObject:object fromDelegate:self];
+    }
+    -(void)stateOK {
+        [shouldAddObjects removeAllObjects];
+        [self.owner stateOKFromDelegate:self];
+    }
+
+
+
+UnionSet<UnionSet>
+
+<UnionSet:Set,ObjectEquate,MutableSetDelegate>
+    NSMutableDictionary __countsForKeys=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=__depthsForKeys)
+    NSMutableSet __mutableSet=[[NSMutableSet alloc] init] (readonly,ivar=__mutableSet)
+    
+    
+    MutableSet sets=[[MutableSet alloc] init] (readonly,dealloc,ivar=sets)
+    -(init) {@-5 
+        [__set release];
+        __set=__mutableSet;
+        delegateForSet=self;
+        [sets addDelegate:self.setsDelegate=[UnionSetsMutableSetDelegate get]];
+    }
+
+    bool __changed=NO;
+
+    -(void)shouldAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        IntCarrier *n=[__countsForKeys objectForKey:object];
+        if (n) return(YES);
+        else return([self shouldAddObject:object]);
+    }
+
+    -(void)willAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        IntCarrier *n=[__countsForKeys objectForKey:object];
+        if (!n) {
+            [self willAddObject:object];
+            [__mutableSet addObject:object];
+            [__countsForKeys setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:object]];
+            __changed=YES;
+        }
+        else n.intValue++;
+    }
+
+    -(void)didAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        IntCarrier *n=[__countsForKeys objectForKey:object];
+        if (!n) [self didAddObject:object];
+    }
+
+    -(void)willRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        IntCarrier *n=[__countsForKeys objectForKey:object];
+        if (!n) {
+            ERR("Should have intcarrier");
+            return;
+        }
+        if (!--n.intValue) {
+            [__countsForKeys removeObjectForKey:object];
+            [self willRemoveObject:object];
+            [__mutableSet removeObject:object];
+            __changed=YES;
+        }
+    }
+    -(void)didRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        if (![__countsForKeys objectForKey:object]) {
+            [self didRemoveObject:object];
+        }
+    }
+    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+        if (__changed) {
+            __changed=NO;
+            [self stateOK];
+        }
+    }
+
+    -(void)refresh {
+        [__countsForKeys removeAllObjects];
+        NSMutableSet *newObjects=[[NSMutableSet alloc] init];
+        for (NSSet *s in self.sets) {
+            for (id object in s) {
+                IntCarrier *n=[__countsForKeys objectForKey:object];
+                if (n) n.intValue++;
+                else {
+                    [__countsForKeys setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:object]];
+                    [newObjects addObject:object];
+                }
+            }
+        }
+        NSMutableSet *inss,*rems;
+        if ([Util getInsertsAndDeletesForSetWhenChanging:__set to:newObjects inss:&inss dels:&rems]) {
+            bool changed=(rems.count>0);
+            for (id object in rems) {
+                [self willRemoveObject:object];
+                [__mutableSet removeObject:object]
+                [self didRemoveObject:object];
+            }
+            for (id object in inss) {
+                if ([self shouldAddObject:object]) {
+                    [self willAddObject:object];
+                    [__mutableSet addObject:object]
+                    [self didAddObject:object];
+                    changed=YES;
+                }
+            }
+            if (changed) [self stateOK];
+            [inss release];
+            [rems release];
+        }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnionDictionariesMutableArrayDelegate<MutableArrayDelegate,BaseObject>
+    dictionariesDelegate -~ <UnionDictionary> owner
+    -(bool)shouldAddObject:(id)object {
+        if (ret) ret=[object isKindOfClass:[NSMutableDictionary class]]&&[object conformsToProtocol:@protocol(MutableDictionaryDelegate)];
+    }
+    
+    -(void)stateOK {
+        [self.owner refresh];
+    }
+    
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        [self.owner addDictionaryDelegate:[[UnionDictionaryDelegate alloc] initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)object]];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        for (UnionDictionaryDelegate del in self.owner.dictionaryDelegates) if (del.delegateForDictionary==object) {del.owner=nil;break;}
+    }
+
+
+
+UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
+    dictionaryDelegate >s~ <UnionDictionary> owner
+    int depth;
+
+    -(init[super init])initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary {
+        [adictionary addDelegate:self];
+    }
+
+    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+        if (ret&&[self.owner shouldAddObject:object forKey:key fromDelegate:self]) {
+            [shouldAddObjects setObject:object forKey:key];
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            [self.owner willRemoveObject:fromObject forKey:key fromDelegate:self];
+        }
+        if (toObject) {
+            if ([shouldAddObjects objectForKey:key]==toObject) {
+                [self.owner willAddObject:toObject forKey:key fromDelegate:self];
+            }
+        }
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            if ([shouldAddObjects objectForKey:key]==toObject) {
+                [self.owner didAddObject:toObject forKey:key fromDelegate:self];
+            }
+        }
+        if (fromObject) {
+            [self.owner didRemoveObject:fromObject forKey:key fromDelegate:self];
+        }
+    }
+    -(void)stateOK {
+        [shouldAddObjects removeAllObjects];
+        [self.owner stateOKFromDelegate:self];
+    }
+
+
+
+
+
+
+UnionDictionary<UnionDictionary>
+
+<UnionDictionary:Dictionary,ObjectEquate,MutableDictionaryDelegate>
+    NSMutableDictionary __depthsForKeys=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=__depthsForKeys)
+    NSMutableDictionary __mutableDictionary=[[NSMutableDictionary alloc] init] (readonly,ivar=__mutableDictionary)
+    
+    
+    MutableArray dictionaries=[[MutableArray alloc] init] (readonly,dealloc,ivar=dictionaries)
+    -(init) {@-5 
+        [__dictionary release];
+        __dictionary=__mutableDictionary;
+        delegateForDictionary=self;
+        [dictionaries addDelegate:self.dictionariesDelegate=[UnionDictionariesMutableArrayDelegate get]];
+    }
+
+
+
+    bool __changed=NO;
+
+    -(void)shouldAddObject:(id)object forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
+        return([self shouldAddObject:object forKey:key]);
+    }
+
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
+        if (fromObject) {
+            IntCarrier *n=[__depthsForKeys objectForKey:key];
+            if (n&&(n.intValue==del.depth)) {
+                [self willRemoveObject:fromObject forKey:key];
+            }
+        }
+        
+        if (toObject) {
+            IntCarrier *n=[__depthsForKeys objectForKey:key];
+            if (!n) {
+                [self willAddObject:toObject forKey:key];
+                [__mutableDictionary setObject:toObject forKey:key];
+                [__depthsForKeys setObject:[IntCarrier carrierWithInt:del.depth] forKey:key];
+                __changed=YES;
+            }
+            else if (del.depth<=n.intValue) {
+                [self willAddObject:toObject forKey:key];
+                [__mutableDictionary setObject:toObject forKey:key];
+                n.intValue=del.depth;
+                __changed=YES;
+            }
+        }
+    }
+
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
+        if (toObject) {
+            IntCarrier *n=[__depthsForKeys objectForKey:key];
+            if (!n) {
+                ERR("Should have intcarrier");
+                return;
+            }
+            if (del.depth<=n.intValue) [self didAddObject:toObject forKey:key];
+        }
+        if (fromObject) {
+            IntCarrier *n=[__depthsForKeys objectForKey:key];
+            if (n&&(n.intValue==del.depth)) {
+                [n retain];
+                [__depthsForKeys removeObjectForKey:key];
+                [__mutableDictionary removeObjectForKey:key];
+                [self didRemoveObject:fromObject forKey:key];
+                __changed=YES;
+                
+                id newObject=nil;
+                for (int d=del.depth+1;d<self.dictionaries.count;d++) {
+                    newObject=[(NSDictionary*)[self.dictionaries objectAtIndex:d] objectForKey:key];
+                    if (newObject&&[self shouldAddObject:newObject forKey:key]) {n.intValue=d;break;}
+                }
+                if (newObject) {
+                    [self willAddObject:newObject forKey:key];
+                    [__depthsForKeys setObject:n forKey:key];
+                    [n release];
+                    [__mutableDictionary setObject:newObject forKey:key];
+                    [self didAddObject:newObject forKey:key];
+                }
+            }
+        }
+    }
+
+    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+        if (__changed) {
+            __changed=NO;
+            [self stateOK];
+        }
+    }
+
+
+                    
+    -(void)refresh {
+        NSMutableSet *keys=[NSMutableSet set];
+        
+        for (UnionDictionaryDelegate *del in self.dictionaryDelegates) {
+            del.depth=[dictionaries indexOfObjectIdenticalTo:del.delegateForDictionary];
+        }
+        NSMutableSet *keys=[[NSMutableSet alloc] init];
+        for (NSDictionary *d in self.dictionaries) {
+            [keys unionSet:d.allKeys];
+        }
+        NSMutableSet *dels=__dictionary.allKeys.mutableCopy;
+        [dels minusSet:keys];
+        for (id<NSCopying> key in dels) {
+            [__depthsForKeys removeObjectForKey:key];
+            id was=[__dictionary objectForKey:key];
+            [was retain];
+            [self willRemoveObject:was forKey:key];
+            [__mutableDictionary removeObjectForKey:key];
+            [self didRemoveObject:was forKey:key];
+            [was release];
+        }
+        for (id<NSCopying> key in keys) {
+            id object=nil;
+            int d=0;
+            for (NSDictionary *dict in self.dictionaries) {
+                object=[dict objectForKey:key];
+                if (object&&[self shouldAddObject:object forKey:key]) break;
+                d++;
+            }
+            if (object) {
+                [self willAddObject:object forKey:key];
+                [__depthsForKeys setObject:[IntCarrier carrierWithInt:d] forKey:key];
+                [__mutableDictionary setObject:object forKey:key];
+                [self didAddObject:object forKey:key];
+            }
+            else {
+                [__depthsForKeys removeObjectForKey:key];
+                id was=[__dictionary objectForKey:key];
+                if (was) {
+                    [was retain];
+                    [self willRemoveObject:was forKey:key];
+                    [__mutableDictionary removeObjectForKey:key];
+                    [self didRemoveObject:was forKey:key];
+                    [was release];
+                }
+            }
+        }
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
+    arraysDelegate -~ <UnionArray> owner
+    -(bool)shouldAddObject:(id)object {
+        if (ret) ret=[object isKindOfClass:[NSMutableArray class]]&&[object conformsToProtocol:@protocol(MutableArrayDelegate)];
+    }
+
+    -(void)stateOK {
+        [self.owner refresh];
+    }
+
+    -(id)objectForObject:(id)object {
+        ret=[[[UnionArrayDelegate alloc] initWithArray:(NSMutableArray<MutableArrayDelegate>*)object] autorelease];
+    }
+
+
+
+
+UnionArrayDelegateCount "-Object"
+    int willCount,didCount (nodef)
+
+
+UnionArrayDelegate<MutableArrayDelegate,BaseObject>
+    arrayDelegate >a~ <UnionArray> owner
+
+    int addIndex,willSkipped,didSkipped (nodef)
+    NSMutableIndexSet unionHasIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionHasIndexes)
+    NSMutableIndexSet unionWillHaveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillHaveIndexes)
+    NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillRemoveIndexes)
+
+
+    -(init[super init])initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray {
+        [aarray addDelegate:self];
+    }
+
+
+    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    
+    -(void)willTryToAddObjectsWithCount:(NSUInteger)count {
+        [self.owner willTryToAddObjectsWithCount:count fromDelegate:self];
+    }
+    -(void)willRemoveObjectsWithCount:(NSUInteger)count {
+        [self.owner willRemoveObjectsWithCount:count fromDelegate:self];
+    }
+
+    -(bool)shouldAddObject:(id)object {
+        if ([self.owner shouldAddObject:object forKey:key fromDelegate:self]&&ret) {
+            UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
+            if (!c) {
+                [shouldAddObjects setObject:c=[[UnionArrayDelegateCount alloc] init] forKey:[PointerKey keyWithObject:object]];
+                [c release];
+            }
+            c.willCount++;c.didCount++;
+        }
+    }
+    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index {
+        UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
+        if (c&&(c.willCount-->0)) {
+            c.willCount--;
+            c.didCount--;
+        }
+        [self.owner wontAddObject:object withIndex:index fromDelegate:self];
+    }
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+        UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
+        if (c&&(c.willCount-->0)) {
+            [unionWillHaveIndexes addIndex:index];
+        }
+        else {
+            [self.owner wontAddObject:object withIndex:index fromDelegate:self];
+        }
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
+        if (c&&(c.didCount-->0)) {
+            [self.owner didAddObject:object withIndex:index fromDelegate:self];
+        }
+    }
+
+
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        if ([unionHasIndexes containsIndex:index]) {
+            [unionWillRemoveIndexes addIndex:index];
+        }
+        else [self.owner wontRemoveObject:object fromDelegate:self];
+        //[self.owner willRemoveObject:object fromIndex:index fromDelegate:self];
+    }
+    -(void)didRemoveObject:(id)object {
+        [self.owner didRemoveObject:object fromDelegate:self];
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        //[self.owner objectsSwappedWithIndex:fromIndex andIndex:toIndex fromDelegate:self];
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        //[self.owner objectsMovedFromRange:fromRange toLocation:toLocation fromDelegate:self];
+    }
+    -(void)allObjectsMoved {
+        [self.owner allObjectsMovedFromDelegate:self];
+    }
+    -(void)stateOK {
+        [shouldAddObjects removeAllObjects];
+        [unionWillHaveIndexes removeAllIndexes];
+        //[unionWontHaveIndexes removeAllIndexes];
+        [unionWillRemoveIndexes removeAllIndexes];
+        [self.owner stateOKFromDelegate:self];
+    }
+
+
+
+
+
+
+
+
+
+
+
+UnionArray<UnionArray>
+
+<UnionArray:Array,ObjectEquate,MutableArrayDelegate>
+    MutableArray __unionArray=[[MutableArray alloc] init] (readonly,ivar=__mutableArray)
+    
+    
+    MutableArray arrays=[[MutableArray alloc] init] (readonly,dealloc,ivar=arrays)
+    -(init) {@-5 
+        [__array release];
+        __array=__unionArray.__array;
+        __unionArray.arrayDelegate=self;
+        delegateForArray=self;
+        [arrays addDelegate:self.arraysDelegate=[UnionArraysMutableArrayDelegate get]];
+        self.arraysDelegate.followerArray=self.arrayDelegates;
+    }
+
+
+
+
+
+    bool __changed=NO
+    NSUInteger __outstandingAddCount (nodef)
+    NSUInteger __outstandingRemoveCount (nodef)
+
+    -(void)willTryToAddObjectsWithCount:(NSUInteger)count fromDelegate:(UnionArrayDelegate*)del {
+        __outstandingAddCount+=count;
+    }
+
+
+    -(void)willRemoveObjectsWithCount:(NSUInteger)count fromDelegate:(UnionArrayDelegate*)del {
+        __outstandingRemoveCount+=count;
+    }
+
+
+    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index fromDelegate:(UnionSetDelegate*)del {
+        if (!--__outstandingAddCount) {
+            [self doAddObjects];
+        }
+    }
+
+    -(void)wontRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+        if (!--__outstandingRemoveCount) {
+            [self doRemoveObjects];
+        }
+    }
+
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index fromDelegate:(UnionSetDelegate*)del {
+        if (!--__outstandingAddCount) {
+            [self doAddObjects];
+        }
+    }
+
+    -(void)didRemoveObject:(id)object fromDelegate:(UnionArrayDelegate*)del {
+        if (!--__outstandingRemoveCount) {
+            [self doRemoveObjects];
+        }
+    }
+
+
+
+
+
+    NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=tmpis);
+    NSMutableArray __tmpa=[[NSMutableArray alloc] init] (readonly,dealloc,ivar=tmpa);
+
+    -(void)doAddObjects {
+        [tmpis removeAllIndexes];
+        [tmpa removeAllObjects];
+        
+        int numAdded=0;
+        for (NSArray *a in self.arrays) {
+            UnionArrayDelegate *del=nil;
+            for (UnionArrayDelegate *del2 in self.arrayDelegates) if (del2.delegateForArray==a) {del=del2;break;}
+            if (!del.unionWillHaveIndexes.count) continue;
+            
+            for (UnionArrayDelegate *del2 in self.arrayDelegates) {
+                if ((del!=del2)&&(del2.addIndex>=del.addIndex)) del2.addIndex+=del.unionWillHaveIndexes.count;
+            }
+
+            for (NSUInteger index=del.unionWillHaveIndexes.firstIndex;index!=NSNotFound;index=[del.unionWillHaveIndexes indexGreaterThanIndex:index]) {
+                NSUInteger myIndex=del.addIndex+[del.unionHasIndexes countOfIndexesInRange:NSMakeRange(0,index)]+numAdded;
+                [tmpis addIndex:myIndex];
+                [tmpa addObject:[a objectAtIndex:index]];
+                numAdded++;
+            }
+        }
+        
+        if (tmpis.count) {
+            __changed=YES;
+            [__unionArray insertObjects:tmpa atIndexes:tmpis];
+            [tmpa removeAllObjects];
+            [tmpis removeAllIndexes];
+        }
+    }
+
+
+    
+
+
+
+    -(void)doRemoveObjects {
+        [tmpis removeAllIndexes];
+        
+        for (int ai=self.arrays.count-1;ai>=0;ai--) {
+            NSArray *a=[self.arrays objectAtIndex:ai];
+
+            UnionArrayDelegate *del=nil;
+            for (UnionArrayDelegate *del2 in self.arrayDelegates) if (del2.delegateForArray==a) {del=del2;break;}
+            if (!del.unionWillRemoveIndexes.count) continue;
+            
+            for (UnionArrayDelegate *del2 in self.arrayDelegates) {
+                if ((del!=del2)&&(del2.addIndex>=del.addIndex)) del2.addIndex-=del.unionWillRemoveIndexes.count;
+            }
+
+            for (NSUInteger index=del.unionWillRemoveIndexes.firstIndex;index!=NSNotFound;index=[del.unionWillRemoveIndexes indexGreaterThanIndex:index]) {
+                NSUInteger myIndex=del.addIndex+[del.unionHasIndexes countOfIndexesInRange:NSMakeRange(0,index)];
+                [tmpis addIndex:myIndex];
+                [del.unionHasIndexes removeIndex:index];
+            }
+        }
+        
+        if (tmpis.count) {
+            __changed=YES;
+            [__unionArray removeObjectsAtIndexes:tmpis];
+            [tmpis removeAllIndexes];
+        }
+    }
+
+
+
+
+
+
+
+
+
+    -(void)willTryToAddObjectsWithCount:(NSUInteger)count {
+        for (UnionArrayDelegate *del in self.arrayDelegates) {
+            del.curIndex=del.unionWillHaveIndexes.firstIndex;
+        }
+    }
+
+    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index {
+        for (UnionArrayDelegate *del in self.arrayDelegates) {
+            if ((del.addIndex<=index)&&(del.curIndex!=NSNotFound)) {
+                del.curIndex=[del.unionWillHaveIndexes indexGreaterThanIndex:del.curIndex];
+                break;
+            }
+        }
+    }
+
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@500 
+        bool added=NO;
+        for (UnionArrayDelegate *del in self.arrayDelegates) {
+            if (added) del.addIndex++;
+            else if ((del.addIndex<=index)&&(del.curIndex!=NSNotFound)) {
+                [del.unionHasIndexes addIndex:del.curIndex];
+                del.curIndex=[del.unionWillHaveIndexes indexGreaterThanIndex:del.curIndex];
+                added=YES;
+            }
+        }
+    }
+
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@500 
+        bool removed=NO;
+        for (int i=self.arrayDelegates.count-1;i>=0;i--) {
+            UnionArrayDelegate *del=[self.arrayDelegates objectAtIndex:i];
+            if ((del.addIndex<=index)&&(del.addIndex+del.unionHasIndexes.count>index)) {
+                NSUInteger delIndex=del.unionHasIndexes.firstIndex;
+                for (NSUInteger index2=del.addIndex;index2<index;index2++,delIndex=[del.unionHasIndexes indexGreaterThanIndex:delIndex]);
+                [del.unionHasIndexes removeIndex:delIndex];
+                break;
+            }
+            else del.addIndex--;
+        }
+    }
+
+
+
+
+
+
+    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+        if (__changed) {
+            __changed=NO;
+            if (__outstandingRemoveCount||__outstandingAddCount) {
+                ERR("Outstanding counts of %d,%d should be zero\n",__outstandingAddCount,__outstandingRemoveCount);
+                __outstandingRemoveCount=__outstandingAddCount=0;
+            }
+            [self stateOK];
+        }
+    }
+
+
+
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        ERR("Shouldn't be called");
+    }
+    -(void)allObjectsMoved {
+        ERR("Shouldn't be called");
+    }
+
+
+
+
+    -(void)allObjectsMovedFromDelegate:(UnionArrayDelegate*)del {
+        [self refresh];
+    }
+
+
+
+    -(void)refresh {
+        [tmpa removeAllObjects];
+
+        [__unionArray _removeAllObjects];
+        
+        int ai=0;
+        for (NSArray *a in self.arrays) {
+            UnionArrayDelegate *del=[self arrayDelegateAtIndex:ai++];
+            [del.unionHasIndexes removeAllIndexes];
+            [del.unionWillHaveIndexes removeAllIndexes];
+            del.addIndex=0;
+            if (a.count) {
+                [del.unionWillHaveIndexes addIndexesInRange:NSMakeRange(0,a.count)];
+                [tmpa addObjectsFromArray:a];
+            }
+        }
+        
+        [__unionArray addObjectsFromArray:tmpa];
+        
+        [tmpa removeAllObjects];
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

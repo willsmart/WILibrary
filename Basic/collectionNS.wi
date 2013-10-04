@@ -1,0 +1,174 @@
+
+
+PointerKey <NSCopying> "-Object"
+    id o (nodef,readonly)
+    -(void)dealloc {[o release];}
+    -(id)initWithObject:(id)ao {
+        if (!(self=[super init])) return(nil);
+        if (ao) {
+            o=[ao retain];
+            hash=[o hash];
+        }
+        else {
+            o=ao=self;
+            hash=obfuscateULL((ULL)o);
+        }
+        return(self);
+    }
+    +(PointerKey*)keyWithObject:(id)ao {
+        return([[[PointerKey alloc] initWithObject:ao] autorelease]);
+    }
+
+    NSString description={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
+    NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[PointerKey allocWithZone:zone] initWithObject:o]);
+    }
+    -(BOOL)isEqual:(id)object {
+        bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):
+              ([object isKindOfClass:[WeakObject class]]?(o==((WeakObject*)object).o):(o==object)))
+              ||[super isEqual:object]);
+        return(ret);
+    }
+    NSUInteger hash (nodef,readonly)
+
+
+
+WeakObject <NSCopying> "-Object"
+    id o (nodef,readonly)
+    -(id)initWithObject:(id)ao {
+        if (!(self=[super init])) return(nil);
+        o=ao;
+        hash=[ao hash];
+        return(self);
+    }
+
+    +(WeakObject*)keyWithObject:(id)ao {
+        return([[[WeakObject alloc] initWithObject:ao] autorelease]);
+    }
+
+    +(NSObject*)deref:(NSObject*)ao {
+        return(ao?([ao isKindOfClass:[WeakObject class]]?((WeakObject*)ao).o:
+            ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
+    }
+
+    NSString description={return([NSString stringWithFormat:@"Weak:%p",o]);}
+    NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",o]);}
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[WeakObject allocWithZone:zone] initWithObject:o]);
+    }
+    -(BOOL)isEqual:(id)object {
+        bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):
+              ([object isKindOfClass:[WeakObject class]]?(o==((WeakObject*)object).o):(o==object)))
+              ||[super isEqual:object]);
+        return(ret);
+    }
+    NSUInteger hash (nodef,readonly)
+
+
+
+
+
+
+NSMutableDictionary
+    -(void)setObject:(id)anObject weak:(bool)weakObject forKey:(id)aKeyo weak:(bool)weakKey pointer:(bool)pointerKey {
+        if (weakKey) {
+            if (weakObject) [self setWeakObject:anObject forWeakKey:aKeyo];
+            else [self setObject:anObject forWeakKey:aKeyo];
+        }
+        else if (pointerKey){
+            if (weakObject) [self setWeakObject:anObject forPointerKey:aKeyo];
+            else [self setObject:anObject forPointerKey:aKeyo];
+        }
+        else {
+            if (weakObject) [self setWeakObject:anObject forKey:aKeyo];
+            else [self setObject:anObject forKey:aKeyo];
+        }
+    }
+    -(void)setObject:(id)anObject forPointerKey:(id)aKeyo {
+        PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
+        [self setObject:anObject forKey:k];
+        [k release];
+    }
+    -(void)setObject:(id)anObject forWeakKey:(id)aKeyo {
+        WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
+        [self setObject:anObject forKey:k];
+        [k release];
+    }
+    -(void)setWeakObject:(id)anObject forKey:(id)aKeyo {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        [self setObject:v forKey:aKeyo];
+        [v release];
+    }
+    -(void)setWeakObject:(id)anObject forPointerKey:(id)aKeyo {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
+        [self setObject:v forKey:k];
+        [k release];
+        [v release];
+    }
+    -(void)setWeakObject:(id)anObject forWeakKey:(id)aKeyo {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
+        [self setObject:v forKey:k];
+        [k release];
+        [v release];
+    }
+
+NSDictionary
+    -(id)derefedObjectForKey:(id)key {
+        return([WeakObject deref:[self objectForKey:key]]);
+    }
+
+NSMutableArray
+    -(void)addObject:(id)anObject weak:(bool)weakObject {
+        if (weakObject) [self addWeakObject:anObject];
+        else [self addObject:anObject];
+    }
+    -(void)addWeakObject:(id)anObject {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        [self addObject:v];
+        [v release];
+    }
+
+    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(NSUInteger)index {
+        if (weakObject) [self insertWeakObject:anObject atIndex:index];
+        else [self insertObject:anObject atIndex:index];
+    }
+    -(void)insertWeakObject:(id)anObject atIndex:(NSUInteger)index {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        [self insertObject:v atIndex:index];
+        [v release];
+    }
+
+    -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject weak:(bool)weakObject {
+        if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
+        else [self replaceObjectAtIndex:index withObject:(id)anObject];
+    }
+    -(void)replaceObjectAtIndex:(NSUInteger)index withWeakObject:(id)anObject {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        [self replaceObjectAtIndex:index withObject:v];
+        [v release];
+    }
+
+NSArray
+    -(id)derefedObjectAtIndex:(NSUInteger)index {
+        return([WeakObject deref:[self objectAtIndex:index]]);
+    }
+
+NSMutableSet
+    -(void)addObject:(id)anObject weak:(bool)weakObject {
+        if (weakObject) [self addWeakObject:anObject];
+        else [self addObject:anObject];
+    }
+    -(void)addWeakObject:(id)anObject {
+        WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
+        [self addObject:v];
+        [v release];
+    }
+
+
+
+
+
+

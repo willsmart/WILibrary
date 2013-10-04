@@ -1,0 +1,402 @@
+
+
+/*top:
+extern unsigned long long waveBitMasks[4][16];
+*/
+
+/*top:impl:
+unsigned long long waveBitMasks[4][16]={
+  { 0x7b8b4567127b23c6LL, 0x943c9869a6334873LL, 0x0000000089495cffLL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL },
+  { 0x7c56f860d4d17722LL, 0x3924ca0a6cfd4ea7LL, 0x000fcf4d9ea21031LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL },
+  { 0xf033bd58074bdaebLL, 0x71931676b67d97a5LL, 0x709b3c30a6ee013aLL, 0x9ac47bf1792ae607LL, 0x67f1cc41b3a5e689LL, 0x4d1c9241d19226a8LL, 0xd2c311668fb94202LL, 0x00000000dfc376e5LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL },
+  { 0xa8cee1b7ba7c414cLL, 0x10127b312f67c76fLL, 0x769fb6889b31b07dLL, 0x60551618846a14f8LL, 0x37acccaaa3af4bb7LL, 0xe13275b45e0bd541LL, 0xfd858339a07e8cb2LL, 0x00000000000d6a85LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL }
+};
+*/
+
+
+
+
+
+BinTracker<BaseObject>
+    int samplesPerCycle,wavesPerCycle,cyclesPerBuffer,roughSamplesPerWave,ci (nodef)
+    ArrayOfDoubles *sampBuffer,*edges,*edges1 (nodef)
+    double samplesPerWave (nodef)
+    longdouble sumsine=0,sumcos=0
+
+    -(init[super init])initWithCI:(int)aci samplesPerCycle:(int)asamplesPerCycle wavesPerCycle:(int)awavesPerCycle cyclesPerBuffer:(int)acyclesPerBuffer {
+        ci=aci;
+        samplesPerCycle=asamplesPerCycle;
+        wavesPerCycle=awavesPerCycle;
+        cyclesPerBuffer=acyclesPerBuffer;
+        samplesPerWave=double(samplesPerCycle)/wavesPerCycle;
+        
+        sampBuffer=NEW(ArrayOfDoubles);
+        edges=NEW(ArrayOfDoubles);
+        edges1=NEW(ArrayOfDoubles);
+        
+        sampBuffer->setUpperBound(samplesPerCycle*cyclesPerBuffer-1);
+        edges->setUpperBound(wavesPerCycle*cyclesPerBuffer-1);
+        edges1->setUpperBound(wavesPerCycle-1);
+    }
+
+    -(void)dealloc {
+        DELETE(ArrayOfDoubles,sampBuffer);
+        DELETE(ArrayOfDoubles,edges);
+        DELETE(ArrayOfDoubles,edges1);
+    }
+
+    int bufferi=0,wavei=0,samplesSinceWave=0
+    double cycleLen=0,waveAt=0
+    int q=0,goods=0,reqGoods=0,wavesPerEdge=1
+
+    bool isGood (nodef)
+    double nphase,cycleLen,_cycleLen,phase,drphase (nodef)
+    int bestwi=0,samplei=0,samplesSinceWave=0,phasewavei=0
+    double bestwiAboveFactor=0,bestwiAboveAvgFactor=0
+    int pi=0;
+    int sign=1,signmul=1
+
+
+    -(void)processSamples:(int*)samples shift:(int)sampleShift withCount:(int)numSamples {
+        bool debug=(ci==-1);
+        double ph=2*PI*bufferi/samplesPerWave,dph=2*PI/samplesPerWave;
+        for (int si=0;si<numSamples;si++) {
+            double samp=(short)((samples[si]>>sampleShift)&0xffff);
+            dprnt("  --  [%.2f]%d:",bufferi/samplesPerWave,(short)((samples[si]>>sampleShift)&0xffff));
+            
+            double &sampWas=sampBuffer->a[bufferi];
+            dprnt("vs:%d : ",(short)sampWas);
+            
+            double sn=sin(ph),cs=cos(ph);
+            sumsine+=sn*(samp-sampWas);
+            sumcos+=cs*(samp-sampWas);
+            
+            sampWas=samp;
+            
+            nphase=atan2(sumcos,sumsine)/(2*PI);
+            nphase-=floor(nphase);
+
+            dprnt("(s%.0f,c%.0f)=%.3f : ",double(sumsine),double(sumcos),nphase);
+
+            double wph=bufferi/samplesPerWave+nphase;
+            wph-=floor(wph);
+            
+            dprnt("w:%.3f : ",wph);
+            
+            //prnt("[%.2f:%d:%.2f]:%.3f -- ",wph,bufferi,nphase,samp);
+            int q2=floor(wph*4);
+            dprnt("q%d : ",q2);
+            if ((q<=1)&&(q2==2)) {
+                dprnt("[");
+                double downi=bufferi-wph*samplesPerWave+samplesPerCycle*cyclesPerBuffer/2,sumsine2=0,sumcos2=0,from=downi-wavesPerEdge*samplesPerWave*0.5,to=downi+wavesPerEdge*samplesPerWave*0.5;
+                dprnt("down:%.2f(%.2f-%.2f) : ",downi/samplesPerWave,from/samplesPerWave,to/samplesPerWave);
+                double ph2=ph+(floor(from)-bufferi)*dph;
+                for (int bufferi2=floor(from);bufferi2<=ceil(to);bufferi2++) {
+                    double mul=(bufferi2<from?1+bufferi2-from:(bufferi2>to?1-bufferi2+to:1));
+                    int bi2=(bufferi2+samplesPerCycle*cyclesPerBuffer)%(samplesPerCycle*cyclesPerBuffer);
+                    sumsine2+=sin(ph2)*sampBuffer->a[bi2]*mul;
+                    sumcos2+=cos(ph2)*sampBuffer->a[bi2]*mul;
+                    dprnt("[%.2f]%.2f-%.2f x %.2f ~ ",(bufferi2-downi)/samplesPerWave,sin(ph2),sampBuffer->a[bi2],mul);
+                    ph2+=dph;
+                }
+                double nph2=atan2(sumcos2,sumsine2)/(2*PI);
+                nph2-=floor(nph2);
+                dprnt("(s%.0f,c%.0f)=%.3f : ",double(sumsine2),double(sumcos2),nph2);
+                double wphdif=nph2-nphase;
+                if (wphdif<-0.5) wphdif+=1;
+                if (wphdif>0.5) wphdif-=1;
+                dprnt("dif:%.3f : ",wphdif);
+
+                edges1->a[wavei%wavesPerCycle]-=edges->a[wavei];
+                edges1->a[wavei%wavesPerCycle]+=(edges->a[wavei]=sign*wphdif);
+                
+                wavei=(wavei+1)%(wavesPerCycle*cyclesPerBuffer);
+                double downi1=downi-samplesPerCycle*floor(downi/samplesPerCycle);
+                double waveLen=(downi1-waveAt);
+                if (waveLen<-samplesPerCycle*0.5) waveLen+=samplesPerCycle;
+                if (waveLen>samplesPerCycle*0.5) waveLen-=samplesPerCycle;
+                waveAt=downi1;
+                pi++;
+                
+                drphase+=(waveLen-samplesPerWave)/samplesPerCycle;
+                drphase-=floor(drphase);
+                samplesSinceWave=0;
+                
+                _cycleLen+=waveLen;
+                if (!(wavei%wavesPerCycle)) {
+                    cycleLen=_cycleLen;_cycleLen=0;
+                    if ((cycleLen>samplesPerCycle-5)&&(cycleLen<samplesPerCycle+5)) goods++;
+                    else goods=0;
+                    
+                    if (goods>=reqGoods) {
+                        ULL ulls[16];
+                        memset(ulls,0,sizeof(ULL)*16);
+                        ULL culls[16];
+                        memcpy(culls,waveBitMasks,sizeof(ULL)*16);
+                        //culls[0]=1;culls[1]=culls[2]=culls[3]=culls[4]=culls[5]=culls[6]=culls[7]=0;
+                        dprnt("\n");
+                        IterateArray(double,e,*edges1,
+                            if (e>0) {
+                                ulls[eIndex/64]|=shiftOneULL[eIndex%64];
+                                dprnt("1");
+                            }
+                            else dprnt("0");
+                        );
+                        dprnt("\n");
+                        for (int eIndex=0,N=(int)edges1->num();eIndex<N;eIndex++) {
+                            if (culls[eIndex/64]&shiftOneULL[eIndex%64]) {
+                                dprnt("*");
+                            }
+                            else dprnt("0");
+                        }
+                        dprnt("\n");
+                        
+                        bestwi=-1;
+                        double bestwindif=wavesPerCycle+1,nextbestwindif=wavesPerCycle+1;
+                        int sum=0,nextbestwi=-1;
+                        for (int wi=0;wi<wavesPerCycle;wi++) {
+                            //prnt("\n[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&msk[0])[1],((DWRD*)&msk[0])[0],((DWRD*)&msk[1])[1],((DWRD*)&msk[1])[0],((DWRD*)&msk[2])[1],((DWRD*)&msk[2])[0]);
+                            dprnt("\n[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&ulls[0])[1],((DWRD*)&ulls[0])[0],((DWRD*)&ulls[1])[1],((DWRD*)&ulls[1])[0],((DWRD*)&ulls[2])[1],((DWRD*)&ulls[2])[0]);
+                            dprnt("[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&culls[0])[1],((DWRD*)&culls[0])[0],((DWRD*)&culls[1])[1],((DWRD*)&culls[1])[0],((DWRD*)&culls[2])[1],((DWRD*)&culls[2])[0]);
+                            dprnt("[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&ulls[0])[1]^((DWRD*)&culls[0])[1],((DWRD*)&ulls[0])[0]^((DWRD*)&culls[0])[0],((DWRD*)&ulls[1])[1]^((DWRD*)&culls[1])[1],((DWRD*)&ulls[1])[0]^((DWRD*)&culls[1])[0],((DWRD*)&ulls[2])[1]^((DWRD*)&culls[2])[1],((DWRD*)&ulls[2])[0]^((DWRD*)&culls[2])[0],((DWRD*)&ulls[3])[1]^((DWRD*)&culls[3])[1],((DWRD*)&ulls[3])[0]^((DWRD*)&culls[3])[0]);
+                            double ndif=
+                                numOnes64(ulls[0]^culls[0])+numOnes64(ulls[1]^culls[1])+
+                                numOnes64(ulls[2]^culls[2])+numOnes64(ulls[3]^culls[3])+
+                                numOnes64(ulls[4]^culls[4])+numOnes64(ulls[5]^culls[5])+
+                                numOnes64(ulls[6]^culls[6])+numOnes64(ulls[7]^culls[7])+
+                                numOnes64(ulls[8]^culls[8])+numOnes64(ulls[9]^culls[9])+
+                                numOnes64(ulls[10]^culls[10])+numOnes64(ulls[11]^culls[11])+
+                                numOnes64(ulls[12]^culls[12])+numOnes64(ulls[13]^culls[13])+
+                                numOnes64(ulls[14]^culls[14])+numOnes64(ulls[15]^culls[15]);
+                            ndif=0;
+                            IterateArray(double,e,*edges1,
+                                ndif+=e*(culls[eIndex/64]&shiftOneULL[eIndex%64]?1:-1);
+                            );
+                            ndif=fabs(ndif);
+                            
+                            dprnt(" ~ [%d]%f ",wi,ndif);
+                            //if (ndif>wavesPerCycle/2) ndif=wavesPerCycle-ndif;
+                            
+                            sum+=ndif;
+                            
+                            if ((bestwi==-1)||(ndif>=bestwindif)) {
+                                dprnt("B ");
+                                if ((bestwi>=0)&&(bestwindif>nextbestwindif)) {
+                                    dprnt("N%d ",bestwi);
+                                    nextbestwi=bestwi;
+                                    nextbestwindif=bestwindif;
+                                }
+                                bestwindif=ndif;
+                                bestwi=wi;
+                            }
+                            else if ((nextbestwi==-1)||(ndif>nextbestwindif)) {
+                                dprnt("N ");
+                                nextbestwi=wi;
+                                nextbestwindif=ndif;
+                            }
+
+                            int chi;
+                            ULL cull0=culls[0];
+                            for (chi=0;(chi<(wavesPerCycle-1)/64);chi++) {
+                                culls[chi]=(culls[chi]>>1)|(culls[chi+1]<<63);
+                            }
+                            culls[chi]=(culls[chi]>>1)|((cull0&1)<<((wavesPerCycle+63)%64));
+                        }
+                        
+                        bestwiAboveFactor=nextbestwindif/double(bestwindif);
+                        bestwiAboveAvgFactor=sum/(double(bestwindif)*wavesPerCycle);
+                        //bestwiAboveFactor=double(bestwindif)/nextbestwindif;
+                        //bestwiAboveAvgFactor=double(bestwindif)*wavesPerCycle/sum;
+                        if (bestwiAboveFactor<0.6) {
+                            phasewavei=bestwi;
+                        }
+                        phase=drphase-double(phasewavei)/wavesPerCycle;
+                        phase-=floor(phase);
+                    }
+                    sign*=signmul;
+                }
+                dprnt("]\n");
+            }
+            q=q2;
+            ph+=dph;
+            bufferi=(bufferi+1)%(cyclesPerBuffer*samplesPerCycle);
+            samplei++;
+            samplesSinceWave++;
+        }
+    }
+
+
+
+SonicBinPlay<PlaybackAudioUnit,BaseObject>
+    int PLAYBACK_SAMPLE_RATE=48000;
+
+    -(init) {
+        @-6 numChannels=4;
+        @0 
+    }
+
+    +(int)cycleSamples {return(1000);}
+    +(int)cycleWaves:(int)ci {
+        switch (ci) {
+            case 0:default:return(160);
+            case 1:return(180);
+            case 2:return(480);
+            case 3:return(470);
+        }
+    }
+    +(int)bufferCycles {return(8);}
+    +(double)fmoffset {return(0.2);}
+    +(int)signmul:(int)ci {
+        return(ci&1?1:-1);
+    }
+    +(short)valForSample:(double)si ci:(int)ci {
+        double cycleSamples=[__Class__ cycleSamples];
+        int cycleWaves=[__Class__ cycleWaves:ci];
+        double wi=(si/cycleSamples-floor(si/cycleSamples))*cycleWaves;
+        double wif=wi-floor(wi);
+        int wii=floor(wi);
+        int wiibl=(waveBitMasks[ci][wii/64]>>(wii%64))&1;
+        int wiibh=(waveBitMasks[ci][((wii+1)%cycleWaves)/64]>>(((wii+1)%cycleWaves)%64))&1;
+        double v=((1-wif)*wiibl+wif*wiibh)-0.5;
+        if ((int(si)/int(cycleSamples))&1) v*=[self signmul:ci];
+        
+        double ph=2*PI*(wi+[__Class__ fmoffset]*v);
+        return(4000*sin(ph));
+    }
+
+    -(void)prepareSamples:(PLAYFRAME*)to withCount:(int)toCount {
+        for (int i=0,si=playbackSamplei;i<toCount;i++,si++) {
+            short s1=[__Class__ valForSample:si*2 ci:0];
+            short s2=0;//[__Class__ valForSample:si*2 ci:1];
+            //short s3=[__Class__ valForSample:si*2 ci:2];
+            //short s4=[__Class__ valForSample:si*2 ci:3];
+            to[i]=
+                (((PLAYFRAME)s1)&0xffff)|
+                ((((PLAYFRAME)s2)&0xffff)<<16)|0
+                //((((PLAYFRAME)s3)&0xffff)<<32)|
+                //((((PLAYFRAME)s4)&0xffff)<<48)
+                ;
+        }
+    }
+
+    +(void)displayWaveBitMasks {
+        prnt("/*top:\nextern unsigned long long waveBitMasks[4][16];\n*/\n/*top:impl:\nunsigned long long waveBitMasks[4][16]={\n");
+        for (int ci=0;ci<4;ci++) {
+            int Nb=[SonicBinPlay cycleWaves:ci];
+            while (YES) {
+                ULL ulls[16]={
+                    RandULL()&rightOnes[Nb<64?Nb:64],
+                    RandULL()&rightOnes[Nb<64?0:(Nb<2*64?Nb-64:64)],
+                    RandULL()&rightOnes[Nb<64*2?0:(Nb<3*64?Nb-64*2:64)],
+                    RandULL()&rightOnes[Nb<64*3?0:(Nb<4*64?Nb-64*3:64)],
+                    RandULL()&rightOnes[Nb<64*4?0:(Nb<5*64?Nb-64*4:64)],
+                    RandULL()&rightOnes[Nb<64*5?0:(Nb<6*64?Nb-64*5:64)],
+                    RandULL()&rightOnes[Nb<64*6?0:(Nb<7*64?Nb-64*6:64)],
+                    RandULL()&rightOnes[Nb<64*7?0:(Nb<8*64?Nb-64*7:64)],
+                    RandULL()&rightOnes[Nb<64*8?0:(Nb<9*64?Nb-64*8:64)],
+                    RandULL()&rightOnes[Nb<64*9?0:(Nb<10*64?Nb-64*9:64)],
+                    RandULL()&rightOnes[Nb<64*10?0:(Nb<11*64?Nb-64*10:64)],
+                    RandULL()&rightOnes[Nb<64*11?0:(Nb<12*64?Nb-64*11:64)],
+                    RandULL()&rightOnes[Nb<64*12?0:(Nb<13*64?Nb-64*12:64)],
+                    RandULL()&rightOnes[Nb<64*13?0:(Nb<14*64?Nb-64*13:64)],
+                    RandULL()&rightOnes[Nb<64*14?0:(Nb<15*64?Nb-64*14:64)],
+                    RandULL()&rightOnes[Nb<64*15?0:(Nb<16*64?Nb-64*15:64)]
+                };
+                int nb2=
+                    numOnes64(ulls[0])+numOnes64(ulls[1])+numOnes64(ulls[2])+numOnes64(ulls[3])+
+                    numOnes64(ulls[4])+numOnes64(ulls[5])+numOnes64(ulls[6])+numOnes64(ulls[7])+
+                    numOnes64(ulls[8])+numOnes64(ulls[9])+numOnes64(ulls[10])+numOnes64(ulls[11])+
+                    numOnes64(ulls[12])+numOnes64(ulls[13])+numOnes64(ulls[14])+numOnes64(ulls[15]);
+                if (nb2==Nb/2) {
+                    if (ci) prnt(",\n");
+                    prnt("  { ");
+                    for (int i=0;i<16;i++) {
+                        if (i) prnt(", ");
+                        prnt("0x%08x%08xLL",((DWRD*)&ulls[i])[1],((DWRD*)&ulls[i])[0]);
+                    }
+                    prnt(" }");
+                    break;
+                }
+            }
+        }
+        prnt("\n};\n*/\n\n");
+    }
+        
+
+SonicBinRec<RecordingAudioUnit,BaseObject>
+    bool simulate=NO
+    int RECORDING_SAMPLE_RATE=96000;
+
+    
+    -(init) {
+        t1.signmul=-1;
+    }
+    -(void)setupAudio {@12 
+        status = AudioUnitSetProperty(audioUnit,
+                      kAudioOutputUnitProperty_CurrentDevice,
+                      kAudioUnitScope_Global,
+                        1,
+                      &mic,
+                      sizeof(mic));
+    }
+
+    -(short)simulatedSample:(double)si {
+        return([SonicBinPlay valForSample:si ci:0]);
+    }
+
+    BinTracker t1=[[BinTracker alloc] initWithCI:0 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:0] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t1,dealloc)
+    BinTracker t2=[[BinTracker alloc] initWithCI:1 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:1] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t2,dealloc)
+    BinTracker t3=[[BinTracker alloc] initWithCI:2 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:2] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t3,dealloc)
+    BinTracker t4=[[BinTracker alloc] initWithCI:3 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:3] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t4,dealloc)
+
+    int recsiwas=0
+
+    double simlphase=0
+
+    -(void)processSamplesWithCount:(int)numSamples {
+        if (simulate) for (int N=[SonicBinPlay cycleSamples]*2,si=recordingSamplei%N,i=0;i<numSamples;i++,si=(si+1)%N) {
+            samples[i]=[self simulatedSample:si+simlphase*[SonicBinPlay cycleSamples]/t1.wavesPerCycle];
+            //prnt("%d ",samples[i]);
+        }
+        [t1 processSamples:samples shift:0 withCount:numSamples];
+        [t2 processSamples:samples shift:0 withCount:numSamples];
+        //[t3 processSamples:samples shift:0 withCount:numSamples];
+        //[t4 processSamples:samples shift:0 withCount:numSamples];
+
+        if (recordingSamplei>recsiwas+9000) {
+            @100 
+            prnt("aim:%.4f\n",simlphase);
+            prnt("[1] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d->%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t1.nphase,t1.drphase,t1.phase,t1.isGood,t1.bestwi,t1.phasewavei,t1.bestwiAboveFactor,t1.bestwiAboveAvgFactor,t1.cycleLen);
+            prnt("[2] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d->%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t2.nphase,t2.drphase,t2.phase,t2.isGood,t2.bestwi,t2.phasewavei,t2.bestwiAboveFactor,t2.bestwiAboveAvgFactor,t2.cycleLen);
+            //prnt("[3] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t3.nphase,t3.drphase,t3.phase,t3.isGood,t3.bestwi,t3.bestwiAboveFactor,t3.bestwiAboveAvgFactor,t3.cycleLen);
+            //prnt("[4] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t4.nphase,t4.drphase,t4.phase,t4.isGood,t4.bestwi,t4.bestwiAboveFactor,t4.bestwiAboveAvgFactor,t4.cycleLen);
+            for (int i=0;i<50;i++) prnt("%c",t1.nphase*50<i?'-':'N');
+            for (int i=0;i<50;i++) prnt("%c",t2.nphase*50<i?'-':'N');
+            for (int i=0;i<50;i++) prnt("%c",t3.nphase*50<i?'-':'N');
+            for (int i=0;i<50;i++) prnt("%c",t4.nphase*50<i?'-':'N');
+            prnt("\n");
+            for (int i=0;i<50;i++) prnt("%c",t1.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (int i=0;i<50;i++) prnt("%c",t2.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (int i=0;i<50;i++) prnt("%c",t3.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (int i=0;i<50;i++) prnt("%c",t4.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            prnt("\n");
+            for (int i=0;i<50;i++) prnt("%c",t1.drphase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t2.drphase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t3.drphase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t4.drphase*50<i?'-':'*');
+            prnt("\n");
+            for (int i=0;i<50;i++) prnt("%c",t1.phase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t2.phase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t3.phase*50<i?'-':'*');
+            for (int i=0;i<50;i++) prnt("%c",t4.phase*50<i?'-':'*');
+            prnt("\n");
+            @200 
+            recsiwas=recordingSamplei;
+        }
+    }
+
+
+
+
+
+

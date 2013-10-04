@@ -1,0 +1,992 @@
+//Shader
+
+
+
+
+
+
+ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderimage"
+    vec2 sizeInPixels (uniform)
+    vec4 position (attribute,class=SHPositionSzAttribute)
+    vec2 unit (attribute)
+    vec2 pixel (attribute,class=SHPixelCoorSzAttribute)
+    vec2 unitSize (uniform)
+
+    -(init) {
+        self.program.vertexCount=4;
+        {
+            float v[8]={0,0,  1,0,   0,1,   1,1};
+            self.unit.asVec2=v;
+        }
+    }
+
+    NSSet builtinMacros (nodef)
+    -(init) {
+        @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
+    }
+
+    -void main()/*frag*/ {@!-999 lowp vec4 colour=lowp vec4(1,0,1,1);
+        @-500 {getColour}
+        @!999 gl_FragColor=colour;
+    }
+
+    -(init) {
+        [self.program setMacro:@"colour=(0,0,0,0);" forKey:@"getColour"];
+    }
+
+
+
+
+
+
+
+    float LineWidth (uniform)
+    float CornerRadius (uniform)
+    float BallRadius (uniform)
+    vec4 LineColour (uniform)
+    vec3 CellColour (uniform)
+
+    -(init) {@-100 
+        self.LineWidth.asFloat=3;
+        self.CornerRadius.asFloat=50;
+        self.BallRadius.asFloat=10;
+        {
+            float v[4]={0.f,0.f,0.f,1.f};
+            self.LineColour.asVec4=v;
+        }
+        {
+            float v[3]={1.f,1.f,1.f};
+            self.CellColour.asVec3=v;
+        }
+    }
+
+    NSDictionary cornerLenFragFn (fragFunction,-float cornerLen(vec2 sz,float radius);)
+
+    -float cornerLen(vec2 sz,float radius) {
+      return(radius*(PI*0.5-2)+sz.x+sz.y);
+    }
+
+
+
+    NSDictionary _cornerFragFn (fragFunction,-float _corner(vec2 xy,vec2 sz,float radius,float ballx,float ballRadius,float linew,out vec3 squiggle);)
+
+    -float _corner(vec2 xy,vec2 sz,float radius,float ballx,float ballRadius,float linew,out vec3 squiggle) {
+      float dist=0;
+      xy=abs(xy);
+      vec2 low=(max(0,sz.x-sz.y),max(0,sz.y-sz.x));
+      vec2 lxy=xy-low;vec2 lsz=sz-low;
+      vec2 high=sz-(radius,radius);
+      squiggle.y=PI*radius*0.5+high.x+high.y;
+      squiggle.z=1;
+      if ((lxy.x>0)&&(lxy.y<(lsz.y-radius)*lxy.x/lsz.x)) {
+        float bf=xy.y/(low.y+(high.y-low.y)*lxy.x/lsz.x);
+        dist=length(vec2(lsz.x,(high.y-low.y)*bf))*(1-lxy.x/lsz.x);
+        squiggle.x=bf*high.y;
+      }
+      else if ((lxy.y>0)&&(lxy.x<(lsz.x-radius)*lxy.y/lsz.y)) {
+        float bf=xy.x/(low.x+(high.x-low.x)*lxy.y/lsz.y);
+        dist=length(vec2(lsz.y,(high.x-low.x)*bf))*(1-lxy.y/lsz.y);
+        squiggle.x=squiggle.y-high.x*bf;
+        if (ballRadius>0) {
+          float bd=xy.x-ballx;
+          float bd2=length(vec2(xy.y-sz.y,bd));
+          float bw=sqrt(ballRadius*ballRadius-bd*bd);
+          if (bd2<ballRadius*2) dist=sign(sz.y-xy.y)*max(0,mix(-bw,bw,bd2/ballRadius*2));
+          else if ((bd>0)&&(xy.x<=sz.x-linew*0.5)&&(abs(xy.y-sz.y)<=linew*1.1)) dist=linew*1.1;      
+        }
+      }
+      else {
+        float a=dot(lxy,lxy);
+        vec2 lhigh=high-low;
+        float b=-2*(lhigh.x*lxy.x+lhigh.y*lxy.y);
+        float c=dot(lhigh,lhigh)-radius*radius;
+        float z=(-b+sqrt(b*b-4*a*c))/(2*a);
+        float lz=length(lxy)*z;
+        dist=lz*(1-length(lxy)/lz);
+        squiggle.x=atan(z*lxy.y-lhigh.y,z*lxy.x-lhigh.x)*radius+high.y;
+      }
+      return(dist);
+    }
+
+
+
+    NSDictionary rectFragFn (fragFunction,-float rect(vec2 xy,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,out vec3 squiggle);)
+
+    -float rect(vec2 xy,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,out vec3 squiggle) {
+      float ret;
+      vec2 slens=(cornerLen(sz,radius.x)+cornerLen(sz,radius.y),cornerLen(sz,radius.z)+cornerLen(sz,radius.w));
+      if (xy.y<0) {
+        if (xy.x<0) ret=_corner(xy,sz,radius.x,ballx.x,ballRadius.x,linew,squiggle);
+        else {
+          ret=_corner(xy,sz,radius.y,ballx.y,ballRadius.y,linew,squiggle);
+          squiggle.x=slens.x-squiggle.x;
+        }
+      }
+      else if (xy.x>0) {
+        ret=_corner(xy,sz,radius.z,ballx.z,ballRadius.z,linew,squiggle);
+        squiggle.x+=slens.x;
+      }
+      else {
+        ret=_corner(xy,sz,radius.w,ballx.w,ballRadius.w,linew,squiggle);
+        squiggle.x=slens.x+slens.y-squiggle.x;
+      }
+      squiggle.y=slens.x+slens.y;
+      return(ret);
+    }
+
+
+
+
+
+    NSDictionary bumpRectFragFn (fragFunction,-float bumpRect(mat3 trans33,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,float alias,float bumps,float bumpSqueeze,float bumpPow,float squigglePhase,float squigglePeriod,float squiggleSize,float dmul,out vec3 norm);)
+
+    -float bumpRect(mat3 trans33,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,float alias,float bumps,float bumpSqueeze,float bumpPow,float squigglePhase,float squigglePeriod,float squiggleSize,float dmul,out vec3 norm) {
+      float d,b,dx,bx,dy,by;
+      vec3 squiggle=(0,0,0);
+      TXY(sizeInPixels*0.5-pixel.xy,d=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+      d*=dmul;
+      if (squiggleSize>0) {
+        d+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+      }
+      b=4*BUMP(bumps,bumpSqueeze,d/sz.y,bumpPow);
+
+      LINE(d,alias,linew,,,f,
+        TXY(sizeInPixels*0.5-pixel.xy-(1,0),dx=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+        dx*=dmul;
+        if (squiggleSize>0) {
+          dx+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+        }
+
+        bx=4*BUMP(bumps,bumpSqueeze,dx/sz.y,bumpPow);
+        TXY(sizeInPixels*0.5-pixel.xy-(0,1),dy=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+        dy*=dmul;
+        if (squiggleSize>0) {
+          dy+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+        }
+
+        by=4*BUMP(bumps,bumpSqueeze,dy/sz.y,bumpPow);
+        norm=normalize(vec3(bx-b,by-b,1));
+
+      )
+
+      return(d);
+    }
+
+
+    NSDictionary colourizeFragFn (fragFunction,-vec3 colourize(vec3 norm,vec3 diffuse,vec3 specular,float specPower,float specCutoff,float specCutoffMul,vec3 lightPos);)
+
+    -vec3 colourize(vec3 norm,vec3 diffuse,vec3 specular,float specPower,float specCutoff,float specCutoffMul,vec3 lightPos) {
+      vec3 colour;
+      lightPos=normalize(lightPos);
+      float intensity=saturatef(dot(norm,lightPos));
+      diffuse=saturatev3(diffuse*intensity);
+      vec3 reflection=normalize(2*intensity*norm-lightPos);
+      vec3 spec=pow(saturatef(reflection.z),specPower)*specular;
+      float specLine=saturatef(specCutoffMul*abs(spec.x-specCutoff));
+      return(specLine*saturatev3(diffuse+spec));
+    }
+
+    -(init) {
+        [self.program setMacro:@"3.14159265358979" forKey:@"PI"];
+        [self.program setMacro:@"6.28318530717959" forKey:@"PI2"];
+        [self.program setMacro:@"{float _x=X;X+=__dx;__code;X=_x;}" forKey:@"TX(__dx,__code)"];
+        [self.program setMacro:@"{float _y=Y;Y+=__dy;__code;Y=_y;}" forKey:@"TY(__dy,__code)"];
+        [self.program setMacro:@"{vec2 _xy=XY;XY+=__dxy;__code;XY=_xy;}" forKey:@"TXY(__dxy,__code)"];
+        [self.program setMacro:@"{mat3 _tmp=trans33;{float a=__a;c=cos(a*PI2);s=sin(a*PI2);trans33=trans33*((c,s),(-s,c),(0,0,1));}__code;trans33=_tmp;}" forKey:@"RXY(__a,__code)"];
+        [self.program setMacro:@"(trans33[2i].xy)" forKey:@"XY"];
+        [self.program setMacro:@"(trans33[2i].x)" forKey:@"X"];
+        [self.program setMacro:@"(trans33[2i].y)" forKey:@"Y"];
+        [self.program setMacro:@"(atan(Y,X)/PI2)" forKey:@"AXY"];
+        [self.program setMacro:@"{TY(__delta,__code);__gotdy;TX(__delta,__code);__gotdx;__code;}" forKey:@"DP(__delta,__gotdx,__gotdy,__code)"];
+        [self.program setMacro:@"TX(min(max(-X,(size.x-size.y)*-0.5),(size.x-size.y)*0.5),boxd=length(XY);boxD=size.y*0.5*(abs(Y)>abs(X)?boxd/abs(Y):(abs(X)>0?boxd/abs(X):1));)" forKey:@"BOXD(size)"];
+        [self.program setMacro:@"{float _v=__v;float _alias=__alias;float _w=__w;"
+        "if (_v<0) {__a;if (_v+_alias>-_w*0.5)  {float __bfv=min(1,(_v+_w*0.5)/_alias+1);__b;}"
+        "} else {"
+        "__c;if (_v-_alias<_w*0.5) {float __bfv=min(1,1-(_v-_w*0.5)/_alias);__b;}"
+        "}}" forKey:@"LINE(__v,__alias,__w,__a,__b,__bfv,__c)"];
+        [self.program setMacro:@"(pow(__v,__pow)*(1+0.5*cos((__bumps)*PI*(1/(1+pow(5*(__v),__squeeze))))))" forKey:@"BUMP(__bumps,__squeeze,__v,__pow)"];
+        [self.program setMacro:@"clamp(__val,(0,0,0),(1,1,1))" forKey:@"saturatev3(__val)"];
+        [self.program setMacro:@"clamp(__val,0,1)" forKey:@"saturatef(__val)"];
+        [self.program setMacro:@"(2*clamp(sign(__sv),0,1)-1)" forKey:@"sign1f(__sv)"];
+        [self.program setMacro:@"float bumps=2,bumpSqueeze=3,bumpPow=0.01;" forKey:@"CommonBump"];
+        [self.program setMacro:@"vec3 specular=(1,1,1);float specPower=40,specCutoff=0.1,specCutoffMul=10;vec3 lightPos=(-0.5,0.3,1);" forKey:@"CommonLighting"];
+        [self.program setMacro:@"vec2 sz=sizeInPixels;mat3 trans33=((1),(0,1),(0,0,1));float alias=2;vec3 norm=(0,0,1);float d=-10000;float boxD,boxd;CommonBump CommonLighting " forKey:@"Start"];
+        [self.program setMacro:@" LINE(d,alias,LineWidth,colour=(0,0,0,0),colour=mix(colour,LineColour,f),f,  colour=vec4(colourize(norm,CellColour,specular,specPower,specCutoff,specCutoffMul,lightPos),1);)" forKey:@"End"];
+        [self.program setMacro:@" float d=bumpRect(trans33,sz,corners,(,,,),(,,,),LineWidth,alias,bumps,bumpSqueeze,bumpPow,0,100,0,1,norm);" forKey:@"Mid(corners)"];
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Request
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ShaderTicker
+    -(void)tick {
+        [g_singletons.imageShaderRequestCaches goForSeconds:0.2];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singletons
+    ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));} (dealloc,ivar)
+    NSString description={
+        [ret appendFormat:@"\nImageShaderRequestCaches %p has %d/%d in cache, %d/%d outstanding\n",self.imageShaderRequestCaches,self.imageShaderRequestCaches.imageShaderRequestCache.cache.count,self.imageShaderRequestCaches.shaderImageRequestCache.cache.count,self.imageShaderRequestCaches.imageShaderRequestCache.proxyList.count,self.imageShaderRequestCaches.shaderImageRequestCache.proxyList.count];
+    }
+
+    
+ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
+    ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (readonly,dealloc,ivar=imageShaderRequestCache)
+    ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] (readonly,dealloc,ivar=shaderImageRequestCache)
+
+    -(init) {
+        [self setCache:imageShaderRequestCache forKey:@"imageShaders"];
+        [self setCache:shaderImageRequestCache forKey:@"images"];
+        self.documentsCodingFilename=@"images.bin";
+        @10 [self loadCodable];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+<HasURL>
+    NSURL url
+<HasImageShader>
+    ImageShader imageShader
+<HasImage>
+    UIImage image
+
+
+
+ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
+    -(init) {cache.maxSize=100000;cache.maxCount=1000;}
+    -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
+        if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]) {
+            return([[[ImageShaderRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader>*)reqData] autorelease]);
+        }
+        return(nil);
+    }
+
+ImageShaderRequest<Request> "fn:renderimage"
+    <HasURL,HasImageShader> object (nodef,readonly,dealloc,ivar=object)
+    -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader>*)aobject {
+        object=[aobject retain];
+    }
+    float resultSize={return(0);}
+    NSObject result={return(object.imageShader);}
+    
+    float worthAsRequest={
+        float age=self.ageAsRequest;
+        return(age<2?(2-age)*2.0:((age-2)*0.9));
+    }
+    -(void)goRequest {
+        if (object.url&&!object.imageShader) {
+            object.imageShader=[g_singletons.imageRenderer imageShaderForURL:[ShaderURLConversion simplifiedClearedURLForURL:object.url]];
+        }
+    }
+
+
+
+ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
+    -(init) {cache.maxSize=10000000;cache.maxCount=1000;}
+    -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
+        if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]&&[reqData conformsToProtocol:@protocol(HasImage)]) {
+            return([[[ShaderImageRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)reqData] autorelease]);
+        }
+        return(nil);
+    }
+
+ShaderImageRequest<Request> "fn:renderimage"
+    <HasURL,HasImageShader,HasImage> object (nodef,readonly,dealloc,ivar=object)
+    -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject {
+        object=[aobject retain];
+    }
+    float resultSize={return(800);}
+    NSObject result={return(object.image);}
+    
+    float worthAsRequest={
+        float age=self.ageAsRequest;
+        return(age<2?(2-age)*0.2:((age-2)*0.05));
+    }
+    -(void)goRequest {
+        if (object.url&&object.imageShader&&!object.image) {
+            object.image=[g_singletons.imageRenderer imageForURL:object.url shader:object.imageShader];
+        }
+    }
+
+
+
+
+
+
+
+
+ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
+    NSURL url (nodef,nonatomic)
+    ImageShader imageShader (nodef,nonatomic)
+    UIImage image (nodef,nonatomic)
+    -(init[super init])initWithURL:(NSURL*)aurl {
+        self.url=aurl;
+    }
+
+
+
+
+
+<ImageRequestOwner>
+    -(void)gotImageShader:(ImageShader*)ashader forURL:(NSURL*)aurl {}
+    -(void)gotImage:(UIImage*)aimage forURL:(NSURL*)aurl;
+
+    -(ImageToken*)goRequestWithURL:(NSURL*)url {
+        ImageToken *token=[[[ImageToken alloc] initWithURL:url] autorelease];
+        [[[ImageRequestProxyOwner alloc] initWithToken:token owner:self] autorelease];
+        return(token);
+    }
+
+
+
+ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
+    proxyOwner >s~ <ImageRequestOwner> owner
+    ImageToken token (nodef,dealloc,ivar=token)
+
+    -(init[super init])initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner {@100 
+        token=[atoken retain];
+        self.owner=aowner;
+        [self requestImage];
+    }
+
+    -(void)requestImage {
+        if (!token.url) return;
+        if (!token.image) {
+            NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:token.url]];
+            if ([o isKindOfClass:[UIImage class]]) {
+                token.image=(UIImage*)o;
+            }
+            else if (!token.imageShader) {
+                o=[g_singletons.imageShaderRequestCaches.imageShaderRequestCache resultForKey:[ShaderURLConversion simplifiedClearedURLForURL:token.url] requestData:token owner:self];
+                if (!o) return;
+                token.imageShader=([o isKindOfClass:[ImageShader class]]?(ImageShader*)o:nil);
+            }
+        }
+        [self _requestGotImageShader];
+    }
+
+    -(void)_requestGotImageShader {
+        [self.owner gotImageShader:token.imageShader forURL:token.url];
+        if (!(token.imageShader||token.image)) return;
+        if (!token.image) {
+            NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:token.url] requestData:token owner:self];
+            if (!o) return;
+            token.image=([o isKindOfClass:[UIImage class]]?(UIImage*)o:nil);
+        }
+        [self _requestGotImage];
+    }
+
+    -(void)_requestGotImage {
+        [self.owner gotImage:token.image forURL:token.url];
+    }
+
+
+
+    -(void)doneRequestSync:(NSObject<Request>*)request {
+        if ([request isKindOfClass:[ImageShaderRequest class]]) {
+            if (((ImageShaderRequest*)request).object!=token) {
+                token.imageShader=((ImageShaderRequest*)request).object.imageShader;
+            }
+            [self _requestGotImageShader];
+        }
+        else if ([request isKindOfClass:[ShaderImageRequest class]]) {
+            if (((ShaderImageRequest*)request).object!=token) {
+                token.image=((ShaderImageRequest*)request).object.image;
+            }
+            [self _requestGotImage];
+        }
+    }
+
+
+
+
+
+
+
+// Render
+
+
+
+
+
+Singletons
+    ImageRenderer imageRenderer={return(v_imageRenderer?v_imageRenderer:(v_imageRenderer=[[ImageRenderer alloc] init]));} (dealloc,ivar)
+    NSString description={
+        [ret appendFormat:@"\nxImageRenderer %p\n",self.imageRenderer];
+    }
+
+ImageRenderer <BaseObject> "fn:render"
+
+    Texture2D texture=[[Texture2D alloc] init] (readonly,dealloc,ivar=texture)
+    -(init) {
+        [texture initContext];
+        [texture loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:2048 pixelsHigh:2048 contentSize:CGSizeMake(0,0)];
+        [EAGLContext setCurrentContext:nil];
+    }
+
+    -(ImageShader*)imageShaderForURL:(NSURL*)url {
+        if (!url) return(nil);
+        ImageShader *ret=[ImageShader get];
+        if (![texture bindFrameBuffer]) return(nil);
+        ret.asURL=url;
+        [ret.program reloadShader];
+        [texture unbindFrameBuffer];
+        return(ret);
+    }
+
+    -(void)setShader:(Shader*)shader uniformsFromURL:(NSURL*)url {
+        NSMutableDictionary *args=[ImageShader argDictionaryForURL:url];
+        if (!args) return;
+        for (NSString *key in args) {
+            NSObject *arg=[args objectForKey:key];
+            if ([arg isKindOfClass:[SHUniform class]]) {
+                SHUniform *was=[shader.program uniformForKey:[key substringFromIndex:1]];
+                if (was&&(was.type==((SHUniform*)arg).type)) [was copyFrom:(SHUniform*)arg];
+            }
+        }
+    }
+
+    -(UIImage*)imageForURL:(NSURL*)url shader:(ImageShader*)shader {
+    //[Log log:@"Render\n  url %@\n  shader%@\n\n",url.absoluteString,shader.program.shaderLog];
+        if (!(url&&shader)) return(nil);
+        
+        if (![texture bindFrameBuffer]) return(nil);
+        [self setShader:shader uniformsFromURL:url];
+
+        SHUniform *u=[shader.program uniformForKey:@"sizeInPixels"];
+        float sz[2]={float(u.asVec2[0]),float(u.asVec2[1])};
+        int w=sz[0],h=sz[1];
+        sz[0]=w;sz[1]=h;
+
+        //const DWRD *meta=(const DWRD*)metaData.bytes;
+        //int w=meta[0]&0xffff,h=meta[0]>>16;
+        if ((w<=0)||(h<=0)||(w>texture.pixelWidth)||(h>texture.pixelHeight)) {
+            NSLog(@"Bad size in render : %d %d",w,h);
+            [texture unbindFrameBuffer];
+            return(nil);
+        }
+        
+        [shader.program uniformForKey:@"sizeInPixels"].asVec2=sz;
+        sz[0]/=texture.pixelWidth;sz[1]/=texture.pixelHeight;
+        [shader.program uniformForKey:@"unitSize"].asVec2=sz;
+        [shader.program render];
+        UIImage *ret=[texture uiImageWithWidth:w height:h];
+        [texture unbindFrameBuffer];
+
+
+        [ret writeImageToFileWithPath:[__Class__ pathForURL:url]];
+        
+        return(ret);
+    }
+
+    +(NSString*)pathForURL:(NSURL*)url {
+        NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        ULL hash=makeStringHashCode([url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding]);
+        return([dir stringByAppendingFormat:@"/render_%08lx.png",long(hash)]);
+    }
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+// View
+
+
+
+
+
+Singletons
+    NSRegularExpression SingleURLImageView_szregex (nodef,readonly,dealloc)
+    NSRegularExpression SingleURLImageView_rectregex (nodef,readonly,dealloc)
+
+
+    -(init) {
+        {
+            NSError *error=nil;
+            v_SingleURLImageView_szregex=[[NSRegularExpression regularExpressionWithPattern:@"usizeInPixels=U(0)" options:0 error:&error] retain];
+            if (error) ERR("Bad regex sz");
+            error=nil;
+            v_SingleURLImageView_rectregex=[[NSRegularExpression regularExpressionWithPattern:@"urectInPixels=U(0)" options:0 error:&error] retain];
+            if (error) ERR("Bad regex rect");
+        }
+    }
+
+    MutableDictionary imageViewURLRegistry={
+        if (!imageViewURLRegistry) {
+            imageViewURLRegistry=[[MutableDictionary alloc] init];
+            [imageViewURLRegistry addDelegate:[[[ImageViewURLRegistryDelegate alloc] init] autorelease]];
+        }
+        return(imageViewURLRegistry);
+        } (ivar=imageViewURLRegistry,dealloc,readonly)
+    -(void)refreshImageViewURLs {
+        NSSet *s=self.urlImageViews.urlImageViews.__set.copy;
+        for (URLImageView *v in s) [v refreshFromRegisteredURLs];
+        [s release];
+    }
+
+    URLImageViews urlImageViews={
+        if (!urlImageViews) {
+            urlImageViews=[[URLImageViews alloc] init];
+        }
+        return(urlImageViews);
+    } (ivar=urlImageViews,dealloc,readonly)
+
+    NSString description={
+        [ret appendFormat:@"\nImageViewURLRegistry %@\n",self.imageViewURLRegistry.allKeys.description];
+        [ret appendFormat:@"\nURLImageViews x %d : %@\n",self.urlImageViews.urlImageViews.count,self.urlImageViews.urlImageViews.description];
+    }
+
+
+
+StyleTicker
+    -(void)setProp:(NSString*)prop toArgs:(NSDictionary*)args {
+            if ([prop hasPrefix:@"rend-"]) {
+                [g_singletons.imageViewURLRegistry setObject:url forKey:[prop substringFromIndex:@"rend-".length]];
+            }
+    }
+
+
+
+
+URLImageViews<BaseObject>
+
+ImageViewURLRegistryDelegate<MutableDictionaryDelegate,BaseObject>
+    -(void)stateOK {
+        [g_singletons refreshImageViewURLs];
+    }
+
+URLImageView:UIImageView<ImageRequestOwner,Waiter>
+    urlImageView >s- URLImageViews views
+    -(init) {self.views=g_singletons.urlImageViews;}
+
+    -(void)refreshFromRegisteredURLs {
+        if (imageURLKey) {
+            NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:imageURLKey];
+            NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+            self.imageURL=url;
+        }
+        if (highlightedImageURLKey) {
+            NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:highlightedImageURLKey];
+            NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+            self.highlightedImageURL=url;
+        }
+    }
+
+    NSString imageURLKey=
+        {return(imageURLKey);}
+        -v{
+            if (v?![imageURLKey isEqualToString:v]:(imageURLKey!=nil)) {
+                [imageURLKey release];
+                imageURLKey=[v retain];
+                NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
+                NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+                self.imageURL=url;
+            }
+        } (ivar=imageURLKey,nodef,dealloc)
+
+    NSString highlightedImageURLKey=
+        {return(highlightedImageURLKey);}
+        -v{
+            if (v?![highlightedImageURLKey isEqualToString:v]:(highlightedImageURLKey!=nil)) {
+                [highlightedImageURLKey release];
+                highlightedImageURLKey=[v retain];
+                NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
+                NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+                self.highlightedImageURL=url;
+            }
+        } (ivar=highlightedImageURLKey,nodef,dealloc)
+
+    CGRect imageRenderedAsRect,highlightedImageRenderedAsRect (ivar,readonly,nodef)
+    +(CGRect)roundedRect:(CGRect)r {
+        r.origin.x=round(r.origin.x);
+        r.origin.y=round(r.origin.y);
+        r.size.width=round(r.size.width);
+        r.size.height=round(r.size.height);
+        return(r);
+    }
+
+    NSURL imageURL=
+        {return(imageURL);}
+        -v{
+            CGRect r=[__Class__ roundedRect:self.frame];
+            if (!v) {
+                [imageURL release];
+                imageURL=nil;
+                self.sizedImageURL=nil;
+            }
+            else if (!(((v==imageURL)||[imageURL isEqual:v])&&
+                (imageRenderedAsRect.origin.x==r.origin.x)&&
+                (imageRenderedAsRect.origin.y==r.origin.y)&&
+                (imageRenderedAsRect.size.width==r.size.width)&&
+                (imageRenderedAsRect.size.height==r.size.height))) {
+                [imageURL release];
+                imageURL=[v retain];
+                self.sizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:imageURL] frame:self.frame toRect:&imageRenderedAsRect];
+            }
+        } (ivar=imageURL,dealloc,nodef)
+
+    NSURL highlightedImageURL=
+        {return(highlightedImageURL);}
+        -v{
+            CGRect r=[__Class__ roundedRect:self.frame];
+            if (!v) {
+                [highlightedImageURL release];
+                highlightedImageURL=nil;
+                self.sizedHighlightedImageURL=nil;
+            }
+            else if (!(((v==highlightedImageURL)||[highlightedImageURL isEqual:v])&&
+                (highlightedImageRenderedAsRect.origin.x==r.origin.x)&&
+                (highlightedImageRenderedAsRect.origin.y==r.origin.y)&&
+                (highlightedImageRenderedAsRect.size.width==r.size.width)&&
+                (highlightedImageRenderedAsRect.size.height==r.size.height))) {
+                [highlightedImageURL release];
+                highlightedImageURL=[v retain];
+                self.sizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:highlightedImageURL] frame:self.frame toRect:&highlightedImageRenderedAsRect];
+            }
+        } (ivar=highlightedImageURL,dealloc,nodef)
+
+
+    NSURL sizedImageURL=
+        {return(sizedImageURL);}
+        -v{
+            if (!v) {
+                needImage=NO;
+                if (!needHighlightedImage) [self stopWaiting];
+                if (self.image) {
+                    self.image=nil;
+                    [self notifyImageChanged];
+                }
+                [sizedImageURL release];
+                sizedImageURL=nil;
+            }
+            else if (![sizedImageURL isEqual:v]) {
+                needImage=NO;
+                if (!needHighlightedImage) [self stopWaiting];
+                [sizedImageURL release];
+                sizedImageURL=[v retain];
+
+                NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedImageURL]];
+                if ([o isKindOfClass:[UIImage class]]) {
+                    if (o!=self.image) {
+                        self.image=(UIImage*)o;
+                        [self notifyImageChanged];
+                    }
+                }
+                else {needImage=YES;[self goWait];}
+            }
+        } (ivar=sizedImageURL,dealloc,nodef)
+
+    NSURL sizedHighlightedImageURL=
+        {return(sizedHighlightedImageURL);}
+        -v{
+            if (!v) {
+                needHighlightedImage=NO;
+                if (!needImage) [self stopWaiting];
+                if (self.highlightedImage) {
+                    self.highlightedImage=nil;
+                    [self notifyImageChanged];
+                }
+                [sizedHighlightedImageURL release];
+                sizedHighlightedImageURL=nil;
+            }
+            else if (![sizedHighlightedImageURL isEqual:v]) {
+                needHighlightedImage=NO;
+                if (!needImage) [self stopWaiting];
+                [sizedHighlightedImageURL release];
+                sizedHighlightedImageURL=[v retain];
+
+                NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedHighlightedImageURL]];
+                if ([o isKindOfClass:[UIImage class]]) {
+                    if (o!=self.highlightedImage) {
+                        self.highlightedImage=(UIImage*)o;
+                        [self notifyImageChanged];
+                    }
+                }
+                else {needHighlightedImage=YES;[self goWait];}
+            }
+        } (ivar=sizedHighlightedImageURL,dealloc,nodef)
+
+    bool needImage,needHighlightedImage (nodef,readonly)
+
+    -(void)goWait {[self waitForSeconds:0.2];}
+    -(void)waited {
+        if (needImage&&self.imageURL) [self goRequestWithURL:self.sizedImageURL];
+        if (needHighlightedImage&&self.highlightedImageURL) [self goRequestWithURL:self.sizedHighlightedImageURL];
+    }
+
+    +(NSURL*)sizedURLForURL:(NSURL*)url frame:(CGRect)frame toRect:(CGRect*)torect {
+        NSString *s=[ShaderURLConversion simplifiedURLForURL:url].absoluteString;
+        NSTextCheckingResult *match=[g_singletons.SingleURLImageView_szregex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
+        CGRect r=[__Class__ roundedRect:frame];
+        if (torect) *torect=r;
+        
+        bool changed=NO;
+        if (match) {
+            s=[s stringByReplacingCharactersInRange:[match rangeAtIndex:1] withString:[NSString stringWithFormat:@"%%3C%d%%2C%d%%3E",int(r.size.width),int(r.size.height)]];
+            changed=YES;
+        }
+        match=[g_singletons.SingleURLImageView_rectregex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
+        if (match) {
+            s=[s stringByReplacingCharactersInRange:[match rangeAtIndex:1] withString:[NSString stringWithFormat:@"%%3E%d%%2C%d%%2C%d%%2C%d%%3E",int(r.origin.x),int(r.origin.y),int(r.size.width),int(r.size.height)]];
+            changed=YES;
+        }
+        if (changed) url=[NSURL URLWithString:s];
+        return(url);
+    }
+
+    bool waitForResize (nodef)
+
+    -(init[super initWithImage:aimage])initWithImageURL:(NSURL*)aurl frame:(CGRect)frame {@-10100
+        UIImage *aimage=nil;
+        NSURL *asizedImageURL=nil;
+        CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
+        {
+            if (aurl) {
+                asizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:aurl] frame:frame toRect:&aimageRenderedAsRect];
+                NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedImageURL]];
+                if ([o isKindOfClass:[UIImage class]]) {
+                    aimage=(UIImage*)o;
+                }
+            }
+        }
+        @-500
+        imageURL=[aurl retain];
+        imageRenderedAsRect=aimageRenderedAsRect;
+        sizedImageURL=[asizedImageURL retain];
+        self.frame=frame;
+
+        @200 
+        if (!waitForResize) {
+            if (sizedImageURL&&(aimageRenderedAsRect.size.width||aimageRenderedAsRect.size.height)&&!aimage) {needImage=YES;[self goWait];}
+        }
+    }
+
+    -(init[super initWithImage:aimage highlightedImage:ahighlightedImage])initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame {@-10100
+        UIImage *aimage=nil;
+        NSURL *asizedImageURL=nil;
+        CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
+        UIImage *ahighlightedImage=nil;
+        NSURL *asizedHighlightedImageURL=nil;
+        CGRect ahighlightedImageRenderedAsRect=CGRectMake(0,0,0,0);
+        {
+            if (aimageURL) {
+                asizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:aimageURL] frame:frame toRect:&aimageRenderedAsRect];
+                NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedImageURL]];
+                if ([o isKindOfClass:[UIImage class]]) {
+                    aimage=(UIImage*)o;
+                }
+            }
+            if (ahighlightedImageURL) {
+                asizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:ahighlightedImageURL] frame:frame toRect:&ahighlightedImageRenderedAsRect];
+                NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedHighlightedImageURL]];
+                if ([o isKindOfClass:[UIImage class]]) {
+                    ahighlightedImage=(UIImage*)o;
+                }
+            }
+        }
+        @-500
+        imageURL=[aimageURL retain];
+        imageRenderedAsRect=aimageRenderedAsRect;
+        sizedImageURL=[asizedImageURL retain];
+        highlightedImageURL=[ahighlightedImageURL retain];
+        highlightedImageRenderedAsRect=ahighlightedImageRenderedAsRect;
+        sizedHighlightedImageURL=[asizedHighlightedImageURL retain];
+        self.frame=frame;
+        
+        @200 
+        if (!waitForResize) {
+            needImage=sizedImageURL&&(aimageRenderedAsRect.size.width||aimageRenderedAsRect.size.height)&&!aimage;
+            needHighlightedImage=sizedHighlightedImageURL&&(ahighlightedImageRenderedAsRect.size.width||ahighlightedImageRenderedAsRect.size.height)&&!ahighlightedImage;
+            if (needHighlightedImage||needImage) [self goWait];
+        }
+    }
+
+
+    -(init[super initWithImage:aimage])initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame {@-10100
+        UIImage *aimage=nil;
+        NSURL *aimageURL=nil;
+        NSURL *asizedImageURL=nil;
+        CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
+        {
+            if (aurlKey) {
+                NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:aurlKey];
+                NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+                if (url) {
+                    aimageURL=url;
+                    asizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:aimageURL] frame:frame toRect:&aimageRenderedAsRect];
+                    NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedImageURL]];
+                    if ([o isKindOfClass:[UIImage class]]) {
+                        aimage=(UIImage*)o;
+                    }
+                }
+            }
+        }
+        @-500 
+        imageURL=[aimageURL retain];
+        imageURLKey=[aurlKey retain];
+        imageRenderedAsRect=aimageRenderedAsRect;
+        sizedImageURL=[asizedImageURL retain];
+        self.frame=frame;
+        
+        @200 
+        if (!waitForResize) {
+            if (imageURL&&(aimageRenderedAsRect.size.width||aimageRenderedAsRect.size.height)&&!aimage) {needImage=YES;[self goWait];}
+        }
+    }
+
+    -(init[super initWithImage:aimage highlightedImage:ahighlightedImage])initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame {@-10100 
+        UIImage *aimage=nil;
+        NSURL *asizedImageURL=nil;
+        CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
+        UIImage *ahighlightedImage=nil;
+        NSURL *asizedHighlightedImageURL=nil;
+        CGRect ahighlightedImageRenderedAsRect=CGRectMake(0,0,0,0);
+        NSURL *aimageURL=nil;
+        NSURL *ahighlightedImageURL=nil;
+        {
+            if (aimageURLKey) {
+                NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:aimageURLKey];
+                NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+                if (url) {
+                    aimageURL=url;
+                    asizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:aimageURL] frame:frame toRect:&aimageRenderedAsRect];
+                    NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedImageURL]];
+                    if ([o isKindOfClass:[UIImage class]]) {
+                        aimage=(UIImage*)o;
+                    }
+                }
+            }
+            if (ahighlightedImageURLKey) {
+                NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:ahighlightedImageURLKey];
+                NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
+                if (url) {
+                    ahighlightedImageURL=url;
+                    asizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:ahighlightedImageURL] frame:frame toRect:&ahighlightedImageRenderedAsRect];
+                    NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:asizedHighlightedImageURL]];
+                    if ([o isKindOfClass:[UIImage class]]) {
+                        ahighlightedImage=(UIImage*)o;
+                    }
+                }
+            }
+        }
+        @-500 
+        imageURLKey=[aimageURLKey retain];
+        highlightedImageURLKey=[ahighlightedImageURLKey retain];
+        imageURL=[aimageURL retain];
+        imageRenderedAsRect=aimageRenderedAsRect;
+        sizedImageURL=[asizedImageURL retain];
+        highlightedImageURL=[ahighlightedImageURL retain];
+        highlightedImageRenderedAsRect=ahighlightedImageRenderedAsRect;
+        sizedHighlightedImageURL=[asizedHighlightedImageURL retain];
+        self.frame=frame;
+        
+        @200 
+        if (!waitForResize) {
+            needImage=imageURL&&(aimageRenderedAsRect.size.width||aimageRenderedAsRect.size.height)&&!aimage;
+            needHighlightedImage=highlightedImageURL&&(ahighlightedImageRenderedAsRect.size.width||ahighlightedImageRenderedAsRect.size.height)&&!ahighlightedImage;
+            if (needHighlightedImage||needImage) [self goWait];
+        }
+    }
+
+
+
+    -(void)gotImage:(UIImage*)aimage forURL:(NSURL*)aurl {
+        bool changed=NO;
+        if ((aurl==sizedImageURL)&&needImage) {
+            needImage=NO;
+            self.image=aimage;
+            changed=YES;
+        }
+        if ((aurl==sizedHighlightedImageURL)&&needHighlightedImage) {
+            needHighlightedImage=NO;
+            self.highlightedImage=aimage;
+            changed=YES;
+        }
+        if (changed) [self notifyImageChanged];
+    }
+            
+
+
+    -(void)layoutSubviews {
+        [super layoutSubviews];
+        if (imageURL) self.imageURL=imageURL;
+        if (highlightedImageURL) self.highlightedImageURL=highlightedImageURL;
+    }
+
+
+    -(void)notifyImageChanged {
+        for (NSObject<URLImageViewListener> *l in self.imageViewListeners) {
+            [l imageChangedInImageView:self];
+        }
+    }
+
+
+
+<URLImageViewListener>
+    imageViewListener >s< URLImageView listenToImageView
+
+    -(void)imageChangedInImageView:(URLImageView*)imageView;
+
+
+
+

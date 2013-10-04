@@ -1,0 +1,1034 @@
+// Patterns: these are the schemas which define how objects/points/parts are made up
+
+// Object Pattern: defines a bunch of points the object should have
+<VGObjectPattern:Commitable>
+    pattern -- VGObjectsSetDelegate objectsSetDelegate
+    objectPattern ~d< <VGPointPattern> pointPattern
+    pattern -- VGObjectPointFollowerArrayDelegate pointDictionaryDelegate
+
+// Point pattern: defines a bunch of parts that make up the calculation of the point, and has a function which can get the value of the point
+<VGPointPattern:Commitable>
+    pattern -- VGPointsSetDelegate pointsSetDelegate
+    pattern -- VGPointPartFollowerArrayDelegate partArrayDelegate
+    pointPattern ~a< <VGPointPartPattern> partPattern
+    <VGPoint> makePoint (readonly)
+
+
+// Point part pattern: defines a method by which the pattern can make a point part. This allows the abstract pattern to make concrete strategy
+<VGPointPartPattern>
+    <VGPointPart> makePart (readonly)
+
+
+
+// Object: eg a tile/cell/image
+//  has pointers to other objects (eg parent/next/first child)
+//  and points of its own (eh size/child attachment place/image attachment place/xy rotation)
+<VGObject:Commitable>
+    -(VGCalculatedPoint*)calculatedPointForKey:(id<NSCopying>)key;
+
+    _object>>object ~d< <VGRelativePosition> _relativePosition>>relativePosition
+
+    _referencingObject>>referencingObject ~d< <VGObject> _object>>object
+    _referencingObject>>referencingObject -d< VGCalculatedPoint _calculatedPoint>>calculatedPoint
+    referencingObject ~d< <VGPoint> point
+
+    object -d< <VGObjectBindingReference> _objectBindingReference
+    object -d< <VGPointBindingReference> _pointBindingReference
+    -(NSObject<VGObjectObjectReference>*)objectBindingReferenceForKey:(id<NSCopying>)key;
+    -(NSObject<VGObjectPointReference>*)pointBindingReferenceForKey:(id<NSCopying>)key;
+
+
+
+
+//!! was looking at VGRelativePosition lifetimes, and how to invalidate when removed
+
+// these two provide a means for parts to be notified if something changes in the bindings
+
+//  eg the "height" binding changed to a different size
+VGPointBindingReference<Commitable,BaseObject> "fn:graph"
+    pointBinding >s<~ <ReferentialVGPointPart> part
+
+//  eg the "next" binding changed to a different object
+VGObjectBindingReference<Commitable,BaseObject> "fn:graph"
+    objectBinding >s<~ <ReferentialVGPointPart> part
+
+
+VGRelativePosition "fn:graph"
+    relativePositionAsFrom >s- VGObject from
+    relativePositionAsTo >s- VGObject to
+    relativePosition ~- VGCalculatedPoint calculatedPoint
+
+// Point: eg a size or offset (say, to the next sibling)
+// has a pattern and is magically notified if it changes
+// has a bunch of parts which magically follow the same array in the point pattern
+<VGPoint:Commitable>
+    point >~s- __Class__Pattern pattern
+    point -a< <VGPointPart> part
+    CGPoint calculate (readonly)
+
+VGCalculatedPoint<Commitable>
+    calculatedPoint -- <VGPoint> calculatesValueOfPoint
+    CGPoint _value>>value
+
+
+type ArrayOfCGPoints "typedef:Array<CGPoint>"
+
+// Point part: eg size of first child/sum of size of siblings
+// has a pattern and is magically notified if it changes
+<VGPointPart>
+    part >~s- __Class__Pattern pattern
+    -(void)calculatePart;
+
+// This type of part has referenced to other objects/points (eg sum of siblings)
+<ReferentialVGPointPart:VGPointPart,Commitable>
+    referencedByPart >s< <VGPoint> referencedPoint
+    <VGPoint> referencedPoint
+
+
+
+// some patterns for referential parts
+// this one gets just one link
+<SinglyReferentialVGPointPartPattern:VGPointPartPattern>
+    partPattern -- VGPartsSinglyReferencedPointFollowerSetDelegate partsSetDelegate
+    NSString referencedPointBinding
+    NSString referencedObjectBinding
+
+// this one gets all links in a chain
+<GreedilyReferentialVGPointPartPattern:VGPointPartPattern>
+    partPattern -- VGPartsGreedilyReferencedPointFollowerSetDelegate partsSetDelegate
+    NSString referencedPointBinding
+    NSString referencedObjectBinding
+
+
+
+// vaious delegates
+VGObjectObjectDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
+VGObjectPointDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
+VGObjectCalculatedPointDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
+VGPartsSinglyReferencedPointFollowerSetDelegate<MutableSetDelegate> "fn:graph"
+VGPartsGreedilyReferencedPointFollowerSetDelegate<MutableSetDelegate> "fn:graph"
+VGPointsSetDelegate<MutableSetDelegate> "fn:graph"
+VGObjectPointFollowerArrayDelegate<MutableDictionaryDelegate> "fn:graph"
+VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
+
+
+
+
+
+
+
+<VGObjectPattern>
+    -(init) {
+        [self.objects addDelegate:self.objectsSetDelegate=[[[VGObjectsSetDelegate alloc] init] autorelease]];
+        [self.pointPatterns addDelegate:self.pointDictionaryDelegate=[[[VGObjectPointDictionaryDelegate alloc] init] autorelease]];
+    }
+
+
+<VGPointPattern>
+    -(init) {
+        //[self.partPatterns addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        [self.points addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
+        [self.points addDelegate:self.pointsSetDelegate=[[[VGPointsSetDelegate alloc] init] autorelease]];
+        [self.partPatterns addDelegate:self.partArrayDelegate=[[[VGPointPartFollowerArrayDelegate alloc] init] autorelease]];
+    }
+
+
+<SinglyReferentialVGPointPartPattern>
+    -(init) {
+        [self.parts addDelegate:self.partsSetDelegate=[[[VGPartsSinglyReferencedPointFollowerSetDelegate alloc] init] autorelease]];
+    }
+    -(void)setReferencedPointForPart:(NSObject<ReferentialVGPointPart>*)part {
+        if (referencedObjectBinding) [part.objectBindings setSet:[NSSet setWithObject:[part.point.object objectBindingReferenceForKey:referencedObjectBinding]]];
+        else [part removeAllObjectBindings];
+        
+        NSObject<VGObject> *o=(referencedObjectBinding?[part.point.object objectForKey:referencedObjectBinding]:part.point);
+        
+        if (o&&referencedPointBinding) [part.pointBindings setSet:[NSSet setWithObject:[o pointBindingReferenceForKey:referencedPointBinding]]];
+        else [part removeAllPointBindings];
+
+        part.referencedPoint=(referencedPointBinding?[o pointForKey:referencedPointBinding]:nil);
+    }
+
+    NSString referencedPointBinding=
+        {return(referencedPointBinding);}
+        -v{
+            if (referencedPointBinding!=v) {
+                [referencedPointBinding release];referencedPointBinding=[v retain];
+                for (NSObject<ReferentialVGPointPart> *part in self.parts) {
+                    [self setReferencedPointForPoint:part];
+                }
+            }
+        } (ivar=referencedPointBinding)
+    NSString referencedObjectBinding=
+        {return(referencedObjectBinding);}
+        -v{
+            if (referencedObjectBinding!=v) {
+                [referencedObjectBinding release];referencedObjectBinding=[v retain];
+                for (NSObject<ReferentialVGPointPart> *part in self.parts) {
+                    [self setReferencedPointForPoint:part];
+                }
+            }
+        } (ivar=referencedObjectBinding)
+
+
+VGPartsSinglyReferencedPointFollowerSetDelegate
+    -(void)didAddObject:(id)object {
+        NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
+        [self.partPattern setReferencedPointForPoint:part];
+    }
+    -(void)willRemoveObject:(id)object {
+        NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
+        [part removeAllObjectBindings];
+        [part removeAllPointBindings];
+        part.referencedPoint=nil;
+    }
+
+
+
+
+
+
+<GreedilyReferentialVGPointPartPattern>
+    -(init) {
+        [self.parts addDelegate:self.partsSetDelegate=[[[VGPartsGreedilyReferencedPointFollowerSetDelegate alloc] init] autorelease]];
+    }
+    -(void)setReferencedPointsForPart:(NSObject<ReferentialVGPointPart>*)part {
+        NSMutableSet *obbs=[NSMutableSet set],*ptbs=[NSMutableSet set],*rpts=[NSMutableSet set];
+
+        if (referencedObjectBinding&&referencedPointBinding) {
+            NSObject<VGObject> *ob=part.point.object;
+            while (ob) {
+                VGObjectObjectReference *obr=[ob objectBindingReferenceForKey:referencedObjectBinding];
+                if ([obbs contains:obr]) break;
+                [obbs addObject:obr];
+                VGObjectPointReference *ptr=[ob pointBindingReferenceForKey:referencedPointBinding];
+                [ptbs addObject:ptr];
+                NSObject<VGPoint> *pt=[ob pointForKey:referencedPointBinding];
+                if (pt) [rpts addObject:pt];
+                ob=obr.object;
+            }
+            if (![obbs isEqualToSet:part.objectBindings]) [part.objectBindings setSet:obbs];
+            if (![ptbs isEqualToSet:part.pointBindings]) [part.pointBindings setSet:ptbs];
+            if (![rpts isEqualToSet:part.referencedPoints]) [part.referencedPoints setSet:rpts];
+        }
+    }
+
+    NSString referencedPointBinding=
+        {return(referencedPointBinding);}
+        -v{
+            if (referencedPointBinding!=v) {
+                [referencedPointBinding release];referencedPointBinding=[v retain];
+                for (NSObject<ReferentialVGPointPart> *part in self.parts) {
+                    [self setReferencedPointsForPoint:part];
+                }
+            }
+        } (ivar=referencedPointBinding)
+    NSString referencedObjectBinding=
+        {return(referencedObjectBinding);}
+        -v{
+            if (referencedObjectBinding!=v) {
+                [referencedObjectBinding release];referencedObjectBinding=[v retain];
+                for (NSObject<ReferentialVGPointPart> *part in self.parts) {
+                    [self setReferencedPointsForPoint:part];
+                }
+            }
+        } (ivar=referencedObjectBinding)
+
+
+VGPartsGreedilyReferencedPointFollowerSetDelegate
+    -(void)didAddObject:(id)object {
+        NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
+        [self.partPattern setReferencedPointsForPoint:part];
+    }
+    -(void)willRemoveObject:(id)object {
+        NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
+        [part removeAllObjectBindings];
+        [part removeAllPointBindings];
+        [part removeAllReferencedPoints];
+    }
+
+
+
+
+type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
+
+/*top:
+    extern ArrayOfVGPoints *g_VGPoints;
+*/
+/*top:impl:
+    ArrayOfVGPoints *g_VGPoints=nil;
+*/
+
+
+<VGPoint>
+    ArrayOfCGPoints *pointStack (nodef,readonly,ivar)
+    CGPoint value (nodef,readonly)
+    -(void)_calculatedValue {
+        memset(pointStack->a,0,64*sizeof(CGPoint));
+        for (NSObject<VGPointPart> *part in self.parts) [part calculatePart];
+        value=pointStack->a[0];
+    }
+
+    -(init) {
+        [self.parts addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        pointStack=NEW(ArrayOfCGPoints);
+        pointStack->setUpperBound(63);
+        if (!g_VGPoints) {
+            g_VGPoints=NEW(ArrayOfVGPoints);
+            g_VGPoints->setUpperBound(40000);
+        }
+    }
+    -(void)dealloc {
+        DELETE(ArrayOfCGPoints,pointStack);
+    }
+
+    CGPoint calculatedValue={
+        if (self.doneStage) return;
+        self.doneStage=YES;
+        int N=0,N2=0,dN2=0;
+        NSObject<VGPoint> **ppt=g_VGPoints->a;
+        ppt2[N2++]=self;
+        while (N<N2) {
+            NSObject<VGPoint> *pt=ppt[N++];
+            for (NSObject<VGPointPart> *part in pt.parts) if ([part conformsToProtocol:VGPointPart]) {
+                for (NSObject<VGPoint> *rpt in ((NSObject<VGPointPart>*)part).referencedPoints) {
+                    if (!rpt.doneStage) {
+                        ppt[N2++]=rpt;
+                        rpt.doneStage=YES;
+                    }
+                }
+            }
+        }
+        while (N--) {
+            [ppt[N] _calculatedValue];
+        }
+        return(value);
+    }
+        
+            
+
+
+
+<VGObject>
+    -(NSObject<VGObjectObjectReference>*)objectBindingReferenceForKey:(id<NSCopying>)key {
+      NSObject<VGObjectObjectReference> *ret=[self _objectBindingReferenceForKey:key];
+      if (!ret) [self set_objectBindingReference:ret=[VGObjectObjectReference get] forKey:key];
+      return(ret);
+    }
+    -(NSObject<VGObjectPointReference>*)pointBindingReferenceForKey:(id<NSCopying>)key {
+      NSObject<VGObjectPointReference> *ret=[self _pointBindingReferenceForKey:key];
+      if (!ret) [self set_pointBindingReference:ret=[VGObjectPointBinding get] forKey:key];
+      return(ret);
+    }
+    -(VGCalculatedPoint*)makeCalculatedPointForKey:(id<NSCopying>)key {
+      VGCalculatedPoint *ret=[self _calculatedPointForKey:key];
+      if (!ret) [self set_calculatedPoint:ret=[[[VGCalculatedPoint alloc] init] autorelease] forKey:key];
+      return(ret);
+    }
+
+    -(init) {
+        [self._objects addDelegate:[[[VGObjectObjectDictionaryDelegate alloc] init] autorelease]];
+        [self.points addDelegate:[[[VGObjectPointDictionaryDelegate alloc] init] autorelease]];
+        [self._calculatedPoints addDelegate:[[[VGObjectCalculatedPointDictionaryDelegate alloc] init] autorelease]];
+    }
+
+VGPointBindingReference
+    -(init) {
+        [self.parts addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
+    }
+
+VGObjectBindingReference
+    -(init) {
+        [self.parts addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
+    }
+
+
+
+
+
+VGRelativePosition
+    -(init[super init])initFrom:(NSObject<VGObject>*)afrom to:(NSObject<VGObject>*)ato calculatedPoint:(VGCalculatedPoint*)cpt {
+        self.from=afrom;
+        self.to=ato;
+        self.calculatedPoint=cpt;
+    }
+
+        
+
+VGObjectObjectDictionaryDelegate
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            [[self.object _objectBindingReferenceForKey:key] markDirty];
+            NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
+            if (pt) {
+                VGCalculatedPoint *cpt=[self.object makeCalculatedPointForKey:key];
+                VGRelativePosition *rel=[[[VGRelativePosition alloc] initFrom:self.object to:(NSObject<VGPoint>*)toObject calculatedPoint:cpt] autorelease];
+                [self setRelativePosition:rel forKey:key];
+            }
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            [[self.object _objectBindingReferenceForKey:key] markDirty];
+            VGRelativePosition *rel=[self _relativePositionForKey:key];
+            if (rel) [self removeRelativePositionForKey:key];
+        }
+    }
+
+
+VGObjectPointDictionaryDelegate
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            [[self.object _pointBindingReferenceForKey:key] markDirty];
+            VGCalculatedPoint *cpt=[self.object._calculatedPoints objectForKey:key];
+            if (cpt) {
+                cpt.calculatesValueOfPoint=(NSObject<VGPoint>*)object;
+                [cpt addSourceCommitter:(NSObject<VGPoint>*)toObject];
+            }
+            NSObject<VGObject> *obj=[self.object._objects objectForKey:key];
+            if (obj) {
+                VGCalculatedPoint *cpt=[self.object makeCalculatedPointForKey:key];
+                VGRelativePosition *rel=[[[VGRelativePosition alloc] initFrom:self.object to:obj calculatedPoint:cpt] autorelease];
+                [self setRelativePosition:rel forKey:key];
+            }
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            VGCalculatedPoint *cpt=[self.object._calculatedPoints objectForKey:key];
+            if (cpt) {
+                cpt.calculatesValueOfPoint=nil;
+                [cpt removeSourceCommitter:(NSObject<VGPoint>*)fromObject];
+            }
+            [self.object._calculatedPoints removeObjectForKey:key];
+            [[self.object _pointBindingReferenceForKey:key] markDirty];
+            [self removeRelativePositionForKey:key];
+        }
+    }
+
+
+VGObjectCalculatedPointDictionaryDelegate
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
+            if (pt) {
+                pt.calculatedPoint=(VGCalculatedPoint*)toObject;
+                [pt addSinkCommitter:(VGCalculatedPoint*)toObject];
+            }
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
+            if (pt) {
+                pt.calculatedPoint=nil;
+                [pt removeSinkCommitter:(VGCalculatedPoint*)fromObject];
+            }
+        }
+    }
+
+
+
+VGCalculatedPoint
+    -(CGPoint)_value {
+        return(self.calculatesValueOfPoint.calculatedValue);
+    }
+
+
+
+
+<ReferentialVGPointPart>
+    -(init) {
+        [self.referencedPoints addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+    }
+    <VGPoint> referencedPoint=
+        {return(self.referencedPoints.count==1?[self.referencedPoints objectAtIndex:0]:nil);}
+        -v{
+            if (self.referencedPoint!=v) {
+                [self removeAllReferencedPoints];
+                if (v) [self addReferencedPoint:v];
+            }
+        }
+
+
+
+
+
+
+
+
+
+VGObjectsSetDelegate
+    -(void)didAddObject:(id)object {
+        NSObject<VGObject> *object=(NSObject<VGObject>*)object;
+        [object removeAllPoints];
+        for (id<NSCopying> key in self.pointPatterns) {
+            NSObject<VGPointPattern> *pointPattern=[self pointPatternForKey:key];
+            [object.parts setObject:pointPattern.makePoint forKey:key];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        NSObject<VGObject> *object=(NSObject<VGObject>*)object;
+        [object removeAllPoints];
+    }
+
+
+
+VGObjectPointFollowerDictionaryDelegate
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            NSObject<VGPointPattern> *pointPattern=(NSObject<VGPointPattern>*)toObject;
+            for (NSObject<VGObject> *object in self.pattern.objects) {
+                NSObject<VGPoint> *point=pointPattern.makePoint;
+                [object.points setObject:point forKey:key];
+            }
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            for (NSObject<VGObject> *object in self.pattern.objects) {
+                [object.points removeObjectForKey:key];
+            }
+        }
+    }
+
+
+
+
+
+VGPointsSetDelegate
+    -(void)didAddObject:(id)object {
+        NSObject<VGPoint> *point=(NSObject<VGPoint>*)object;
+        [point removeAllParts];
+        for (NSObject<VGPointPartPattern> *partPattern in self.partPatterns) {
+            [point.parts addObject:partPattern.makePart];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        NSObject<VGPoint> *point=(NSObject<VGPoint>*)object;
+        [point removeAllParts];
+    }
+
+
+VGPointPartFollowerArrayDelegate
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            NSObject<VGPointPart> *part=partPattern.makePart;
+            [point.parts insertObject:part atIndex:index];
+        }
+    }
+    -(void)didAddObject:(id)object {
+        NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            NSObject<VGPointPart> *part=partPattern.makePart;
+            [point.parts addObject:part];
+        }
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            [point.parts removeObjectAtIndex:index];
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            NSUInteger index=0;
+            for (NSObject<VGPointPart> *part in point.parts) {
+                if (part.pattern==partPattern) break;
+                else index++;
+            }
+            if (index<point.parts.count) [point.parts removeObjectAtIndex:index];
+        }
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            [point.parts exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
+        }
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            NSArray *parts=[point.parts objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
+            [point.parts removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
+            [point.parts replaceObjectsInRange:NSMakeRange(toLocation,0) withObjectsFromArray:parts];
+        }
+    }
+    -(void)allObjectsMoved {
+        for (NSObject<VGPoint> *point in self.pattern.points) {
+            [point.parts sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                NSObject<VGPointPart> *part1=(NSObject<VGPointPart>*)obj1;
+                NSObject<VGPointPart> *part2=(NSObject<VGPointPart>*)obj2;
+                NSUInteger i1=part1.pattern.indexInPointPattern;
+                NSUInteger i2=part2.pattern.indexInPointPattern;
+                return(i1<i2?NSOrderedAscending:(i1>i2?NSOrderedDescending:NSOrderedSame));
+            }];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VGConstantPointPartPattern<VGPointPartPattern>
+    CGPoint value=
+        {return(value);}
+        -v{
+            if (value!=v) {
+                value=v;
+                [self markDirty];
+            }
+        } (ivar)
+    <VGPointPart> makePart={return([[[VGConstantPointPart alloc] init] autorelease]);}
+
+VGConstantPointPart<VGPointPart>
+    -(void)calculatePart {self.point.pointStack->a[0]=self.pattern.value;}
+
+
+
+VGScalerPointPartPattern<VGPointPartPattern>
+    CGPoint multiply=
+        {return(multiply);}
+        -v{
+            if (multiply!=v) {
+                multiply=v;
+                [self markDirty];
+            }
+        } (ivar)
+    CGPoint add=
+        {return(add);}
+        -v{
+            if (add!=v) {
+                add=v;
+                [self markDirty];
+            }
+        } (ivar)
+    <VGPointPart> makePart={return([[[VGScalerPointPart alloc] init] autorelease]);}
+
+VGScalerPointPart<VGPointPart>
+    -(void)calculatePart {
+        CGPoint &pt=self.point.pointStack->a[0],mul=self.pattern.multiply,add=self.pattern.add;
+        pt.x=pt.x*mul.x+add.x;
+        pt.y=pt.y*mul.y+add.y;
+    }
+
+
+VGSwizzlePointPartPattern<VGPointPartPattern>
+    -(BYT)sourceAtIndex:(NSUInteger)index {
+        return((indexMask>>(index<<2))&0xff);
+    }
+    -(void)setSource:(BYT)v atIndex:(NSUInteger)index {
+        if ((v<16)&&(index<16)&&([self sourceAtIndex:index]!=v)) {
+            indexMask&=0xf<<(index<<2);
+            indexMask|=v<<(index<<2);
+            [self markDirty];
+        }
+    }
+    ULL indexMask=
+        {return(indexMask);}
+        -v{
+            if (indexMask!=v) {
+                indexMask=v;
+                [self markDirty];
+            }
+        } (ivar)
+    <VGPointPart> makePart={return([[[VGSwizzlePointPart alloc] init] autorelease]);}
+
+VGSwizzlePointPart<VGPointPart>
+    -(void)calculatePart {
+        CGPoint *ppt=self.point.pointStack->a;
+        CGPoint fromppt[16];
+        memcpy(fromppt,ppt,16*sizeof(CGPoint));
+        
+        ULL indexMask=self.pattern.indexMask;
+        ppt[0]=fromppt[indexMask&0xf];
+        ppt[1]=fromppt[(indexMask>>4)&0xf];
+        ppt[2]=fromppt[(indexMask>>8)&0xf];
+        ppt[3]=fromppt[(indexMask>>0xc)&0xf];
+        ppt[4]=fromppt[(indexMask>>0x10)&0xf];
+        ppt[5]=fromppt[(indexMask>>0x14)&0xf];
+        ppt[6]=fromppt[(indexMask>>0x18)&0xf];
+        ppt[7]=fromppt[(indexMask>>0x1c)&0xf];
+        ppt[8]=fromppt[(indexMask>>0x20)&0xf];
+        ppt[9]=fromppt[(indexMask>>0x24)&0xf];
+        ppt[0xa]=fromppt[(indexMask>>0x28)&0xf];
+        ppt[0xb]=fromppt[(indexMask>>0x2c)&0xf];
+        ppt[0xc]=fromppt[(indexMask>>0x30)&0xf];
+        ppt[0xd]=fromppt[(indexMask>>0x34)&0xf];
+        ppt[0xe]=fromppt[(indexMask>>0x38)&0xf];
+        ppt[0xf]=fromppt[(indexMask>>0x3c)&0xf];
+    }
+
+
+VGAddSubPointPartPattern<VGPointPartPattern>
+    -(BYT)addMulTimes4AtIndex:(NSUInteger)index {
+        return((addMulMask>>(index<<2))&0xff);
+    }
+    -(void)setAddMulTimes4:(BYT)v atIndex:(NSUInteger)index {
+        if ((v<16)&&(index<16)&&([self addMulTimes4AtIndex:index]!=v)) {
+            addMulMask&=0xf<<(index<<2);
+            addMulMask|=v<<(index<<2);
+            [self markDirty];
+        }
+    }
+    ULL addMulMask=
+        {return(addMulMask);}
+        -v{
+            if (addMulMask!=v) {
+                addMulMask=v;
+                [self markDirty];
+            }
+        } (ivar)
+    -(BYT)subMulTimes4AtIndex:(NSUInteger)index {
+        return((subMulMask>>(index<<2))&0xff);
+    }
+    -(void)setSubMulTimes4:(BYT)v atIndex:(NSUInteger)index {
+        if ((v<16)&&(index<16)&&([self subMulTimes4AtIndex:index]!=v)) {
+            subMulMask&=0xf<<(index<<2);
+            subMulMask|=v<<(index<<2);
+            [self markDirty];
+        }
+    }
+    ULL subMulMask=
+        {return(subMulMask);}
+        -v{
+            if (subMulMask!=v) {
+                subMulMask=v;
+                [self markDirty];
+            }
+        } (ivar)
+    WRD destinationMask=
+        {return(destinationMask);}
+        -v{
+            if (destinationMask!=v) {
+                destinationMask=v;
+                [self markDirty];
+            }
+        }
+    <VGPointPart> makePart={return([[[VGAddSubPointPart alloc] init] autorelease]);}
+
+VGAddSubPointPart<VGPointPart>
+    -(void)calculatePart {
+        CGPoint *ppt=self.point.pointStack->a;
+        ULL addMask=self.pattern.addMulMask;
+        ULL subMask=self.pattern.subMulMask;
+        float muls[16]={
+            (char(addMask&0xf)-char(subMask&0xf))*0.25,
+            (char((addMask>>0x04)&0xf)-char((subMask>>0x04)&0xf))*0.25,
+            (char((addMask>>0x08)&0xf)-char((subMask>>0x08)&0xf))*0.25,
+            (char((addMask>>0x0c)&0xf)-char((subMask>>0x0c)&0xf))*0.25,
+            (char((addMask>>0x10)&0xf)-char((subMask>>0x10)&0xf))*0.25,
+            (char((addMask>>0x14)&0xf)-char((subMask>>0x14)&0xf))*0.25,
+            (char((addMask>>0x18)&0xf)-char((subMask>>0x18)&0xf))*0.25,
+            (char((addMask>>0x1c)&0xf)-char((subMask>>0x1c)&0xf))*0.25,
+            (char((addMask>>0x20)&0xf)-char((subMask>>0x20)&0xf))*0.25,
+            (char((addMask>>0x24)&0xf)-char((subMask>>0x24)&0xf))*0.25,
+            (char((addMask>>0x28)&0xf)-char((subMask>>0x28)&0xf))*0.25,
+            (char((addMask>>0x2c)&0xf)-char((subMask>>0x2c)&0xf))*0.25,
+            (char((addMask>>0x30)&0xf)-char((subMask>>0x30)&0xf))*0.25,
+            (char((addMask>>0x34)&0xf)-char((subMask>>0x34)&0xf))*0.25,
+            (char((addMask>>0x38)&0xf)-char((subMask>>0x38)&0xf))*0.25,
+            (char((addMask>>0x3c)&0xf)-char((subMask>>0x3c)&0xf))*0.25
+        };
+        CGPoint pt=CGPointMake(
+            ppt[0].x*muls[0]+ppt[1].x*muls[1]+ppt[2].x*muls[2]+ppt[3].x*muls[3]+
+            ppt[4].x*muls[4]+ppt[5].x*muls[5]+ppt[6].x*muls[6]+ppt[7].x*muls[7]+
+            ppt[8].x*muls[8]+ppt[9].x*muls[9]+ppt[0xa].x*muls[0xa]+ppt[0xb].x*muls[0xb]+
+            ppt[0xc].x*muls[0xc]+ppt[0xd].x*muls[0xd]+ppt[0xe].x*muls[0xe]+ppt[0xf].x*muls[0xf],
+            ppt[0].y*muls[0]+ppt[1].y*muls[1]+ppt[2].y*muls[2]+ppt[3].y*muls[3]+
+            ppt[4].y*muls[4]+ppt[5].y*muls[5]+ppt[6].y*muls[6]+ppt[7].y*muls[7]+
+            ppt[8].y*muls[8]+ppt[9].y*muls[9]+ppt[0xa].y*muls[0xa]+ppt[0xb].y*muls[0xb]+
+            ppt[0xc].y*muls[0xc]+ppt[0xd].y*muls[0xd]+ppt[0xe].y*muls[0xe]+ppt[0xf].y*muls[0xf]
+        );
+        WRD destinationMask=self.pattern.destinationMask;
+        
+        if (destinationMask&0x1) ppt[0]=pt;
+        if (destinationMask&0x2) ppt[1]=pt;
+        if (destinationMask&0x4) ppt[2]=pt;
+        if (destinationMask&0xc) ppt[3]=pt;
+        if (destinationMask&0x10) ppt[4]=pt;
+        if (destinationMask&0x20) ppt[5]=pt;
+        if (destinationMask&0x40) ppt[6]=pt;
+        if (destinationMask&0xc0) ppt[7]=pt;
+        if (destinationMask&0x100) ppt[8]=pt;
+        if (destinationMask&0x200) ppt[9]=pt;
+        if (destinationMask&0x400) ppt[0xa]=pt;
+        if (destinationMask&0xc00) ppt[0xb]=pt;
+        if (destinationMask&0x1000) ppt[0xc]=pt;
+        if (destinationMask&0x2000) ppt[0xd]=pt;
+        if (destinationMask&0x4000) ppt[0xe]=pt;
+        if (destinationMask&0xc000) ppt[0xf]=pt;
+    }
+
+
+
+VGSumPointPartPattern<VGPointPartPattern>
+    <VGPointPart> makePart={return([[[VGSumPointPart alloc] init] autorelease]);}
+
+VGSumPointPart<VGPointPart>
+    -(void)calculatePart {
+        CGPoint &pt=self.point.pointStack->a[0];
+        for (NSObject<VGPoint> *point in self.referencedPoints) {
+            CGPoint pt2=point.calculatedValue;
+            pt.x+=pt2.x;
+            pt.y+=pt2.y;
+        }
+    }
+
+
+
+<VGObject:Commitable>
+    CGPoint _position>>position
+    bool edgeMoved,positionMoved (nodef)
+    bool movable (nodef)
+    int graphedIndex,graphedIndexVersion (nodef)
+    owner ~m< VGPoint binding
+
+    -(NSObject<VGObject>*)objectForBinding:(NSString*)binding;
+
+    -(init) {
+        [self.bindings addDelegate:[[[ViewGraphBindingDelegate alloc] initWithOwner:self] autorelease]];
+    }
+
+    -(int)commitProperties:(int)substageIndex {@-998 |1@2 
+        if ((!positionMoved)&&(previousPosition!=position)) {
+            self.positionMoved=YES;
+            if ((!edgeMoved)&&(self.graphedIndexVersion==self.graph.graphedIndexVersion)) {
+                [self.graph itemMoved:graphedIndex];
+            }
+        }
+    }
+
+
+ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
+    <VGObject> owner (nodef,readonly,assign)
+    -(init[super init])initWithOwner:(NSObject<VGObject>*)aowner {
+        aowner=owner;
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (toObject) {
+            if ([toObject isKindOfClass:[VGPoint class]]) {
+                NSObject<VGPoint> *b=(NSObject<VGPoint>*)toObject;
+                [owner.graph addSourceCommitter:b];
+                owner.graph.graphOkForView=nil;
+            }
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (fromObject) {
+            if ([fromObject isKindOfClass:[VGPoint class]]) {
+                NSObject<VGPoint> *b=(NSObject<VGPoint>*)fromObject;
+                [owner.graph removeSourceCommitter:b];
+                owner.graph.graphOkForView=nil;
+            }
+        }
+    }
+
+ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
+    ViewGraph graph (nodef,readonly,assign)
+    -(init[super init])initWithGraph:(ViewGraph*)agraph {
+        graph=agraph;
+    }
+    -(void)didAddObject:(id)object {
+        if ([object conformsToProtocol:@protocol(VGObject)]) {
+            NSObject<VGObject> *vg=(NSObject<VGObject>*)object;
+            for (NSObject<VGPoint> *b in vg.bindings) {
+                [graph addSourceCommitter:b];
+            }
+            [graph addSourceCommitter:vg];
+            graph.graphOkForView=nil;
+        }
+    }
+    -(void)willRemoveObject:(id)object {
+        if ([object conformsToProtocol:@protocol(VGObject)]) {
+            NSObject<VGObject> *vg=(NSObject<VGObject>*)object;
+            for (NSObject<VGPoint> *b in vg.bindings) {
+                [graph removeSourceCommitter:b];
+            }
+            [graph removeSourceCommitter:vg];
+            graph.graphOkForView=nil;
+        }
+    }
+
+type _VGObject "typedef:struct {
+  NSObject<VGObject> *v;
+  CGPoint position;
+}"
+type _VGObjects "typedef:Array<_VGObject>"
+
+ViewGraph<BaseObject> "fn:graph"
+    <VGObject> _focus>>focus
+    graph -s< <VGObject> item
+    -(init) {
+        [self.items addDelegate:[[[ViewGraphItemDelegate alloc] initWithGraph:self] autorelease]];
+    }
+
+    -(void)itemMoved:(int)aindex {
+        long foundAtIndex,insertAtIndex;
+        FindArrayElement(int,aindex,movedIndexes->a[index],0,numMovedIndexes-1,foundAtIndex,insertAtIndex,NO);
+        if (foundAtIndex==-1) {
+            if (insertAtIndex<numMovedIndexes) {
+                movedIndexes->move(insertAtIndex+1,insertAtIndex,numMovedIndexes-insertAtIndex);
+                movedIndexes->a[insertAtIndex]=aindex;
+                numMovedIndexes++;
+            }
+        }
+    }
+
+    ArrayOfInts *movedIndexes (nodef)
+    int numMovedIndexes (nodef)
+    _VGObjects *vgs,*vgs2 (nodef)
+    -(init) {
+        movedIndexes=NEW(ArrayOfInts);
+        vgs=NEW(_VGObjects);
+        vgs2=NEW(_VGObjects);
+    }
+    -(void)dealloc {
+        DELETE(ArrayOfInts,movedIndexes);
+        DELETE(_VGObjects,vgs);vgs=nil;
+        DELETE(_VGObjects,vgs2);vgs2=nil;
+    }
+
+    int graphedIndexVersion (nodef)
+    VGObject graphOkForView (nodef,readonly,ivar=graphOkForView)
+
+    -(int)commitProperties:(int)substageIndex {@-998 |2@10 
+        [self refreshIndexesWithFocus:self.focus];
+        [self computePositions];
+    }
+        
+    -(void)refreshIndexesWithFocus:(NSObject<VGObject>*)focus {
+        if (graphOkForView==focus) return;
+        graphOkForView=focus;
+        graphedIndexVersion++;
+        
+        vgs2->setUpperBound(self.items.count-1);
+        
+        int i=0,en=0;
+        {
+            _VGObject vg={focus,focus.position};
+            vgs2->a[en]=vg;
+            focus.graphedIndexVersion=graphedIndexVersion;
+            focus.level=0;
+            focus.positionMoved=focus.edgeMoved=YES;
+            focus.graphedIndex=en++;
+        }
+        level++;
+        while (en<vgs->num()) {
+            if (i==en) {
+                double minDist=-1,d;
+                NSObject<VGObject> *minV=nil;
+                for (NSObject<VGObject> *v in self.items) if (v.graphedIndexVersion!=graphedIndexVersion) {
+                    if (minDist>(d=(v.position.x-focus.position.x)*(v.position.x-focus.position.x)+(v.position.x-focus.position.x)*(v.position.x-focus.position.x))) {
+                        minDist=d;minV=v;
+                    }
+                }
+                if (!minV) break;
+                {
+                    _VGObject vg={minV,minV.position};
+                    vgs2->a[en]=vg;
+                    minV.graphedIndexVersion=graphedIndexVersion;
+                    minV.positionMoved=minV.edgeMoved=YES;
+                    minv.graphedIndex=en++;
+                }
+            }
+            int chlevel=vgs->a[i].v.level+1;
+            for (NSObject<VGPoint> *b in vgs->a[i].v.bindings) {
+                NSObject<VGObject> *v=b.otherEnd;
+                if (v&&(v.graphedIndexVersion!=graphedIndexVersion)) {
+                    _VGObject vg={v,v.position};
+                    vgs2->a[en]=vg;
+                    v.graphedIndexVersion=graphedIndexVersion;
+                    v.edgeMoved=YES;
+                    v.graphedIndex=en++;
+                }
+            }
+            i++;
+        }
+        
+        (*vgs)=(*vgs2);
+        movedIndexes->setUpperBound(vgs->upperBound());
+        numMovedIndexes=0;
+    }
+
+    double moveThreshold=0.1
+
+    -(void)computePositions {
+        for (int i=0;i<vgs->num();i++) {
+            _VGObject &v=vgs->a[i];
+            if (v.v.movable&&v.v.positionMoved&&(sqrt((v.position.x-v.v.position.x)*(v.position.x-v.v.position.x)+(v.position.y-v.v.position.y)*(v.position.y-v.v.position.y)>moveThreshold))) {
+                v.position=v.v.position;
+                v.v.edgeMoved=YES;
+            }
+            v.v.positionMoved=NO;
+            if (v.v.edgeMoved) {
+                v.v.edgeMoved=NO;
+                for (NSObject<VGPoint> *b in v.v.bindings) {
+                    NSObject<VGObject> *vg2=b.otherEnd;
+                    if (vg2&&(vg2.graphedIndex>v.index)) {
+                        _VGObject &v2=vgs->a[vg2.graphedIndex];
+                        v2.position.x=v.position.x+b.relativePosition.x;
+                        v2.position.y=v.position.y+b.relativePosition.y;
+                        if (sqrt((v2.position.x-v2.v.position.x)*(v2.position.x-v2.v.position.x)+(v2.position.y-v2.v.position.y)*(v2.position.y-v2.v.position.y)>moveThreshold)) {
+                            [v2.v slylySetPosition:v2.position];
+                            v2.v.edgeMoved=YES;
+                        }
+                    }
+                }
+            }
+        }
+    }
+                
+            
+
+
+
+    
+
+
+
+
+<TreeCell:Commitable>
+    _prev>>prev -- <TreeCell> _next>>next
+    _parent>>parent ~a< <TreeCell> _child>>child
+
+    NSMutableDictionary bindings=[[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] retain] (ivar=bindings,readonly,dealloc)
+    NSMutableSet bindingsThanChanged=[NSMutableSet set] (ivar=bindingsThanChanged,dealloc,readonly)
+
+    -(int)commitProperties:(int)substageIndex {@100 
+        if (modelObjectChanged) {
+            [bindings setObject:(prev?prev:[NSNull null]) forKey:@"Pprv"];
+            [bindings setObject:(next?prev:[NSNull null]) forKey:@"Pnxt"];
+            [bindings setObject:(parent?parent:[NSNull null]) forKey:@"Ppar"];
+            [bindings setObject:(childs.count?[childs objectAtIndex:0]:[NSNull null]) forKey:@"Pchl"];
+        }
+    }
+        

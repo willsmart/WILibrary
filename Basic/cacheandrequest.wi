@@ -1,0 +1,389 @@
+RequestCaches "fn:util"
+    caches ~m< <RequestCache> cache
+        -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
+        cache -m< <Request> request
+            float worthAsRequest (readonly)
+            -(void)goRequest;
+            NSObject result (readonly)
+            float resultSize (readonly)
+            request >s<~ <RequestOwner> owner
+                -(void)doneRequestSync:(NSObject<Request>*)request {}
+                -(void)doneRequestAsync:(NSObject<Request>*)request {@990 [request release];}
+            request ~s< RequestProxy proxy
+
+        -(void)prntList {
+            prnt("List: ");
+            for (NSObject<WeakListItem>*item=self.proxyList.headItem;item;item=item.next) {
+                prnt(" %s -- ",((NSObject<Object>*)item).cdescription);
+            }
+            prnt("\nrList: ");
+            for (NSObject<WeakListItem>*item=self.proxyList.tailItem;item;item=item.prev) {
+                prnt(" %s -- ",((NSObject<Object>*)item).cdescription);
+            }
+            prnt("\n");
+        }
+
+    NSDictionary asDictionary=
+        {
+            for (kid key in self.caches) {
+                [ret setObject:[self cacheForKey:key].asDictionary forKey:key];
+            }
+        }
+        -v{
+            for (kid key in v) {
+                NSObject<RequestCache> *cache=[self cacheForKey:key];
+                if (cache) cache.asDictionary=(NSDictionary*)[v objectForKey:key];
+            }
+        }
+
+
+
+<RequestOwner>
+
+
+
+<Request>
+    NSObject<NSCopying> definingKey (nodef)
+
+    -(void)goRequest {@-500 
+        prnt("%s goRequest\n",self.cdescription);
+        [self removeAllProxys];
+        if (!self.owners.count) return;
+        @-100 
+        if (!self.result) {
+        @100 }
+        @500 
+        
+        for (NSObject<RequestOwner> *owner in self.owners) {
+            [owner performSelectorOnMainThread:@selector(doneRequestSync:) withObject:self waitUntilDone:YES];
+            [self retain];
+            [owner performSelectorOnMainThread:@selector(doneRequestAsync:) withObject:self waitUntilDone:NO];
+        }
+        [self removeAllOwners];
+    }
+    NSDate started_at=[NSDate date]
+    float ageAsRequest={return(-[v_started_at timeIntervalSinceNow]);}
+
+
+RequestProxy <WeakListItem> "fn:util"
+    -(init[super init])initWithRequest:(NSObject<Request>*)request {
+        self.request=request;
+    }
+
+
+<RequestCache:Codable>
+    WeakList proxyList=[[WeakList alloc] init] (readonly,dealloc,ivar=proxyList)
+    LRUCache cache=[[LRUCache alloc] init] (readonly,dealloc,ivar=cache)
+
+    NSDictionary asDictionary=
+        {imret=cache.asDictionary;}
+        -v{cache.asDictionary=v;}
+
+
+    -(NSObject*)immediateResultForKey:(id<NSCopying>)key {
+        return([self immediateResultForKey:key requestData:nil]);
+    }
+
+    -(NSObject*)immediateResultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData {
+        NSObject *ret=[cache derefedObjectForKey:key];
+        if (ret) return(ret);
+        NSObject<Request> *req=[self requestForKey:key];
+        if (!req) {
+            req=[self newRequestForKey:(NSObject<NSCopying>*)key data:reqData];
+            if (!req) return(nil);
+        }
+        else {
+            [[req retain] autorelease];
+            [self removeRequestForKey:req.definingKey];
+        }
+        [req goRequest];
+        [cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize] autorelease]) forKey:req.definingKey];
+        return(req.result);
+    }
+
+
+
+    -(NSObject*)resultForKey:(id<NSCopying>)key {
+        return([self resultForKey:key requestData:nil owner:nil]);
+    }
+
+    -(NSObject*)resultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
+        NSObject *ret=[cache derefedObjectForKey:key];
+        if (!ret) ret=[self requestForKey:key requestData:reqData owner:owner].result;
+        return(ret);
+    }
+
+    -(NSObject<Request>*)requestForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
+        NSObject<Request> *req=[self requestForKey:key];
+        if (!owner) return(req);
+        
+        if (!req) {
+            req=[self newRequestForKey:(NSObject<NSCopying>*)key data:reqData];
+            if (!req) return(nil);
+    //prnt("%s newRequest: %s\n",self.cdescription,((NSObject<Object>*)req).cdescription);
+            req.definingKey=(NSObject<NSCopying>*)key;
+            [self setRequest:req forKey:key];
+        }
+        if (!req.result) {
+    //prnt("%s request: %s add owner %s\n",self.cdescription,((NSObject<Object>*)req).cdescription,((NSObject<Object>*)owner).cdescription);
+            [req addOwner:owner];
+            RequestProxy *proxy=[[[RequestProxy alloc] initWithRequest:req] autorelease];
+            [req addProxy:proxy];
+            [proxyList append:proxy];
+            return(nil);
+        }
+    //prnt("%s request: %s\n",self.cdescription,((NSObject<Object>*)req).cdescription);
+        return(req);
+    }
+
+    <Request> worthiestRequest={
+        RequestProxy *proxy;
+        NSObject<Request> *req=nil;
+        while (((proxy=[[(RequestProxy*)proxyList.headItem retain] autorelease]))&&!((req=proxy.request))) {
+            [proxy unlink];
+        }
+        if (req) {
+            float worth=req.worthAsRequest;
+            RequestProxy *proxyTail;
+            NSObject<Request> *reqTail=nil;
+            while (((proxyTail=[[(RequestProxy*)proxyList.tailItem retain] autorelease]))&&!((reqTail=proxyTail.request))) {
+                [proxyTail unlink];
+            }
+            if (reqTail&&(reqTail!=req)) {
+                float worthTail=reqTail.worthAsRequest;
+                if (worthTail>worth) {
+                    req=reqTail;
+                }
+            }
+        }
+        return(req);
+    }
+
+
+RequestCaches<BaseObject,RootCodable> "fn:util"
+    <Request> worthiestRequest={
+        NSObject<Request> *bestReq=nil,*req;
+        for (kid key in self.caches) {
+            NSObject<RequestCache> *cache=[self.caches objectForKey:key];
+            if (((req=cache.worthiestRequest))&&((!bestReq)||(req.worthAsRequest>bestReq.worthAsRequest))) {
+                bestReq=req;
+            }
+        }
+        return(bestReq);
+    }
+
+    -(bool)goNext {
+        NSObject<Request> *req=self.worthiestRequest;
+        if (req) {
+            //[req.cache prntList];
+            [[req retain] autorelease];
+            [req goRequest];
+            NSObject<RequestCache> *cache=req.cache;
+            [cache.cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize] autorelease]) forKey:req.definingKey];
+            [cache removeRequestForKey:req.definingKey];
+            //[req.cache prntList];
+            return(YES);
+        }
+        else return(NO);
+    }
+
+    -(int)goForSeconds:(float)sec {
+        int ret=0;
+        NSDate *start = [NSDate date];
+        do {
+            if (![self goNext]) break;
+            ret++;
+        } while (sec>-[start timeIntervalSinceNow]);
+        return(ret);
+    }
+
+
+    -(void)clearCaches {
+        for (kid key in self.caches) {
+            [[self cacheForKey:key].cache clear];
+        }
+    }
+
+
+
+
+
+
+<LRUCacheItem:ListItem>
+    <LRUCache> cache (nodef,ivar=cache)
+    float age=0,initialSize=0
+    float size (readonly)
+    NSObject<NSCopying> _cacheKey (nodef)
+
+LRUCacheItem<LRUCacheItem> "fn:util"
+    NSObject object (nodef,readonly,dealloc,ivar=object)
+    float size (nodef,ivar)
+    -(init[super init])initWithObject:(NSObject*)aobject size:(float)asize {
+        size=asize;
+        object=[aobject retain];
+    }
+
+
+LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
+    float maxSize=100000000
+    int maxCount=1000000
+
+<LRUCache:List,MinimalMutableDictionary,Codable>
+    -(void)clear {@100 
+        [self removeAllObjects];
+        totalSize=0;
+    }
+    int imi=1;
+    -(NSString*)nextPath {
+        NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        return([dir stringByAppendingFormat:@"/render_%04d.png",imi++]);
+    }
+    NSDictionary asDictionary=
+        {
+            NSMutableArray *list=[[NSMutableArray alloc] init];
+            for (LRUCacheItem *item=(LRUCacheItem*)self.headItem;item;item=(LRUCacheItem*)item.next) {
+                UIONLY(
+                if ([item.object isKindOfClass:[UIImage class]]) {
+                    //[(UIImage*)item.object writeImageToFileWithPath:[self nextPath]];
+                    [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                        [NSNumber numberWithFloat:item.size],@"size",
+                        [NSNumber numberWithFloat:item.age],@"age",
+                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        UIImagePNGRepresentation((UIImage*)item.object),@"objectImage",
+                        nil] forKey:item._cacheKey];
+                    [list addObject:item._cacheKey];
+                }
+                else )
+                NOTUI(
+                if ([item.object isKindOfClass:[NSImage class]]) {
+                    NSImage *image=(NSImage*)item.object;
+                    [image lockFocus];
+                    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0, 0, image.size.width, image.size.height)];
+                    [image unlockFocus];
+                    NSData *data=[bitmapRep representationUsingType:NSPNGFileType properties:nil];
+                    [bitmapRep release];
+                    [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                        [NSNumber numberWithFloat:item.size],@"size",
+                        [NSNumber numberWithFloat:item.age],@"age",
+                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        data,@"objectImage",
+                        nil] forKey:item._cacheKey];
+                    [list addObject:item._cacheKey];
+                }
+                else )
+                if ([item.object conformsToProtocol:@protocol(NSCoding)]) {
+                    [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                        [NSNumber numberWithFloat:item.size],@"size",
+                        [NSNumber numberWithFloat:item.age],@"age",
+                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        item.object,@"object",
+                        nil] forKey:item._cacheKey];
+                    [list addObject:item._cacheKey];
+                }
+            }
+            if (ret.count) [ret setObject:[list.copy autorelease] forKey:@"___li_st___"];
+            [list release];
+        }
+        -v{
+            [self clear];
+
+            NSArray *list=[v objectForKey:@"___li_st___"];
+            for (NSString *key in list) if (![key isEqual:@"___li_st___"]) {
+                NSDictionary *d=[v objectForKey:key];
+                if (d) {
+                    NSNumber *size=[d objectForKey:@"size"];
+                    NSNumber *age=[d objectForKey:@"age"];
+                    NSNumber *initialSize=[d objectForKey:@"initialSize"];
+                    NSObject *object=[d objectForKey:@"object"];
+                    UIONLY(
+                    if (!object) {
+                        object=[d objectForKey:@"objectImage"];
+                        if (object) {
+                            if ([object isKindOfClass:[NSData class]]) object=[UIImage imageWithData:(NSData*)object];
+                            else object=nil;
+                        }
+                    })
+                    NOTUI(
+                    if (!object) {
+                        object=[d objectForKey:@"objectImage"];
+                        if (object) {
+                            if ([object isKindOfClass:[NSData class]]) object=[[[NSImage alloc] initWithData:(NSData*)object] autorelease];
+                            else object=nil;
+                        }
+                    })
+                    if (size&&object) {
+                        LRUCacheItem *item=[[LRUCacheItem alloc] initWithObject:object size:size.floatValue];
+                        if (age) item.age=age.floatValue;
+                        if (initialSize) item.initialSize=initialSize.floatValue;
+                        [self setObject:item forKey:key];
+                        [item release];
+                    }
+                }
+            }
+        }
+
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+        {
+            if (![object conformsToProtocol:@protocol(LRUCacheItem)]) ret=NO;
+            NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)object;
+            if (item.cache) return(NO);
+        }
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        {
+            if (fromObject) {
+                NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)fromObject;
+                totalSize-=item.initialSize;
+                [item unlink];
+                item.list=item.cache=nil;
+                item._cacheKey=nil;
+            }            
+
+            if (toObject) {
+                NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)toObject;
+                item.list=item.cache=self;
+                item._cacheKey=(NSObject<NSCopying>*)key;
+                totalSize+=((item.initialSize=item.size));
+            }
+        }
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        {
+            if (toObject) {
+                NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)toObject;
+                [item prepend];
+                while ((self.tailItem!=item)&&((self.count>maxCount)||(self.totalSize>maxSize))) {
+                    [self removeObjectForKey:((NSObject<LRUCacheItem>*)self.tailItem)._cacheKey];
+                }
+            }
+        }
+    }
+    
+    float totalSize=0,maxSize
+    int maxCount
+    
+    -(id)objectForKey:(id<NSCopying>)key {@-100 
+        NSObject<LRUCacheItem> *item=[__dictionary objectForKey:key];
+        if (item) {
+            totalSize-=item.initialSize;
+            [item prepend];
+            totalSize+=((item.initialSize=item.size));
+        }
+        else if ((item=[self makeForKey:(NSObject<NSCopying>*)key])) {
+            [self setObject:item forKey:key];
+        }
+    }
+    -(NSObject*)derefedObjectForKey:(id<NSCopying>)key {@-999 
+        NSObject *ret=[self objectForKey:key];
+        @-10 if ([ret isKindOfClass:[LRUCacheItem class]]) {
+            ret=((LRUCacheItem*)ret).object;
+        }
+        @999 return(ret);
+    }
+
+    -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {@-999 
+        NSObject<LRUCacheItem> *ret=nil;
+        @999 return(ret);
+    }
+
+

@@ -1,0 +1,527 @@
+
+<HasNameLabel>
+    UILabel nameLabel (IBOutlet,nonatomic,retain,nodef)
+
+
+
+HasPropertiesParentValueDelegate<MutableValueDelegate>
+    <HasProperties> owner (nodef,assign,ivar=owner)
+    -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
+        owner=aowner;
+    }
+    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+        if (owner) {
+            if ([fromObject conformsToProtocol:@protocol(HasProperties)]) {
+                [((NSObject<HasProperties>*)fromObject)._properties removeDelegate:owner.filterDel];
+            }
+        }
+    }
+    -(void)didSetValueTo:(id)object {
+        if (owner) {
+            if ([object conformsToProtocol:@protocol(HasProperties)]) {
+                [((NSObject<HasProperties>*)object)._properties addDelegate:owner.filterDel];
+            }
+        }
+    }
+
+
+
+
+
+Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
+<Property_ProxiedDictionaryDelegate:ProxiedDictionaryDelegate> "basic_=>property_"
+
+
+
+
+
+<HasProperties:Commitable,Property_ProxiedDictionaryDelegate>
+    -(init) {
+        @-100 [self property_attachDictionaryDelegateTo:_properties];
+    }
+
+    parent -s< <HasProperties> child
+
+    HasPropertiesParentValueDelegate parentDel=[[HasPropertiesParentValueDelegate alloc] initWithOwner:self] (dealloc,readonly,ivar=parentDel)
+
+
+    NSString keyPrefix=
+        {return(filterDel.keyPrefix);}
+        -v{filterDel.keyPrefix=v;}
+    NSString filterKeyPrefix=
+        {return(filterDel.filterKeyPrefix);}
+        -v{filterDel.filterKeyPrefix=v;}
+    int keepKeyPrefixSuffixLength=
+        {return(filterDel.keepKeyPrefixSuffixLength);}
+        -v{filterDel.keepKeyPrefixSuffixLength=v;}
+
+    MutableDictionary _myProperties>>myProperties=[[MutableDictionary alloc] init] (readonly,ivar=_myProperties,dealloc)
+    MutableDictionary _parentProperties=[[MutableDictionary alloc] init] (readonly,ivar=_parentProperties,dealloc)
+    CommitableMutableDictionary _properties>>properties=[[CommitableMutableDictionary alloc] init] (readonly,ivar=_properties,dealloc)
+
+    MutableArray propertyStack=[[MutableArray alloc] init] (readonly,dealloc,ivar=propertyStack)
+
+    MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=filterDel)
+
+
+    -(void)attachPropertyDebuggers {
+        [MutableDictionaryDebuggerDelegate attachTo:_myProperties named:[self.objectName stringByAppendingString:@"_myProps"]];
+        [MutableDictionaryDebuggerDelegate attachTo:_parentProperties named:[self.objectName stringByAppendingString:@"_parProps"]];
+        [MutableDictionaryDebuggerDelegate attachTo:_properties named:[self.objectName stringByAppendingString:@"_props"]];
+    }
+    -(void)dettachPropertyDebuggers {
+        [MutableDictionaryDebuggerDelegate dettachFrom:_myProperties named:[self.objectName stringByAppendingString:@"_myProps"]];
+        [MutableDictionaryDebuggerDelegate dettachFrom:_parentProperties named:[self.objectName stringByAppendingString:@"_parProps"]];
+        [MutableDictionaryDebuggerDelegate dettachFrom:_properties named:[self.objectName stringByAppendingString:@"_props"]];
+    }
+    
+    -(init) {
+        @10
+        {
+            [_properties addSinkCommitter:self];
+            [self.parent_endpoint addDelegate:parentDel];
+            [self.parent._properties addDelegate:filterDel];
+
+            MutableDictionaryUnionDelegate *del=[MutableDictionaryUnionDelegate get];
+            del.unionDictionary=_properties;
+            [propertyStack addDelegate:del];
+            
+            [propertyStack addObject:_myProperties];
+            [propertyStack addObject:_parentProperties];
+
+            filterDel.followerDictionary=_parentProperties;
+        }
+    }
+
+
+
+ParentPropertyValueDelegate<MutableValueDelegate>
+    <HasProperties> owner (nodef,assign,ivar=owner)
+    -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
+        owner=aowner;
+    }
+    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+        if (owner) {
+            if (fromObject&&(owner.parent==fromObject)) owner.parent=nil;
+        }
+    }
+    -(void)didSetValueTo:(id)object {
+        if (owner) {
+            if ((owner.parent!=object)&&[object conformsToProtocol:@protocol(HasProperties)]) {
+                owner.parent=(NSObject<HasProperties>*)object;
+            }
+        }
+    }
+
+
+
+
+
+
+
+Singletons
+    App app={return(app?app:(app=[[App alloc] init]));} (dealloc,nodef,ivar=app)
+
+App<HasProperties,BaseObject>
+
+
+
+<StdHasProperties:HasProperties>
+    -(init) {@-10 
+        self.keepKeyPrefixSuffixLength=0;
+        self.filterKeyPrefix=@":";
+        self.keyPrefix=@"_:";
+    }
+
+
+
+<StdHasAppProperties:StdHasProperties>
+    MutableDictionaryPrefixedKeyDelegate appFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=appFilterDel)
+    MutableDictionary _appProperties=[[MutableDictionary alloc] init] (readonly,ivar=_appProperties,dealloc)
+
+    NSString keyPrefix=
+        {}
+        -v{appFilterDel.keyPrefix=v;}
+    NSString filterKeyPrefix=
+        {}
+        -v{appFilterDel.filterKeyPrefix=v;}
+    int keepKeyPrefixSuffixLength=
+        {}
+        -v{appFilterDel.keepKeyPrefixSuffixLength=v;}
+
+    -(init) {@15 
+        [g_singletons.app._properties addDelegate:appFilterDel];
+        [propertyStack addObject:_appProperties];
+        appFilterDel.followerDictionary=_appProperties;
+    }
+    -(void)dealloc {@-100 
+        [g_singletons.app._properties removeDelegate:appFilterDel];
+    }
+
+
+
+<StdVC:MyViewController,StdHasProperties>
+    Class nextVCClass (readonly)
+    UINavigationController navBar (assign,nodef)
+
+    -(void)goChildFromProperties:(NSObject<HasProperties>*)aparent {
+        if (self.nextVCClass) {
+            UIViewController<StdVC> *child=[self.nextVCClass getUsingNib];
+            child.navBar=self.navBar;
+            child.parent=aparent;
+            [self.navBar pushViewController:child animated:YES];
+        }
+    }
+
+
+
+<StdTableModelFollower:TableController,TableModelFollower>
+    <TableModel> model={return(model);} (dealloc,ivar=model)
+    UITableView _table (IBOutlet,retain,nonatomic,nodef)
+    UITableView table={return(self._table);}
+
+    -(init) {@-10 
+        model=[[self.tableModelClass alloc] init];
+    }
+
+    -(void)gotTable {
+        //[Model commit];
+        self.table.delegate=self;
+        self.table.dataSource=self;
+        [self.table reloadData];
+    }
+
+
+<StdTable:StdHasProperties,StdTableModelFollower>
+    <StdVC> vc (assign,nodef)
+    bool tableIsLoaded (nodef,readonly,ivar)
+
+    Class tableModelClass (readonly)
+    -(init) {
+        ((NSObject<StdTableModel>*)model).vc=self.vc;
+        ((NSObject<HasProperties>*)model).parent=self;
+    }
+
+    -(void)awakeFromNib {@-10 
+        if (self.table&&!tableIsLoaded) {
+            tableIsLoaded=YES;
+            [self gotTable];
+        }
+    }
+
+    -(void)viewDidLoad {@-10 
+        if (self.table&&!tableIsLoaded) {
+            tableIsLoaded=YES;
+            [self gotTable];
+        }
+    }
+
+<StdTableVC:StdVC,StdTable>
+    -(init) {@-100 self.vc=self;}
+    - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)from {
+        [self.model invalidateLayout];
+    }
+
+<StdTableView:StdTable>
+
+
+
+
+
+//ProjectTableVC:UIViewController<StdTableVC> "fn:spvc"
+//    Class nextVCClass={return([MeasurementTableVC class]);}
+//    Class tableModelClass={return([ProjectTableModel class]);}
+//    -(init) {
+//        self.keyPrefix=@"project:";
+//    }
+    
+
+
+
+
+<StdTableModel:TableModel,StdHasProperties,BaseObject>
+    Class bagSectionClass={@-999 Class ret=nil;
+        @999 return(ret);
+    }
+    <StdVC> vc (assign,nodef)
+
+    -(id)addSection:(Class)clas {
+        if (!clas) return(nil);
+        NSObject<StdSectionModel> *sec=[[[clas alloc] init] autorelease];
+        [self.sections addObject:sec];
+        return(sec);
+    }
+        
+    -(init) {
+        if (self.bagSectionClass) [self addSection:self.bagSectionClass];
+    }
+
+    -(init) {@-5 
+        self.keyPrefix=@"table:";
+    }
+
+
+
+
+
+
+
+
+//ProjectTableModel<StdTableModel>
+//    -(init) {
+//        [self addSection:[ProjectSectionModel class]];
+//    }
+
+
+
+
+
+
+
+<StdSectionModel:SectionModelFromMeta,StdHasProperties,BaseObject>
+    -(init) {
+        [self._table_endpoint addDelegate:[[[ParentPropertyValueDelegate alloc] initWithOwner:self] autorelease]];
+    }
+
+    -(id)addCell:(Class)clas {
+        if (!clas) return(nil);
+        NSObject<StdCellModel> *cell=[[[clas alloc] init] autorelease];
+        [self.cells addObject:cell];
+        return(cell);
+    }
+    -(init) {@-5 
+        self.keyPrefix=@"section:";
+    }
+
+
+        
+
+
+<StdCellModel:CellModelFromMeta,StdHasProperties,BaseObject>
+    -(init) {@-5 
+        self.keyPrefix=@"cell:";
+    }
+    -(init) {
+        [self._section_endpoint addDelegate:[[[ParentPropertyValueDelegate alloc] initWithOwner:self] autorelease]];
+    }
+
+    -(bool)canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below {@-999 bool ret=YES;
+        @999 return(ret);
+    }
+
+    -(void)wasTapped {
+        [((NSObject<StdTableModel>*)self.section.table).vc goChildFromProperties:self];
+    }
+    -(void)accessoryWasTapped {
+        [((NSObject<StdTableModel>*)self.section.table).vc goChildFromProperties:self];
+    }
+
+    <CellModel> newCellModel={ret=[__Class__ get];}
+    <CellModel> insertNewCellsBelowCell={ret=self;}
+
+
+
+
+
+
+//<Project>
+//    NSString name=
+//        {id o=[properties objectForKey:@"Tpnm"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+//        -v{[properties setObject:v forKey:@"Tpnm"];}
+//    NSDate date=
+//        {id o=[properties objectForKey:@"Tpdt"];return([o isKindOfClass:[NSDate class]]?(NSDate*)o:nil);}
+//        -v{[properties setObject:v forKey:@"Tpdt"];}
+
+
+
+
+
+
+
+
+
+
+//ProjectSectionModel<RVSectionModel> "fn:spvc"
+//    NSString nibName=@"projectcell"
+//    -(init) {
+//        self.writableHeaderHeight=60;
+//        self.writableFooterHeight=5;
+//    }
+//    -(init) {
+//        [self addCell:[ProjectCellModel class]];
+//        [self addCell:[ProjectCellModel class]];
+//        [self addCell:[ProjectCellModel class]];
+//        [self addCell:[ProjectCellModel class]];
+//        [self addCell:[ProjectCellModel class]];
+//    }
+
+
+
+
+//ProjectCellModel<RVCellModel,Project> "fn:spvc"
+//    NSString nibName=@"projectcell"
+//    -(init) {
+//        self.writableCellHeight=40;
+//    }
+//
+//    bool canMove=YES,canEdit=YES
+//    UITableViewCellEditingStyle editingStyle=UITableViewCellEditingStyleInsert
+
+
+
+__Table__Table "nac" "multi"
+__Table__TableController "nac" "multi"
+__Table__TableModel "nac" "multi"
+__Table__SectionModel "nac" "multi"
+__Table__CellModel "nac" "multi"
+__Table__Header "nac" "multi"
+__Table__Footer "nac" "multi"
+__Table__Cell "nac" "multi"
+<__TableData____viewer> "nac" "multi"
+<__ItemData____modelObject> "nac" "multi"
+<__ItemData____viewedObject> "nac" "multi"
+
+
+
+<BasicTable_addTo_MetaEnabled> "nac" "multi"
+    +(NSSet*)viewAllowedMetaChildTypes {@"__Table__Table",}
+    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+        if ([type isEqualToString:@"__Table__Table"]) return([__Table__Table alloc]);
+    }
+
+<BasicTable:UITableViewMetaEnabled> "nac" "multi"
+    __Table__TableController tableController=[[__Table__TableController alloc] init] (readonly,ivar=tableController,dealloc)
+    -(void)dealloc {@-200 tableController.__table=nil;}
+    
+    -(init) {
+        tableModelFollower=tableController;
+        tableController.__table=self;
+        [tableController gotTable];
+    }
+<BasicDataTable:BasicTable> "nac" "multi"
+    -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
+        if ([keyStr isEqualToString:@"model"]) {
+            if ([object conformsToProtocol:@protocol(__Table__s__model)]) {
+                ((__Table__TableModel*)tableController.model).dataModel=(NSObject<__Table__s__model>*)object;
+            }
+            else ((__Table__TableModel*)tableController.model).dataModel=nil;
+        }
+    }
+    
+
+<BasicTableController:StdTableModelFollower,BaseObject,StdHasAppProperties> "nac" "multi"
+    __Table__Table __table (IBOutlet,assign,nonatomic,nodef)
+    UITableView table={@!0 return(self.__table);}
+
+    Class tableModelClass={return([__Table__TableModel class]);}
+    -(init) {@-9 ((__Table__TableModel*)model).controller=self;
+        @0
+        self.keyPrefix=@"__table__:";
+        ((NSObject<HasProperties>*)model).parent=self;
+    }
+
+
+<BasicTableModel:StdTableModel> "nac" "multi"
+    __Table__TableController controller (nodef,assign,ivar=controller)
+    MutableArray __table__s=[[MutableArray alloc] init] (readonly,dealloc,ivar=__table__s)
+    -(init) {
+        {
+            [self addSection:[__Table__SectionModel class]];
+            MutableArrayFollowerDelegate *del=[MutableArrayFollowerDelegate get];
+            [self.__table__s addDelegate:del];
+            del.followerArray=[self _sectionAtIndex:0]._cells;
+        }
+    }
+
+
+
+<BasicDataTableModel:StdTableModel> "nac" "multi"
+    __Table__TableController controller (nodef,assign,ivar=controller)
+    -(init) {
+        {
+            [self addSection:[__Table__SectionModel class]];
+            MutableArrayFollowerDelegate *del=[MutableArrayFollowerDelegate get];
+            [self.__table__s addDelegate:del];
+            del.followerArray=[self _sectionAtIndex:0]._cells;
+        }
+    }
+    -(NSObject<__ItemData____viewedObject>*)make__ItemData__ViewedObjectForModelObject:(NSObject<__ItemData____modelObject>*)modelObject {
+        ret=[[[__Table__CellModel alloc] init] autorelease];
+        ret.dataModel=modelObject;
+    }
+
+
+
+
+
+<BasicHeader:MetaComponent> "nac" "multi"
+    -(init)init {}
+    +(NSString*)metaURLKey {return(@"__table___header");}
+
+<BasicFooter:MetaComponent> "nac" "multi"
+    -(init)init {}
+    +(NSString*)metaURLKey {return(@"__table___footer");}
+
+<BasicSectionModel:StdSectionModel> "nac" "multi"
+
+<BasicCell:MetaComponent> "nac" "multi"
+    -(init[super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"__Class__" meta:[NSDictionary dictionaryWithObjectsAndKeys:@"cell",@"type",[__Class__ metaURLKey],@"urlkey",nil] parent:nil key:nil])init {}
+    +(NSString*)metaURLKey {return(@"__table___cell");}
+
+    -(void)clearCell {
+        self.myDataRegistry=nil;
+        [self._metaProperties removeAllObjects];
+    }
+
+
+<BasicCellModel:StdCellModel> "nac" "multi"
+    bool canMove=NO,canEdit=NO
+    UITableViewCellEditingStyle editingStyle=UITableViewCellEditingStyleNone
+            
+    -(void)applyToCell:(UITableViewCell*)cell {
+        if (cell&&[self conformsToProtocol:@protocol(DataModelViewer)]&&[cell conformsToProtocol:@protocol(MetaComponent)]&&[cell conformsToProtocol:@protocol(MetaEnabled)]) {
+            UITableViewCell<MetaComponent,MetaEnabled> *c=(UITableViewCell<MetaComponent,MetaEnabled>*)cell;
+            [c reloadMetasFromURLKey];
+            c.myDataRegistry=[DataRegistry get];
+            c.myDataRegistry.parent=((__Table__TableModel*)self._section._table).controller.__table.nearestRegistry;
+            [c.myDataRegistry.myViewers setObject:self forKey:@"__table__"];
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

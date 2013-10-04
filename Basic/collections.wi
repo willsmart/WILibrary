@@ -1,0 +1,529 @@
+
+
+"collectionNS.wi"
+"collectionSet.wi"
+"collectionArray.wi"
+"collectionDictionary.wi"
+"collectionAtomicAndTracker.wi"
+"collectionTester.wi"
+//"collectionUnions.wi"
+
+
+<CommitableCollection:Commitable>
+    -(void)stateOK {@100 [self markDirty];}
+    -(int)commitProperties:(int)substageIndex {modelObjectHasChanged=YES;}
+
+
+
+
+
+
+<WeakSet:Set>
+    -(void)makeWeak {
+        for (id object in __set) [object release];
+    }
+    -(void)makeStrong {
+        for (id object in __set) [object retain];
+    }
+    -(init) {@-500 [self makeWeak];}
+    -(void)dealloc {@-500 [self makeStrong];}
+
+<ModelSet:Set>
+    -(void)makeModel {
+        for (id object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+            [(NSObject<RefCountedObject>*)object modeladd];
+        }
+    }
+    -(void)makeNonModel {
+        for (id object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+            [(NSObject<RefCountedObject>*)object modelsub];
+        }
+    }
+    -(init) {@-500 [self makeModel];}
+    -(void)dealloc {@-500 [self makeNonModel];}
+
+
+<WeakDictionary:Dictionary>
+    -(void)makeWeak {
+        for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] release];
+    }
+    -(void)makeStrong {
+        for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] retain];
+    }
+    -(init) {@-500 [self makeWeak];}
+    -(void)dealloc {@-500 [self makeStrong];}
+
+<ModelDictionary:Dictionary>
+    -(void)makeModel {
+        for (id<NSCopying> key in __dictionary) {
+            id o=[__dictionary objectForKey:key];
+            if ([o conformsToProtocol:@protocol(RefCountedObject)]) {
+                [(NSObject<RefCountedObject>*)o modeladd];
+            }
+        }
+    }
+    -(void)makeNonModel {
+        for (id<NSCopying> key in __dictionary) {
+            id o=[__dictionary objectForKey:key];
+            if ([o conformsToProtocol:@protocol(RefCountedObject)]) {
+                [(NSObject<RefCountedObject>*)o modelsub];
+            }
+        }
+    }
+    -(init) {@-500 [self makeModel];}
+    -(void)dealloc {@-500 [self makeNonModel];}
+
+
+
+<WeakArray:Array>
+    -(void)makeWeak {
+        for (id object in __array) [object release];
+    }
+    -(void)makeStrong {
+        for (id object in __array) [object retain];
+    }
+    -(init) {@-500 [self makeWeak];}
+    -(void)dealloc {@-500 [self makeStrong];}
+
+<ModelArray:Array>
+    -(void)makeModel {
+        for (id object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+            [(NSObject<RefCountedObject>*)object modeladd];
+        }
+    }
+    -(void)makeNonModel {
+        for (id object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+            [(NSObject<RefCountedObject>*)object modelsub];
+        }
+    }
+    -(init) {@-500 [self makeModel];}
+    -(void)dealloc {@-500 [self makeNonModel];}
+
+
+
+ModelSet<ModelSet>
+ModelDictionary<ModelDictionary>
+ModelArray<ModelArray>
+
+
+
+type id100 "typedef:struct{id ids[100];}"
+<DebugMutableArray>
+    NSUInteger array_count=0
+    id100 array_objects (nodef)
+    -(void)stateOK {
+        array_count=0;
+        for (id o in __array) {
+            array_objects.ids[array_count++]=o;
+            if (array_count==100) break;
+        }
+        memset(array_objects.ids+array_count,0,sizeof(array_objects.ids[0])*(100-array_count));
+        array_count=__array.count;
+    }
+
+<DebugMutableSet>
+    NSUInteger set_count=0
+    id100 set_objects (nodef)
+    -(void)stateOK {
+        set_count=0;
+        for (id o in __set) {
+            set_objects.ids[set_count++]=o;
+            if (set_count==100) break;
+        }
+        memset(set_objects.ids+set_count,0,sizeof(set_objects.ids[0])*(100-set_count));
+        set_count=__set.count;
+    }
+
+type keyval "typedef:struct{id<NSCopying>key;id value;}"
+type keyval100 "typedef:struct{keyval keyvals[100];}"
+<DebugMutableDictionary>
+    NSUInteger dictionary_count=0
+    keyval100 dictionary_objects (nodef)
+    -(void)stateOK {
+        dictionary_count=0;
+        for (id k in __dictionary) {
+            dictionary_objects.keyvals[dictionary_count].key=k;
+            dictionary_objects.keyvals[dictionary_count++].value=[__dictionary objectForKey:k];
+            if (dictionary_count==100) break;
+        }
+        memset(dictionary_objects.keyvals+dictionary_count,0,sizeof(dictionary_objects.keyvals[0])*(100-dictionary_count));
+        dictionary_count=__dictionary.count;
+    }
+
+
+<MinimalMutableArray:+DebugMutableArray>
+<MutableSet:+DebugMutableSet>
+<MinimalMutableDictionary:+DebugMutableDictionary>
+
+
+ImmutableArray:NSArray<Array>
+ImmutableSet:NSSet<Set>
+ImmutableDictionary:NSDictionary<Dictionary>
+
+
+//WeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray> {}
+MutableArray:NSMutableArray<MutableArray> {}
+//ModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray> {}
+
+//NotifyingWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,NotifyingMutableArray> {}
+//NotifyingMutableArray:NSMutableArray<MutableArray,NotifyingMutableArray> {}
+//NotifyingModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,NotifyingMutableArray> {}
+
+//CommitableWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,CommitableCollection> {}
+//CommitableMutableArray:NSMutableArray<MutableArray,CommitableCollection> {}
+//CommitableModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,CommitableCollection> {}
+
+//RefCountedWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,RefCountedObject> {}
+//RefCountedMutableArray:NSMutableArray<MutableArray,RefCountedObject> {}
+//RefCountedModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,RefCountedObject> {}
+
+
+
+
+
+
+
+
+WeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary> {}
+MutableDictionary:NSMutableDictionary<MutableDictionary> {}
+//ModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary> {}
+
+//NotifyingWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,NotifyingMutableDictionary> {}
+//NotifyingMutableDictionary:NSMutableDictionary<MutableDictionary,NotifyingMutableDictionary> {}
+//NotifyingModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,NotifyingMutableDictionary> {}
+
+//CommitableWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,CommitableCollection> {}
+CommitableMutableDictionary:NSMutableDictionary<MutableDictionary,CommitableCollection> {}
+//CommitableModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,CommitableCollection> {}
+
+//RefCountedWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,RefCountedObject> {}
+//RefCountedMutableDictionary:NSMutableDictionary<MutableDictionary,RefCountedObject> {}
+//RefCountedModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,RefCountedObject> {}
+
+
+
+
+
+
+
+
+    
+//WeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet> {}
+MutableSet:NSMutableSet<MutableSet> {}
+//ModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet> {}
+
+//NotifyingWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,NotifyingMutableSet> {}
+//NotifyingMutableSet:NSMutableSet<MutableSet,NotifyingMutableSet> {}
+//NotifyingModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,NotifyingMutableSet> {}
+
+//CommitableWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,CommitableCollection> {}
+//CommitableMutableSet:NSMutableSet<MutableSet,CommitableCollection> {}
+//CommitableModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,CommitableCollection> {}
+
+//RefCountedWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,RefCountedObject> {}
+//RefCountedMutableSet:NSMutableSet<MutableSet,RefCountedObject> {}
+//RefCountedModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,RefCountedObject> {}
+
+
+
+
+
+<MutableObjectDebuggerDelegate>
+    NSString name (nodef)
+    bool attached (nodef)
+
+    -(init[super init])initWithName:(NSString*)aname {
+        self.name=aname;
+        attached=YES;
+    }
+
+
+
+
+MutableValueDebuggerDelegate<MutableValueDelegate,MutableObjectDebuggerDelegate>
+    +(void)attachTo:(NSObject<ValueLinkEndpoint>*)a named:(NSString*)aname {
+        if (!a) prnt("Value %s is nil\n",aname.UTF8String);
+        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+    }
+    +(void)dettachFrom:(NSObject<ValueLinkEndpoint>*)a named:(NSString*)aname {
+        for (NSObject<MutableValueDelegate> *del=a.valueDelegate;del;del=del.valueDelegate) {
+            if ([del isKindOfClass:[__Class__ class]]&&
+            (
+                (!aname)||
+                (((__Class__*)del).name&&[((__Class__*)del).name isEqualToString:aname])
+            )) {
+                ((__Class__*)del).attached=NO;
+                [a removeDelegate:del];
+            }
+        }
+    }
+
+    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+        prnt("Value %s: will change to %s\n -- was %s\n",v_name.UTF8String,[Util cnameFor:toObject],[Util cnameFor:fromObject]);
+    }
+    -(void)didSetValueTo:(id)object {
+        prnt("Value %s: did change to %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)dealloc {
+        if (attached) prnt("Value %s: dealloced\n",v_name.UTF8String);
+    }
+
+
+
+
+
+MutableSetDebuggerDelegate<MutableSetDelegate,MutableObjectDebuggerDelegate>
+    +(void)attachTo:(NSObject<MutableSet>*)a named:(NSString*)aname {
+        if (!a) prnt("Set %s is nil\n",aname.UTF8String);
+        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+    }
+    +(void)dettachFrom:(NSObject<MutableSet>*)a named:(NSString*)aname {
+        for (NSObject<MutableSetDelegate> *del=a.setDelegate;del;del=del.setDelegate) {
+            if ([del isKindOfClass:[__Class__ class]]&&
+            (
+                (!aname)||
+                (((__Class__*)del).name&&[((__Class__*)del).name isEqualToString:aname])
+            )) {
+                ((__Class__*)del).attached=NO;
+                [a removeDelegate:del];
+            }
+        }
+    }
+
+    -(bool)shouldAddObject:(id)object {@998 
+        prnt("Set %s: should%s add %s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:object]);
+    }
+    -(void)willAddObject:(id)object {
+        prnt("Set %s: will add %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)didAddObject:(id)object {
+        prnt("Set %s: did add %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)willRemoveObject:(id)object {
+        prnt("Set %s: will remove %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)didRemoveObject:(id)object {
+        prnt("Set %s: did remove %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)dealloc {
+        if (attached) prnt("Set %s: dealloced\n",v_name.UTF8String);
+    }
+
+
+
+
+
+MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebuggerDelegate>
+    +(void)attachTo:(NSObject<MinimalMutableDictionary>*)a named:(NSString*)aname {
+        if (!a) prnt("Dictionary %s is nil\n",aname.UTF8String);
+        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+    }
+    +(void)dettachFrom:(NSObject<MinimalMutableDictionary>*)a named:(NSString*)aname {
+        for (NSObject<MutableDictionaryDelegate> *del=a.dictionaryDelegate;del;del=del.dictionaryDelegate) {
+            if ([del isKindOfClass:[__Class__ class]]&&
+            (
+                (!aname)||
+                (((__Class__*)del).name&&[((__Class__*)del).name isEqualToString:aname])
+            )) {
+                ((__Class__*)del).attached=NO;
+                [a removeDelegate:del];
+            }
+        }
+    }
+
+
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {@998 
+        prnt("Dictionary %s: should%s add %s=>%s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:key],[Util cnameFor:object]);
+    }
+    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (!toObject) {
+            prnt("Dictionary %s: will remove %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject]);
+        }
+        else if (!fromObject) {
+            prnt("Dictionary %s: will add %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:toObject]);
+        }
+        else prnt("Dictionary %s: will replace %s=>%s\n  with  %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject],[Util cnameFor:key],[Util cnameFor:toObject]);
+    }
+    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+        if (!toObject) {
+            prnt("Dictionary %s: did remove %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject]);
+        }
+        else if (!fromObject) {
+            prnt("Dictionary %s: did add %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:toObject]);
+        }
+        else prnt("Dictionary %s: did replace %s=>%s\n  with  %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject],[Util cnameFor:key],[Util cnameFor:toObject]);
+    }
+    -(void)dealloc {
+        if (attached) prnt("Dictionary %s: dealloced\n",v_name.UTF8String);
+    }
+
+
+
+
+
+
+
+
+
+MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
+    +(void)attachTo:(NSObject<MinimalMutableArray>*)a named:(NSString*)aname {
+        if (!a) prnt("Array %s is nil\n",aname.UTF8String);
+        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+    }
+    +(void)dettachFrom:(NSObject<MinimalMutableArray>*)a named:(NSString*)aname {
+        for (NSObject<MutableArrayDelegate> *del=a.arrayDelegate;del;del=del.arrayDelegate) {
+            if ([del isKindOfClass:[__Class__ class]]&&
+            (
+                (!aname)||
+                (((__Class__*)del).name&&[((__Class__*)del).name isEqualToString:aname])
+            )) {
+                ((__Class__*)del).attached=NO;
+                [a removeDelegate:del];
+            }
+        }
+    }
+
+    -(bool)shouldAddObject:(id)object {@998 
+        prnt("Array %s: should%s add %s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:object]);
+    }
+    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index {
+        prnt("Array %s: wont add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
+    }
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+        prnt("Array %s: will add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
+    }
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        prnt("Array %s: did add index %d, object %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+        prnt("Array %s: will remove index %d, object %s\n",v_name.UTF8String,index,[Util cnameFor:object]);
+    }
+    -(void)didRemoveObject:(id)object {
+        prnt("Array %s: did remove object %s\n",v_name.UTF8String,[Util cnameFor:object]);
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        prnt("Array %s: objects at %d and %d swapped\n",v_name.UTF8String,fromIndex,toIndex);
+    }
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+        prnt("Array %s: objects at [%d,%d) move to [%d,%d)\n",v_name.UTF8String,fromRange.location,fromRange.location+fromRange.length,toLocation,toLocation+fromRange.length);
+    }
+    -(void)allObjectsMoved {
+        prnt("Array %s: all objects moved\n",v_name.UTF8String);
+    }
+    -(void)stateOK {
+    }
+    -(void)dealloc {
+        if (attached) prnt("Array %s: dealloced\n",v_name.UTF8String);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
+    NSMutableArray followerArray=
+        {return(followerArray);}
+        -v{[followerArray release];followerArray=[v retain];[self refreshFollowerArray];} (ivar=followerArray,dealloc)
+
+    -(id)objectForObject:(id)object {@-999 id ret=object;
+        @999 return(ret);
+    }
+
+    -(void)delegateForArrayChanged {
+        if (followerArray) [self refreshFollowerArray];
+    }
+
+    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@500 
+        [followerArray insertObject:[self objectForObject:object] atIndex:index];
+    }
+    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@500 
+        [followerArray removeObjectAtIndex:index];
+    }
+    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+        [followerArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
+    }
+    -(void)allObjectsMoved {
+        NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
+        NSMutableIndexSet *is=[[NSMutableIndexSet alloc] init];
+        for (id object in delegateForArray) {
+            NSUInteger index=[delegateForArray indexOfObject:object];
+            while ((index!=NSNotFound)&&[is containsIndex:index]) {
+                index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.count-(index+1))]);
+            }
+            if (index==NSNotFound) object=[self objectForObject:object];
+            else {
+                object=[followerArray objectAtIndex:index];
+                [is addIndex:index];
+            }
+            [a addObject:object];
+        }
+        [followerArray setArray:a];
+        [a release];
+        [is release];
+    }
+    -(void)refreshFollowerArray {
+        NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
+        for (id object in delegateForArray) {
+            [a addObject:[self objectForObject:object]];
+        }
+        [followerArray setArray:a];
+        [a release];
+    }
+
+
+
+
+
+
+/*<MinimalMutableArray>
+    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+        if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (array)\n",object);
+    }
+    -(void)didRemoveObject:(id)object {
+        if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (array)\n",object);
+    }
+*/
+
+/*
+<MutableSet>
+    -(void)didAddObject:(id)object {
+        if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (set)\n",object);
+    }
+    -(void)didRemoveObject:(id)object {
+        if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (set)\n",object);
+    }
+
+
+
+<MinimalMutableDictionary>
+    -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
+        if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (dict)\n",object);
+    }
+    -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {
+        if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (dict)\n",object);
+    }
+
+<Set>
+    -(init) {
+        prnt("%s has %p\n",self.objectName.UTF8String,__set);
+    }
+<Array>
+    -(init) {
+        prnt("%s has %p\n",self.objectName.UTF8String,__array);
+    }
+<Dictionary>
+    -(init) {
+        prnt("%s has %p\n",self.objectName.UTF8String,__dictionary);
+    }
+*/
+

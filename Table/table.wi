@@ -1,0 +1,710 @@
+"<UIKit/UIKit.h>"
+"<Foundation/Foundation.h>"
+"stdCells.wi"
+
+
+
+<TableModel:Commitable>
+    _table>>table ~a< <SectionModel> _section>>section
+    -(init) {@-190 
+        [self._sections addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+    }
+    -(void)invalidateLayout {
+        [self markDirty];self.propertiesChanged=YES;
+        for (NSObject<SectionModel> *section in self._sections) [section invalidateLayout];
+    }
+
+<SectionModel:Commitable>
+    _section>>section ~a< <CellModel> _cell>>cell
+    -(init) {@-190 
+        [self._cells addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+    }
+    -(void)invalidateLayout {
+        [self markDirty];self.propertiesChanged=YES;
+        for (NSObject<CellModel> *cell in self._cells) [cell invalidateLayout];
+    }
+
+    float likelyHeaderHeight={@-999 float ret=0;@999 return(ret);}
+    float likelyFooterHeight={@-999 float ret=0;@999 return(ret);}
+
+    UIView header,footer (readonly)
+    float headerHeight,footerHeight (readonly)
+
+    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[8]@80 
+        if (modelObjectHasChanged) self._table.modelObjectHasChanged=YES;
+    }
+
+
+
+<CellModel:Commitable>
+    bool cellModelDirty=NO
+
+    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[8]@80 
+        if (modelObjectHasChanged) self._section.modelObjectHasChanged=self._section._table.modelObjectHasChanged=YES;
+    }
+
+    -(void)invalidateLayout {
+        [self markDirty];self.propertiesChanged=YES;
+    }
+
+    <CellModel> newCellModel={@-999 NSObject<CellModel> *ret=nil;
+        @999 return(ret);
+    }
+    <CellModel> insertNewCellsBelowCell={@-999 NSObject<CellModel> *ret=nil;
+        @999 return(ret);
+    }
+    <SectionModel> insertNewCellsAtTopOfSection={@-999 NSObject<SectionModel> *ret=nil;
+        @999 return(ret);
+    }
+    UITableViewCell newUITVCell (readonly)
+    -(void)applyToCell:(UITableViewCell*)cell;
+
+
+    float likelyCellHeight={@-999 float ret=0;@999 return(ret);}
+    float cellHeight (readonly)
+    NSString cellReuseIdentifier (readonly)
+
+    bool canMove,canEdit (readonly)
+    UITableViewCellEditingStyle editingStyle (readonly)
+    int indentationLevel=0
+
+    -(bool)canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below;
+
+    -(void)wasTapped {}
+    -(void)accessoryWasTapped {}
+
+
+<ModelTableViewCell:MutableValueDelegate>
+    uicell -- <CellModel> cellModel
+    -(init) {@-190 
+        retainsAsValueDelegate=NO;
+        [self.cellModel_endpoint addDelegate:self];
+    }
+    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+        [(NSObject<CellModel>*)toObject applyToCell:self];
+        if (!toObject) [self clearCell];
+    }
+    -(void)clearCell {}
+
+
+
+
+
+
+
+
+<SectionModelFromMeta:SectionModel>
+    float likelyHeaderHeight={@-100
+        ret=[__HeaderClass__ heightFromURL];
+    }
+    float likelyFooterHeight={@-100
+        ret=[__FooterClass__ heightFromURL];
+    }
+
+    float headerHeight={return(self.likelyHeaderHeight);}
+    float footerHeight={return(self.likelyFooterHeight);}
+
+    UIView header={
+        if (!header) {
+            header=[[__HeaderClass__ alloc] init];
+        }
+        return(header);
+    } (ivar=header,dealloc)
+    UIView footer={
+        if (!footer) {
+            footer=[[__FooterClass__ alloc] init];
+        }
+        return(footer);
+    } (ivar=footer,dealloc)
+
+
+
+<CellModelFromMeta:CellModel>
+    float likelyCellHeight={@-100
+        ret=[__CellClass__ heightFromURL];
+    }
+
+    float cellHeight={return(self.likelyCellHeight);}
+
+    NSString cellReuseIdentifier=
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);} (ivar=cellReuseIdentifier)
+
+    UITableViewCell newUITVCell={
+        UITableViewCell *ret=[[[__CellClass__ alloc] init] autorelease];
+        if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
+            ERR("Cell reuse id (%s) should be %s\n",ret.reuseIdentifier.UTF8String,self.cellReuseIdentifier.UTF8String);
+        }
+        return(ret);
+    }
+
+
+
+
+
+<CellModelFromNib:CellModel>
+    NSString nibName (readonly)
+    int tag=0
+    Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} (ivar=uiTVCellClass)
+    NSString cellReuseIdentifier=
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (ivar=cellReuseIdentifier)
+    UITableViewCell newUITVCell={@-999
+        UITableViewCell *ret=[ViewUtilities loadViewOfClass:self.uiTVCellClass withTag:tag fromNibWithName:self.nibName];
+        if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
+            ERR("Cell reuse id (%s) should be %s\n",ret.reuseIdentifier.UTF8String,self.cellReuseIdentifier.UTF8String);
+        }
+        @999 return(ret);
+    }
+
+
+<SectionModelFromNib:SectionModel>
+    NSString nibName (readonly)
+    int headerTag=1,footerTag=2
+    Class headerClass={return(headerClass?headerClass:[UIView class]);} (ivar=headerClass)
+    Class footerClass={return(footerClass?footerClass:[UIView class]);} (ivar=footerClass)
+    UIView header={@-999 
+        id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
+        @999 return(ret);
+    } (ivar=header,dealloc)
+    UIView footer={@-999 
+        id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
+        @999 return(ret);
+    } (ivar=footer,dealloc)
+        
+
+
+
+
+<TableModelFollower:Commitable>
+    <TableModel> model (readonly)
+
+    kid context=[[PointerKey keyWithObject:nil] retain] (retain)
+
+    -(init) {@100 
+        [self addSourceCommitter:model];
+        //[model overrideSectionsAs:[NSArray array] forContext:context];
+        [model markDirty];
+    }
+    
+    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[9]@90 
+        if (model.modelObjectHasChanged) modelObjectHasChanged=YES;
+    }
+
+    bool updatesStarted (nodef,readonly)
+    -(void)startCommit {
+        if (!updatesStarted) {
+            [self.table beginUpdates];
+            updatesStarted=YES;
+            //prnt("%p BeginUpdates\n",self.table);
+        }
+    }
+    -(void)willCommit {
+    }
+    -(void)commit {
+        if (!self.table) return;
+        
+        NSIndexSet *remSecis=[model indexesOfSectionsThatWereRemovedGivenContext:context];
+        if (remSecis) [self.table deleteSections:remSecis withRowAnimation:self.rowAnimation];
+        
+        
+        
+        NSIndexSet *insSecis=[model indexesOfSectionsThatWereAddedGivenContext:context];
+        if (insSecis) [self.table insertSections:insSecis withRowAnimation:self.rowAnimation];
+        
+        
+        
+        
+        NSArray *secs=[model sectionsGivenContext:context];
+
+        NSMutableArray *dirtyIndexes=[MutableArray array];
+
+        NSUInteger si=0;
+        for (NSObject<SectionModel> *sec in secs) {
+            if (![insSecis containsIndex:si]) {
+                NSArray *cells=[sec cellsGivenContext:context];
+                NSIndexSet *insCellis=nil;
+                if ([sec cellsChangedGivenContext:context]) {
+                    NSIndexSet *remCellis=[sec indexesOfCellsThatWereRemovedGivenContext:context];
+                    if (remCellis) {
+                        NSMutableArray *paths=[MutableArray array];
+                        for (int ind=remCellis.firstIndex;ind!=NSNotFound;ind=[remCellis indexGreaterThanIndex:ind]) {
+                            [paths addObject:[NSIndexPath indexPathForRow:ind inSection:si]];
+                        }
+                        [self.table deleteRowsAtIndexPaths:paths withRowAnimation:self.rowAnimation];
+                    }
+                    
+                    
+                    insCellis=[sec indexesOfCellsThatWereAddedGivenContext:context];
+                    if (insCellis) {
+                        NSMutableArray *paths=[MutableArray array];
+                        for (int ind=insCellis.firstIndex;ind!=NSNotFound;ind=[insCellis indexGreaterThanIndex:ind]) {
+                            [paths addObject:[NSIndexPath indexPathForRow:ind inSection:si]];
+                        }
+                        [self.table insertRowsAtIndexPaths:paths withRowAnimation:self.rowAnimation];
+                    }
+                }
+                NSUInteger ci=0;
+                for (NSObject<CellModel> *cell in cells) {
+                    if ((![insCellis containsIndex:ci])&&cell.cellModelDirty) {
+                        cell.cellModelDirty=NO;
+                        [dirtyIndexes addObject:[NSIndexPath indexPathForRow:ci inSection:si]];
+                    }
+                }
+            }
+            
+            si++;
+            
+        }
+        
+        if (dirtyIndexes.count) {
+            [self.table reloadRowsAtIndexPaths:dirtyIndexes withRowAnimation:self.rowAnimation];
+        }
+    }
+    -(void)didCommit {
+    }
+    -(void)finishCommit {
+        if (updatesStarted) {
+            [self.table endUpdates];
+            updatesStarted=NO;
+            //prnt("%p EndUpdates\n",self.table);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//TableModelController <TableController,TableModelFollower>
+//    -(init[super init])initWithTable:(UITableView*)atable model:(NSObject<TableModel>*)amodel {
+//        self.table=atable;
+//        self.model=amodel;
+//    }
+
+
+
+<TableController:Commitable,UITableViewDataSource,UITableViewDelegate>
+    UITableView table (readonly)
+
+    bool __editing=NO
+    bool _editing>>editing=
+        {return(__editing);}
+        -v{[self setEditing:v animated:YES];}
+    -(void)setEditing:(BOOL)value animated:(BOOL)animated {@-500 
+        if ((__editing?YES:NO)!=(value?YES:NO)) {
+            __editing=value;
+            @500 
+            [self.table setEditing:__editing animated:animated];
+        }
+    }
+
+    -(NSObject<SectionModel>*)sectionAtIndex:(int)index {
+        return([model sectionAtIndex:index givenContext:context]);
+    }
+    -(NSObject<CellModel>*)cellAtIndex:(int)rowIndex inSectionAtIndex:(int)sectionIndex {
+        return([[model sectionAtIndex:sectionIndex givenContext:context] cellAtIndex:rowIndex givenContext:context]);
+    }
+    -(NSObject<CellModel>*)cellAtIndexPath:(NSIndexPath*)indexPath {
+        return([self cellAtIndex:indexPath.row inSectionAtIndex:indexPath.section]);
+    }
+
+    bool animateCells=YES
+
+    UITableViewRowAnimation rowAnimation={
+        return(animateCells?UITableViewRowAnimationLeft:UITableViewRowAnimationNone);
+    }
+
+
+    -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+    {@-999 int ret=0;
+        @-10 ret=[model sectionsGivenContext:context].count;
+        @999 return(ret);
+    }
+
+    -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+    {@-999 int ret=0;
+        @-10 ret=[[self sectionAtIndex:section] cellsGivenContext:context].count;
+        @999 return(ret);
+    }
+
+    -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {@-999 int ret=0;
+        @-10 ret=[self cellAtIndexPath:indexPath].indentationLevel;
+        @999 return(ret);
+    }
+
+    -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {@-999 
+        UIView *ret=nil;
+        @-10 ret=[self sectionAtIndex:section].header;
+        @999 return(ret);
+    }
+    -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {@-999 
+        float ret=0;
+        @-10 ret=[self sectionAtIndex:section].headerHeight;
+        @999 return(ret);
+    }
+
+
+    -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {@-999 
+        UIView *ret=nil;
+        @-10 ret=[self sectionAtIndex:section].footer;
+        @999 return(ret);
+    }
+    -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {@-999
+        float ret=0;
+        @-10 ret=[self sectionAtIndex:section].footerHeight;
+        @999 return(ret);
+    }
+
+
+    -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {@-999 float ret=0;
+        @-10 ret=[self cellAtIndexPath:indexPath].cellHeight;
+        @999 return(ret);
+    }
+
+    -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {@-999 UITableViewCell *ret=nil;
+        @-10
+        NSObject<CellModel> *cell=[self cellAtIndexPath:indexPath];
+        ret = [self.table dequeueReusableCellWithIdentifier:cell.cellReuseIdentifier];
+        if (!ret) ret=cell.newUITVCell;
+        if ([ret conformsToProtocol:@protocol(ModelTableViewCell)]) {
+            ((NSObject<ModelTableViewCell>*)ret).cellModel=cell;
+        }
+        else [cell applyToCell:ret];
+        @999 return(ret);
+    }
+
+    -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+        return([self cellAtIndexPath:indexPath].editingStyle);
+    }
+
+    -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+    {
+        return([self cellAtIndexPath:indexPath].canEdit);
+    }
+    -(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+    {
+        return([self cellAtIndexPath:indexPath].canMove);
+    }
+
+
+    -(void)addNewNodeUsingAdderRowInSection:(int)section row:(int)row {
+    }
+
+
+    -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+    {
+        @90 if (editingStyle==UITableViewCellEditingStyleDelete) {
+            @100 
+            [[[self sectionAtIndex:indexPath.section] cellsGivenContext:context] removeObjectAtIndex:indexPath.row];
+        @150 }
+        else if (editingStyle==UITableViewCellEditingStyleInsert) {
+            @200 
+            NSObject<CellModel> *driver=[self cellAtIndexPath:indexPath];
+            NSIndexPath *asIndexPath=nil;
+            NSObject<CellModel> *below=driver.insertNewCellsBelowCell;
+            if (below) asIndexPath=[NSIndexPath indexPathForRow:below.indexInSection+1 inSection:below.section.indexInTable];
+            else {
+                NSObject<SectionModel> *topOf=driver.insertNewCellsAtTopOfSection;
+                if (topOf) asIndexPath=[NSIndexPath indexPathForRow:0 inSection:topOf.indexInTable];
+            }
+            if (asIndexPath) {
+                NSObject<CellModel> *cell=driver.newCellModel;
+                if (cell) [[[self sectionAtIndex:asIndexPath.section] cellsGivenContext:context] insertObject:cell atIndex:asIndexPath.row];
+            }
+        }
+    }
+
+
+
+
+    -(NSIndexPath*)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {@-999 
+    
+        int s0=proposedDestinationIndexPath.section,sp=s0,sm=sp;
+        int r0=proposedDestinationIndexPath.row,rp=r0+((s0==sourceIndexPath.section)&&(r0>sourceIndexPath.row)?1:0),rm=rp;
+        
+        NSObject<CellModel> *cell=[self cellAtIndexPath:sourceIndexPath];
+
+        NSIndexPath *ret=nil;
+        @-100 
+        while ((sm>=0)||(sp<[model sectionsGivenContext:context].count)) {
+            if (sm>=0) {
+                if ([cell canMoveToSection:[self sectionAtIndex:sm] belowCell:(rm?[self cellAtIndex:rm-1 inSectionAtIndex:sm]:nil)]) {
+                    ret=[NSIndexPath indexPathForRow:rm-((sm==sourceIndexPath.section)&&(rm>sourceIndexPath.row)?1:0) inSection:sm];
+                    break;
+                }
+                if ((--rm)<0) {
+                    if ((--sm)>=0) {
+                        rm=[[self sectionAtIndex:sm] cellsGivenContext:context].count;
+                    }
+                }
+            }
+            if ((sp<[model sectionsGivenContext:context].count)&&((sp!=proposedDestinationIndexPath.section)||(rp!=proposedDestinationIndexPath.row))) {
+                if ([cell canMoveToSection:[self sectionAtIndex:sp] belowCell:(rp?[self cellAtIndex:rp-1 inSectionAtIndex:sp]:nil)]) {
+                    ret=[NSIndexPath indexPathForRow:rp-((sp==sourceIndexPath.section)&&(rp>sourceIndexPath.row)?1:0) inSection:sp];
+                    break;
+                }
+                if ((++rp)>=[[self sectionAtIndex:sm] cellsGivenContext:context].count+(sp>proposedDestinationIndexPath.section?1:0)) {
+                    if ((++sp)<[model sectionsGivenContext:context].count) {
+                        rp=0;
+                    }
+                }
+            }
+        }
+        if (!ret) ret=sourceIndexPath;
+        
+        [Model delayCommitsForSeconds:0.5];
+        @999 return(ret);
+    }
+
+
+    -(void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+    {
+        if ((fromIndexPath.section==toIndexPath.section)&&(fromIndexPath.row==toIndexPath.row)) return;
+        else if (fromIndexPath.section==toIndexPath.section) {
+            NSObject<SectionModel> *m=[self sectionAtIndex:fromIndexPath.section];
+            NSObject<CellModel> *n=[m cellAtIndex:fromIndexPath.row givenContext:context];
+            AtomiclyMutableArray *ama=[m cellsGivenContext:context];
+            NSMutableArray *a=ama.mutableCopy;
+            [ama removeObjectAtIndex:fromIndexPath.row];
+            [a removeObjectAtIndex:fromIndexPath.row];
+            [ama insertObject:n atIndex:toIndexPath.row+(toIndexPath.row>fromIndexPath.row?1:0)];
+            [a insertObject:n atIndex:toIndexPath.row];
+            [m overrideCellsAs:a forContext:context];
+        }
+        else {
+            NSObject<SectionModel> *fromm=[self sectionAtIndex:fromIndexPath.section];
+            NSObject<SectionModel> *tom=[model sectionAtIndex:toIndexPath.section givenContext:context];
+            NSObject<CellModel> *n=[[fromm cellAtIndex:fromIndexPath.row givenContext:context] retain];
+            AtomiclyMutableArray *fromama=[fromm cellsGivenContext:context];
+            NSMutableArray *froma=fromama.mutableCopy;
+            AtomiclyMutableArray *toama=[tom cellsGivenContext:context];
+            NSMutableArray *toa=toama.mutableCopy;
+            [fromama removeObjectAtIndex:fromIndexPath.row];
+            [froma removeObjectAtIndex:fromIndexPath.row];
+            [toama insertObject:n atIndex:toIndexPath.row];
+            [toa insertObject:n atIndex:toIndexPath.row];
+            [fromm overrideCellsAs:froma forContext:context];
+            [tom overrideCellsAs:toa forContext:context];
+        }
+        [Model delayCommitsForSeconds:0.5];
+    }
+
+
+    -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+    {
+        [[self cellAtIndexPath:indexPath] wasTapped];
+    }
+
+    -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+    {
+        [[self cellAtIndexPath:indexPath] accessoryWasTapped];
+    }
+
+   /*
+    -(void)resizedHeaderOrRowWithTimer:(NSTimer*)tim {
+        [self resizedHeaderOrRow_rescroll:((NSNumber*)tim.userInfo).boolValue];
+    }
+    -(void)resizedHeaderOrRowWithDelay:(float)delay rescroll:(bool)rescroll {
+        if (delay>0) [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(resizedHeaderOrRowWithTimer:) userInfo:[NSNumber numberWithBool:rescroll] repeats:NO];
+        else [self resizedHeaderOrRow_rescroll:rescroll];
+    }
+
+    -(void)resizedHeaderOrRow_rescroll:(bool)rescroll {
+        NSArray *cells=self.table.visibleCells;
+        if (cells&&cells.count) {
+            //UITableViewCell *topCell=[cells objectAtIndex:0];
+            //NSIndexPath *indexPath=[self.table indexPathForCell:topCell];
+            //double frac=MAX(-5,MIN(1,(self.table.contentOffset.y-topCell.frame.origin.y)/MAX(1,topCell.frame.size.height)));
+            self.table.scrollEnabled=NO;
+            [self.table beginUpdates];
+            [self.table endUpdates];
+            self.table.scrollEnabled=YES;
+            //if (rescroll) [self scrollToNode:topCell.node inModelAtIndex:indexPath.section frac:frac delay:0.1];
+        }
+        else {
+            self.table.scrollEnabled=NO;
+            [self.table beginUpdates];
+            [self.table endUpdates];
+            self.table.scrollEnabled=YES;
+        }
+    }
+
+    -(void)scrollTableWithTimer:(NSTimer*)tim {
+        [self.table scrollRectToVisible:((NSValue*)tim.userInfo).CGRectValue animated:YES];
+    }
+
+    -(void)scrollToCellWithTimer:(NSTimer*)tim {
+        NSArray *a=tim.userInfo;
+        [self scrollToCell:[a objectAtIndex:0] delay:-1];
+    }
+
+    -(void)scrollToCell:(NSObject<CellModel>*)cell frac:(double)frac delay:(float)delay {
+        / *
+        
+        double preHeader=14,postHeader=14,preFooter=0,postFooter=0,preRow=0,postRow=0;
+        double y=0,h=1;
+        BOOL foundNode=NO;
+        int mi=0;
+        for (NSObject<TableSectionProtocol> *model in self.sectionModels) {
+            if ([self.shownModelIndexes containsIndex:mi]) {
+                y+=preHeader+postHeader;
+                UIView *header=model.header;
+                y+=header.frame.size.height;
+                NSArray *a=model.model.availableItems;
+                for (NSObject<TreeNode> *node in a) {
+                    y+=preRow;
+                    bool editing=[self editingNode:node inModel:model];
+                    if ((node==topNode)&&((modelIndex==NSNotFound)||(modelIndex==mi))) {
+                        y+=[model.rowFactory heightOfRowForNode:node inTableWithNode:_node editing:editing]*frac;
+                        h=[model.rowFactory heightOfRowForNode:node inTableWithNode:_node editing:editing]*(1-frac);
+                        foundNode=YES;
+                        break;
+                    }
+                    y+=[model.rowFactory heightOfRowForNode:node inTableWithNode:_node editing:editing]+postRow;
+                }
+                if (foundNode) break;
+                y+=preFooter+postFooter;
+            }
+            mi++;
+        }
+        if (foundNode) {
+            if (delay>0) {
+                [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(scrollTableWithTimer:) userInfo:[NSValue valueWithCGRect:CGRectMake(0, y, 1, h)] repeats:NO];
+            }
+            else [self.table scrollRectToVisible:CGRectMake(0, y, 1, h) animated:YES];
+        }
+        * /
+    }
+
+
+    -(void)scrollToCell:(NSObject<CellModel>*)cell delay:(float)delay {
+        if (delay>0) {
+            [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(scrollToCellWithTimer:) userInfo:[NSArray arrayWithObjects:cell,nil] repeats:NO];
+        }
+        else [self scrollToCell:cell frac:0 delay:delay];
+    }
+
+    */
+
+
+
+<EndlessCellModel:CellModel>
+    int logicalRowOffset (nodef)
+    double logicalOffset (nodef)
+
+<EndlessTableController:TableController>
+    int logicalRowOffset (nodef)
+    double logicalOffset (nodef)
+    int endlessRowMultiple=1
+
+    -(void)scrollViewDidScroll:(UIScrollView*)scrollView {
+        //[self protectScrollBounds];
+    }
+
+    -(void)protectScrollBounds {
+        CGPoint co=self.table.contentOffset;
+        CGSize sz=self.table.contentSize;
+        if ((co.y<sz.height*0.2)||(co.y>sz.height*0.9)) {
+            [self scrollToMiddle];
+        }
+    }
+
+    -(void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView {
+        [self scrollToMiddle];
+    }
+    -(void)scrollToMiddle {
+        NSArray *cells=[[self sectionAtIndex:0] cellsGivenContext:context];
+        if (!cells.count) return;
+        NSArray *vis=self.table.indexPathsForVisibleRows;
+        if (!(vis&&vis.count)) return;
+        int midvis=[(NSIndexPath*)[vis objectAtIndex:(vis.count-1)/2] row];
+        int target=(cells.count-1)/2;
+        if (target>midvis) target=midvis+floor((target-midvis)/endlessRowMultiple+0.5)*endlessRowMultiple;
+        if (target<midvis) target=midvis-floor((midvis-target)/endlessRowMultiple+0.5)*endlessRowMultiple;
+        if (midvis==target) return;
+        float dif=0;
+        for (int i=target;i<midvis;i++) {
+            dif+=[(NSObject<CellModel>*)[cells objectAtIndex:i] cellHeight];
+        }
+        for (int i=midvis;i<target;i++) {
+            dif-=[(NSObject<CellModel>*)[cells objectAtIndex:i] cellHeight];
+        }
+        self.logicalRowOffset+=midvis-target;
+        self.logicalOffset+=dif;
+        for (NSObject<CellModel> *cell in cells) {
+            if ([cell conformsToProtocol:@protocol(EndlessCellModel)]) {
+                ((NSObject<EndlessCellModel>*)cell).logicalRowOffset=logicalRowOffset;
+                ((NSObject<EndlessCellModel>*)cell).logicalOffset=logicalOffset;
+            }
+        }
+
+        CGPoint coWas=self.table.contentOffset;
+        self.table.contentOffset=CGPointMake(coWas.x,coWas.y-dif);
+    }
+
+
+
+
+
+<DeadTableController:TableController>
+    -(init) {
+        //[Model delayCommitsForSeconds:100];
+    }
+        
+    //-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+    //{@!-10 ret=1;}
+
+    //-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+    //{@!-10 ret=4;}
+
+    -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10 ret=0;}
+
+    -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+        @!-10 ret=[[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)] autorelease];
+        ret.backgroundColor=[UIColor redColor];
+    }
+    -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+        @!-10 ret=10;
+    }
+
+
+    -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {@-999 
+        @!-10 ret=[[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)] autorelease];
+        ret.backgroundColor=[UIColor greenColor];
+    }
+    -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+        @!-10 ret=10;
+    }
+
+
+    -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10 ret=15;}
+
+    -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10
+        ret=[[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hi"] autorelease];
+        ret.backgroundColor=[UIColor blueColor];
+    }
+
+
+
+

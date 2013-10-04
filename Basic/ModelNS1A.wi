@@ -1,0 +1,78 @@
+
+
+
+
+
+WIMyClass
+    NSIndexSet previousIndexesInHisqname (dealloc,nodef,readonly,ivar=previousIndexesInHisqname)
+    NSIndexSet indexesInHisqname (dealloc,nodef,readonly,ivar=indexesInHisqname)
+    NSUInteger indexInHisqname={return(self.indexesInHisqname.firstIndex);}
+
+    -(int)commitProperties:(int)substageIndex {@-3 
+        [previousIndexesInHisqname release];
+        previousIndexesInHisqname=indexesInHisqname;
+        indexesInHisqname=self.indexesInHisname.copy;
+        
+        if (previousIndexesInHisqname?!(indexesInHisqname&&[previousIndexesInHisqname isEqualToIndexSet:indexesInHisqname]):(indexesInHisqname!=nil)) {
+            modelObjectHasChanged=YES;
+        }
+    }
+    
+    -(void)cleanupCommit {
+        [previousIndexesInHisqname release];previousIndexesInHisqname=nil;
+    }
+
+
+    -(JustMyClassOverride*)overrideHisqnameAs:(NSHisClass)ahisqname forContext:(id<NSCopying>)__acontext {@-1000 ERR("__Class__ Please set indexes");}
+
+    -(JustMyClassOverride*)overrideHisqnameAs:(NSHisClass)ahisqname myIndexes:(NSIndexSet*)indexes forContext:(id<NSCopying>)__acontext {
+        if (!__acontext) return(nil);
+        JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
+        if (!ret) [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
+        [ret setHisqname:ahisqname myIndexes:indexes];
+        [ret release];
+        return(ret);
+    }
+
+    -(NSIndexSet*)indexesInHisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.indexesInHisqname:indexesInHisqname);
+    }
+    -(NSIndexSet*)previousIndexesInHisqnameGivenContext:(id<NSCopying>)__acontext {
+        JustMyClassOverride *o=(!__acontext?nil:[self hisqnameOverrideForKey:__acontext]);
+        return(o?o.previousIndexesInHisqname:previousIndexesInHisqname);
+    }
+
+
+
+
+JustMyClassOverride
+    -(init)init{}
+
+    NSIndexSet previousIndexesInHisqname (dealloc,nodef,readonly,ivar=previousIndexesInHisqname)
+    NSIndexSet indexesInHisqname=
+        {return(useMyHisqname&&indexesInHisqname?indexesInHisqname:self.baseWithHisqname.indexesInHisqname);} (dealloc,ivar=indexesInHisqname)
+    NSUInteger indexInHisqname={return(self.indexesInHisqname.firstIndex);}
+
+    -(void)setHisqname:(NSHisClass)v {@-1000 ERR("__Class__ Please set indexes");}
+
+    -(void)setHisqname:(NSHisClass)v myIndexes:(NSIndexSet*)indexes {
+        [hisqname release];
+        [indexesInHisqname release];
+        hisqname=[v retain];
+        indexesInHisqname=indexes.copy;
+        useMyHisqname=YES;
+        [self markDirty];
+    }
+    
+    -(int)commitProperties:(int)substageIndex {
+        [previousIndexesInHisqname release];
+        previousIndexesInHisqname=indexesInHisqname;
+        indexesInHisqname=nil;
+    }
+    
+    -(void)cleanupCommit {
+        [previousIndexesInHisqname release];previousIndexesInHisqname=nil;
+    }
+
+

@@ -1,0 +1,604 @@
+
+
+/*top:
+#define OID_marker (0xbad0fad0dad0cad0LL)
+#define __Derived_CClass__ (class_getName([self class]))
+#define __Derived_Class__ [NSString stringWithFormat:@"%s",__Derived_CClass__]
+#ifndef OWNER_TRACKING_ON
+#define OWNER_TRACKING_ON NO
+#endif
+*/
+
+
+
+
+ClassCount "-Object" "fn:object"
+    LL count,nextID (nodef)
+    NSString name (nodef,readonly,dealloc,ivar=name)
+    +(ClassCount*)classCount {
+        return([[[ClassCount alloc] init] autorelease]);
+    }
+    -(init[super init])initWithName:(NSString*)aname {
+        name=[aname retain];
+        count=0;nextID=1;
+    }
+    NSString description={return([NSString stringWithFormat:@"%@x%qu",name,count]);}
+
+type QuickHashTableOfClassCounts
+
+
+/*decl:
+    typedef QuickHashTable<ClassCount*> QuickHashTableOfClassCounts;
+    extern QuickHashTable<ClassCount*> *g_classCountht;
+    extern ClassCount *g_totalObjectCount;
+    extern ClassCount *g_classCountForClass(Class clas);
+*/
+/*decl:impl:
+    QuickHashTable<ClassCount*> *g_classCountht=nil;
+    ClassCount *g_totalObjectCount=nil;
+    ClassCount *g_classCountForClass(Class clas) {
+        ULL hash=obfuscateHash((ULL)clas);
+        ClassCount *ret=g_classCountht->find(hash);
+        if (!ret) {
+            g_classCountht->add(hash,ret=[[ClassCount alloc] initWithName:[NSString stringWithFormat:@"%s",class_getName(clas)]]);
+        }
+        return(ret);
+    }
+    template ManagedArray<QuickHashTableContext<ClassCount*> > QuickHashTableContext<ClassCount*>::contexts;
+*/
+
+Singletons<Ticker> "-Object" "fn:object"
+    NSMutableArray typeCountHistory=[NSMutableArray array]
+    QuickHashTableOfClassCounts *classCountht (readonly,nodef)
+    ClassCount totalObjectCount (readonly,nodef,dealloc,ivar=totalObjectCount)
+
+    -(void)dealloc {
+        {
+            Array<ClassCount*> cca;
+            g_classCountht->asArray(cca);
+            IterateArray(ClassCount*,cc,cca,
+                [cc release];
+            );
+            DELETE(QuickHashTable<ClassCount*>,g_classCountht);
+        }
+    }
+
+    -(init) {@-800
+        g_totalObjectCount=totalObjectCount=[[ClassCount alloc] initWithName:@"All classes"];
+        ContextIndex ci={0};
+        g_classCountht=classCountht=NEWCONSb(QuickHashTableOfClassCounts,(ci,nil,2048));
+        @0
+        for (int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
+    }
+
+    NSString description={@-999
+        NSMutableString *ret=[NSMutableString stringWithFormat:@"\nx%qu Objects:\n",totalObjectCount.count];
+        {
+            Array<ClassCount*> cca;
+            g_classCountht->asArray(cca);
+            ClassCount *pcc;
+            arrHeapSortb(ClassCount*,cca.a,obja.count>objb.count,0,cca.upperBound(),pcc);
+            IterateArray(ClassCount*,cc,cca,
+                NSString *name=cc.name;
+                [ret appendFormat:@"%@    %@ x %qu << %u, %u, %u, %u, %u -- %d\n",
+                    (int(cc.count)==
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue?@"":@"**"),
+                    name,cc.count,
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:0] objectForKey:name]).intValue,
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue,
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:2] objectForKey:name]).intValue,
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:3] objectForKey:name]).intValue,
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:4] objectForKey:name]).intValue,
+                    int(cc.count)-
+                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue
+                    ];
+            );
+        }
+        @999 return(ret);
+    }
+
+    -(void)tick {
+        [Log sendToLog:@"Singletons" format:@"Singletons at %@\n%@\n\n",((NSDate*)[NSDate date]).description,self.description];
+        if (!self.online) prnt("%s\n",self.description.UTF8String);
+        NSMutableDictionary *d=[(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4] retain];
+        [self.typeCountHistory removeLastObject];
+        [d removeAllObjects];
+
+        Array<ClassCount*> cca;
+        g_classCountht->asArray(cca);
+        IterateArray(ClassCount*,cc,cca,
+            NSString *key=cc.name;
+            [d setObject:[NSNumber numberWithInt:(int)cc.count] forKey:key];
+        );
+        [self.typeCountHistory insertObject:d atIndex:0];
+        [d release];
+    }
+    
+"<execinfo.h>"
+
+/*interfaces:
+    extern id retainWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
+    extern void releaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
+    extern id autoreleaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
+    extern void retainFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
+    extern void releaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
+    extern void autoreleaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
+    extern void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printAlloc);
+    extern void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printDealloc);
+    extern NSString *g_objectName(id object);
+    extern const char *g_cobjectName(id object);
+*/
+/*interfaces:impl:
+    id retainWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
+        LL ctxtWas=objectContext;
+        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
+            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
+            0);
+        id ret=[me retain];
+        objectContext=ctxtWas;
+        return(ret);
+    }
+    void releaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
+        LL ctxtWas=objectContext;
+        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
+            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
+            0);
+        [me release];
+        objectContext=ctxtWas;
+    }
+    id autoreleaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
+        LL ctxtWas=objectContext;
+        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
+            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
+            0);
+        id ret=[me autorelease];
+        objectContext=ctxtWas;
+        return(ret);
+    }
+ 
+    void retainFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
+        rc++;
+        if (objectContext) {
+            [g_trace object:objectContext ownsObject:mei];
+        }
+        else if (debugRetain) [g_trace object:1 ownsObject:mei];
+ 
+        if (printRetain) {
+            prnt("%d -> %d retain %s\n",rc,rc-arc,g_cobjectName(me));
+            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
+            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
+            [stk release];
+        }
+    }
+    
+    void releaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
+        rc--;
+        bool isAutorelease=NO;
+        if (debugRetain) {
+            void* callstack[8];
+            int i, frames = backtrace(callstack, 6);
+            char** strs = backtrace_symbols(callstack, frames);
+            //for (i = 0; i < frames; ++i) {
+            //    printf("%s\n", strs[i]);
+            //}
+            for (i = 2; i < frames; ++i) {
+                if (strstr(strs[i]," release]")) break;
+                else if (strstr(strs[i],"AutoreleasePoolP")) {isAutorelease=YES;arc--;break;}
+            }
+            //prnt("%s\n",isAutorelease?" -- autorelease\n":" -- standard release\n");
+            free(strs);
+            if (!(isAutorelease||objectContext)) [g_trace object:1 disownsObject:mei];
+        }
+        if (objectContext) {
+            [g_trace object:objectContext disownsObject:mei];
+        }
+ 
+        if (printRetain) {
+            prnt("%d -> %d release%s %s\n",rc,rc-arc,(isAutorelease?" (autoreleasepool)":""),g_cobjectName(me));
+            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
+            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
+            [stk release];
+        }
+    }
+    
+    void autoreleaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
+        if (debugRetain) arc++;
+        if (objectContext) {
+            [g_trace object:objectContext disownsObject:mei];
+        }
+        else if (debugRetain) [g_trace object:1 disownsObject:mei];
+ 
+        if (printRetain) {
+            prnt("%d -> %d autorelease %s\n",rc,rc-arc,g_cobjectName(me));
+            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
+            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
+            [stk release];
+        }
+    }
+
+    void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printAlloc) {
+        rc=1;arc=0;
+        ClassCount *c=g_classCountForClass([me class]);
+        c.count++;
+        meci=c.nextID++;
+        mei=g_singletons.totalObjectCount.nextID++;
+        g_singletons.totalObjectCount.count++;
+        if (printAlloc) prnt("ALLOC[%qu] %s:%qu x %qu: %p\n",mei,class_getName([me class]),meci,c.count,me);
+        [g_trace objectAllocated:mei clas:[me class]];
+    }
+ 
+    void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printDealloc) {
+        if (mei==0) {
+            ERR("!!!! error with object %p of type %s, the object was never inited",me,class_getName([me class]));
+            return;
+        }
+        if (mei==-1) {
+            ERR("!!!! error with object %p of type %s, the object seems to be being dealloced again",me,class_getName([me class]));
+            return;
+        }
+        if (rc||arc) {
+            ERR("!!!! error with object %p of type %s, the object has non-zero rc or arc at time of deallocation",me,class_getName([me class]));
+            return;
+        }
+
+        ClassCount *c=g_classCountForClass([me class]);
+        if (c.count<=0) {
+            ERR("!!!! error with counts of type %s, the object %p is being deallocated but the count of %s's is negative or zero",class_getName([me class]),me,class_getName([me class]));
+            return;
+        }
+        c.count--;
+ 
+        if (printDealloc) {
+            prnt("DEALLOC[%qu] %s:%qu x %qu: %p \"%s\"\n",mei,class_getName([me class]),meci,c.count,me,g_cobjectName(me));
+        }
+        [g_trace objectDeallocated:mei];
+        mei=meci=-1;
+    }
+    NSString *g_objectName(id object) {
+        if ([(NSObject*)object respondsToSelector:@selector(objectName)]) return([(NSObject<Object>*)object objectName]);
+        else return([NSString stringWithFormat:@"%s:%p",class_getName([(NSObject*)object class]),object]);
+    }
+    const char *g_cobjectName(id object) {
+        return([g_objectName(object) cStringUsingEncoding:NSASCIIStringEncoding]);
+    }
+*/
+
+
+<perclassdefn>
+    -{
+        #ifndef retain__Class__WithOwner
+        #define retain__Class__WithOwner(__object,__owner) [__object retain]
+        #endif
+        #ifndef release__Class__WithOwner
+        #define release__Class__WithOwner(__object,__owner) [__object release]
+        #endif
+        #ifndef autorelease__Class__WithOwner
+        #define autorelease__Class__WithOwner(__object,__owner) [__object autorelease]
+        #endif
+    }
+
+<Object>
+    LL objectIDInClass,objectIDInTotal (nodef,readonly)
+
+    bool isZombie (nodef,readonly)
+
+    bool debugRetain (nodef)
+    bool printRetain (nodef)
+    bool printDealloc (nodef)
+
+    int ___rc,___arc (nodef)
+
+    LL __owner_context (ivar=__owner_context,nodef)
+
+    -(init) {@-996 debugRetain=YES;}
+    -(init) {@-995 objInitFn(self,___rc,___arc,objectIDInTotal,objectIDInClass,printRetain||printDealloc);
+    }
+    -(void)dealloc {@998 deallocFn(self,___rc,___arc,objectIDInTotal,objectIDInClass,printRetain||printDealloc);
+        isZombie=YES;
+#if defined(LONGLIVEZOMBIES) || defined(LONGLIVEZOMBIES___WI_CLASS__)
+        if (YES) return;
+#endif
+    }
+    
+    
+    +{
+        #define retain__Class__WithOwner(__object,__owner) [__object retainWithOwner:__owner]
+        #define release__Class__WithOwner(__object,__owner) [__object releaseWithOwner:__owner]
+        #define autorelease__Class__WithOwner(__object,__owner) [__object autoreleaseWithOwner:__owner]
+    }
+    
+    -(id)retainWithOwner:(id)__owner {@999 return(retainWithOwnerFn(self,__owner_context,objectIDInTotal,__owner));}
+    -(void)releaseWithOwner:(id)__owner {@900 releaseWithOwnerFn(self,__owner_context,objectIDInTotal,__owner);}
+    -(id)autoreleaseWithOwner:(id)__owner {@999 return(autoreleaseWithOwnerFn(self,__owner_context,objectIDInTotal,__owner));}
+
+    -(id)retain {@-900 retainFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @999 return([super retain]);}
+    -(void)release {@-900 releaseFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @990 [super release];}
+    -(id)autorelease {@-900 autoreleaseFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @990 return([super autorelease]);}
+
+    NSString description={@-999 
+        NSMutableString *ret=self.objectName;
+        @999 return(ret);
+    }
+    NSMutableString objectName={@-999 
+        NSMutableString *ret=nil;
+        @-100 ret=[NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
+        @999 return(ret);
+    }
+    constchar *cdescription={return([self.description cStringUsingEncoding:NSASCIIStringEncoding]);}
+    constchar *cobjectName={return([self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);}
+
+
+
+
+
+
+
+
+
+    
+Singletons
+    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}(readonly,dealloc,ivar=trace,nodef)
+    
+"<pthread.h>"
+/*interfaces:
+    extern ULL g_sequence;
+    extern Trace *g_trace;
+    #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((const void*)self)!=(const void*)g_trace)&&(((const void*)self)!=(const void*)[g_trace class]),__trcfnnm);
+    
+    
+    class TraceFunctionTracker {
+        public:
+            int depth;
+            static pthread_key_t key;
+            TraceFunctionTracker(bool en,const char *fnName) {
+                if (!en) depth=-1;
+                else {
+                    if (!key) pthread_key_create(&key,nil);
+                    depth=((int)pthread_getspecific(key))+1;
+                    if (depth<0) depth=0;
+                    pthread_setspecific(key,(const void*)depth);
+                    [g_trace addTraceCString:fnName atDepth:depth];
+                }
+            }
+            ~TraceFunctionTracker() {
+                if (depth>=0) {
+                    [g_trace finishDepth:depth];
+                    pthread_setspecific(key,(const void*)(depth-1));
+                }
+            }
+    };
+    extern int g_numNamedThreads;
+*/
+/*interfaces:impl:
+    ULL g_sequence=0;
+    Trace *g_trace=nil;
+    pthread_key_t TraceFunctionTracker::key=nil;
+    int g_numNamedThreads=0;
+*/
+Trace<Ticker,BaseObject>
+    +(NSString*)callStackStringFromDepth:(int)fromDepth toDepth:(int)toDepth {
+        NSMutableString *ret=[NSMutableString string];
+        NSArray *__a=[NSThread callStackSymbols];
+        //NSLog(__a.description);
+        for (int d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
+            NSString *s=[__a objectAtIndex:d];
+            NSUInteger st=[s rangeOfString:@"["].location;
+            NSUInteger en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
+            if ((st!=NSNotFound)&&(en!=NSNotFound)&&(en>st)) {
+                s=[s substringWithRange:NSMakeRange(st-1,en+1-(st-1))];
+                if ([s isEqualToString:@"-[EndpointS didAddObject:]"]) [ret appendFormat:@" ES+ "];
+                else if ([s isEqualToString:@"-[EndpointS addObject:]"]||[s isEqualToString:@"-[EndpointS _addObject:]"]) {}
+                else if ([s isEqualToString:@"-[MutableSet didAddObject:]"]) [ret appendFormat:@" MS+ "];
+                else if ([s isEqualToString:@"-[MutableSet addObject:]"]||[s isEqualToString:@"-[MutableSet _addObject:]"]) {}
+                else if ([s isEqualToString:@"-[EndpointS willRemoveObject:]"]) [ret appendFormat:@" ES- "];
+                else if ([s isEqualToString:@"-[EndpointS removeObject:]"]||[s isEqualToString:@"-[EndpointS _removeObject:]"]) {}
+                else if ([s isEqualToString:@"-[MutableSet willRemoveObject:]"]) [ret appendFormat:@" MS- "];
+                else if ([s isEqualToString:@"-[MutableSet removeObject:]"]||[s isEqualToString:@"-[MutableSet _removeObject:]"]) {}
+                else if ([s isEqualToString:@"-[EndpointA didInsertObject:withIndex:]"]) [ret appendFormat:@" EA+ "];
+                else if ([s isEqualToString:@"-[EndpointA insertObject:atIndex:]"]||[s isEqualToString:@"-[EndpointA _insertObject:withIndex:]"]) {}
+                else if ([s isEqualToString:@"-[MutableArray didInsertObject:withIndex:]"]) [ret appendFormat:@" MA+ "];
+                else if ([s isEqualToString:@"-[MutableArray insertObject:withIndex:]"]||[s isEqualToString:@"-[MutableArray _insertObject:withIndex:]"]) {}
+                else if ([s isEqualToString:@"-[EndpointA willRemoveObject:atIndex:]"]) [ret appendFormat:@" EA- "];
+                else if ([s isEqualToString:@"-[EndpointA removeObject:atIndex:]"]||[s isEqualToString:@"-[EndpointA _removeObject:atIndex:]"]) {}
+                else if ([s isEqualToString:@"-[MutableArray willRemoveObject:atIndex:]"]) [ret appendFormat:@" MA- "];
+                else if ([s isEqualToString:@"-[MutableArray removeObject:atIndex:]"]||[s isEqualToString:@"-[MutableArray _removeObject:atIndex:]"]) {}
+                else {
+                    if (dd>=fromDepth) {
+                        [ret appendFormat:@" -- %@",s];
+                    }
+                    dd++;
+                }
+            }
+        }
+        return(ret);
+    }
+    
+
+    //NSMutableData tmpJSONData=[[NSMutableData alloc] init] (readonly,dealloc,ivar=tmpJSONData)
+    
+    NSMutableString *nwTraces=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces)
+    NSMutableString *nwTraces2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces2)
+
+    -(void)start {g_trace=self;[self startWithInterval:0.5];}
+    -(void)stop {@100 g_trace=nil;}
+    
+    bool savingTrace={return(v_tim!=nil);}
+    
+    +(NSString*)threadNameJSON {
+        NSString *nm=(NSString*)[[NSThread currentThread].threadDictionary objectForKey:@"jsonname"];
+        if (!nm) {
+            [[NSThread currentThread].threadDictionary setObject:nm=[[NSString stringWithFormat:@"%d%@",++g_numNamedThreads,[NSThread currentThread].name] JSONString] forKey:@"jsonname"];
+        }
+        return(nm);
+    }
+
+    -(void)addTrace:(NSString*)trace atDepth:(int)depth {
+        g_trace=nil;
+        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [__Class__ threadNameJSON],
+            trace.JSONString];
+        g_trace=self;
+    }
+    
+    -(void)addTraceCString:(const char*)trace atDepth:(int)depth {
+        g_trace=nil;
+        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [__Class__ threadNameJSON],
+            [NSString JSONunicharsStringForCString:trace withLength:(int)strlen(trace) useTmpDataObject:nil retLength:nil]];
+        g_trace=self;
+    }
+    
+    -(void)finishDepth:(int)depth {
+        g_trace=nil;
+        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [__Class__ threadNameJSON]];
+        g_trace=self;
+    }
+
+    -(void)object:(LL)owner ownsObject:(LL)object {
+        g_trace=nil;
+        [newTraces appendFormat:@"[-1,%qu,%f,%qd,%qd],\n",g_sequence++,CACurrentMediaTime(),
+            owner,object];
+        g_trace=self;
+    }
+
+    -(void)object:(LL)disowner disownsObject:(LL)object {
+        g_trace=nil;
+        [newTraces appendFormat:@"[-2,%qu,%f,%qd,%qd],\n",g_sequence++,CACurrentMediaTime(),
+            disowner,object];
+        g_trace=self;
+    }
+
+    -(void)objectAllocated:(LL)object clas:(Class)clas {
+        g_trace=nil;
+        [newTraces appendFormat:@"[-3,%qu,%f,%qu,%s],\n",g_sequence++,CACurrentMediaTime(),
+            object,class_getName(clas)];
+        g_trace=self;
+    }
+
+    -(void)objectDeallocated:(LL)object {
+        g_trace=nil;
+        [newTraces appendFormat:@"[-4,%qu,%f,%qu],\n",g_sequence++,CACurrentMediaTime(),
+            object];
+        g_trace=self;
+    }
+
+    bool not_first (nodef)
+
+    -(void)tick {
+        g_trace=self;
+        
+        [newTraces2 setString:@""];
+        NSMutableString *tmp=newTraces;newTraces=newTraces2;newTraces2=tmp;
+        
+        if (newTraces2.length) {
+            NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savetrace.php?fn=%@&fst=%d",g_singletons.styleName,not_first?0:1]];
+            [[newTraces2 dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
+            not_first=1;
+        }
+
+        [newTraces2 setString:newTraces];
+        newTraces2=newTraces;newTraces=tmp;
+    }
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+    
+Singletons
+    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}(readonly,dealloc,ivar=objectGraph,nodef)
+    
+"<pthread.h>"
+/*interfaces:
+    extern ObjectGraph *g_objectGraph;
+    #define OBJOWN(__owner,__obj,__c) [g_objectGraph object:__owner ownsObject:__obj count:__c]
+*/
+/*interfaces:impl:
+    ObjectGraph *g_objectGraph=nil;
+*/
+ObjectGraph<Ticker,BaseObject>
+    NSMutableString *nwEdits=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newEdits)
+    NSMutableString *nwEdits2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newEdits2)
+
+    -(void)start {g_objectGraph=self;[self startWithInterval:0.5];}
+    -(void)stop {@100 g_objectGraph=nil;}
+    
+    bool savingGraph={return(v_tim!=nil);}
+
+    -(void)object:(LL)owner ownsObject:(LL)object count:(int)count {
+        [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,count];
+    }
+
+    bool not_first (nodef)
+
+    -(void)tick {
+        g_objectGraph=self;
+        
+        [newEdits2 setString:@""];
+        NSMutableString *tmp=newEdits;newEdits=newEdits2;newEdits2=tmp;
+        
+        if (newEdits2.length) {
+            NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"saveobjectgraph.php?fn=%@&fst=%d",g_singletons.styleName,not_first?0:1]];
+            [[newEdits2 dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
+            not_first=1;
+        }
+
+        [newEdits2 setString:newEdits];
+        newEdits2=newEdits;newEdits=tmp;
+    }
+    
+
+
+
+
+
+
+
+    
+
+<DerivedObject> "-Object"
+    -(id)retain {@999 return([super retain]);}
+    -(void)release {@999 [super release];}
+    -(id)autorelease {@999 return([super autorelease]);}
+
+ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
+    LL objectIDInTotal (nodef,readonly)
+    -(init[super init])initWithObjectID:(LL)aobjectIDInTotal {
+        objectIDInTotal=aobjectIDInTotal;
+    }
+    
+<ObjectEquate>
+    LL objectIDInTotal (readonly)
+    -(BOOL)isEqual:(id)obj {@-999 
+        bool ret=(obj==self)||
+                    (([obj conformsToProtocol:@protocol(ObjectEquate)]||
+                        [obj conformsToProtocol:@protocol(Object)])&&
+                    (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
+        @999 return(ret);
+    }
+    -(NSUInteger)hash {return((NSUInteger)obfuscateULL(objectIDInTotal));}
+
+<ObjectEquateAndCopy:NSCopying,ObjectEquate>
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[ObjectPointer allocWithZone:zone] initWithObjectID:objectIDInTotal]);
+    }
+
+
+
+
+
+
+
+

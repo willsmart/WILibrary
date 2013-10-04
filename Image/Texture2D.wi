@@ -1,0 +1,444 @@
+"<UIKit/UIKit.h>"
+"<OpenGLES/ES1/gl.h>"
+"<OpenGLES/ES1/glext.h>"
+"<OpenGLES/ES2/gl.h>"
+"<OpenGLES/ES2/glext.h>"
+"<QuartzCore/QuartzCore.h>"
+
+sys EAGLContext
+type GLint
+type GLuint
+
+/*top:
+#define kMaxTextureSize   2048
+*/
+
+
+type Texture2DPixelFormat "typedef:enum {
+  kTexture2DPixelFormat_Automatic = 0,
+  kTexture2DPixelFormat_RGBA8888,
+  kTexture2DPixelFormat_RGB565,
+  kTexture2DPixelFormat_A8,
+}"
+
+
+Texture2D <BaseObject> "fn:render"
+    GLuint glname=0 (readonly)
+    CGSize contentSize (nodef)
+    NSUInteger pixelWidth=100,pixelHeight=100 (readonly)
+    Texture2DPixelFormat pixelFormat=kTexture2DPixelFormat_RGBA8888 (readonly)
+    GLfloat  maxS=1,maxT=1 (readonly)
+    GLuint frameBuffer={
+        if ((frameBuffer==GL_INVALID_VALUE)&&glname) {
+            glGenFramebuffersOES(1, &frameBuffer);
+            [self bindFrameBuffer];
+            glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, glname, 0);
+            [self unbindFrameBuffer];
+        }
+        return(frameBuffer);
+    } (ivar=frameBuffer)
+
+    -(void)dealloc {@-50 
+        self.context=nil;
+    }
+
+
+    EAGLContext _context=nil,context=
+        {return(self._context);}
+        -v{
+            if (self._context != v) {
+                if (self.context) {
+                    [EAGLContext setCurrentContext:self.context];
+                    [self deleteFramebuffer];
+                    [EAGLContext setCurrentContext:nil];
+                }
+                else if ([EAGLContext currentContext] == self.context) {
+                    [EAGLContext setCurrentContext:nil];
+                }
+                self._context = v;
+            }
+        }
+
+
+    - (bool)bindFrameBuffer {
+        [EAGLContext setCurrentContext:self.context];
+        if ((self.context)&&(self.frameBuffer!=GL_INVALID_VALUE)) {
+            glBindFramebufferOES(GL_FRAMEBUFFER_OES, frameBuffer);
+            glViewport(0, 0, pixelWidth, pixelHeight);
+            return(YES);
+        }
+        else return(NO);
+    }
+    - (void)unbindFrameBuffer {
+        if (self.context&&([EAGLContext currentContext] == self.context)&&(self.frameBuffer!=GL_INVALID_VALUE)) {
+            glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
+        }
+    }
+    -(void)deleteFramebuffer {
+        if (frameBuffer!=GL_INVALID_VALUE) {
+            glDeleteFramebuffers(1, &frameBuffer);
+            frameBuffer = GL_INVALID_VALUE;
+        }
+    }
+
+    -(BOOL)initContext {
+        self.context=nil;
+        EAGLContext *aContext = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
+        if (!aContext) {
+            NSLog(@"Failed to make context");
+            return(NO);
+        }
+        if (![EAGLContext setCurrentContext:aContext]) {
+            NSLog(@"Failed to set ES context current");
+            return(NO);
+        }
+        self.context=aContext;
+        [EAGLContext setCurrentContext:self.context];
+        return(YES);
+    }
+
+
+    NSString description={
+      return([NSString stringWithFormat:@"<%@ = %p | Name = %i | Dimensions = %ix%i | Coordinates = (%.2f, %.2f)>", [self class], self, glname, pixelWidth, pixelHeight, maxS, maxT]);
+    }
+
+    -(init) {
+        contentSize=CGSizeMake(pixelWidth,pixelHeight);
+        frameBuffer=GL_INVALID_VALUE;
+    }
+
+    -(void)clear {
+        if (frameBuffer!=GL_INVALID_VALUE) glDeleteFramebuffersOES(1,&frameBuffer);
+        if (glname) glDeleteTextures(1, &glname);
+        frameBuffer=GL_INVALID_VALUE;
+        glname=0;
+        self._uiImage=nil;
+    }
+
+    - (void)dealloc {
+        [self clear];
+    }
+
+    - (void)loadWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat pixelsWide:(NSUInteger)width pixelsHigh:(NSUInteger)height contentSize:(CGSize)size {
+        [self clear];
+
+        GLint saveName;
+        pixelFormat=apixelFormat;
+        pixelWidth=width;
+        pixelHeight=height;
+        contentSize=size;
+        frameBuffer=GL_INVALID_VALUE;
+        maxS = size.width / (float)width;
+        maxT = size.height / (float)height;
+        
+        if (!data) {
+            int Bpp;
+            switch(pixelFormat) {                    
+                case kTexture2DPixelFormat_RGBA8888:Bpp=4;break;
+                case kTexture2DPixelFormat_RGB565:Bpp=2;break;
+                case kTexture2DPixelFormat_A8:Bpp=1;break;
+                default:Bpp=0;break;
+            }
+            NSMutableData *d=[NSMutableData dataWithCapacity:width*height*Bpp];
+            memset(d.mutableBytes,0xff,width*height*Bpp);
+            data=d.bytes;            
+        }
+        
+        glGenTextures(1, &glname);
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &saveName);
+        glBindTexture(GL_TEXTURE_2D, glname);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        switch(pixelFormat) {
+                    
+          case kTexture2DPixelFormat_RGBA8888:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            break;
+          case kTexture2DPixelFormat_RGB565:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data);
+            break;
+          case kTexture2DPixelFormat_A8:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+            break;
+          default:
+            [NSException raise:NSInternalInconsistencyException format:@""];
+                    
+        }
+        glBindTexture(GL_TEXTURE_2D, saveName);
+    }
+
+
+
+
+    NSMutableData pixelsData=nil
+
+
+
+    -(DWRD*)pixelsWithWidth:(int)w height:(int)h {
+        if (self.frameBuffer==GL_INVALID_VALUE) return(nil);
+        GLint fmt,fmt2;
+        NSUInteger fmtSize;
+        switch(pixelFormat) {
+          case kTexture2DPixelFormat_RGBA8888:default:
+            fmt=GL_RGBA;fmt2=GL_UNSIGNED_BYTE;fmtSize=4;break;
+          case kTexture2DPixelFormat_RGB565:
+            fmt=GL_RGB;fmt2=GL_UNSIGNED_SHORT_5_6_5;fmtSize=4;break;
+          case kTexture2DPixelFormat_A8:
+            fmt=GL_ALPHA;fmt2=GL_UNSIGNED_BYTE;fmtSize=1;break;
+        }
+        NSUInteger len=w*h*fmtSize;
+        if (!self.pixelsData) self.pixelsData=[NSMutableData dataWithLength:len];
+        else if (self.pixelsData.length!=len) self.pixelsData.length=len;
+
+        glReadPixels(0,0,w,h,fmt,fmt2,self.pixelsData.mutableBytes);
+        
+        if (pixelFormat==kTexture2DPixelFormat_RGB565) {
+            WRD *from=((WRD*)self.pixelsData.mutableBytes)+w*h;
+            DWRD *to=((DWRD*)self.pixelsData.mutableBytes)+w*h;
+            for (int i=0;i<w*h;i++) {
+                from--;to--;
+                DWRD dw=*from;
+                *to=((dw&0x1f)<<11)|((dw&0x7e0)<<13)|((dw&0xf800)<<16)|0xff;
+            }
+            fmt=GL_RGBA;fmt2=GL_UNSIGNED_BYTE;
+        }
+        return((DWRD*)self.pixelsData.mutableBytes);
+    }
+
+
+    -(UIImage*)uiImageWithWidth:(int)w height:(int)h {
+        return([__Class__ uiImageWithWidth:w height:h data:[self pixelsWithWidth:w height:h] pixelFormat:pixelFormat]);
+    }
+
+    +(UIImage*)uiImageWithWidth:(int)w height:(int)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
+        NSUInteger fmtSize;
+        CGColorSpaceRef colorSpaceRef;
+        CGBitmapInfo bitmapInfo;
+        
+        switch(apixelFormat) {
+          case kTexture2DPixelFormat_RGBA8888:case kTexture2DPixelFormat_RGB565:default:
+            colorSpaceRef=CGColorSpaceCreateDeviceRGB();
+            bitmapInfo = kCGImageAlphaLast | kCGBitmapByteOrder32Big;
+            fmtSize=4;
+            break;
+          case kTexture2DPixelFormat_A8:
+            colorSpaceRef=CGColorSpaceCreateDeviceGray();
+            bitmapInfo = kCGImageAlphaOnly;
+            fmtSize=1;
+            break;
+        }
+        
+        NSUInteger len=w*h*fmtSize;
+        NSData *nsdata=[[NSData alloc] initWithBytes:data length:len];
+        data=nsdata.bytes;
+        CGDataProviderRef provider = CGDataProviderCreateWithData(nsdata,data,len,texture2D_releasedatacallback);
+        
+        CGImageRef imageRef = CGImageCreate(w,h,8,8*fmtSize,fmtSize*w,colorSpaceRef,bitmapInfo,provider,NULL,NO,kCGRenderingIntentDefault);
+        //prnt("%p im\n",imageRef);
+        UIImage *ret=[UIImage imageWithCGImage:imageRef scale:2 orientation:UIImageOrientationUp];
+        CGImageRelease(imageRef);
+        CGColorSpaceRelease(colorSpaceRef);
+        CGDataProviderRelease(provider);
+        return(ret);
+    }
+
+    /*interfaces:
+        void texture2D_releasedatacallback(void *info,const void *data,size_t size);
+    */
+    /*interfaces:impl:
+        void texture2D_releasedatacallback(void *info,const void *data,size_t size) {
+            NSData *nsdata=(NSData*)info;
+            [nsdata release];
+        }
+    */
+
+
+    UIImage _uiImage=nil
+    UIImage uiImage=
+        {
+            if (!v__uiImage) {
+                self.uiImage=[self uiImageWithWidth:pixelWidth height:pixelHeight];
+            }
+            return(v__uiImage);
+        }
+        -v{
+            if (v==v__uiImage) return;
+            
+            [self clear];
+
+            self._uiImage=v;
+            if (!v) return;
+            
+            NSUInteger i;
+            CGContextRef context = nil;
+            void *data = nil;;
+            CGColorSpaceRef colorSpace;
+            void *tempData;
+            unsigned int *inPixel32;
+            unsigned short *outPixel16;
+
+            CGImageRef image=[v CGImage];
+            //UIImageOrientation orientation=[v imageOrientation];
+            BOOL sizeToFit = NO;
+
+            CGImageAlphaInfo info=CGImageGetAlphaInfo(image);
+            bool hasAlpha = (info == kCGImageAlphaPremultipliedLast) || (info == kCGImageAlphaPremultipliedFirst) || (info == kCGImageAlphaLast) || (info == kCGImageAlphaFirst);
+            
+            Texture2DPixelFormat apixelFormat;
+            if (CGImageGetColorSpace(image)) {
+                if (hasAlpha) apixelFormat = kTexture2DPixelFormat_RGBA8888;
+                else apixelFormat = kTexture2DPixelFormat_RGB565;
+            }
+            else { //NOTE: No colorspace means a mask image
+                apixelFormat = kTexture2DPixelFormat_A8;
+            }
+
+
+            CGSize imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
+            CGAffineTransform transform = CGAffineTransformIdentity;
+
+            NSUInteger width = imageSize.width,height = imageSize.height;
+
+            if ((width != 1) && (width & (width - 1))) {
+                i = 1;
+                while((sizeToFit ? 2 * i : i) < width) i *= 2;
+                width = i;
+            }
+            if((height != 1) && (height & (height - 1))) {
+                i = 1;
+                while((sizeToFit ? 2 * i : i) < height) i *= 2;
+                height = i;
+            }
+            while((width > kMaxTextureSize) || (height > kMaxTextureSize)) {
+                width /= 2;
+                height /= 2;
+                transform = CGAffineTransformScale(transform, 0.5, 0.5);
+                imageSize.width *= 0.5;
+                imageSize.height *= 0.5;
+            }
+
+            switch (apixelFormat) {
+                case kTexture2DPixelFormat_RGBA8888:
+                  colorSpace = CGColorSpaceCreateDeviceRGB();
+                  data = malloc(height * width * 4);
+                  context = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+                  CGColorSpaceRelease(colorSpace);
+                  break;
+                case kTexture2DPixelFormat_RGB565:
+                  colorSpace = CGColorSpaceCreateDeviceRGB();
+                  data = malloc(height * width * 4);
+                  context = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big);
+                  CGColorSpaceRelease(colorSpace);
+                  break;
+                  
+                case kTexture2DPixelFormat_A8:
+                  data = malloc(height * width);
+                  context = CGBitmapContextCreate(data, width, height, 8, width, NULL, kCGImageAlphaOnly);
+                  break;        
+                default:
+                  [NSException raise:NSInternalInconsistencyException format:@"Invalid pixel format"];
+            }
+
+
+            CGContextClearRect(context, CGRectMake(0, 0, width, height));
+            CGContextTranslateCTM(context, 0, height - imageSize.height);
+
+            if (!CGAffineTransformIsIdentity(transform)) CGContextConcatCTM(context, transform);
+            
+            CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+            //Convert "RRRRRRRRRGGGGGGGGBBBBBBBBAAAAAAAA" to "RRRRRGGGGGGBBBBB"
+            if(apixelFormat == kTexture2DPixelFormat_RGB565) {
+                tempData = malloc(height * width * 2);
+                inPixel32 = (unsigned int*)data;
+                outPixel16 = (unsigned short*)tempData;
+                for(i = 0; i < width * height; ++i, ++inPixel32) {
+                    *outPixel16++ = ((((*inPixel32 >> 0) & 0xFF) >> 3) << 11) | ((((*inPixel32 >> 8) & 0xFF) >> 2) << 5) | ((((*inPixel32 >> 16) & 0xFF) >> 3) << 0);
+                }
+                free(data);
+                data = tempData;
+
+            }
+            [self loadWithData:data pixelFormat:apixelFormat pixelsWide:width pixelsHigh:height contentSize:imageSize];
+
+            CGContextRelease(context);
+            free(data);
+        }
+
+    - (void)loadWithString:(NSString*)string dimensions:(CGSize)dimensions alignment:(NSTextAlignment)alignment fontName:(NSString*)name fontSize:(CGFloat)size {
+        [self clear];
+        
+        
+        NSUInteger width = dimensions.width,height = dimensions.height;
+
+        BOOL sizeToFit = NO;
+        if ((width != 1) && (width & (width - 1))) {
+            NSUInteger i = 1;
+            while((sizeToFit ? 2 * i : i) < width) i *= 2;
+            width = i;
+        }
+        if((height != 1) && (height & (height - 1))) {
+            NSUInteger i = 1;
+            while((sizeToFit ? 2 * i : i) < height) i *= 2;
+            height = i;
+        }
+        //while((width > kMaxTextureSize) || (height > kMaxTextureSize)) {
+        //    width /= 2;
+        //    height /= 2;
+        //    transform = CGAffineTransformScale(transform, 0.5, 0.5);
+        //    imageSize.width *= 0.5;
+        //    imageSize.height *= 0.5;
+        //}
+        
+        UIFont *font = [UIFont fontWithName:name size:size];
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        void *data = calloc(height, width);
+        CGContextRef context = CGBitmapContextCreate(data, width, height, 8, width, colorSpace, kCGImageAlphaNone);
+        CGColorSpaceRelease(colorSpace);
+
+
+        CGContextSetGrayFillColor(context, 1.0, 1.0);
+        CGContextTranslateCTM(context, 0.0, height);
+        CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
+        UIGraphicsPushContext(context);
+        [string drawInRect:CGRectMake(0, 0, dimensions.width, dimensions.height) withFont:font lineBreakMode:NSLineBreakByWordWrapping alignment:alignment];
+        UIGraphicsPopContext();
+
+        [self loadWithData:data pixelFormat:kTexture2DPixelFormat_A8 pixelsWide:width pixelsHigh:height contentSize:dimensions];
+
+        CGContextRelease(context);
+        free(data);
+    }
+
+
+
+    - (void)drawAtPoint:(CGPoint)point {
+        GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
+        GLfloat width = pixelWidth*maxS,height=pixelHeight* maxT;
+        GLfloat vertices[]={
+            -width/2+point.x,-height/2+point.y,0.0,
+            width/2+point.x,-height/2+point.y,0.0,
+            -width/2+point.x,height/2+point.y,0.0,
+            width/2+point.x,height/2+point.y,0.0};
+
+        glBindTexture(GL_TEXTURE_2D, glname);
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+
+
+    - (void) drawInRect:(CGRect)rect {
+        GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
+        GLfloat  vertices[] = {
+            rect.origin.x,rect.origin.y,0.0,
+            rect.origin.x+rect.size.width,rect.origin.y,0.0,
+            rect.origin.x,rect.origin.y+rect.size.height,0.0,
+            rect.origin.x+rect.size.width,rect.origin.y+rect.size.height,0.0};
+
+        glBindTexture(GL_TEXTURE_2D, glname);
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+
+
+

@@ -1,0 +1,251 @@
+
+
+"<Foundation/Foundation.h>"
+"<AVFoundation/AVCaptureSession.h>"
+"<AVFoundation/AVCaptureVideoPreviewLayer.h>"
+"<AVFoundation/AVCaptureDevice.h>"
+"<AVFoundation/AVCaptureInput.h>"
+"<AVFoundation/AVCaptureOutput.h>"
+"<AVFoundation/AVVideoSettings.h>"
+"<AVFoundation/AVMediaFormat.h>"
+
+sys AVCaptureConnection
+sys AVCaptureDevice
+sys AVCaptureSession
+
+/*interfaces:
+#define CAMTEXSZ 256
+*/
+
+Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
+    Texture2D texA=[[Texture2D alloc] init] (readonly,dealloc,ivar=texA)
+    Texture2D texB=[[Texture2D alloc] init] (readonly,dealloc,ivar=texB)
+    NSMutableData texdA=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdA)
+    NSMutableData texdB=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdB)
+    char lockedA,lockedB (nodef)
+    CGSize szA,szB (nodef)
+    int last (readonly,ivar,nodef)
+    
+    char direction (nodef)
+    AVCaptureSession sess (nodef,readonly,ivar=sess,dealloc)
+
+
+    -(Texture2D*)tex:(int)i {return(i==0?texA:texB);}
+    -(NSMutableData*)texd:(int)i {return(i==0?texdA:texdB);}
+    -(char)locked:(int)i {return(i==0?lockedA:lockedB);}
+    -(CGSize)sz:(int)i {return(i==0?szA:szB);}
+    -(void)setLocked:(int)i to:(bool)v {*(i==0?&lockedA:&lockedB)=v;}
+
+    -(void)dealloc {@-100 
+        [self stop];
+    }
+
+    -(init[super init])initWithDirection:(char)dir {
+        direction=dir;
+    }
+    -(init)init {
+        direction='f';
+        last=-1;
+    }
+
+    -(init) {
+        [texA loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:CAMTEXSZ pixelsHigh:CAMTEXSZ contentSize:CGSizeMake(CAMTEXSZ,CAMTEXSZ)];
+        [texB loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:CAMTEXSZ pixelsHigh:CAMTEXSZ contentSize:CGSizeMake(CAMTEXSZ,CAMTEXSZ)];
+
+        [self start];
+    }
+
+    -(void)stop {
+        [sess stopRunning];
+    }
+
+
+    Texture2D lockTexture={
+        Texture2D *tex;
+        int texi;
+        @synchronized (self) {
+            if (last==-1) return(nil);
+            else if (![self locked:last]) {[self setLocked:last to:'u'];return([self tex:last]);}
+            else if ([self locked:last]=='x') {
+                [self setLocked:last to:'u'];tex=[self tex:texi=last];
+            }
+            else return(nil);
+        }
+        [tex loadWithData:[[self texd:texi] mutableBytes] pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:CAMTEXSZ pixelsHigh:CAMTEXSZ contentSize:[self sz:texi]];
+        return([[tex retain] autorelease]);
+    }
+
+    -(void)unlockTexture:(Texture2D*)texture {
+        @synchronized (self) {
+            for (int i=0;i<2;i++) if (([self tex:i]==texture)&&([self locked:i]=='u')) [self setLocked:i to:0];
+        }
+    }
+
+
+    -(void)start
+    {
+        if (!sess) {
+            
+            NSError *error = nil;
+            
+            AVCaptureDevice *captureDevice = (direction=='b'?[self backFacingCameraIfAvailable]:[self frontFacingCameraIfAvailable]);
+            AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
+            if ( ! videoInput)
+            {
+                NSLog(@"Could not get video input: %@", error);
+                return;
+            }
+            
+            //  the capture session is where all of the inputs and outputs tie together.
+            
+            sess = [[AVCaptureSession alloc] init];
+            
+            //  sessionPreset governs the quality of the capture. we don't need high-resolution images,
+            //  so we'll set the session preset to low quality.
+            
+            sess.sessionPreset = AVCaptureSessionPresetLow;
+            
+            [sess addInput:videoInput];
+            
+            //  create the thing which captures the output
+            AVCaptureVideoDataOutput *videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
+            
+            //  pixel buffer format
+            NSDictionary *settings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                      [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA],
+                                      kCVPixelBufferPixelFormatTypeKey, nil];
+            videoDataOutput.videoSettings = settings;
+            [settings release];
+            
+            //  we don't need a high frame rate. this limits the capture to 5 frames per second.
+            //videoDataOutput.minFrameDuration = CMTimeMake(1, 5);
+            
+            //  we need a serial queue for the video capture delegate callback
+            dispatch_queue_t queue = dispatch_queue_create([[NSString stringWithFormat:@"com.smartspaceapps.fractalsurfer.%c",direction] UTF8String], NULL);
+            
+            [videoDataOutput setSampleBufferDelegate:self queue:queue];
+            [sess addOutput:videoDataOutput];
+            [videoDataOutput release];
+            
+            dispatch_release(queue);
+            
+            //    self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.sess];
+            //    prevLayer.frame = self.bounds; // Assume you want the preview layer to fill the view.
+            //    [self.layer addSublayer:self.prevLayer];
+        }
+            
+        [sess startRunning];
+    }
+
+
+
+
+
+
+
+    AVCaptureDevice frontFacingCameraIfAvailable={
+        //  look at all the video devices and get the first one that's on the front
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        AVCaptureDevice *captureDevice = nil;
+        for (AVCaptureDevice *device in videoDevices)
+        {
+            if (device.position == AVCaptureDevicePositionFront)
+            {
+                captureDevice = device;
+                break;
+            }
+        }
+        
+        //  couldn't find one on the front, so just get the default video device.
+        if ( ! captureDevice)
+        {
+            captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        }
+        
+        return captureDevice;
+    }
+
+
+    AVCaptureDevice backFacingCameraIfAvailable={
+        //  look at all the video devices and get the first one that's on the front
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        AVCaptureDevice *captureDevice = nil;
+        for (AVCaptureDevice *device in videoDevices)
+        {
+            if (device.position == AVCaptureDevicePositionBack)
+            {
+                captureDevice = device;
+                break;
+            }
+        }
+        
+        //  couldn't find one on the back, so just get the default video device.
+        if ( ! captureDevice)
+        {
+            captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        }
+        
+        return captureDevice;
+    }
+
+
+    -(void)captureOutput:(AVCaptureOutput*)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection*)connection {
+        
+        Texture2D *tex=nil;
+        int texi=0;
+        @synchronized (self) {
+            for (int i=0;i<2;i++) if ((i!=last)&&((![self locked:i])||([self locked:i]=='x'))) {
+                texi=i;
+                tex=[self tex:i];
+                [self setLocked:i to:'s'];
+                break;
+            }
+            if ((!tex)&&(last!=-1)&&((![self locked:last])||([self locked:last]=='x'))) {
+                texi=last;
+                tex=[self tex:last];
+                [self setLocked:last to:'s'];
+                last=-1;
+            }
+        }
+        if (!tex) return;
+        
+        CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+        if (CVPixelBufferLockBaseAddress(imageBuffer, 0) == kCVReturnSuccess)
+        {
+            GLubyte *base = (GLubyte*)CVPixelBufferGetBaseAddress(imageBuffer);
+            
+            //  calculate average brightness based on a naive calculation
+            
+            size_t bytesPerRow      = CVPixelBufferGetBytesPerRow(imageBuffer); 
+            size_t width            = CVPixelBufferGetWidth(imageBuffer); 
+            size_t height           = CVPixelBufferGetHeight(imageBuffer); 
+            //width=50;
+            size_t texsz=CAMTEXSZ;
+            
+            NSMutableData *texd=[self texd:texi];
+            
+            if (texd.length<texsz*texsz*4) [texd setLength:texsz*texsz*4];
+            if (height>texsz) height=texsz;
+            
+            GLubyte *bs=(GLubyte*)[texd mutableBytes];
+            for (int y=0;y<height;y++) {
+                memcpy(bs, base, (texsz<width?texsz:width)*4);
+                bs+=texsz*4;
+                base+=bytesPerRow;
+            }
+            base=(GLubyte*)[texd mutableBytes];
+
+            [self sz:texi]=CGSizeMake(width,height);
+                
+            @synchronized (self) {
+                last=texi;
+                [self setLocked:texi to:'x'];
+            }
+        }
+        else {
+            @synchronized (self) {
+                [self setLocked:texi to:0];
+            }        
+        }
+    }
+
