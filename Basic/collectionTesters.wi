@@ -465,7 +465,7 @@
     + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WI_CLASS__ alloc] initWithContentsOfURL:url] autorelease]);}
     + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WI_CLASS__ alloc] initWithDictionary:dictionary] autorelease]);}
     + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WI_CLASS__ alloc] initWithObject:object forKey:key] autorelease])
-    + (__WI_CLASS__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:count] autorelease])
+    + (__WI_CLASS__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count] autorelease])
 
 
 

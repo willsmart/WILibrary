@@ -117,64 +117,33 @@ Singletons<Ticker> "-Object" "fn:object"
 "<execinfo.h>"
 
 /*interfaces:
-    extern id retainWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
-    extern void releaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
-    extern id autoreleaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner);
-    extern void retainFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
-    extern void releaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
-    extern void autoreleaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain);
-    extern void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printAlloc);
-    extern void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printDealloc);
+ 
+    extern id retainFn(NSObject *me,int &rc,int &arc);
+    extern void releaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
+    extern id autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
+    extern void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
+    extern void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
     extern NSString *g_objectName(id object);
     extern const char *g_cobjectName(id object);
+    
 */
 /*interfaces:impl:
-    id retainWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
-        LL ctxtWas=objectContext;
-        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
-            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
-            0);
-        id ret=[me retain];
-        objectContext=ctxtWas;
-        return(ret);
-    }
-    void releaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
-        LL ctxtWas=objectContext;
-        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
-            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
-            0);
-        [me release];
-        objectContext=ctxtWas;
-    }
-    id autoreleaseWithOwnerFn(NSObject *me,LL &objectContext,LL mei,id owner) {
-        LL ctxtWas=objectContext;
-        objectContext=([(NSObject*)owner respondsToSelector:@selector(objectIDInTotal)]?
-            objectContext=((NSObject<Object>*)owner).objectIDInTotal:
-            0);
-        id ret=[me autorelease];
-        objectContext=ctxtWas;
-        return(ret);
-    }
+
+
+    id retainFn(NSObject *me,int &rc,int &arc);
+    void releaseFn(NSObject *me,int &rc,int &arc);
+    id autoreleaseFn(NSObject *me,int &rc,int &arc);
+
  
-    void retainFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
+    void retainFn(NSObject *me,LL objectContext,int &rc,int &arc) {
         rc++;
-        if (objectContext) {
-            [g_trace object:objectContext ownsObject:mei];
-        }
-        else if (debugRetain) [g_trace object:1 ownsObject:mei];
- 
-        if (printRetain) {
-            prnt("%d -> %d retain %s\n",rc,rc-arc,g_cobjectName(me));
-            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
-            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
-            [stk release];
-        }
+        objectRetained(me);
     }
     
-    void releaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
+    void releaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease) {
         rc--;
         bool isAutorelease=NO;
-        if (debugRetain) {
+        if (debugAutorelease) {
             void* callstack[8];
             int i, frames = backtrace(callstack, 6);
             char** strs = backtrace_symbols(callstack, frames);
@@ -187,47 +156,33 @@ Singletons<Ticker> "-Object" "fn:object"
             }
             //prnt("%s\n",isAutorelease?" -- autorelease\n":" -- standard release\n");
             free(strs);
-            if (!(isAutorelease||objectContext)) [g_trace object:1 disownsObject:mei];
+            if (isAutorelease) {
+                objectAutoreleaseCollected(me);
+                arc--;
+            }
+            else objectReleased(me);
         }
-        if (objectContext) {
-            [g_trace object:objectContext disownsObject:mei];
-        }
- 
-        if (printRetain) {
-            prnt("%d -> %d release%s %s\n",rc,rc-arc,(isAutorelease?" (autoreleasepool)":""),g_cobjectName(me));
-            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
-            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
-            [stk release];
-        }
-    }
+        else objectReleased(me);
+     }
     
-    void autoreleaseFn(NSObject *me,LL objectContext,int &rc,int &arc,LL mei,bool debugRetain,bool printRetain) {
-        if (debugRetain) arc++;
-        if (objectContext) {
-            [g_trace object:objectContext disownsObject:mei];
-        }
-        else if (debugRetain) [g_trace object:1 disownsObject:mei];
- 
-        if (printRetain) {
-            prnt("%d -> %d autorelease %s\n",rc,rc-arc,g_cobjectName(me));
-            NSString *stk=[Trace callStackStringFromDepth:1 toDepth:3];
-            prnt("  @ %s\n",[stk cStringUsingEncoding:NSASCIIStringEncoding]);
-            [stk release];
+    void autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease) {
+        if (debugAutorelease) {
+            arc++;
+            objectAutoreleasePending(me);
         }
     }
 
-    void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printAlloc) {
+    void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci) {
         rc=1;arc=0;
         ClassCount *c=g_classCountForClass([me class]);
         c.count++;
         meci=c.nextID++;
         mei=g_singletons.totalObjectCount.nextID++;
         g_singletons.totalObjectCount.count++;
-        if (printAlloc) prnt("ALLOC[%qu] %s:%qu x %qu: %p\n",mei,class_getName([me class]),meci,c.count,me);
-        [g_trace objectAllocated:mei clas:[me class]];
+        objectAllocated(me);
     }
  
-    void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci,bool printDealloc) {
+    void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci) {
         if (mei==0) {
             ERR("!!!! error with object %p of type %s, the object was never inited",me,class_getName([me class]));
             return;
@@ -248,10 +203,7 @@ Singletons<Ticker> "-Object" "fn:object"
         }
         c.count--;
  
-        if (printDealloc) {
-            prnt("DEALLOC[%qu] %s:%qu x %qu: %p \"%s\"\n",mei,class_getName([me class]),meci,c.count,me,g_cobjectName(me));
-        }
-        [g_trace objectDeallocated:mei];
+        objectDeallocated:mei(me);
         mei=meci=-1;
     }
     NSString *g_objectName(id object) {
@@ -263,42 +215,30 @@ Singletons<Ticker> "-Object" "fn:object"
     }
 */
 
-NSObject
-    -(id)retainWithOwner:(id)owner {return([self retain]);}
-    -(void)releaseWithOwner:(id)owner {return([self release]);}
-    -(id)autoreleaseWithOwner:(id)owner {return([self autorelease]);}
-
 <Object>
     LL objectIDInClass=nil,objectIDInTotal=nil (readonly)
 
     bool isZombie=nil (readonly)
 
-    bool debugRetain=nil
-    bool printRetain=nil
-    bool printDealloc=nil
+    bool debugAutorelease=nil
 
     int ___rc=nil,___arc=nil
 
     LL __owner_context=nil (ivar=__owner_context)
 
-    -(init) {@-996 debugRetain=YES;}
-    -(init) {@-995 objInitFn(self,___rc,___arc,objectIDInTotal,objectIDInClass,printRetain||printDealloc);
+    -(init) {@-996 debugAutorelease=YES;}
+    -(init) {@-995 objInitFn(self,___rc,___arc,objectIDInTotal,objectIDInClass);
     }
-    -(void)dealloc {@998 deallocFn(self,___rc,___arc,objectIDInTotal,objectIDInClass,printRetain||printDealloc);
+    -(void)dealloc {@998 deallocFn(self,___rc,___arc,objectIDInTotal,objectIDInClass);
         isZombie=YES;
 #if defined(LONGLIVEZOMBIES) || defined(LONGLIVEZOMBIES___WI_CLASS__)
         if (YES) return;
 #endif
     }
-    
-    
-    -(id)retainWithOwner:(id)__owner {@999 return(retainWithOwnerFn(self,__owner_context,objectIDInTotal,__owner));}
-    -(void)releaseWithOwner:(id)__owner {@900 releaseWithOwnerFn(self,__owner_context,objectIDInTotal,__owner);}
-    -(id)autoreleaseWithOwner:(id)__owner {@999 return(autoreleaseWithOwnerFn(self,__owner_context,objectIDInTotal,__owner));}
 
-    -(id)retain {@-900 retainFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @999 return([super retain]);}
-    -(void)release {@-900 releaseFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @990 [super release];}
-    -(id)autorelease {@-900 autoreleaseFn(self,__owner_context,___rc,___arc,objectIDInTotal,debugRetain||printRetain,printRetain); @990 return([super autorelease]);}
+    -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return([super retain]);}
+    -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990 [super release];}
+    -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return([super autorelease]);}
 
     NSString description={@-999 
         NSMutableString *ret=self.objectName;
@@ -353,12 +293,81 @@ Singletons
             }
     };
     extern int g_numNamedThreads;
+    
+    
+    void addTrace(NSString *trace,int depth);
+    void addTraceCString(const char *trace,int depth);
+    void finishDepth(int depth);
+    void ADDOWNER(id object,id owner);
+    void REMOVEOWNER(id object,id owner);
+    void objectRetained(id object);
+    void objectReleased(id object);
+    void objectAutoreleasePending(id object);
+    void objectAutoreleaseCollected(id object);
+    void objectAllocated(id object);
+    void objectDeallocated(id object);
+ 
 */
 /*interfaces:impl:
     ULL g_sequence=0;
     Trace *g_trace=nil;
+    NSString *g_newTraces=nil;
     pthread_key_t TraceFunctionTracker::key=nil;
     int g_numNamedThreads=0;
+    
+    
+    
+    void addTrace(NSString *trace,int depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [Trace threadNameJSON],
+            trace.JSONString];
+    }
+    
+    void addTraceCString(const char *trace,int depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [Trace threadNameJSON],
+            [NSString JSONunicharsStringForCString:trace withLength:(int)strlen(trace) useTmpDataObject:nil retLength:nil]];
+    }
+    
+    void finishDepth(int depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+            [__Class__ threadNameJSON]];
+    }
+
+    void ADDOWNER(id object,id owner) {
+        [g_newTraces appendFormat:@"[-1,%qu,%f,%qx,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)owner,(ULL)object,class_getName(object.class)];
+    }
+    void REMOVEOWNER(id object,id owner) {
+        [g_newTraces appendFormat:@"[-2,%qu,%f,%qx,%qx],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)owner,(ULL)object];
+    }
+
+    void objectRetained(id object) {
+        [g_newTraces appendFormat:@"[-3,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object,class_getName(object.class)];
+    }
+    void objectReleased(id object) {
+        [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object];
+    }
+    void objectAutoreleasePending(id object) {
+        [g_newTraces appendFormat:@"[-5,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object];
+    }
+    void objectAutoreleaseCollected(id object) {
+        [g_newTraces appendFormat:@"[-6,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object];
+    }
+    void objectAllocated(id object) {
+        [g_newTraces appendFormat:@"[-7,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object,class_getName(object.class)];
+    }
+    void objectDeallocated(id object) {
+        [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+            (ULL)object];
+    }
+ 
 */
 Trace<Ticker,BaseObject>
     +(NSString*)callStackStringFromDepth:(int)fromDepth toDepth:(int)toDepth {
@@ -404,7 +413,7 @@ Trace<Ticker,BaseObject>
     NSMutableString *nwTraces=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces)
     NSMutableString *nwTraces2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces2)
 
-    -(void)start {g_trace=self;[self startWithInterval:0.5];}
+    -(void)start {g_newTraces=newTraces;g_trace=self;[self startWithInterval:0.5];}
     -(void)stop {@100 g_trace=nil;}
     
     bool savingTrace={return(v_tim!=nil);}
@@ -417,64 +426,15 @@ Trace<Ticker,BaseObject>
         return(nm);
     }
 
-    -(void)addTrace:(NSString*)trace atDepth:(int)depth {
-        g_trace=nil;
-        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
-            [__Class__ threadNameJSON],
-            trace.JSONString];
-        g_trace=self;
-    }
-    
-    -(void)addTraceCString:(const char*)trace atDepth:(int)depth {
-        g_trace=nil;
-        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",depth,g_sequence++,CACurrentMediaTime(),
-            [__Class__ threadNameJSON],
-            [NSString JSONunicharsStringForCString:trace withLength:(int)strlen(trace) useTmpDataObject:nil retLength:nil]];
-        g_trace=self;
-    }
-    
-    -(void)finishDepth:(int)depth {
-        g_trace=nil;
-        [newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
-            [__Class__ threadNameJSON]];
-        g_trace=self;
-    }
-
-    -(void)object:(LL)owner ownsObject:(LL)object {
-        g_trace=nil;
-        [newTraces appendFormat:@"[-1,%qu,%f,%qd,%qd],\n",g_sequence++,CACurrentMediaTime(),
-            owner,object];
-        g_trace=self;
-    }
-
-    -(void)object:(LL)disowner disownsObject:(LL)object {
-        g_trace=nil;
-        [newTraces appendFormat:@"[-2,%qu,%f,%qd,%qd],\n",g_sequence++,CACurrentMediaTime(),
-            disowner,object];
-        g_trace=self;
-    }
-
-    -(void)objectAllocated:(LL)object clas:(Class)clas {
-        g_trace=nil;
-        [newTraces appendFormat:@"[-3,%qu,%f,%qu,%s],\n",g_sequence++,CACurrentMediaTime(),
-            object,class_getName(clas)];
-        g_trace=self;
-    }
-
-    -(void)objectDeallocated:(LL)object {
-        g_trace=nil;
-        [newTraces appendFormat:@"[-4,%qu,%f,%qu],\n",g_sequence++,CACurrentMediaTime(),
-            object];
-        g_trace=self;
-    }
 
     bool not_first=nil
 
     -(void)tick {
         g_trace=self;
         
+        
         [newTraces2 setString:@""];
-        NSMutableString *tmp=newTraces;newTraces=newTraces2;newTraces2=tmp;
+        NSMutableString *tmp=newTraces;g_newTraces=newTraces=newTraces2;newTraces2=tmp;
         
         if (newTraces2.length) {
             NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savetrace.php?fn=%@&fst=%d",g_singletons.styleName,not_first?0:1]];
@@ -483,7 +443,7 @@ Trace<Ticker,BaseObject>
         }
 
         [newTraces2 setString:newTraces];
-        newTraces2=newTraces;newTraces=tmp;
+        newTraces2=newTraces;g_newTraces=newTraces=tmp;
     }
     
     
@@ -568,8 +528,7 @@ ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     LL objectIDInTotal (readonly)
     -(BOOL)isEqual:(id)obj {@-999 
         bool ret=(obj==self)||
-                    (([obj conformsToProtocol:@protocol(ObjectEquate)]||
-                        [obj conformsToProtocol:@protocol(Object)])&&
+                    ([obj respondsToSelector:@selector(objectIDInTotal)]&&
                     (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
         @999 return(ret);
     }

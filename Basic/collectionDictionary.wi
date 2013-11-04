@@ -38,7 +38,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary copyItems:copy];
     }
     -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(NSUInteger)count {
-        @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:count];
+        @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
     }
 
 
@@ -66,7 +66,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WIClass__ alloc] initWithContentsOfURL:url] autorelease]);}
     +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WIClass__ alloc] initWithDictionary:dictionary] autorelease]);}
     +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-    +(__WIClass__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
+    +(__WIClass__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count] autorelease]);}
 
 
 
@@ -368,7 +368,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:copy];
     }
     -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(NSUInteger)count {
-        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count];
+        @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
     }
     -(init[super init])initWithCapacity:(NSUInteger)numItems {
         @-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCapacity:numItems];
