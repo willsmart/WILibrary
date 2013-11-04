@@ -1,8 +1,8 @@
 
 <LinkEndpoint>
-    id owner (nodef,readonly,nonatomic,ivar=v_owner)
-    bool retains (nodef,readonly,nonatomic)
-    SEL otherEndObjectToEndpoint,acceptableSel (nodef,readonly,nonatomic)
+    id owner=nil (readonly,nonatomic,ivar=v_owner)
+    bool retains=nil (readonly,nonatomic)
+    SEL otherEndObjectToEndpoint=nil,acceptableSel=nil (readonly,nonatomic)
 
     -(bool)unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performSelector:acceptableSel withObject:obj]));}
 
@@ -26,8 +26,8 @@
 
 <MutableValueDelegate>
     bool retainsAsValueDelegate=YES
-    <MutableValueDelegate> parentValueDelegate (nodef,ivar=parentValueDelegate,assign)
-    <MutableValueDelegate> valueDelegate (nodef,ivar=valueDelegate,assign)
+    <MutableValueDelegate> parentValueDelegate=nil (ivar=parentValueDelegate,assign)
+    <MutableValueDelegate> valueDelegate=nil (ivar=valueDelegate,assign)
     -(void)addDelegate:(NSObject<MutableValueDelegate>*)v {
         if (v.valueDelegate) return;
         if (v==self) return;
@@ -94,7 +94,7 @@
                 else if (retains) [v retain];
             }
             [self didSetValueTo:v];
-        } (assign,ivar=v_value)
+        }=nil (assign,ivar=v_value)
     -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);

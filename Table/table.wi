@@ -27,7 +27,7 @@
     float likelyHeaderHeight={@-999 float ret=0;@999 return(ret);}
     float likelyFooterHeight={@-999 float ret=0;@999 return(ret);}
 
-    UIView header,footer (readonly)
+    UIView header=nil,footer=nil (readonly)
     float headerHeight,footerHeight (readonly)
 
     -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[8]@80 
@@ -62,7 +62,7 @@
 
     float likelyCellHeight={@-999 float ret=0;@999 return(ret);}
     float cellHeight (readonly)
-    NSString cellReuseIdentifier (readonly)
+    NSString cellReuseIdentifier=nil (readonly)
 
     bool canMove,canEdit (readonly)
     UITableViewCellEditingStyle editingStyle (readonly)
@@ -109,13 +109,13 @@
             header=[[__HeaderClass__ alloc] init];
         }
         return(header);
-    } (ivar=header,dealloc)
+    }=nil (ivar=header,dealloc)
     UIView footer={
         if (!footer) {
             footer=[[__FooterClass__ alloc] init];
         }
         return(footer);
-    } (ivar=footer,dealloc)
+    }=nil (ivar=footer,dealloc)
 
 
 
@@ -127,7 +127,7 @@
     float cellHeight={return(self.likelyCellHeight);}
 
     NSString cellReuseIdentifier=
-        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);} (ivar=cellReuseIdentifier)
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}=nil (ivar=cellReuseIdentifier)
 
     UITableViewCell newUITVCell={
         UITableViewCell *ret=[[[__CellClass__ alloc] init] autorelease];
@@ -175,7 +175,7 @@
 
 
 <TableModelFollower:Commitable>
-    <TableModel> model (readonly)
+    <TableModel> model=nil (readonly)
 
     kid context=[[PointerKey keyWithObject:nil] retain] (retain)
 
@@ -189,7 +189,7 @@
         if (model.modelObjectHasChanged) modelObjectHasChanged=YES;
     }
 
-    bool updatesStarted (nodef,readonly)
+    bool updatesStarted=nil (readonly)
     -(void)startCommit {
         if (!updatesStarted) {
             [self.table beginUpdates];
@@ -610,12 +610,12 @@
 
 
 <EndlessCellModel:CellModel>
-    int logicalRowOffset (nodef)
-    double logicalOffset (nodef)
+    int logicalRowOffset=nil
+    double logicalOffset=nil
 
 <EndlessTableController:TableController>
-    int logicalRowOffset (nodef)
-    double logicalOffset (nodef)
+    int logicalRowOffset=nil
+    double logicalOffset=nil
     int endlessRowMultiple=1
 
     -(void)scrollViewDidScroll:(UIScrollView*)scrollView {

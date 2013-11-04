@@ -26,9 +26,9 @@ extern NSString *testKey;
 NSString *testKey=nil;
 */
 CollectionTestObject
-    int intValue (nodef,readonly)
+    int intValue=nil (readonly)
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
-    <Tester> tester (nodef,assign)
+    <Tester> tester=nil (assign)
 
     -(init) {
         [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"std"];
@@ -96,7 +96,7 @@ CollectionTestSubObject
     int willAddCount=0,willRemoveCount=0;
     int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
     int rcInner=0
-    CollectionTestObject *testObject (nodef,assign,ivar=testObject)
+    CollectionTestObject *testObject=nil (assign,ivar=testObject)
 
     NSString description={return([NSString stringWithFormat:@"%d->%d  ",self.rcIs,self.rcWillBe]);}
 
@@ -122,7 +122,7 @@ CollectionTestSubObject
 
 
 <Tester:BasicTester>
-    NSArray _allObjects,_allKeys (nodef)
+    NSArray _allObjects=nil,_allKeys=nil
     NSMutableArray _objectArray=nil,objectArray={if (!v__objectArray) self._objectArray=self.randArray;return(v__objectArray);}
     NSMutableDictionary _dictionary=nil,dictionary={if (!v__dictionary) self._dictionary=self.randDictionary;return(v__dictionary);}
     NSMutableArray _keyArray=nil,keyArray={if (!v__keyArray) self._keyArray=self.randKeyArray;return(v__keyArray);}
@@ -133,7 +133,7 @@ CollectionTestSubObject
     id _object2=nil (assign,ivar=v__object2)
     id object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
     NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
-    NSRange _range,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);} (nodef)
+    NSRange _range=nil,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}=nil
     NSUInteger _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
     NSUInteger _index1=NSNotFound,index1={return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
 

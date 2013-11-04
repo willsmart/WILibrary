@@ -1,6 +1,6 @@
 
 Singletons
-    MetaRenderer metaRenderer={return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));} (dealloc,ivar)
+    MetaRenderer metaRenderer={return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}=nil (dealloc,ivar)
     NSString description={
         [ret appendFormat:@"\nxMetaRenderer %p\n",self.metaRenderer];
     }
@@ -59,13 +59,13 @@ MetaRenderer <BaseObject> "fn:meta"
 
 
 Singletons
-    MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));} (dealloc,ivar)
+    MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}=nil (dealloc,ivar)
     NSString description={
         [ret appendFormat:@"\nMetaRequestCache %p has %d in cache\n",self.metaRequestCache,self.metaRequestCache.cache.count];
     }
 
-    NSRegularExpression MetaEnabled_szregex (nodef,readonly,dealloc)
-    NSRegularExpression MetaEnabled_rectregex (nodef,readonly,dealloc)
+    NSRegularExpression MetaEnabled_szregex=nil (readonly,dealloc)
+    NSRegularExpression MetaEnabled_rectregex=nil (readonly,dealloc)
 
 
     -(init) {
@@ -85,7 +85,7 @@ Singletons
             [metaEnabledURLRegistry addDelegate:[[[MetaEnabledURLRegistryDelegate alloc] init] autorelease]];
         }
         return(metaEnabledURLRegistry);
-        } (ivar=metaEnabledURLRegistry,dealloc,readonly)
+        }=nil (ivar=metaEnabledURLRegistry,dealloc,publicreadonly)
     -(void)refreshMetaEnabledURLs {
         NSSet *s=self.urlMetaEnableds.urlMetaEnableds.copy;
         for (NSObject<MetaEnabled> *v in s) [v refreshMetaFromRegisteredURLs];
@@ -97,7 +97,7 @@ Singletons
             urlMetaEnableds=[[URLMetaEnableds alloc] init];
         }
         return(urlMetaEnableds);
-    } (ivar=urlMetaEnableds,dealloc,readonly)
+    }=nil (ivar=urlMetaEnableds,dealloc,publicreadonly)
 
 
     NSString description={
@@ -127,7 +127,7 @@ URLMetaEnableds<BaseObject>
 
     
 MetaRequestCache<BaseObject,RootCodable> "fn:meta"
-    LRUCache cache=[[LRUCache alloc] init] (readonly,dealloc,ivar=cache)
+    LRUCache cache=[[LRUCache alloc] init] (publicreadonly,dealloc,ivar=cache)
 
     NSDictionary asDictionary=
         {imret=cache.asDictionary;}
@@ -208,10 +208,10 @@ Meta_ProxyDictionaryDelegate<ProxyDictionaryDelegate,MutableDictionaryDelegateWi
 
 
 JSMetaPropertyInState
-    NSString js (nodef,readonly,dealloc,ivar=js)
-    NSString var (nodef,readonly,dealloc,ivar=var)
-    NSObject varDef (nodef,readonly,dealloc,ivar=varDef)
-    NSObject cachedValue (readonly,dealloc,ivar=cachedValue,nodef)
+    NSString js=nil (readonly,dealloc,ivar=js)
+    NSString var=nil (readonly,dealloc,ivar=var)
+    NSObject varDef=nil (readonly,dealloc,ivar=varDef)
+    NSObject cachedValue=nil (readonly,dealloc,ivar=cachedValue)
 
     -(init[super init])initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar {
         js=[ajs retain];
@@ -278,12 +278,12 @@ JSMetaProperty<NamedDataListener>
     property ~d< JSMetaPropertyInState propertyInState
     jsproperty >d~ <MetaEnabled> owner
 
-    NSArray stateOrder (ivar=stateOrder,dealloc,readonly,nodef)
+    NSArray stateOrder=nil (ivar=stateOrder,dealloc,readonly)
     
     NSMutableDictionary varProps=[[NSMutableDictionary alloc] init] (ivar=varProps,dealloc,readonly)
     NSMutableDictionary varDefs=[[NSMutableDictionary alloc] init] (ivar=varDefs,dealloc,readonly)
 
-    NSString stateProp (nodef,ivar=stateProp,readonly,dealloc)
+    NSString stateProp=nil (ivar=stateProp,readonly,dealloc)
 
     -(init[super init])initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d {
         @100
@@ -409,7 +409,7 @@ JSMetaProperty<NamedDataListener>
         return(NO);
     }
 
-    NSObject cachedValue (readonly,dealloc,ivar=cachedValue,nodef)
+    NSObject cachedValue=nil (readonly,dealloc,ivar=cachedValue)
 
     NSObject<NSCopying> state={
         if (!cachedState) cachedState=[self.currentState retain];
@@ -419,7 +419,7 @@ JSMetaProperty<NamedDataListener>
         if (!cachedValue) cachedValue=[self.currentValue retain];
         return(cachedValue);
     }
-    NSObject<NSCopying> cachedState (readonly,dealloc,ivar=cachedState,nodef)
+    NSObject<NSCopying> cachedState=nil (readonly,dealloc,ivar=cachedState)
     
     NSObject<NSCopying> currentState={
         NSObject *stateo=nil;
@@ -514,7 +514,7 @@ JSMetaProperty<NamedDataListener>
                 myDataRegistry=[v retain];
                 self.dataRegistry=v;
             }
-        } (ivar=myDataRegistry,dealloc,nodef)
+        }=nil (ivar=myDataRegistry,dealloc)
             
     -(void)setDataRegistry:(DataRegistry*)v {
         @-100 DataRegistry *regWas=dataRegistry;
@@ -545,9 +545,9 @@ JSMetaProperty<NamedDataListener>
     }
     
 
-    NSDictionary initWithMetaProperties (readonly,nodef,ivar=initWithMetaProperties)
-    NSObject<MetaEnabled> initWithParent (readonly,nodef,ivar=initWithParent)
-    kid initWithKeyInParent (readonly,nodef)
+    NSDictionary initWithMetaProperties=nil (readonly,ivar=initWithMetaProperties)
+    NSObject<MetaEnabled> initWithParent=nil (readonly,ivar=initWithParent)
+    kid initWithKeyInParent=nil (readonly)
 
     MutableDictionary _metaProperties=[[MutableDictionary alloc] init] (dealloc,ivar=_metaProperties)
     NSDictionary metaProperties=
@@ -781,8 +781,8 @@ JSMetaProperty<NamedDataListener>
 
     urlMetaEnabled >s- URLMetaEnableds urlMetaEnableds
 
-    NSURL metaURLWas (readonly,dealloc,nodef,ivar=metaURLWas)
-    CGRect frameWas (readonly,nodef)
+    NSURL metaURLWas=nil (readonly,dealloc,ivar=metaURLWas)
+    CGRect frameWas=nil (readonly)
 
     -(void)refreshMetaFromRegisteredURLs {
         NSDictionary *metaProps=self.metaProperties;
@@ -886,7 +886,7 @@ MetaEnabled
     -(void)layoutSubviews {
         [self refreshMetaFromRegisteredURLs];
     }
-    bool transformChanged (nodef)
+    bool transformChanged=nil
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr isEqualToString:@"frame"]&&allNum&&(objectArray.count==4)) {
             CGRect frame=CGRectMake(
@@ -1005,8 +1005,8 @@ MetaEnabled
         }
     }
 
-    UITapGestureRecognizer tap1GestureRecognizer (nodef)
-    NSString tap1Selector (nodef)
+    UITapGestureRecognizer tap1GestureRecognizer=nil
+    NSString tap1Selector=nil
     -(void)tapped1 {
         [self callNamedSelector:self.tap1Selector];
     }
@@ -1044,7 +1044,7 @@ MetaEnabled
         if ([child isKindOfClass:[UIView class]]) [(UIView*)child removeFromSuperview];
     }
 
-    bool permissiveGestures (nodef)
+    bool permissiveGestures=nil
     -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
         return(permissiveGestures);
     }
@@ -1313,7 +1313,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
 
 
 <UIToolbarItemMetaEnabled:MetaEnabled,URLImageViewListener>
-    URLImageView urlImageView (ivar=urlImageView,dealloc,nodef)
+    URLImageView urlImageView=nil (ivar=urlImageView,dealloc)
     +(UIBarButtonItemStyle)styleFromValue:(NSObject*)k {
         UIBarButtonItemStyle style=UIBarButtonItemStylePlain;
         if ([k isKindOfClass:[NSString class]]) {
@@ -1366,7 +1366,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         if ([k isKindOfClass:[NSString class]]) sel=NSSelectorFromString((NSString*)k);
         return(sel);
     }
-    SEL finalAction (nodef,readonly)
+    SEL finalAction=nil (readonly)
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr isEqualToString:@"title"]) self.title=objectStr;
         else if ([keyStr isEqualToString:@"imagekey"]) urlImageView.imageURLKey=objectStr;
@@ -1472,7 +1472,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
         }
         return([aself superInitWithStyle:style reuseIdentifier:reuseIdentifier]);
     }
-    MutableDictionaryFollowerDelegate modelFollowDel=[[MutableDictionaryFollowerDelegate alloc] init] (readonly,ivar=modelFollowDel,dealloc)
+    MutableDictionaryFollowerDelegate modelFollowDel=[[MutableDictionaryFollowerDelegate alloc] init] (publicreadonly,ivar=modelFollowDel,dealloc)
     -(init) {
         modelFollowDel.followerDictionary=self._myProperties;
     }
@@ -1490,7 +1490,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
 
 
 <UITableViewMetaEnabled:UIViewMetaEnabled>
-    <StdTableModelFollower> tableModelFollower (nodef,assign,ivar=tableModelFollower)
+    <StdTableModelFollower> tableModelFollower=nil (assign,ivar=tableModelFollower)
     -(void)refreshMetaEnabledURLs {
         [tableModelFollower.model markDirty];
     }

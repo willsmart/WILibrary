@@ -22,12 +22,12 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
     Texture2D texB=[[Texture2D alloc] init] (readonly,dealloc,ivar=texB)
     NSMutableData texdA=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdA)
     NSMutableData texdB=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdB)
-    char lockedA,lockedB (nodef)
-    CGSize szA,szB (nodef)
-    int last (readonly,ivar,nodef)
+    char lockedA,lockedB=nil
+    CGSize szA,szB=nil
+    int last=nil (readonly,ivar)
     
-    char direction (nodef)
-    AVCaptureSession sess (nodef,readonly,ivar=sess,dealloc)
+    char direction=nil
+    AVCaptureSession sess=nil (readonly,ivar=sess,dealloc)
 
 
     -(Texture2D*)tex:(int)i {return(i==0?texA:texB);}

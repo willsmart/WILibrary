@@ -14,7 +14,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <Dictionary>
-    NSDictionary __dictionary (nodef,readonly,dealloc,ivar=__dictionary)
+    NSDictionary __dictionary=nil (readonly,dealloc,ivar=__dictionary)
 
 
     // initializing a set
@@ -173,7 +173,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <ProxiedDictionaryDelegate> "nac" "multi"
-    Basic_ProxyDictionaryDelegate basic_subDictionaryDelegate=[[Basic_ProxyDictionaryDelegate alloc] initWithOwner:self] (ivar,readonly,dealloc)
+    Basic_ProxyDictionaryDelegate basic_subDictionaryDelegate=[[Basic_ProxyDictionaryDelegate alloc] initWithOwner:self] (ivar,publicreadonly,dealloc)
     -(void)dealloc {@-800 [self basic_attachDictionaryDelegateTo:nil];}
     -(void)basic_attachDictionaryDelegateTo:(NSObject<MutableDictionaryDelegate>*)dictionary {
         [(NSObject<MutableDictionaryDelegate>*)v_basic_subDictionaryDelegate.delegateForDictionary removeDelegate:v_basic_subDictionaryDelegate];
@@ -192,7 +192,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <ProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
-    <Basic_ProxiedDictionaryDelegate> owner (ivar=owner,assign,nodef)
+    <Basic_ProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
     -(init[super init])initWithOwner:(NSObject<Basic_ProxiedDictionaryDelegate>*)aowner {
         owner=aowner;
     }
@@ -217,7 +217,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 
 
 <SourcedProxiedDictionaryDelegate> "nac" "multi"
-    MutableDictionary basic_subDictionaryDelegates=[[MutableDictionary alloc] init] (dealloc,ivar=basic_subDictionaryDelegates,readonly)
+    MutableDictionary basic_subDictionaryDelegates=[[MutableDictionary alloc] init] (dealloc,ivar=basic_subDictionaryDelegates,publicreadonly)
     -(void)dealloc {@-800
         {
             NSArray *sources=basic_subDictionaryDelegates.allKeys;
@@ -251,8 +251,8 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 
 
 <SourcedProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
-    <Basic_SourcedProxiedDictionaryDelegate> owner (ivar=owner,assign,nodef)
-    NSObject<NSCopying> source (ivar=source,readonly,dealloc,nodef)
+    <Basic_SourcedProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
+    NSObject<NSCopying> source=nil (ivar=source,readonly,dealloc)
     -(init[super init])initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource {
         owner=aowner;
         source=[asource retain];
@@ -287,10 +287,10 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 <MutableDictionaryDelegate>
-    NSDictionary delegateForDictionary (nodef,assign,ivar=delegateForDictionary)
+    NSDictionary delegateForDictionary=nil (assign,ivar=delegateForDictionary)
     -(void)delegateForDictionaryChanged {}
 
-    <MutableDictionaryDelegate> dictionaryDelegate (nodef,dealloc,ivar=dictionaryDelegate,readonly)
+    <MutableDictionaryDelegate> dictionaryDelegate=nil (dealloc,ivar=dictionaryDelegate,readonly)
     -(void)addDelegate:(NSObject<MutableDictionaryDelegate>*)v {
         if (v.dictionaryDelegate) return;
         if (v==self) return;
@@ -334,7 +334,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 <MinimalMutableDictionary:Dictionary,MutableDictionaryDelegate,ObjectEquate>
-    NSMutableDictionary __mutableDictionary (nodef,readonly,ivar=__mutableDictionary)
+    NSMutableDictionary __mutableDictionary=nil (readonly,ivar=__mutableDictionary)
 
     -(init) {
         self.delegateForDictionary=self;
@@ -592,19 +592,19 @@ MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
         -v{
             [keyPrefix release];keyPrefix=[v retain];
             [self refreshFollowerDictionary];
-        } (nodef,dealloc,ivar=keyPrefix)
+        }=nil (dealloc,ivar=keyPrefix)
     int keepKeyPrefixSuffixLength=
         {return(keepKeyPrefixSuffixLength);}
         -v{
             keepKeyPrefixSuffixLength=v;
             [self refreshFollowerDictionary];
-        } (nodef,ivar=keepKeyPrefixSuffixLength)
+        }=nil (ivar=keepKeyPrefixSuffixLength)
     NSString filterKeyPrefix=
         {return(filterKeyPrefix);}
         -v{
             [filterKeyPrefix release];filterKeyPrefix=[v retain];
             [self refreshFollowerDictionary];
-        } (nodef,dealloc,ivar=filterKeyPrefix)
+        }=nil (dealloc,ivar=filterKeyPrefix)
 
     -(id<NSCopying>)keyForObject:(id)object key:(id<NSCopying>)key {
         if (![(NSObject*)key isKindOfClass:[NSString class]]) return(nil);
@@ -634,7 +634,7 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
     NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] (readonly,ivar=mapv,dealloc)
     <MutableDictionary> followerDictionary=
         {return(followerDictionary);}
-        -v{[followerDictionary release];followerDictionary=[v retain];[self refreshFollowerDictionary];} (ivar=followerDictionary,dealloc)
+        -v{[followerDictionary release];followerDictionary=[v retain];[self refreshFollowerDictionary];}=nil (ivar=followerDictionary,dealloc)
 
     -(void)delegateForDictionaryChanged {
         [self refreshFollowerDictionary];
@@ -701,8 +701,8 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
 
 
 MutableDictionaryUnionDelegate1<MutableDictionaryDelegate>
-    MutableDictionaryUnionDelegate owner (nodef,readonly,ivar=owner)
-    NSUInteger depth (nodef)
+    MutableDictionaryUnionDelegate owner=nil (publicreadonly,ivar=owner)
+    NSUInteger depth=nil
 
     -(init[super init])initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(NSUInteger)adepth {
         owner=aowner;depth=adepth;
@@ -728,7 +728,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
 
     <MutableDictionary> unionDictionary=
         {return(unionDictionary);}
-        -v{[unionDictionary release];unionDictionary=[v retain];[self refreshUnionDictionary];} (ivar=unionDictionary,dealloc)
+        -v{[unionDictionary release];unionDictionary=[v retain];[self refreshUnionDictionary];}=nil (ivar=unionDictionary,dealloc)
 
     //-(void)setDelegateInArray:(NSObject<NSArray>*)v {@500 
     //    if (unionDictionary) [self refreshUnionDictionary];

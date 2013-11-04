@@ -447,13 +447,13 @@ UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
 
 
 UnionArrayDelegateCount "-Object"
-    int willCount,didCount (nodef)
+    int willCount,didCount=nil
 
 
 UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     arrayDelegate >a~ <UnionArray> owner
 
-    int addIndex,willSkipped,didSkipped (nodef)
+    int addIndex,willSkipped,didSkipped=nil
     NSMutableIndexSet unionHasIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionHasIndexes)
     NSMutableIndexSet unionWillHaveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillHaveIndexes)
     NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillRemoveIndexes)
@@ -566,8 +566,8 @@ UnionArray<UnionArray>
 
 
     bool __changed=NO
-    NSUInteger __outstandingAddCount (nodef)
-    NSUInteger __outstandingRemoveCount (nodef)
+    NSUInteger __outstandingAddCount=nil
+    NSUInteger __outstandingRemoveCount=nil
 
     -(void)willTryToAddObjectsWithCount:(NSUInteger)count fromDelegate:(UnionArrayDelegate*)del {
         __outstandingAddCount+=count;

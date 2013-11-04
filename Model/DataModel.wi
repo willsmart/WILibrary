@@ -9,11 +9,11 @@
 
 
 PropertyData
-    SEL getter,setter (readonly,nodef)
-    NSString name (readonly,dealloc,nodef,ivar=name)
-    Class clas (readonly,nodef)
-    bool direct (readonly,nodef)
-    NSString clasName (readonly,dealloc,nodef,ivar=clasName)
+    SEL getter=nil,setter=nil (readonly)
+    NSString name=nil (readonly,dealloc,ivar=name)
+    Class clas=nil (readonly)
+    bool direct=nil (readonly)
+    NSString clasName=nil (readonly,dealloc,ivar=clasName)
     -(init[super init])initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect {
         direct=adirect;
         name=[aname retain];
@@ -28,7 +28,7 @@ PropertyData
 //    NSArray childRepresentations=[NSMutableArray array] (readonly,dealloc)
 //
 //    NSString dataBinding
-//    NSURL _metaURL (nodef)
+//    NSURL _metaURL=nil
 //    NSURL metaURL (
 
 <FieldProperty:DataModel> "nac" "multi"
@@ -95,7 +95,7 @@ PropertyData
 
 
 <ChildArrayPropertyModelDelegate:MutableArrayDelegate> "nac" "multi"
-    <__Property__s__model> owner (nodef,ivar=owner,assign)
+    <__Property__s__model> owner=nil (ivar=owner,assign)
     -(init[super init])initWithOwner:(NSObject<__Property__s__model>*)aowner {owner=aowner;}
 
     -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
@@ -201,15 +201,15 @@ PropertyData
 
 
 PropertyViewerDelegate<MutableSetDelegate>
-    <DataModel> owner (nodef,ivar=owner,assign)
+    <DataModel> owner=nil (ivar=owner,assign)
     -(init[super init])initWithOwner:(NSObject<DataModel>*)aowner {owner=aowner;}
     -(void)didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
     -(void)willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
 
 
 <DataModel:DataModelViewer>
-    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=dataModelParentFilterDel)
-    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (readonly,ivar=_dataModelParentProperties,dealloc)
+    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=dataModelParentFilterDel)
+    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_dataModelParentProperties,dealloc)
 
 
     -(init) {@15 
@@ -275,7 +275,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             }
             propertyDatas=ret;
             return(ret);
-        } (ivar=propertyDatas)
+        }=nil (ivar=propertyDatas)
 
     +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
 
@@ -283,7 +283,7 @@ PropertyViewerDelegate<MutableSetDelegate>
         return([object isKindOfClass:[NSString class]]||[object isKindOfClass:[NSNumber class]]);
     }
 
-    bool needViewerStateOK (nodef,readonly)
+    bool needViewerStateOK=nil (readonly)
 
     -(void)property_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {

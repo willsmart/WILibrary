@@ -18,9 +18,9 @@ unsigned long long waveBitMasks[4][16]={
 
 
 BinTracker<BaseObject>
-    int samplesPerCycle,wavesPerCycle,cyclesPerBuffer,roughSamplesPerWave,ci (nodef)
-    ArrayOfDoubles *sampBuffer,*edges,*edges1 (nodef)
-    double samplesPerWave (nodef)
+    int samplesPerCycle,wavesPerCycle,cyclesPerBuffer,roughSamplesPerWave,ci=nil
+    ArrayOfDoubles *sampBuffer,*edges,*edges1=nil
+    double samplesPerWave=nil
     longdouble sumsine=0,sumcos=0
 
     -(init[super init])initWithCI:(int)aci samplesPerCycle:(int)asamplesPerCycle wavesPerCycle:(int)awavesPerCycle cyclesPerBuffer:(int)acyclesPerBuffer {
@@ -49,8 +49,8 @@ BinTracker<BaseObject>
     double cycleLen=0,waveAt=0
     int q=0,goods=0,reqGoods=0,wavesPerEdge=1
 
-    bool isGood (nodef)
-    double nphase,cycleLen,_cycleLen,phase,drphase (nodef)
+    bool isGood=nil
+    double nphase,cycleLen,_cycleLen,phase,drphase=nil
     int bestwi=0,samplei=0,samplesSinceWave=0,phasewavei=0
     double bestwiAboveFactor=0,bestwiAboveAvgFactor=0
     int pi=0;

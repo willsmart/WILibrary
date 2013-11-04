@@ -120,8 +120,8 @@ Shader
         ASSIGN_ATTRIBUTES
     }
 
-    ShaderData shaderData (nodef,assign)
-    CGRect frameBufferRect,drawRect (nodef)
+    ShaderData shaderData=nil (assign)
+    CGRect frameBufferRect=nil,drawRect=nil
 
     -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {
         frameBufferRect=aframeBufferRect;
@@ -186,7 +186,7 @@ SHFn <BaseObject> "fn:shader"
                 [self.fragProgram markChanged];
                 [self.vertProgram markChanged];
             }
-        } (ivar=enabled)
+        }=nil (ivar=enabled)
     -(init) {
         enabled=YES;
     }
@@ -269,7 +269,7 @@ type Union128byte "typedef:
 "
 
 SHUniform <BaseObject> "fn:shader"
-    Union128byte _buf (nodef)
+    Union128byte _buf=nil
     Union128byte buf={return(_buf);}
     NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
     NSString *description={[ret appendFormat:@":%@",self.asString];}
@@ -282,7 +282,7 @@ SHUniform <BaseObject> "fn:shader"
                 type=v;
                 [self.program markChanged];
             }    
-        } (ivar=type)
+        }=nil (ivar=type)
     bool enabled=
         {return(enabled);}
         -v{
@@ -290,7 +290,7 @@ SHUniform <BaseObject> "fn:shader"
                 enabled=v;
                 [self.program markChanged];
             }
-        } (ivar=enabled)
+        }=nil (ivar=enabled)
 
     -(void)copyFrom:(SHUniform*)copy {
         self.type=copy.type;
@@ -666,7 +666,7 @@ type Union1024byte "typedef:
 
 
 SHAttribute <BaseObject> "fn:shader"
-    Union1024byte _buf (nodef)
+    Union1024byte _buf=nil
     Union1024byte buf={return(_buf);}
     NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
     UniformType type=
@@ -678,7 +678,7 @@ SHAttribute <BaseObject> "fn:shader"
                 type=v;
                 [self.program markChanged];
             }    
-        } (ivar=type)
+        }=nil (ivar=type)
     bool enabled=
         {return(enabled);}
         -v{
@@ -686,7 +686,7 @@ SHAttribute <BaseObject> "fn:shader"
                 enabled=v;
                 [self.program markChanged];
             }
-        } (ivar=enabled)
+        }=nil (ivar=enabled)
     bool transpose=NO
     int glname=INVALIDSHADER
 
@@ -967,7 +967,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     NSString _fragShaderString=nil,fragShaderString={[self makeShaderStrings];return(self._fragShaderString);}
     NSString _vertShaderString=nil,vertShaderString={[self makeShaderStrings];return(self._vertShaderString);}
 
-    MutableDictionary macros=[[MutableDictionary alloc] init] (readonly,dealloc,ivar=macros)
+    MutableDictionary macros=[[MutableDictionary alloc] init] (publicreadonly,dealloc,ivar=macros)
 
     -(NSString*)macroForKey:(NSObject*)key {return([macros objectForKey:(NSObject<NSCopying>*)key]);}
     -(void)removeMacroForKey:(NSObject*)key {

@@ -1,6 +1,6 @@
 
 Singletons
-    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);} (ivar=rootDataRegistry,dealloc)
+    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil (ivar=rootDataRegistry,dealloc)
 
 
 
@@ -16,7 +16,7 @@ DataViewerProperties_SourcedProxyDictionaryDelegate<SourcedProxyDictionaryDelega
 
 
 DataRegistryParentValueDelegate<MutableValueDelegate>
-    DataRegistry owner (nodef,assign,ivar=owner)
+    DataRegistry owner=nil (assign,ivar=owner)
     -(init[super init])initWithOwner:(DataRegistry*)aowner {
         owner=aowner;
     }
@@ -37,7 +37,7 @@ DataRegistryParentValueDelegate<MutableValueDelegate>
 
 
 DataRegistryMyViewersSetDelegate<MutableSetDelegate>
-    DataRegistry owner (nodef,assign,ivar=owner)
+    DataRegistry owner=nil (assign,ivar=owner)
     -(init[super init])initWithOwner:(DataRegistry*)aowner {
         owner=aowner;
     }
@@ -50,7 +50,7 @@ DataRegistryMyViewersSetDelegate<MutableSetDelegate>
         }
     }
 DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
-    DataRegistry owner (nodef,assign,ivar=owner)
+    DataRegistry owner=nil (assign,ivar=owner)
     -(init[super init])initWithOwner:(DataRegistry*)aowner {
         owner=aowner;
     }
@@ -69,15 +69,15 @@ DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
 
 DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedProxiedDictionaryDelegate,BaseObject>
     viewerInRegistry >s< <DataModelViewer> setOfMyViewer
-    WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] (ivar=myViewers,readonly,dealloc)
-    WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] (ivar=allViewers,readonly,dealloc)
-    MutableArray propertyStack=[[MutableArray alloc] init] (readonly,dealloc,ivar=propertyStack)
+    WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] (ivar=myViewers,publicreadonly,dealloc)
+    WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] (ivar=allViewers,publicreadonly,dealloc)
+    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=propertyStack)
 
     registry -m< ViewerListenerSet viewerListenerSet
 
     parent -s<~ DataRegistry child
 
-    DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (dealloc,readonly,ivar=parentDel)
+    DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (dealloc,publicreadonly,ivar=parentDel)
 
     -(init) {
         @10
@@ -327,7 +327,7 @@ ViewerPropertyListenerSet
                 dataRegistry=[v retain];
                 self.propertyNamesListenedTo=ns;
             }
-        } (ivar=dataRegistry,dealloc,nodef)
+        }=nil (ivar=dataRegistry,dealloc)
 
     NSSet propertyNamesListenedTo=
         {

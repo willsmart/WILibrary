@@ -855,9 +855,9 @@ float wordMatchProbability(unsigned short *ps,int numTaps,float **probByTapByLet
 
 
 DictionaryWord
-    NSString word (nodef,ivar=word)
-    double wordFreq (nodef)
-    double _calculatedProb (nodef)
+    NSString word=nil (ivar=word)
+    double wordFreq=nil
+    double _calculatedProb=nil
 
 
     double calculatedProb=
@@ -2126,7 +2126,7 @@ type QHT_bool "typedef:QuickHashTable<bool>"
 type constchar "typedef:const char"
 
 ProMPWords
-    ProMPWordsContext ctxt (nodef)
+    ProMPWordsContext ctxt=nil
 
 
     -(init)init {}
@@ -2316,7 +2316,7 @@ ProMPWords
 
 
 
-    WPatternArray *addMaxWPA (nodef,readonly)
+    WPatternArray *addMaxWPA=nil (readonly)
     -(init) {
         addMaxWPA=NEW(WPatternArray);
         addMaxWPA->setUpperBound(99);
@@ -2536,7 +2536,7 @@ ProMPWords
     }
 
 
-    PattStr tmpWisPattern (nodef)
+    PattStr tmpWisPattern=nil
     -(init) {
         strcpy(tmpWisPattern.pattern,"xgdisugfyjlkfjslj");
     }
@@ -2752,8 +2752,8 @@ ProMPWords
         return(ret);
     }
 
-    QHT_bool *addMidHT (nodef,readonly)
-    WPatternArray *addMidWPA (nodef,readonly)
+    QHT_bool *addMidHT=nil (readonly)
+    WPatternArray *addMidWPA=nil (readonly)
     -(init) {
         {
             ContextIndex ci={0};

@@ -261,8 +261,8 @@ type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
 
 
 <VGPoint>
-    ArrayOfCGPoints *pointStack (nodef,readonly,ivar)
-    CGPoint value (nodef,readonly)
+    ArrayOfCGPoints *pointStack=nil (readonly,ivar)
+    CGPoint value=nil (readonly)
     -(void)_calculatedValue {
         memset(pointStack->a,0,64*sizeof(CGPoint));
         for (NSObject<VGPointPart> *part in self.parts) [part calculatePart];
@@ -807,9 +807,9 @@ VGSumPointPart<VGPointPart>
 
 <VGObject:Commitable>
     CGPoint _position>>position
-    bool edgeMoved,positionMoved (nodef)
-    bool movable (nodef)
-    int graphedIndex,graphedIndexVersion (nodef)
+    bool edgeMoved,positionMoved=nil
+    bool movable=nil
+    int graphedIndex,graphedIndexVersion=nil
     owner ~m< VGPoint binding
 
     -(NSObject<VGObject>*)objectForBinding:(NSString*)binding;
@@ -829,7 +829,7 @@ VGSumPointPart<VGPointPart>
 
 
 ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
-    <VGObject> owner (nodef,readonly,assign)
+    <VGObject> owner=nil (readonly,assign)
     -(init[super init])initWithOwner:(NSObject<VGObject>*)aowner {
         aowner=owner;
     }
@@ -853,7 +853,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
     }
 
 ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
-    ViewGraph graph (nodef,readonly,assign)
+    ViewGraph graph=nil (readonly,assign)
     -(init[super init])initWithGraph:(ViewGraph*)agraph {
         graph=agraph;
     }
@@ -903,9 +903,9 @@ ViewGraph<BaseObject> "fn:graph"
         }
     }
 
-    ArrayOfInts *movedIndexes (nodef)
-    int numMovedIndexes (nodef)
-    _VGObjects *vgs,*vgs2 (nodef)
+    ArrayOfInts *movedIndexes=nil
+    int numMovedIndexes=nil
+    _VGObjects *vgs,*vgs2=nil
     -(init) {
         movedIndexes=NEW(ArrayOfInts);
         vgs=NEW(_VGObjects);
@@ -917,8 +917,8 @@ ViewGraph<BaseObject> "fn:graph"
         DELETE(_VGObjects,vgs2);vgs2=nil;
     }
 
-    int graphedIndexVersion (nodef)
-    VGObject graphOkForView (nodef,readonly,ivar=graphOkForView)
+    int graphedIndexVersion=nil
+    VGObject graphOkForView=nil (readonly,ivar=graphOkForView)
 
     -(int)commitProperties:(int)substageIndex {@-998 |2@10 
         [self refreshIndexesWithFocus:self.focus];

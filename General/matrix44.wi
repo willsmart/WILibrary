@@ -21,7 +21,7 @@ type Vec4 "typedef:struct Vec4"
 
 
 Matrix44<BaseObject>
-    Mat44 m (nodef)
+    Mat44 m=nil
 
     -(init)init {[self identity];}
     -(init[super init])initWithMat44:(Mat44*)mm {@20 [self copyMat44:mm];}

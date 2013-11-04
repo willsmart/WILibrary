@@ -43,7 +43,7 @@ RequestCaches "fn:util"
 
 
 <Request>
-    NSObject<NSCopying> definingKey (nodef)
+    NSObject<NSCopying> definingKey=nil
 
     -(void)goRequest {@-500 
         prnt("%s goRequest\n",self.cdescription);
@@ -72,8 +72,8 @@ RequestProxy <WeakListItem> "fn:util"
 
 
 <RequestCache:Codable>
-    WeakList proxyList=[[WeakList alloc] init] (readonly,dealloc,ivar=proxyList)
-    LRUCache cache=[[LRUCache alloc] init] (readonly,dealloc,ivar=cache)
+    WeakList proxyList=[[WeakList alloc] init] (publicreadonly,dealloc,ivar=proxyList)
+    LRUCache cache=[[LRUCache alloc] init] (publicreadonly,dealloc,ivar=cache)
 
     NSDictionary asDictionary=
         {imret=cache.asDictionary;}
@@ -210,14 +210,14 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
 
 
 <LRUCacheItem:ListItem>
-    <LRUCache> cache (nodef,ivar=cache)
+    <LRUCache> cache=nil (ivar=cache)
     float age=0,initialSize=0
     float size (readonly)
-    NSObject<NSCopying> _cacheKey (nodef)
+    NSObject<NSCopying> _cacheKey=nil
 
 LRUCacheItem<LRUCacheItem> "fn:util"
-    NSObject object (nodef,readonly,dealloc,ivar=object)
-    float size (nodef,ivar)
+    NSObject object=nil (readonly,dealloc,ivar=object)
+    float size=nil (ivar)
     -(init[super init])initWithObject:(NSObject*)aobject size:(float)asize {
         size=asize;
         object=[aobject retain];

@@ -50,7 +50,7 @@ type longdouble "typedef:long double"
 type GLuint
 type GLfloat
 type GLint
-type kid "typedef:id<NSCopying>"
+type kid "typedef:id<NSCopying>" "retains"
 type BYT "typedef:unsigned char"
 type WRD "typedef:unsigned short"
 type DWRD "typedef:unsigned int"
@@ -59,7 +59,7 @@ type LL "typedef:long long"
 type bool "ntype:bool"
 type BOOL
 type SEL
-type id
+type id "retains"
 type Class
 type NSUInteger
 type NSInteger

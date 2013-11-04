@@ -4,7 +4,7 @@ RenderLoop <BaseObject>
 
     -(void)dealloc {@-100 self.animating=NO;self.eaglView=nil;}
 
-    EAGLView _eaglView (nodef)
+    EAGLView _eaglView=nil
     EAGLView eaglView=
         {return(self._eaglView);}
         -v{
@@ -20,7 +20,7 @@ RenderLoop <BaseObject>
             }
         }
 
-    CADisplayLink displayLink (nodef)
+    CADisplayLink displayLink=nil
 
     BOOL animating=
         {return(animating);}

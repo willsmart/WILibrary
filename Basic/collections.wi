@@ -110,7 +110,7 @@ ModelArray<ModelArray>
 type id100 "typedef:struct{id ids[100];}"
 <DebugMutableArray>
     NSUInteger array_count=0
-    id100 array_objects (nodef)
+    id100 array_objects=nil
     -(void)stateOK {
         array_count=0;
         for (id o in __array) {
@@ -123,7 +123,7 @@ type id100 "typedef:struct{id ids[100];}"
 
 <DebugMutableSet>
     NSUInteger set_count=0
-    id100 set_objects (nodef)
+    id100 set_objects=nil
     -(void)stateOK {
         set_count=0;
         for (id o in __set) {
@@ -138,7 +138,7 @@ type keyval "typedef:struct{id<NSCopying>key;id value;}"
 type keyval100 "typedef:struct{keyval keyvals[100];}"
 <DebugMutableDictionary>
     NSUInteger dictionary_count=0
-    keyval100 dictionary_objects (nodef)
+    keyval100 dictionary_objects=nil
     -(void)stateOK {
         dictionary_count=0;
         for (id k in __dictionary) {
@@ -229,8 +229,8 @@ MutableSet:NSMutableSet<MutableSet> {}
 
 
 <MutableObjectDebuggerDelegate>
-    NSString name (nodef)
-    bool attached (nodef)
+    NSString name=nil
+    bool attached=nil
 
     -(init[super init])initWithName:(NSString*)aname {
         self.name=aname;
@@ -433,7 +433,7 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
 MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
     NSMutableArray followerArray=
         {return(followerArray);}
-        -v{[followerArray release];followerArray=[v retain];[self refreshFollowerArray];} (ivar=followerArray,dealloc)
+        -v{[followerArray release];followerArray=[v retain];[self refreshFollowerArray];}=nil (ivar=followerArray,dealloc)
 
     -(id)objectForObject:(id)object {@-999 id ret=object;
         @999 return(ret);

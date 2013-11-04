@@ -102,7 +102,7 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
 
 ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
     +(NSString*)urlType {return([ImageShader urlType]);}
-    NSURL simplifiedClearedURL,simplifiedURL (nodef)
+    NSURL simplifiedClearedURL=nil,simplifiedURL=nil
     -(init[super init])initWithURL:(NSURL*)url {
         self.simplifiedClearedURL=[__Class__ _simplifiedClearedURLForURL:url];
         self.simplifiedURL=[ImageShader simplifiedURLForURL:url];
@@ -134,7 +134,7 @@ ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
 
 
 Singletons
-    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));} (dealloc,ivar)
+    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}=nil (dealloc,ivar)
     NSString description={
         [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,self.shaderURLConversionCache.count];
     }
@@ -155,7 +155,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
 <RenderTicker>
     -(void)dealloc {@-100 self.animating=NO;}
 
-    CADisplayLink displayLink (nodef)
+    CADisplayLink displayLink=nil
 
     BOOL animating=
         {return(animating);}
@@ -173,7 +173,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
                 self.displayLink = nil;
                 animating = FALSE;
             }
-        } (ivar)
+        }=nil (ivar)
 
     NSInteger animationFrameInterval=
         {return animationFrameInterval;}
@@ -185,14 +185,14 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
                     self.animating=YES;
                 }
             }
-        } (ivar)
+        }=nil (ivar)
 
     -(init) {@-10 
         animating = NO;
         animationFrameInterval = 2;
     }
 
-    bool inRenderTick (readonly,nodef)
+    bool inRenderTick=nil (readonly)
     -(void)renderTick {@-100 
         @synchronized (self) {
             if (inRenderTick) return;
@@ -207,7 +207,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
 
 
 Singletons
-    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));} (dealloc,ivar)
+    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}=nil (dealloc,ivar)
 
     -(void)startImageTicker {
         [self.shaderTicker startWithInterval:0.5];

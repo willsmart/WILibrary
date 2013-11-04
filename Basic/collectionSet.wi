@@ -12,7 +12,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <Set>
-    NSSet __set (nodef,readonly,dealloc,ivar=__set)
+    NSSet __set=nil (readonly,dealloc,ivar=__set)
 
     // initializing a set
 
@@ -130,10 +130,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <MutableSetDelegate>
-    NSSet delegateForSet (nodef,assign,ivar=delegateForSet)
+    NSSet delegateForSet=nil (assign,ivar=delegateForSet)
     -(void)delegateForSetChanged {}
 
-    <MutableSetDelegate> setDelegate (nodef,dealloc,ivar=setDelegate,readonly)
+    <MutableSetDelegate> setDelegate=nil (dealloc,ivar=setDelegate,readonly)
     -(void)addDelegate:(NSObject<MutableSetDelegate>*)v {
         if (v.setDelegate) return;
         if (v==self) return;
@@ -179,7 +179,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
 
-    NSMutableSet __mutableSet (nodef,readonly,ivar=__mutableSet)
+    NSMutableSet __mutableSet=nil (readonly,ivar=__mutableSet)
 
     -(init) {
         self.delegateForSet=self;
@@ -399,7 +399,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
     NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
     MutableSet followerSet=
         {return(followerSet);}
-        -v{[followerSet release];followerSet=[v retain];[self refreshFollowerSet];} (ivar=followerSet,dealloc)
+        -v{[followerSet release];followerSet=[v retain];[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -504,7 +504,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
 
 
 MutableSetUnionDelegate1<MutableSetDelegate>
-    MutableSetUnionDelegate owner (nodef,readonly,ivar=owner)
+    MutableSetUnionDelegate owner=nil (publicreadonly,ivar=owner)
     -(init[super init])initWithOwner:(MutableSetUnionDelegate*)aowner {
         owner=aowner;
     }
@@ -532,7 +532,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
 
     MutableSet unionSet=
         {return(unionSet);}
-        -v{[unionSet release];unionSet=[v retain];[self refreshUnionSet];} (ivar=unionSet,dealloc)
+        -v{[unionSet release];unionSet=[v retain];[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];

@@ -36,17 +36,17 @@ type CVPixelBufferRef
 
 RecordVideo
 
-    CGSize size (nodef)
-    bool going (nodef)
+    CGSize size=nil
+    bool going=nil
     float speedup=1.5
 
-    AVAssetWriterInputPixelBufferAdaptor pixelBufferAdaptor (nodef,readonly,dealloc,ivar=pixelBufferAdaptor)
-    AVAssetWriterInput assetWriterInput (nodef,readonly,dealloc,ivar=assetWriterInput)
-    AVAssetWriter assetWriter (nodef,readonly,dealloc,ivar=assetWriter)
+    AVAssetWriterInputPixelBufferAdaptor pixelBufferAdaptor=nil (readonly,dealloc,ivar=pixelBufferAdaptor)
+    AVAssetWriterInput assetWriterInput=nil (readonly,dealloc,ivar=assetWriterInput)
+    AVAssetWriter assetWriter=nil (readonly,dealloc,ivar=assetWriter)
     NSMutableData pixelData=[NSMutableData dataWithLength:1]
     NSMutableData pixelData2=[NSMutableData dataWithLength:1]
-    CVPixelBufferRef pixBuf (nodef,readonly,ivar)
-    NSDate startedAt (nodef,readonly,dealloc,ivar=startedAt)
+    CVPixelBufferRef pixBuf=nil (readonly,ivar)
+    NSDate startedAt=nil (readonly,dealloc,ivar=startedAt)
 
     -(void)dealloc {@-100 
         [self stop];

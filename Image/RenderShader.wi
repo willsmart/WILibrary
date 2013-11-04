@@ -12,7 +12,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
     vec2 unitSize (uniform)
     float opacity (uniform)
     
-    UIView renderedInView (nodef,assign,ivar=renderedInView)
+    UIView renderedInView=nil (assign,ivar=renderedInView)
     
     -(init) {
         self.program.vertexCount=4;
@@ -22,7 +22,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
         }
     }
 
-    NSSet builtinMacros (nodef)
+    NSSet builtinMacros=nil
     -(init) {
         @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
     }

@@ -154,11 +154,11 @@ NSData
 type StringRequestURLDelegateCompletionBlock "typedef:void(^__type__)(NSString*,NSError*)"
 
 StringRequestURLDelegate<NSURLConnectionDelegate>
-    StringRequestURLDelegateCompletionBlock completionBlock (nodef)
-    NSStringEncoding encoding (nodef)
-    NSURLConnection *connection (nodef)
+    StringRequestURLDelegateCompletionBlock completionBlock=nil
+    NSStringEncoding encoding=nil
+    NSURLConnection *connection=nil
     NSMutableString *partialRequestedString=[NSMutableString string]
-    bool finished (nodef)
+    bool finished=nil
 
     -(void)dealloc {
         [completionBlock release];
@@ -433,7 +433,7 @@ Util "fn:util"
 
 
 IntCarrier "fn:util"
-    int intValue (nodef)
+    int intValue=nil
     +(IntCarrier*)carrierWithInt:(int)v {
         return([[[IntCarrier alloc] initWithInt:v] autorelease]);
     }
@@ -444,7 +444,7 @@ IntCarrier "fn:util"
 
 
 ULLCarrier "fn:util"
-    ULL ullValue (nodef)
+    ULL ullValue=nil
     +(ULLCarrier*)carrierWithULL:(ULL)v {
         return([[[ULLCarrier alloc] initWithULL:v] autorelease]);
     }
@@ -505,7 +505,7 @@ URLHandlerRegistry *_URLHandlerRegistry_default=nil;
 */
 
 URLHandlerRegistry "fn:util"
-    MutableArray handlers=[[MutableArray alloc] init] (readonly,dealloc,ivar=handlers)
+    MutableArray handlers=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=handlers)
 
     -(init)init {}
 
@@ -761,7 +761,7 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 <WeakListItem>
     next -- <WeakListItem> prev
-    <WeakList> list (assign,nodef,ivar=list)
+    <WeakList> list=nil (assign,ivar=list)
 
     -(void)dealloc {@-500 
         [self unlink];
@@ -814,8 +814,8 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 <List>
-    <ListItem> headItem (nodef)
-    <ListItem> tailItem (assign,nodef)
+    <ListItem> headItem=nil
+    <ListItem> tailItem=nil (assign)
     -(void)clear {
         while (self.headItem) [self.headItem unlink];
     }
@@ -823,9 +823,9 @@ WeakList <BaseObject,WeakList> "fn:util"
     -(void)dealloc {@-500 [self clear];}
 
 <ListItem>
-    <List> list (assign,nodef,ivar=list)
-    <ListItem> prev (nodef,assign)
-    <ListItem> next (nodef)
+    <List> list=nil (assign,ivar=list)
+    <ListItem> prev=nil (assign)
+    <ListItem> next=nil
 
     -(void)unlink {
         [[self retain] autorelease];
@@ -859,12 +859,12 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 <Ticker>
-    NSTimer tim (nodef)
+    NSTimer tim=nil
     -(void)startWithInterval:(float)interval {
         [self.tim invalidate];
         self.tim=[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(tick) userInfo:nil repeats:YES];
     }
-    bool inTick (readonly,nodef)
+    bool inTick=nil (readonly)
     -(void)tick {@-100 
         @synchronized (self) {
             if (inTick) return;
@@ -885,8 +885,8 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 <Waiter>
-    NSTimer waitTimer (nodef)
-    double _waiterGoAtSeconds (readonly,nodef,ivar=_waiterGoAtSeconds)
+    NSTimer waitTimer=nil
+    double _waiterGoAtSeconds=nil (readonly,ivar=_waiterGoAtSeconds)
     bool waiterEnabled=YES (readonly,ivar=waiterEnabled)
     -(void)waited {}
     -(void)cancelledWait {}
@@ -930,11 +930,11 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 Singletons
-    Log log={return(log?log:(log=[[Log alloc] init]));} (dealloc,ivar=log)
+    Log log={return(log?log:(log=[[Log alloc] init]));}=nil (dealloc,ivar=log)
 
 
 Log<BaseObject>
-    NSTimer tim (nodef,readonly,ivar=tim)
+    NSTimer tim=nil (readonly,ivar=tim)
 
     +(Log*)getDefault {return(g_singletons.log);}
 
@@ -990,7 +990,7 @@ Log<BaseObject>
     NSData asData=
         {return([NSKeyedArchiver archivedDataWithRootObject:self.asDictionary]);}
         -v{self.asDictionary=[NSKeyedUnarchiver unarchiveObjectWithData:v];}
-    NSString codingFilename (nodef)
+    NSString codingFilename=nil
     NSString documentsCodingFilename=
         {return(v_documentsCodingFilename);}
         -v{
@@ -999,7 +999,7 @@ Log<BaseObject>
             NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
             NSString *documentsDirectory = [paths objectAtIndex:0];
             self.codingFilename=[documentsDirectory stringByAppendingPathComponent:v];
-        } (ivar)
+        }=nil (ivar)
 
     -(void)loadCodable {
         [self loadCodableFromFilename:self.codingFilename];

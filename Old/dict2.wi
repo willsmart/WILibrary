@@ -215,7 +215,7 @@ DictWords {
     ULL *ulls_pull=nil
     BYT ulls_shft=0
     int ulls_depth=0,ulls_state=0
-    DictWord ulls_word,ulls_ciword (nodef)
+    DictWord ulls_word,ulls_ciword=nil
     
     ULLArray *ulls={
         if (!_ulls) {

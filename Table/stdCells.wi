@@ -1,11 +1,11 @@
 
 <HasNameLabel>
-    UILabel nameLabel (IBOutlet,nonatomic,retain,nodef)
+    UILabel nameLabel=nil (IBOutlet,nonatomic,retain)
 
 
 
 HasPropertiesParentValueDelegate<MutableValueDelegate>
-    <HasProperties> owner (nodef,assign,ivar=owner)
+    <HasProperties> owner=nil (assign,ivar=owner)
     -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
         owner=aowner;
     }
@@ -42,7 +42,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
     parent -s< <HasProperties> child
 
-    HasPropertiesParentValueDelegate parentDel=[[HasPropertiesParentValueDelegate alloc] initWithOwner:self] (dealloc,readonly,ivar=parentDel)
+    HasPropertiesParentValueDelegate parentDel=[[HasPropertiesParentValueDelegate alloc] initWithOwner:self] (dealloc,publicreadonly,ivar=parentDel)
 
 
     NSString keyPrefix=
@@ -55,13 +55,13 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
         {return(filterDel.keepKeyPrefixSuffixLength);}
         -v{filterDel.keepKeyPrefixSuffixLength=v;}
 
-    MutableDictionary _myProperties>>myProperties=[[MutableDictionary alloc] init] (readonly,ivar=_myProperties,dealloc)
-    MutableDictionary _parentProperties=[[MutableDictionary alloc] init] (readonly,ivar=_parentProperties,dealloc)
-    CommitableMutableDictionary _properties>>properties=[[CommitableMutableDictionary alloc] init] (readonly,ivar=_properties,dealloc)
+    MutableDictionary _myProperties>>myProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_myProperties,dealloc)
+    MutableDictionary _parentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_parentProperties,dealloc)
+    CommitableMutableDictionary _properties>>properties=[[CommitableMutableDictionary alloc] init] (publicreadonly,ivar=_properties,dealloc)
 
-    MutableArray propertyStack=[[MutableArray alloc] init] (readonly,dealloc,ivar=propertyStack)
+    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=propertyStack)
 
-    MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=filterDel)
+    MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=filterDel)
 
 
     -(void)attachPropertyDebuggers {
@@ -96,7 +96,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
 
 ParentPropertyValueDelegate<MutableValueDelegate>
-    <HasProperties> owner (nodef,assign,ivar=owner)
+    <HasProperties> owner=nil (assign,ivar=owner)
     -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
         owner=aowner;
     }
@@ -120,7 +120,7 @@ ParentPropertyValueDelegate<MutableValueDelegate>
 
 
 Singletons
-    App app={return(app?app:(app=[[App alloc] init]));} (dealloc,nodef,ivar=app)
+    App app={return(app?app:(app=[[App alloc] init]));}=nil (dealloc,ivar=app)
 
 App<HasProperties,BaseObject>
 
@@ -136,8 +136,8 @@ App<HasProperties,BaseObject>
 
 
 <StdHasAppProperties:StdHasProperties>
-    MutableDictionaryPrefixedKeyDelegate appFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,readonly,ivar=appFilterDel)
-    MutableDictionary _appProperties=[[MutableDictionary alloc] init] (readonly,ivar=_appProperties,dealloc)
+    MutableDictionaryPrefixedKeyDelegate appFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=appFilterDel)
+    MutableDictionary _appProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_appProperties,dealloc)
 
     NSString keyPrefix=
         {}
@@ -162,7 +162,7 @@ App<HasProperties,BaseObject>
 
 <StdVC:MyViewController,StdHasProperties>
     Class nextVCClass (readonly)
-    UINavigationController navBar (assign,nodef)
+    UINavigationController navBar=nil (assign)
 
     -(void)goChildFromProperties:(NSObject<HasProperties>*)aparent {
         if (self.nextVCClass) {
@@ -176,8 +176,8 @@ App<HasProperties,BaseObject>
 
 
 <StdTableModelFollower:TableController,TableModelFollower>
-    <TableModel> model={return(model);} (dealloc,ivar=model)
-    UITableView _table (IBOutlet,retain,nonatomic,nodef)
+    <TableModel> model={return(model);}=nil (dealloc,ivar=model)
+    UITableView _table=nil (IBOutlet,retain,nonatomic)
     UITableView table={return(self._table);}
 
     -(init) {@-10 
@@ -193,8 +193,8 @@ App<HasProperties,BaseObject>
 
 
 <StdTable:StdHasProperties,StdTableModelFollower>
-    <StdVC> vc (assign,nodef)
-    bool tableIsLoaded (nodef,readonly,ivar)
+    <StdVC> vc=nil (assign)
+    bool tableIsLoaded=nil (readonly,ivar)
 
     Class tableModelClass (readonly)
     -(init) {
@@ -243,7 +243,7 @@ App<HasProperties,BaseObject>
     Class bagSectionClass={@-999 Class ret=nil;
         @999 return(ret);
     }
-    <StdVC> vc (assign,nodef)
+    <StdVC> vc=nil (assign)
 
     -(id)addSection:(Class)clas {
         if (!clas) return(nil);
@@ -390,7 +390,7 @@ __Table__Cell "nac" "multi"
     }
 
 <BasicTable:UITableViewMetaEnabled> "nac" "multi"
-    __Table__TableController tableController=[[__Table__TableController alloc] init] (readonly,ivar=tableController,dealloc)
+    __Table__TableController tableController=[[__Table__TableController alloc] init] (publicreadonly,ivar=tableController,dealloc)
     -(void)dealloc {@-200 tableController.__table=nil;}
     
     -(init) {
@@ -410,7 +410,7 @@ __Table__Cell "nac" "multi"
     
 
 <BasicTableController:StdTableModelFollower,BaseObject,StdHasAppProperties> "nac" "multi"
-    __Table__Table __table (IBOutlet,assign,nonatomic,nodef)
+    __Table__Table __table=nil (IBOutlet,assign,nonatomic)
     UITableView table={@!0 return(self.__table);}
 
     Class tableModelClass={return([__Table__TableModel class]);}
@@ -422,7 +422,7 @@ __Table__Cell "nac" "multi"
 
 
 <BasicTableModel:StdTableModel> "nac" "multi"
-    __Table__TableController controller (nodef,assign,ivar=controller)
+    __Table__TableController controller=nil (assign,ivar=controller)
     MutableArray __table__s=[[MutableArray alloc] init] (readonly,dealloc,ivar=__table__s)
     -(init) {
         {
@@ -436,7 +436,7 @@ __Table__Cell "nac" "multi"
 
 
 <BasicDataTableModel:StdTableModel> "nac" "multi"
-    __Table__TableController controller (nodef,assign,ivar=controller)
+    __Table__TableController controller=nil (assign,ivar=controller)
     -(init) {
         {
             [self addSection:[__Table__SectionModel class]];

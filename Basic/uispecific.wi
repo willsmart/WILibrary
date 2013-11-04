@@ -13,7 +13,7 @@ UIImage
 
 
 ImageFromCGImage:UIImage
-    CGImageRef sourceImage (nodef)
+    CGImageRef sourceImage=nil
     +(__Class__*)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         return([[[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation] autorelease]);
     }
@@ -33,12 +33,12 @@ ImageFromCGImage:UIImage
 */
 
 Singletons
-    FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);} (ivar=fontList,dealloc,readonly)
+    FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil (ivar=fontList,dealloc,publicreadonly)
 
 FontList <BaseObject>
     +(FontList*)getDefault {return(g_singletons.fontList);}
 
-    NSArray fontNames (nodef,readonly,dealloc,ivar=fontNames)
+    NSArray fontNames=nil (readonly,dealloc,ivar=fontNames)
 
     -(init) {
         {

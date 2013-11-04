@@ -13,8 +13,8 @@
 
 
 ClassCount "-Object" "fn:object"
-    LL count,nextID (nodef)
-    NSString name (nodef,readonly,dealloc,ivar=name)
+    LL count=nil,nextID=nil
+    NSString name=nil (readonly,dealloc,ivar=name)
     +(ClassCount*)classCount {
         return([[[ClassCount alloc] init] autorelease]);
     }
@@ -49,8 +49,8 @@ type QuickHashTableOfClassCounts
 
 Singletons<Ticker> "-Object" "fn:object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
-    QuickHashTableOfClassCounts *classCountht (readonly,nodef)
-    ClassCount totalObjectCount (readonly,nodef,dealloc,ivar=totalObjectCount)
+    QuickHashTableOfClassCounts *classCountht=nil (readonly)
+    ClassCount totalObjectCount=nil (publicreadonly,dealloc,ivar=totalObjectCount)
 
     -(void)dealloc {
         {
@@ -263,32 +263,23 @@ Singletons<Ticker> "-Object" "fn:object"
     }
 */
 
-
-<perclassdefn>
-    -{
-        #ifndef retain__Class__WithOwner
-        #define retain__Class__WithOwner(__object,__owner) [__object retain]
-        #endif
-        #ifndef release__Class__WithOwner
-        #define release__Class__WithOwner(__object,__owner) [__object release]
-        #endif
-        #ifndef autorelease__Class__WithOwner
-        #define autorelease__Class__WithOwner(__object,__owner) [__object autorelease]
-        #endif
-    }
+NSObject
+    -(id)retainWithOwner:(id)owner {return([self retain]);}
+    -(void)releaseWithOwner:(id)owner {return([self release]);}
+    -(id)autoreleaseWithOwner:(id)owner {return([self autorelease]);}
 
 <Object>
-    LL objectIDInClass,objectIDInTotal (nodef,readonly)
+    LL objectIDInClass=nil,objectIDInTotal=nil (readonly)
 
-    bool isZombie (nodef,readonly)
+    bool isZombie=nil (readonly)
 
-    bool debugRetain (nodef)
-    bool printRetain (nodef)
-    bool printDealloc (nodef)
+    bool debugRetain=nil
+    bool printRetain=nil
+    bool printDealloc=nil
 
-    int ___rc,___arc (nodef)
+    int ___rc=nil,___arc=nil
 
-    LL __owner_context (ivar=__owner_context,nodef)
+    LL __owner_context=nil (ivar=__owner_context)
 
     -(init) {@-996 debugRetain=YES;}
     -(init) {@-995 objInitFn(self,___rc,___arc,objectIDInTotal,objectIDInClass,printRetain||printDealloc);
@@ -300,12 +291,6 @@ Singletons<Ticker> "-Object" "fn:object"
 #endif
     }
     
-    
-    +{
-        #define retain__Class__WithOwner(__object,__owner) [__object retainWithOwner:__owner]
-        #define release__Class__WithOwner(__object,__owner) [__object releaseWithOwner:__owner]
-        #define autorelease__Class__WithOwner(__object,__owner) [__object autoreleaseWithOwner:__owner]
-    }
     
     -(id)retainWithOwner:(id)__owner {@999 return(retainWithOwnerFn(self,__owner_context,objectIDInTotal,__owner));}
     -(void)releaseWithOwner:(id)__owner {@900 releaseWithOwnerFn(self,__owner_context,objectIDInTotal,__owner);}
@@ -337,7 +322,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
     
 Singletons
-    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}(readonly,dealloc,ivar=trace,nodef)
+    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil(publicreadonly,dealloc,ivar=trace)
     
 "<pthread.h>"
 /*interfaces:
@@ -483,7 +468,7 @@ Trace<Ticker,BaseObject>
         g_trace=self;
     }
 
-    bool not_first (nodef)
+    bool not_first=nil
 
     -(void)tick {
         g_trace=self;
@@ -518,7 +503,7 @@ Trace<Ticker,BaseObject>
 
     
 Singletons
-    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}(readonly,dealloc,ivar=objectGraph,nodef)
+    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil(publicreadonly,dealloc,ivar=objectGraph)
     
 "<pthread.h>"
 /*interfaces:
@@ -541,7 +526,7 @@ ObjectGraph<Ticker,BaseObject>
         [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,count];
     }
 
-    bool not_first (nodef)
+    bool not_first=nil
 
     -(void)tick {
         g_objectGraph=self;
@@ -574,7 +559,7 @@ ObjectGraph<Ticker,BaseObject>
     -(id)autorelease {@999 return([super autorelease]);}
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
-    LL objectIDInTotal (nodef,readonly)
+    LL objectIDInTotal=nil (readonly)
     -(init[super init])initWithObjectID:(LL)aobjectIDInTotal {
         objectIDInTotal=aobjectIDInTotal;
     }

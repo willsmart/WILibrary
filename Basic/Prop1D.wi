@@ -1,6 +1,6 @@
 
 WIMyClass
-    EndpointD *hisnames (nodef,readonly,nonatomic,dealloc)
+    EndpointD *hisnames=nil (readonly,nonatomic,dealloc)
 
     -(void)die {[v_hisnames removeAllObjects];}
 

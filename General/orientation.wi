@@ -7,16 +7,16 @@ sys CMMotionManager
 
 
 Orientation<BaseObject>
-    Mat44 zeroMat (nodef)
+    Mat44 zeroMat=nil
 
-    float magAdjustDegrees,magAdjustFactor,rotateMin (nodef)
-    bool mat44Inited (nodef)
-    bool useReferenceFrame (nodef)
+    float magAdjustDegrees,magAdjustFactor,rotateMin=nil
+    bool mat44Inited=nil
+    bool useReferenceFrame=nil
 
     float zoomScale=0.1
     int zoomLevels=10
     float currentZoom=1,currentRotateDegrees=0
-    CGPoint currentPan (nodef)
+    CGPoint currentPan=nil
     float rotateMin=2 (readonly,ivar)
     float rotateScale=0.08 (readonly,ivar)
 

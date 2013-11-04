@@ -88,7 +88,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
 
 
 <Commitable:RefCountedObject>
-    bool modelObjectHasChanged,alwaysChangedIfSourceChanged (nodef)
+    bool modelObjectHasChanged=nil,alwaysChangedIfSourceChanged=nil
     long version=1
     CommitStage commitStage={return([Model getDefault].commitStage);}
     ULL commitFrame=1
@@ -131,7 +131,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
     }
             
 SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
-    <Commitable> owner (nodef,readonly,ivar=owner)
+    <Commitable> owner=nil (readonly,ivar=owner)
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;
     }
@@ -149,7 +149,7 @@ SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
     }
             
 SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
-    <Commitable> owner (nodef,readonly,ivar=owner)
+    <Commitable> owner=nil (readonly,ivar=owner)
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;
     }
@@ -168,7 +168,7 @@ SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
 
             
 SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
-    <Commitable> owner (nodef,readonly,ivar=owner)
+    <Commitable> owner=nil (readonly,ivar=owner)
 
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;
@@ -201,7 +201,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
 
             
 SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
-    <Commitable> owner (nodef,readonly,ivar=owner)
+    <Commitable> owner=nil (readonly,ivar=owner)
 
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;

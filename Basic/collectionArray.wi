@@ -8,7 +8,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 
 <Array>
-    NSArray __array (nodef,readonly,dealloc,ivar=__array)
+    NSArray __array=nil (readonly,dealloc,ivar=__array)
 
 
     // initializing a set
@@ -252,10 +252,10 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 
 <MutableArrayDelegate>
-    NSArray delegateForArray (nodef,assign,ivar=delegateForArray)
+    NSArray delegateForArray=nil (assign,ivar=delegateForArray)
     -(void)delegateForArrayChanged {}
 
-    <MutableArrayDelegate> arrayDelegate (nodef,dealloc,ivar=arrayDelegate,readonly)
+    <MutableArrayDelegate> arrayDelegate=nil (dealloc,ivar=arrayDelegate,readonly)
     -(void)addDelegate:(NSObject<MutableArrayDelegate>*)v {
         if (v.arrayDelegate) return;
         if (v==self) return;
@@ -325,7 +325,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 
 <MinimalMutableArray:Array,MutableArrayDelegate,ObjectEquate>
-    NSMutableArray __mutableArray (nodef,readonly,ivar=__mutableArray)
+    NSMutableArray __mutableArray=nil (readonly,ivar=__mutableArray)
 
     -(init) {
         self.delegateForArray=self;

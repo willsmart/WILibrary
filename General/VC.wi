@@ -4,7 +4,7 @@
 
 
 <MyViewController>
-    CGRect kbRect (nodef,readonly)
+    CGRect kbRect=nil (readonly)
     NSString allowedOrientations
 
     -(void)resized {
@@ -12,9 +12,9 @@
     -(void)restyle {
     }
 
-    UIViewController parVC (nodef,assign,nonatomic)
+    UIViewController parVC=nil (assign,nonatomic)
 
-    UIView contentView (nodef,nonatomic,IBOutlet)
+    UIView contentView=nil (nonatomic,IBOutlet)
 
     NSString allowedOrientations=@"new"
 

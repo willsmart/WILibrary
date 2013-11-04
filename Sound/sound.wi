@@ -39,7 +39,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 
-    ArrayOfInts *recordingQueue,*recordingSamples (nodef)
+    ArrayOfInts *recordingQueue,*recordingSamples=nil
     int recordingQueueSize=1048576,recordingSamplesSize=262144,recordingQueueIn=0,recordingQueueOut=0
     -(init) {@10 
         recordingQueue=NEW(ArrayOfInts);
@@ -230,7 +230,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         @100 playbackSamplei+=toCount;
     }
 
-    ArrayOfPLAYFRAMEs *playbackQueue,*playbackSamples (nodef)
+    ArrayOfPLAYFRAMEs *playbackQueue,*playbackSamples=nil
     int playbackQueueSize=1048576,playbackSamplesSize=262144,playbackQueueIn=0,playbackQueueOut=0,playbackQueueThreshold=900000
 
 
@@ -413,7 +413,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 <AudioUnit>
-    AudioComponentInstance audioUnit (nodef)
+    AudioComponentInstance audioUnit=nil
 
     bool isSetup=NO,isStarted=NO (readonly)
     

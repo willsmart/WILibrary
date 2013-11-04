@@ -63,7 +63,7 @@
     -(init)init {}
 
 <BaseObject>
-    NSDictionary *__initUsingDictionary (nodef,readonly,ivar=__initUsingDictionary)
+    NSDictionary *__initUsingDictionary=nil (publicreadonly,ivar=__initUsingDictionary)
     
     //int __rc=1,__arc=0;
     -(init)init {}

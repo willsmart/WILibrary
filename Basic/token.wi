@@ -34,14 +34,14 @@ WReader <BaseObject> "fn:token"
 
 
     NSArray lines=[[NSArray alloc] init] (readonly,dealloc,ivar=lines)
-    int pos (nodef)
+    int pos=nil
     -(init) {
         pos=-1;
     }
 
-    MutableDictionary replaces=[[MutableDictionary alloc] init] (readonly,dealloc,ivar=replaces)
+    MutableDictionary replaces=[[MutableDictionary alloc] init] (publicreadonly,dealloc,ivar=replaces)
 
-    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (readonly,dealloc,ivar=tokenizer)
+    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (publicreadonly,dealloc,ivar=tokenizer)
 
 
     WReaderToken nextToken={
@@ -86,9 +86,9 @@ WReader <BaseObject> "fn:token"
 
 
 WReaderToken "fn:token"
-    NSString str (nodef)
-    int bracketCount (nodef)
-    char type (nodef)
+    NSString str=nil
+    int bracketCount=nil
+    char type=nil
 
 
     -(init[super init])initWithString:(NSString*)astr bracketCount:(int)bc type:(char)atype {
