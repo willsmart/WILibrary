@@ -10,6 +10,70 @@
 */
 
 
+<ThreadKey> "multi" "nac"
+    -decl:{
+        extern pthread_key_t ThreadKey_key_keyName;
+        extern valueType getThreadValueNamedKeyName();
+        extern valueType setThreadValueNamedKeyName(valueType v);
+    }
+    -decl:impl:{
+        pthread_key_t ThreadKey_key_keyName=nil;
+        valueType getThreadValueNamedKeyName() {
+            if (!ThreadKey_key_keyName)  (&ThreadKey_key_keyName,nil);
+            return((valueType)pthread_getspecific(ThreadKey_key_keyName));
+        }
+        valueType setThreadValueNamedKeyName(valueType v) {
+            if (!ThreadKey_key_keyName)  (&ThreadKey_key_keyName,nil);
+            valueType ret=(valueType)pthread_getspecific(ThreadKey_key_keyName);
+            pthread_setspecific(key,(const void*)v);
+            return(ret);
+        }
+    }
+
+
+ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
+    -decl:{
+        extern int g_prevThreadId;
+        int getThreadId();
+        ULL getThreadMask();
+
+        bool authorized_thread(ULL&mask);
+        void authorize_thread(ULL&mask);
+    }
+    -decl:impl:{
+        int g_prevThreadId=0;
+        ULL getThreadMask() {
+            int ret=getThreadValueNamedId();
+            if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
+            return(1LL<<(ret-1));
+        }
+        int getThreadId() {
+            int ret=getThreadValueNamedId();
+            if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
+            return(ret);
+        }
+
+        bool authorized_thread(ULL&mask) {
+            ULL tmask=getThreadMask();
+            if (!tmask) ERR("Too many threads for this implementation of publicreadonly properties (64)");
+            else {
+                if (mask&tmask) {
+                    mask&=~tmask;
+                    return(YES);
+                }
+            }
+            return(NO);
+        }
+        void authorize_thread(ULL&mask) {
+            mask|=getThreadMask();
+        }
+    }
+
+<Object>
+    ULL __private_access_thread_mask=0 (justivar)
+    __WIClass__ privateaccess={authorize_thread(__private_access_thread_mask);return(self);}
+    
+
 
 
 ClassCount "-Object" "fn:object"
@@ -278,7 +342,7 @@ Singletons
             TraceFunctionTracker(bool en,const char *fnName) {
                 if (!en) depth=-1;
                 else {
-                    if (!key) pthread_key_create(&key,nil);
+                    if (!key)  (&key,nil);
                     depth=((int)pthread_getspecific(key))+1;
                     if (depth<0) depth=0;
                     pthread_setspecific(key,(const void*)depth);
