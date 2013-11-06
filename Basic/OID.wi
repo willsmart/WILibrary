@@ -9,6 +9,7 @@
 #endif
 */
 
+"<pthread.h>"
 
 <ThreadKey> "multi" "nac"
     -decl:{
@@ -19,17 +20,23 @@
     -decl:impl:{
         pthread_key_t ThreadKey_key_keyName=nil;
         valueType getThreadValueNamedKeyName() {
-            if (!ThreadKey_key_keyName)  (&ThreadKey_key_keyName,nil);
+            if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
             return((valueType)pthread_getspecific(ThreadKey_key_keyName));
         }
         valueType setThreadValueNamedKeyName(valueType v) {
-            if (!ThreadKey_key_keyName)  (&ThreadKey_key_keyName,nil);
+            if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
             valueType ret=(valueType)pthread_getspecific(ThreadKey_key_keyName);
             pthread_setspecific(key,(const void*)v);
             return(ret);
         }
     }
 
+/*each:impl:
+#ifdef _PrivateAccessMask_
+#undef _PrivateAccessMask_
+#endif
+#define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
+*/
 
 ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
     -decl:{
@@ -38,7 +45,9 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
         ULL getThreadMask();
 
         bool authorized_thread(ULL&mask);
-        void authorize_thread(ULL&mask);
+        bool authorize_thread(ULL&mask);
+        void deauthorize_thread(ULL&mask);
+        #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
     }
     -decl:impl:{
         int g_prevThreadId=0;
@@ -58,21 +67,28 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
             if (!tmask) ERR("Too many threads for this implementation of publicreadonly properties (64)");
             else {
                 if (mask&tmask) {
-                    mask&=~tmask;
+//                    mask&=~tmask;
                     return(YES);
                 }
             }
             return(NO);
         }
-        void authorize_thread(ULL&mask) {
-            mask|=getThreadMask();
+        bool authorize_thread(ULL&mask) {
+            if (mask&getThreadMask()) return(NO);
+            else {
+                mask|=getThreadMask();
+                return(YES);
+            }
+        }
+        void deauthorize_thread(ULL&mask) {
+            mask&=~getThreadMask();
         }
     }
 
-<Object>
-    ULL __private_access_thread_mask=0 (justivar)
-    __WIClass__ privateaccess={authorize_thread(__private_access_thread_mask);return(self);}
-    
+<ClassObject>
+    ULL __private_access_thread_mask_in___ClassName__=0 (justivar,privateivar)
+
+
 
 
 

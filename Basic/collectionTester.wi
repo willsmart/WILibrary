@@ -141,15 +141,15 @@ CollectionTestSubObject
 
     /*top:
     #define ITERATECOLLECTIONS(typ,v,...) \
-    for (NSString *key in self.collections) { \
+    for (NSString *_key in self.collections) { \
         @autoreleasepool {} \
-        testKey=key; \
-        typ v=[self.collections objectForKey:key]; \
+        testKey=_key; \
+        typ v=[self.collections objectForKey:_key]; \
         @autoreleasepool { \
             NSObject *ret=nil; \
             __VA_ARGS__ \
             for (CollectionTestObject *o in self._allObjects) { \
-                CollectionTestSubObject *so=[o.subObjects objectForKey:key]; \
+                CollectionTestSubObject *so=[o.subObjects objectForKey:_key]; \
                 int opN=0; \
                 if ([ret isKindOfClass:[NSSet class]]) { \
                     if ([(NSSet*)ret containsObject:o]) opN=1; \
@@ -223,14 +223,14 @@ CollectionTestSubObject
             if ([a isKindOfClass:[NSDictionary class]]) {
                 for (id k in (NSDictionary*)a) if ([(NSDictionary*)a objectForKey:k]==o) N++;
             }
-            for (NSString *key in o.subObjects) {
-                CollectionTestSubObject *so=[o.subObjects objectForKey:key];
-                int expRefCnt=[self expectNForSet:key givenBaseN:N];
+            for (NSString *k in o.subObjects) {
+                CollectionTestSubObject *so=[o.subObjects objectForKey:k];
+                int expRefCnt=[self expectNForSet:k givenBaseN:N];
                 if ((expRefCnt>=0)&&(expRefCnt!=so.rcWillBe)) {
-                    [self passFail:NO format:@"Outer: Object %@ key %@ should have rc of %d",o.description,key,expRefCnt];
+                    [self passFail:NO format:@"Outer: Object %@ key %@ should have rc of %d",o.description,k,expRefCnt];
                 }                
                 if ((expRefCnt>=0)&&(expRefCnt!=so.rcInner)) {
-                    [self passFail:NO format:@"Inner: Object %@ key %@ should have rc of %d",o.description,key,expRefCnt];
+                    [self passFail:NO format:@"Inner: Object %@ key %@ should have rc of %d",o.description,k,expRefCnt];
                 }                
             }
         }

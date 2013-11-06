@@ -269,7 +269,7 @@ Texture2D <BaseObject> "fn:render"
             if (!v) return;
             
             NSUInteger i;
-            CGContextRef context = nil;
+            CGContextRef cgcontext = nil;
             void *data = nil;;
             CGColorSpaceRef colorSpace;
             void *tempData;
@@ -320,31 +320,31 @@ Texture2D <BaseObject> "fn:render"
                 case kTexture2DPixelFormat_RGBA8888:
                   colorSpace = CGColorSpaceCreateDeviceRGB();
                   data = malloc(height * width * 4);
-                  context = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+                  cgcontext = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
                   CGColorSpaceRelease(colorSpace);
                   break;
                 case kTexture2DPixelFormat_RGB565:
                   colorSpace = CGColorSpaceCreateDeviceRGB();
                   data = malloc(height * width * 4);
-                  context = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big);
+                  cgcontext = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big);
                   CGColorSpaceRelease(colorSpace);
                   break;
                   
                 case kTexture2DPixelFormat_A8:
                   data = malloc(height * width);
-                  context = CGBitmapContextCreate(data, width, height, 8, width, NULL, kCGImageAlphaOnly);
+                  cgcontext = CGBitmapContextCreate(data, width, height, 8, width, NULL, kCGImageAlphaOnly);
                   break;        
                 default:
                   [NSException raise:NSInternalInconsistencyException format:@"Invalid pixel format"];
             }
 
 
-            CGContextClearRect(context, CGRectMake(0, 0, width, height));
-            CGContextTranslateCTM(context, 0, height - imageSize.height);
+            CGContextClearRect(cgcontext, CGRectMake(0, 0, width, height));
+            CGContextTranslateCTM(cgcontext, 0, height - imageSize.height);
 
-            if (!CGAffineTransformIsIdentity(transform)) CGContextConcatCTM(context, transform);
+            if (!CGAffineTransformIsIdentity(transform)) CGContextConcatCTM(cgcontext, transform);
             
-            CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+            CGContextDrawImage(cgcontext, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
             //Convert "RRRRRRRRRGGGGGGGGBBBBBBBBAAAAAAAA" to "RRRRRGGGGGGBBBBB"
             if(apixelFormat == kTexture2DPixelFormat_RGB565) {
                 tempData = malloc(height * width * 2);
@@ -359,7 +359,7 @@ Texture2D <BaseObject> "fn:render"
             }
             [self loadWithData:data pixelFormat:apixelFormat pixelsWide:width pixelsHigh:height contentSize:imageSize];
 
-            CGContextRelease(context);
+            CGContextRelease(cgcontext);
             free(data);
         }
 
@@ -391,20 +391,20 @@ Texture2D <BaseObject> "fn:render"
         UIFont *font = [UIFont fontWithName:name size:size];
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
         void *data = calloc(height, width);
-        CGContextRef context = CGBitmapContextCreate(data, width, height, 8, width, colorSpace, kCGImageAlphaNone);
+        CGContextRef cgcontext = CGBitmapContextCreate(data, width, height, 8, width, colorSpace, kCGImageAlphaNone);
         CGColorSpaceRelease(colorSpace);
 
 
-        CGContextSetGrayFillColor(context, 1.0, 1.0);
-        CGContextTranslateCTM(context, 0.0, height);
-        CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
-        UIGraphicsPushContext(context);
+        CGContextSetGrayFillColor(cgcontext, 1.0, 1.0);
+        CGContextTranslateCTM(cgcontext, 0.0, height);
+        CGContextScaleCTM(cgcontext, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
+        UIGraphicsPushContext(cgcontext);
         [string drawInRect:CGRectMake(0, 0, dimensions.width, dimensions.height) withFont:font lineBreakMode:NSLineBreakByWordWrapping alignment:alignment];
         UIGraphicsPopContext();
 
         [self loadWithData:data pixelFormat:kTexture2DPixelFormat_A8 pixelsWide:width pixelsHigh:height contentSize:dimensions];
 
-        CGContextRelease(context);
+        CGContextRelease(cgcontext);
         free(data);
     }
 

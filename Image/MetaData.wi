@@ -547,7 +547,7 @@ JSMetaProperty<NamedDataListener>
 
     NSDictionary initWithMetaProperties=nil (readonly,ivar=initWithMetaProperties)
     NSObject<MetaEnabled> initWithParent=nil (readonly,ivar=initWithParent)
-    kid initWithKeyInParent=nil (readonly)
+    kid keyInParentToInitWith=nil (readonly)
 
     MutableDictionary _metaProperties=[[MutableDictionary alloc] init] (dealloc,ivar=_metaProperties)
     NSDictionary metaProperties=
@@ -557,7 +557,7 @@ JSMetaProperty<NamedDataListener>
         }
 
     -(init) {
-        @-400 if (initWithParent) [initWithParent.childMetas setObject:self forKey:initWithKeyInParent];
+        @-400 if (initWithParent) [initWithParent.childMetas setObject:self forKey:keyInParentToInitWith];
         @-100 [self meta_attachDictionaryDelegateTo:_metaProperties];
         @400 if ([self conformsToProtocol:@protocol(MetaComponent)]) {
             NSString *key=[(NSObject<MetaComponentClass>*)[self class] metaURLKey];
@@ -586,7 +586,7 @@ JSMetaProperty<NamedDataListener>
 
     -(void)metaEnabledPartialInitWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)parent key:(id<NSCopying>)keyInParent {
         initWithParent=parent;
-        initWithKeyInParent=keyInParent;
+        keyInParentToInitWith=keyInParent;
         initWithMetaProperties=metaProps;
         metaURLWas=[[metaProps objectForKey:@"metaurl"] retain];
         frameWas=CGRectMake(0,0,1,1);
