@@ -348,6 +348,7 @@ Singletons
 /*interfaces:
     extern ULL g_sequence;
     extern Trace *g_trace;
+    extern NSString *g_newTraces=nil;
     #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((const void*)self)!=(const void*)g_trace)&&(((const void*)self)!=(const void*)[g_trace class]),__trcfnnm);
     
     
