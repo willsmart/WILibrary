@@ -293,7 +293,7 @@ JSMetaProperty<NamedDataListener>
         
         NSMutableSet *propNames=[[NSMutableSet alloc] init];
 
-        NSString *state=([[d objectForKey:@"~~"] isKindOfClass:[NSString class]]?(NSString*)[d objectForKey:@"~~"]:nil);
+        NSString *statev=([[d objectForKey:@"~~"] isKindOfClass:[NSString class]]?(NSString*)[d objectForKey:@"~~"]:nil);
         for (NSString *key in d) {
             if ([key hasPrefix:@"js"]) {
                 if ([[d objectForKey:key] isKindOfClass:[NSString class]]) {
@@ -304,7 +304,7 @@ JSMetaProperty<NamedDataListener>
                         }
                     }
                     else if ([key hasPrefix:@"js~"]) {
-                        if (!state) state=@"app::state";
+                        if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
                         int i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
@@ -324,7 +324,7 @@ JSMetaProperty<NamedDataListener>
                         }
                     }
                     else if ([key hasPrefix:@"prop~"]) {
-                        if (!state) state=@"app::state";
+                        if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
                         int i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
@@ -336,7 +336,7 @@ JSMetaProperty<NamedDataListener>
             }
             else if ([key hasPrefix:@"~"]&&![key isEqualToString:@"~~"]) {
                 JSMetaPropertyInState *ps=[[[JSMetaPropertyInState alloc] initWithJs:nil value:[d objectForKey:key] var:nil] autorelease];
-                if (!state) state=@"app::state";
+                if (!statev) statev=@"app::state";
                 NSArray *ss=[key componentsSeparatedByString:@"~"];
                 int i=0;for (NSString *s in ss) if (i++) {
                     if (![self propertyInStateForKey:s]) {
@@ -345,9 +345,9 @@ JSMetaProperty<NamedDataListener>
                 }
             }
         }
-        if (state) {
-            stateProp=[state retain];
-            [propNames addObject:state];
+        if (statev) {
+            stateProp=[statev retain];
+            [propNames addObject:statev];
         }
         NSDictionary *vars=([[d objectForKey:@"props"] isKindOfClass:[NSDictionary class]]?(NSDictionary*)[d objectForKey:@"props"]:nil);
         for (NSString *var in vars) if ([var isKindOfClass:[NSString class]]&&[[vars objectForKey:var] isKindOfClass:[NSString class]]) {

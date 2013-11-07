@@ -303,15 +303,15 @@ CollectionTestSubObject
             return(keys);
         }
     -(NSMutableIndexSet*)randIndexSetWithCount:(NSUInteger)count max:(NSUInteger)max {
-        NSMutableIndexSet *indexes=[NSMutableIndexSet indexSet];
+        NSMutableIndexSet *indexesv=[NSMutableIndexSet indexSet];
         if (count) {
             for (NSUInteger i=0;i<count;i++) {
                 NSUInteger j,ii=(rand()%((max+1)-i));
-                for (j=0;[indexes containsIndex:j]||(ii--);j++);
-                [indexes addIndex:j];
+                for (j=0;[indexesv containsIndex:j]||(ii--);j++);
+                [indexesv addIndex:j];
             }
         }
-        return(indexes);
+        return(indexesv);
     }
     NSMutableIndexSet randInternalIndexSet={return([self randIndexSetWithCount:rand()%(a.count+1) max:a.count-1]);}
     NSRange randInternalRange=
@@ -871,9 +871,9 @@ DictionaryTester <Tester>
         else {
             NSUInteger index=0;
             for (id object in __array) {
-                NSIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
-                if (!indexes) [self passFail:NO format:@"!!!ait Object not known\n"];
-                if (![indexes containsIndex:index]) [self passFail:NO format:@"!!!ait Index doesn't exist\n"];
+                NSIndexSet *indexesv=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
+                if (!indexesv) [self passFail:NO format:@"!!!ait Object not known\n"];
+                if (![indexesv containsIndex:index]) [self passFail:NO format:@"!!!ait Index doesn't exist\n"];
                 index++;
             }
         }
@@ -1116,10 +1116,10 @@ ArrayTester <Tester>
         [self passFailWithFormat:@"insertObjectAtIndex"];
     }
     -(void)insertObjectsAtIndexes {
-        NSIndexSet *indexes=[self randIndexSetWithCount:self.objectArray.count max:self.objectArray.count+a.count-1];
+        NSIndexSet *indexesv=[self randIndexSetWithCount:self.objectArray.count max:self.objectArray.count+a.count-1];
         [self objectArray];
         [self indexes];
-        ITERATECOLLECTIONS(NSMutableArray*,v,[v insertObjects:self.objectArray atIndexes:indexes];)
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v insertObjects:self.objectArray atIndexes:indexesv];)
         [self passFailWithFormat:@"insertObjectsAtIndexes"];
     }
     
@@ -1187,9 +1187,9 @@ ArrayTester <Tester>
     }
     -(void)replaceObjectsAtIndexesWithObjects {
         if (self.objectArray.count>a.count) return;
-        NSIndexSet *indexes=[self randIndexSetWithCount:self.objectArray.count max:a.count-1];
+        NSIndexSet *indexesv=[self randIndexSetWithCount:self.objectArray.count max:a.count-1];
         [self objectArray];
-        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsAtIndexes:indexes withObjects:self.objectArray];)
+        ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsAtIndexes:indexesv withObjects:self.objectArray];)
         [self passFailWithFormat:@"replaceObjectsAtIndexesWithObjects"];
     }
     -(void)replaceObjectsInRangeWithObjectsFromArrayRange {
