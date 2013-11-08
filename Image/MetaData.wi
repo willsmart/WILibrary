@@ -137,9 +137,9 @@ MetaRequestCache<BaseObject,RootCodable> "fn:meta"
         [cache clear];
     }
 
-    +(NSObject*)metaDataForURL:(NSURL*)url frame:(CGRect)frame {return([g_singletons.metaRequestCache metaDataForURL:url frame:frame]);}
-    -(NSObject*)metaDataForURL:(NSURL*)url frame:(CGRect)frame {
-        url=[__Class__ sizedURLForURL:url frame:frame];
+    +(NSObject*)metaDataForURL:(NSURL*)url frame:(CGRect)framev {return([g_singletons.metaRequestCache metaDataForURL:url frame:framev]);}
+    -(NSObject*)metaDataForURL:(NSURL*)url frame:(CGRect)framev {
+        url=[__Class__ sizedURLForURL:url frame:framev];
         NSObject *ret=[cache derefedObjectForKey:url];
         if (!ret) {
             ret=[g_singletons.metaRenderer objectByEvaluatingURL:url];
@@ -163,10 +163,10 @@ MetaRequestCache<BaseObject,RootCodable> "fn:meta"
         return(r);
     }
 
-    +(NSURL*)sizedURLForURL:(NSURL*)url frame:(CGRect)frame {
+    +(NSURL*)sizedURLForURL:(NSURL*)url frame:(CGRect)framev {
         NSString *s=url.absoluteString;//[ShaderURLConversion simplifiedURLForURL:url].absoluteString;
         NSTextCheckingResult *match=[g_singletons.MetaEnabled_szregex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
-        CGRect r=[__Class__ roundedRect:frame];
+        CGRect r=[__Class__ roundedRect:framev];
         //if (torect) *torect=r;
         
         bool changed=NO;
@@ -257,8 +257,8 @@ JSMetaPropertyInState
         else return(cachedValue);
     }
 
-    -(bool)didChangeValueOfProperty:(NSString*)propertyName alias:(NSString*)alias from:(NSObject*)fromValue to:(NSObject*)toValue {
-        if ([var isEqualToString:propertyName]) {
+    -(bool)didChangeValueOfProperty:(NSString*)propertyNamev alias:(NSString*)alias from:(NSObject*)fromValue to:(NSObject*)toValue {
+        if ([var isEqualToString:propertyNamev]) {
             [cachedValue release];
             cachedValue=nil;
             return(YES);
@@ -450,13 +450,13 @@ JSMetaProperty<NamedDataListener>
         return(ms?ms.value:nil);
     }
     
-    -(void)didChangeValueOfProperty:(NSString*)propertyName from:(NSObject*)fromValue to:(NSObject*)toValue {
+    -(void)didChangeValueOfProperty:(NSString*)propertyNamev from:(NSObject*)fromValue to:(NSObject*)toValue {
         NSString *alias=@"??";
-        for (NSString *alias2 in varProps) if ([propertyName isEqual:[varProps objectForKey:alias2]]) {alias=alias2;break;}
+        for (NSString *alias2 in varProps) if ([propertyNamev isEqual:[varProps objectForKey:alias2]]) {alias=alias2;break;}
         
         bool changed=NO;
         if (!(fromValue?[toValue isEqual:fromValue]:!toValue)) {
-            if ([stateProp isEqualToString:propertyName]) {
+            if ([stateProp isEqualToString:propertyNamev]) {
                 NSObject<NSCopying> *v=self.currentState;
                 if (!(v?[cachedState isEqual:v]:!cachedState)) {
                     changed=YES;
@@ -465,8 +465,8 @@ JSMetaProperty<NamedDataListener>
                 }
             }
             JSMetaPropertyInState *ps0=[self.propertyInStates objectForKey:[NSNull null]];
-            if ([ps0.var isEqualToString:propertyName]||ps0.js) {
-                bool b=[ps0 didChangeValueOfProperty:propertyName alias:alias from:fromValue to:toValue];
+            if ([ps0.var isEqualToString:propertyNamev]||ps0.js) {
+                bool b=[ps0 didChangeValueOfProperty:propertyNamev alias:alias from:fromValue to:toValue];
                 if (b&&[cachedState isKindOfClass:[NSNull class]]) {
                     changed=YES;
                 }
@@ -475,7 +475,7 @@ JSMetaProperty<NamedDataListener>
                 for (NSObject *s in self.propertyInStates) if ([s isKindOfClass:[NSString class]]) {
                     JSMetaPropertyInState *ps=[self.propertyInStates objectForKey:(NSString*)s];
                     if (ps) {
-                        bool b=[ps didChangeValueOfProperty:propertyName alias:alias from:fromValue to:toValue];
+                        bool b=[ps didChangeValueOfProperty:propertyNamev alias:alias from:fromValue to:toValue];
                         if (b&&[(NSString*)s isEqualToString:(NSString*)cachedState]) {
                             changed=YES;
                         }
@@ -546,7 +546,7 @@ JSMetaProperty<NamedDataListener>
     
 
     NSDictionary initWithMetaProperties=nil (readonly,ivar=initWithMetaProperties)
-    NSObject<MetaEnabled> initWithParent=nil (readonly,ivar=initWithParent)
+    NSObject<MetaEnabled> parentForInit=nil (readonly,ivar=parentForInit)
     kid keyInParentToInitWith=nil (readonly)
 
     MutableDictionary _metaProperties=[[MutableDictionary alloc] init] (dealloc,ivar=_metaProperties)
@@ -557,7 +557,7 @@ JSMetaProperty<NamedDataListener>
         }
 
     -(init) {
-        @-400 if (initWithParent) [initWithParent.childMetas setObject:self forKey:keyInParentToInitWith];
+        @-400 if (parentForInit) [parentForInit.childMetas setObject:self forKey:keyInParentToInitWith];
         @-100 [self meta_attachDictionaryDelegateTo:_metaProperties];
         @400 if ([self conformsToProtocol:@protocol(MetaComponent)]) {
             NSString *key=[(NSObject<MetaComponentClass>*)[self class] metaURLKey];
@@ -584,8 +584,8 @@ JSMetaProperty<NamedDataListener>
         return([(__Class__*)aself superInit]);
     }
 
-    -(void)metaEnabledPartialInitWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)parent key:(id<NSCopying>)keyInParent {
-        initWithParent=parent;
+    -(void)metaEnabledPartialInitWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {
+        parentForInit=aparent;
         keyInParentToInitWith=keyInParent;
         initWithMetaProperties=metaProps;
         metaURLWas=[[metaProps objectForKey:@"metaurl"] retain];
@@ -610,9 +610,9 @@ JSMetaProperty<NamedDataListener>
         }
     }
 
-    -(id)initWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)parent key:(id<NSCopying>)keyInParent {@-10001
+    -(id)initWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {@-10001
         if (!(self=[__Class__ metaInitSelf:self withMeta:metaProps])) return(nil);
-        @0 [self metaEnabledPartialInitWithMeta:metaProps parent:parent key:keyInParent];
+        @0 [self metaEnabledPartialInitWithMeta:metaProps parent:aparent key:keyInParent];
         @11 [self _startObjectOfClass__WIClass__];
         @10001 return(self);
     }
@@ -674,7 +674,7 @@ JSMetaProperty<NamedDataListener>
                     NSObject *o=[g_singletons.metaEnabledURLRegistry objectForKey:urlkey];
                     if ([o isKindOfClass:[NSURL class]]) {
                         NSURL *url=(NSURL*)o;
-                        CGRect frame=CGRectMake(0,0,1,1);
+                        CGRect framev=CGRectMake(0,0,1,1);
                         NSObject *frameo=[objectDictionary objectForKey:@"frame"];
                         if ([frameo isKindOfClass:[NSArray class]]&&(((NSArray*)frameo).count==4)) {
                             NSArray *framea=(NSArray*)frameo;
@@ -683,7 +683,7 @@ JSMetaProperty<NamedDataListener>
                             [[framea objectAtIndex:1] isKindOfClass:[NSNumber class]]&&
                             [[framea objectAtIndex:2] isKindOfClass:[NSNumber class]]&&
                             [[framea objectAtIndex:3] isKindOfClass:[NSNumber class]]) {
-                                frame=CGRectMake(
+                                framev=CGRectMake(
                                     ((NSNumber*)[framea objectAtIndex:0]).floatValue,
                                     ((NSNumber*)[framea objectAtIndex:1]).floatValue,
                                     ((NSNumber*)[framea objectAtIndex:2]).floatValue,
@@ -691,12 +691,12 @@ JSMetaProperty<NamedDataListener>
                                 );
                             }
                         }
-                        NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:frame];
+                        NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:framev];
                         if ([metaDict isKindOfClass:[NSDictionary class]]) {
                             [mmetaProps addEntriesFromDictionary:(NSDictionary*)metaDict];
                         }
                         else {
-                            NSURL *url2=[MetaRequestCache sizedURLForURL:url frame:frame];
+                            NSURL *url2=[MetaRequestCache sizedURLForURL:url frame:framev];
                             [Log log:@"Failed to get a meta dictionary from js:\n%@\n",[MetaRenderer jsStringForURL:url2]];
                         }
                         [mmetaProps setObject:url forKey:@"metaurl"];
@@ -792,21 +792,21 @@ JSMetaProperty<NamedDataListener>
             NSObject *o=[g_singletons.metaEnabledURLRegistry objectForKey:[metaProps objectForKey:@"urlkey"]];
             if ([o isKindOfClass:[NSURL class]]) {
                 NSURL *url=(NSURL*)o;
-                CGRect frame=self.frame;
+                CGRect framev=self.frame;
                 if ([metaURLWas.absoluteString isEqualToString:url.absoluteString]&&
-                    (fabs(frame.origin.x-frameWas.origin.x)<1)&&
-                    (fabs(frame.origin.y-frameWas.origin.y)<1)&&
-                    (fabs(frame.size.width-frameWas.size.width)<1)&&
-                    (fabs(frame.size.height-frameWas.size.height)<1)) return;
-                frameWas=frame;
+                    (fabs(framev.origin.x-frameWas.origin.x)<1)&&
+                    (fabs(framev.origin.y-frameWas.origin.y)<1)&&
+                    (fabs(framev.size.width-frameWas.size.width)<1)&&
+                    (fabs(framev.size.height-frameWas.size.height)<1)) return;
+                frameWas=framev;
                 [metaURLWas release];
                 metaURLWas=[url retain];
-                NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:frame];
+                NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:framev];
                 if ([metaDict isKindOfClass:[NSDictionary class]]) {
                     [mmetaProps addEntriesFromDictionary:(NSDictionary*)metaDict];
                 }
                 else {
-                    NSURL *url2=[MetaRequestCache sizedURLForURL:url frame:frame];
+                    NSURL *url2=[MetaRequestCache sizedURLForURL:url frame:framev];
                     [Log log:@"Failed(2) to get a meta dictionary from js:\n%@\n",[MetaRenderer jsStringForURL:url2]];
                 }
 
@@ -889,17 +889,17 @@ MetaEnabled
     bool transformChanged=nil
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr isEqualToString:@"frame"]&&allNum&&(objectArray.count==4)) {
-            CGRect frame=CGRectMake(
+            CGRect framev=CGRectMake(
                 ((NSNumber*)[objectArray objectAtIndex:0]).floatValue,
                 ((NSNumber*)[objectArray objectAtIndex:1]).floatValue,
                 ((NSNumber*)[objectArray objectAtIndex:2]).floatValue,
                 ((NSNumber*)[objectArray objectAtIndex:3]).floatValue
             );
-            if (!((fabs(frame.origin.x-frameWas.origin.x)<1)&&
-                (fabs(frame.origin.y-frameWas.origin.y)<1)&&
-                (fabs(frame.size.width-frameWas.size.width)<1)&&
-                (fabs(frame.size.height-frameWas.size.height)<1))) {
-                self.frame=frameWas=frame;
+            if (!((fabs(framev.origin.x-frameWas.origin.x)<1)&&
+                (fabs(framev.origin.y-frameWas.origin.y)<1)&&
+                (fabs(framev.size.width-frameWas.size.width)<1)&&
+                (fabs(framev.size.height-frameWas.size.height)<1))) {
+                self.frame=frameWas=framev;
             }
         }
         if ([keyStr isEqualToString:@"bgcol"]) {
@@ -1127,8 +1127,8 @@ MetaEnabled
 UISliderMetaEnabled:UISlider<UISliderMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@"Rend",}
     -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
-    -(init)initWithFrame:(CGRect)frame {}
-    -(id)superInitWithFrame:(CGRect)frame {return([super initWithFrame:frame]);}
+    -(init)initWithFrame:(CGRect)framev {}
+    -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
@@ -1215,8 +1215,8 @@ MetaEnabled
 UIToolbarMetaEnabled:UIToolbar<UIToolbarMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@"ToolbarItem",}
     -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
-    -(init)initWithFrame:(CGRect)frame {}
-    -(id)superInitWithFrame:(CGRect)frame {return([super initWithFrame:frame]);}
+    -(init)initWithFrame:(CGRect)framev {}
+    -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
@@ -1273,7 +1273,7 @@ MetaEnabled
     }
 
 UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
-    CGRect frame={return(CGRectMake(0,0,20,20));}
+    CGRect framev={return(CGRectMake(0,0,20,20));}
     -(id)superInitWithBarButtonSystemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action {return([super initWithBarButtonSystemItem:item target:target action:action]);}
     -(id)superInitWithTitle:(NSString*)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithTitle:title style:style target:target action:action]);}
     -(id)superInitWithImage:(UIImage*)image style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithImage:image style:style target:target action:action]);}
@@ -1392,7 +1392,7 @@ MetaEnabled
     }
     +(NSSet*)viewAllowedMetaChildTypes {@-10 return([NSSet setWithObjects:@10 @"View",@"Rend",@"Label",@"Slider",nil]);}
     +(CGRect)frameFromMeta:(NSDictionary*)metaProps {
-        CGRect frame=CGRectMake(0,0,1,1);
+        CGRect framev=CGRectMake(0,0,1,1);
         {
             NSObject *object=[metaProps objectForKey:@"frame"];
             if ([object isKindOfClass:[NSArray class]]&&(((NSArray*)object).count==4)) {
@@ -1402,7 +1402,7 @@ MetaEnabled
                 [[a objectAtIndex:1] isKindOfClass:[NSNumber class]]&&
                 [[a objectAtIndex:2] isKindOfClass:[NSNumber class]]&&
                 [[a objectAtIndex:3] isKindOfClass:[NSNumber class]]) {
-                    frame=CGRectMake(
+                    framev=CGRectMake(
                         ((NSNumber*)[a objectAtIndex:0]).floatValue,
                         ((NSNumber*)[a objectAtIndex:1]).floatValue,
                         ((NSNumber*)[a objectAtIndex:2]).floatValue,
@@ -1411,14 +1411,14 @@ MetaEnabled
                 }
             }
         }
-        return(frame);
+        return(framev);
     }
 
 UIViewMetaEnabled:UIView<UIViewMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
     -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
-    -(init)initWithFrame:(CGRect)frame {}
-    -(id)superInitWithFrame:(CGRect)frame {return([super initWithFrame:frame]);}
+    -(init)initWithFrame:(CGRect)framev {}
+    -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
@@ -1426,8 +1426,8 @@ UIViewMetaEnabled:UIView<UIViewMetaEnabled>
 UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
     -(NSSet*)allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
     -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
-    -(init)initWithFrame:(CGRect)frame {}
-    -(id)superInitWithFrame:(CGRect)frame {return([super initWithFrame:frame]);}
+    -(init)initWithFrame:(CGRect)framev {}
+    -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
@@ -1435,8 +1435,8 @@ UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
 
 UILabelViewMetaEnabled:UILabel<UILabelViewMetaEnabled>
     -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
-    -(init)initWithFrame:(CGRect)frame {}
-    -(id)superInitWithFrame:(CGRect)frame {return([super initWithFrame:frame]);}
+    -(init)initWithFrame:(CGRect)framev {}
+    -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
@@ -1457,8 +1457,8 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     -(void)willDettachChild:(NSObject<MetaEnabled>*)child withName:(NSString*)name {
         if ([child isKindOfClass:[UIView class]]) [(UIView*)child removeFromSuperview];
     }
-    -(init[super initWithStyle:style reuseIdentifier:reuseIdentifier])initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)parent key:(id<NSCopying>)keyInParent {
-        [self metaEnabledPartialInitWithMeta:metaProps parent:parent key:keyInParent];
+    -(init[super initWithStyle:style reuseIdentifier:reuseIdentifier])initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {
+        [self metaEnabledPartialInitWithMeta:metaProps parent:aparent key:keyInParent];
     }
     -(init)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {
     }
@@ -1494,10 +1494,10 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     -(void)refreshMetaEnabledURLs {
         [tableModelFollower.model markDirty];
     }
-    -(init[super initWithFrame:frame style:UITableViewStylePlain])initWithFrame:(CGRect)frame {
+    -(init[super initWithFrame:framev style:UITableViewStylePlain])initWithFrame:(CGRect)framev {
         self.separatorStyle=UITableViewCellSeparatorStyleNone;
     }
-    -(id)superInitWithFrame:(CGRect)frame style:(UITableViewStyle)style {return([super initWithFrame:frame style:style]);}
+    -(id)superInitWithFrame:(CGRect)framev style:(UITableViewStyle)style {return([super initWithFrame:framev style:style]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         UITableViewStyle style=UITableViewStylePlain;
         {
@@ -1540,8 +1540,8 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
 
     -(void)waited {@-500 [super waited];}
 
-    -(id)superInitWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame {
-        return([super initWithImageURLKey:aimageURLKey highlightedImageURLKey:ahighlightedImageURLKey frame:frame]);
+    -(id)superInitWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)framev {
+        return([super initWithImageURLKey:aimageURLKey highlightedImageURLKey:ahighlightedImageURLKey frame:framev]);
     }
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithImageURLKey:[metaProps objectForKey:@"imagekey"]
@@ -1549,13 +1549,13 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
             frame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
-    -(init)initWithImageURL:(NSURL*)aurl frame:(CGRect)frame {}
-    -(init)initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame {}
-    -(init)initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame {}
-    -(init)initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame {}
+    -(init)initWithImageURL:(NSURL*)aurl frame:(CGRect)framev {}
+    -(init)initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)framev {}
+    -(init)initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)framev {}
+    -(init)initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)framev {}
 
     -(init[super initWithImageURL:nil frame:CGRectMake(0,0,1,1)])init {}
-    -(init[super initWithImageURL:nil frame:frame])initWithFrame:(CGRect)frame {}
+    -(init[super initWithImageURL:nil frame:framev])initWithFrame:(CGRect)framev {}
 
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         {

@@ -116,6 +116,12 @@ sys UITapGestureRecognizer
 type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_willCommit,stage_commit,stage_didCommit,stage_finishCommit,stage_cleanupCommit,stage_none}"
 
 
+<Retains>
+    -(id)retain;
+    -(void)release;
+    -(id)autorelease;
+
+
 /*decl:impl:
 #define DEB(...) __VA_ARGS__
 NSMutableArray *singletons=nil;

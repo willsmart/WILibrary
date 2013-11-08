@@ -176,7 +176,7 @@ App<HasProperties,BaseObject>
 
 
 <StdTableModelFollower:TableController,TableModelFollower>
-    <TableModel> model={return(model);}=nil (dealloc,ivar=model)
+    <TableModel> model={return(model);}=nil (dealloc,ivar=model,readonly!)
     UITableView _table=nil (IBOutlet,retain,nonatomic)
     UITableView table={return(self._table);}
 

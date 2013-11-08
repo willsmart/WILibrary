@@ -26,7 +26,7 @@
         valueType setThreadValueNamedKeyName(valueType v) {
             if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
             valueType ret=(valueType)pthread_getspecific(ThreadKey_key_keyName);
-            pthread_setspecific(key,(const void*)v);
+            pthread_setspecific(ThreadKey_key_keyName,(const void*)v);
             return(ret);
         }
     }
@@ -198,9 +198,9 @@ Singletons<Ticker> "-Object" "fn:object"
 
 /*interfaces:
  
-    extern id retainFn(NSObject *me,int &rc,int &arc);
+    extern void retainFn(NSObject *me,int &rc,int &arc);
     extern void releaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
-    extern id autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
+    extern void autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
     extern void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
     extern void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
     extern NSString *g_objectName(id object);
@@ -210,12 +210,8 @@ Singletons<Ticker> "-Object" "fn:object"
 /*interfaces:impl:
 
 
-    id retainFn(NSObject *me,int &rc,int &arc);
-    void releaseFn(NSObject *me,int &rc,int &arc);
-    id autoreleaseFn(NSObject *me,int &rc,int &arc);
-
  
-    void retainFn(NSObject *me,LL objectContext,int &rc,int &arc) {
+    void retainFn(NSObject *me,int &rc,int &arc) {
         rc++;
         objectRetained(me);
     }
@@ -283,7 +279,7 @@ Singletons<Ticker> "-Object" "fn:object"
         }
         c.count--;
  
-        objectDeallocated:mei(me);
+        objectDeallocated(me);
         mei=meci=-1;
     }
     NSString *g_objectName(id object) {
@@ -348,32 +344,8 @@ Singletons
 /*interfaces:
     extern ULL g_sequence;
     extern Trace *g_trace;
-    extern NSString *g_newTraces=nil;
+    extern NSMutableString *g_newTraces;
     #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((const void*)self)!=(const void*)g_trace)&&(((const void*)self)!=(const void*)[g_trace class]),__trcfnnm);
-    
-    
-    class TraceFunctionTracker {
-        public:
-            int depth;
-            static pthread_key_t key;
-            TraceFunctionTracker(bool en,const char *fnName) {
-                if (!en) depth=-1;
-                else {
-                    if (!key)  (&key,nil);
-                    depth=((int)pthread_getspecific(key))+1;
-                    if (depth<0) depth=0;
-                    pthread_setspecific(key,(const void*)depth);
-                    [g_trace addTraceCString:fnName atDepth:depth];
-                }
-            }
-            ~TraceFunctionTracker() {
-                if (depth>=0) {
-                    [g_trace finishDepth:depth];
-                    pthread_setspecific(key,(const void*)(depth-1));
-                }
-            }
-    };
-    extern int g_numNamedThreads;
     
     
     void addTrace(NSString *trace,int depth);
@@ -388,11 +360,35 @@ Singletons
     void objectAllocated(id object);
     void objectDeallocated(id object);
  
+    
+    class TraceFunctionTracker {
+        public:
+            int depth;
+            static pthread_key_t key;
+            TraceFunctionTracker(bool en,const char *fnName) {
+                if (!en) depth=-1;
+                else {
+                    if (!key) pthread_key_create(&key,nil);
+                    depth=((int)pthread_getspecific(key))+1;
+                    if (depth<0) depth=0;
+                    pthread_setspecific(key,(const void*)depth);
+                    addTraceCString(fnName,depth);
+                }
+            }
+            ~TraceFunctionTracker() {
+                if (depth>=0) {
+                    finishDepth(depth);
+                    pthread_setspecific(key,(const void*)(depth-1));
+                }
+            }
+    };
+    extern int g_numNamedThreads;
+    
 */
 /*interfaces:impl:
     ULL g_sequence=0;
     Trace *g_trace=nil;
-    NSString *g_newTraces=nil;
+    NSMutableString *g_newTraces=nil;
     pthread_key_t TraceFunctionTracker::key=nil;
     int g_numNamedThreads=0;
     
@@ -412,12 +408,12 @@ Singletons
     
     void finishDepth(int depth) {
         [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
-            [__Class__ threadNameJSON]];
+            [Trace threadNameJSON]];
     }
 
     void ADDOWNER(id object,id owner) {
         [g_newTraces appendFormat:@"[-1,%qu,%f,%qx,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-            (ULL)owner,(ULL)object,class_getName(object.class)];
+            (ULL)owner,(ULL)object,class_getName([object class])];
     }
     void REMOVEOWNER(id object,id owner) {
         [g_newTraces appendFormat:@"[-2,%qu,%f,%qx,%qx],\n",g_sequence++,CACurrentMediaTime(),
@@ -426,7 +422,7 @@ Singletons
 
     void objectRetained(id object) {
         [g_newTraces appendFormat:@"[-3,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-            (ULL)object,class_getName(object.class)];
+            (ULL)object,class_getName([object class])];
     }
     void objectReleased(id object) {
         [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
@@ -442,7 +438,7 @@ Singletons
     }
     void objectAllocated(id object) {
         [g_newTraces appendFormat:@"[-7,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-            (ULL)object,class_getName(object.class)];
+            (ULL)object,class_getName([object class])];
     }
     void objectDeallocated(id object) {
         [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),

@@ -362,45 +362,45 @@ SHUniform <BaseObject> "fn:shader"
         }
         -v{
             const char *pc=v.UTF8String;
-            Union128byte buf;
-            bool *bufb=(bool*)buf.c;
+            Union128byte bufv;
+            bool *bufb=(bool*)bufv.c;
             
-            if ((sscanf(pc,"%c",buf.c)==1)&&((buf.c[0]=='t')||(buf.c[0]=='f'))) self.asBool=(buf.c[0]=='f'?NO:YES);
-            else if (sscanf(pc,"i%d",buf.i)==1) self.asInt=buf.i[0];
-            else if (sscanf(pc,"%f",buf.f)==1) self.asFloat=buf.f[0];
-            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8,buf.f+9,buf.f+10,buf.f+11,buf.f+12,buf.f+13,buf.f+14,buf.f+15)==16) self.asMat4=buf.f;
-            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8)==9) self.asMat3=buf.f;
-            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) self.asMat2=buf.f;
-            else if (sscanf(pc,"<%f,%f,%f,%f>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) self.asVec4=buf.f;
-            else if (sscanf(pc,"<%f,%f,%f>",buf.f,buf.f+1,buf.f+2)==3) self.asVec3=buf.f;
-            else if (sscanf(pc,"<%f,%f>",buf.f,buf.f+1)==2) self.asVec2=buf.f;
-            else if (sscanf(pc,"i<%d,%d,%d,%d>",buf.i,buf.i+1,buf.i+2,buf.i+3)==4) self.asIVec4=buf.i;
-            else if (sscanf(pc,"i<%d,%d,%d>",buf.i,buf.i+1,buf.i+2)==3) self.asIVec3=buf.i;
-            else if (sscanf(pc,"i<%d,%d>",buf.i,buf.i+1)==2) self.asIVec2=buf.i;
-            else if (sscanf(pc,"<%c,%c,%c,%c>",buf.c,buf.c+1,buf.c+2,buf.c+3)==4) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');bufb[2]=(buf.c[2]!='f');bufb[3]=(buf.c[3]!='f');self.asBVec4=bufb;}
-            else if (sscanf(pc,"<%c,%c,%c>",buf.c,buf.c+1,buf.c+2)==3) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');bufb[2]=(buf.c[2]!='f');self.asBVec3=bufb;}
-            else if (sscanf(pc,"<%c,%c>",buf.c,buf.c+1)==2) {bufb[0]=(buf.c[0]!='f');bufb[1]=(buf.c[1]!='f');self.asBVec2=bufb;}
+            if ((sscanf(pc,"%c",bufv.c)==1)&&((bufv.c[0]=='t')||(bufv.c[0]=='f'))) self.asBool=(bufv.c[0]=='f'?NO:YES);
+            else if (sscanf(pc,"i%d",bufv.i)==1) self.asInt=bufv.i[0];
+            else if (sscanf(pc,"%f",bufv.f)==1) self.asFloat=bufv.f[0];
+            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3,bufv.f+4,bufv.f+5,bufv.f+6,bufv.f+7,bufv.f+8,bufv.f+9,bufv.f+10,bufv.f+11,bufv.f+12,bufv.f+13,bufv.f+14,bufv.f+15)==16) self.asMat4=bufv.f;
+            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3,bufv.f+4,bufv.f+5,bufv.f+6,bufv.f+7,bufv.f+8)==9) self.asMat3=bufv.f;
+            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3)==4) self.asMat2=bufv.f;
+            else if (sscanf(pc,"<%f,%f,%f,%f>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3)==4) self.asVec4=bufv.f;
+            else if (sscanf(pc,"<%f,%f,%f>",bufv.f,bufv.f+1,bufv.f+2)==3) self.asVec3=bufv.f;
+            else if (sscanf(pc,"<%f,%f>",bufv.f,bufv.f+1)==2) self.asVec2=bufv.f;
+            else if (sscanf(pc,"i<%d,%d,%d,%d>",bufv.i,bufv.i+1,bufv.i+2,bufv.i+3)==4) self.asIVec4=bufv.i;
+            else if (sscanf(pc,"i<%d,%d,%d>",bufv.i,bufv.i+1,bufv.i+2)==3) self.asIVec3=bufv.i;
+            else if (sscanf(pc,"i<%d,%d>",bufv.i,bufv.i+1)==2) self.asIVec2=bufv.i;
+            else if (sscanf(pc,"<%c,%c,%c,%c>",bufv.c,bufv.c+1,bufv.c+2,bufv.c+3)==4) {bufb[0]=(bufv.c[0]!='f');bufb[1]=(bufv.c[1]!='f');bufb[2]=(bufv.c[2]!='f');bufb[3]=(bufv.c[3]!='f');self.asBVec4=bufb;}
+            else if (sscanf(pc,"<%c,%c,%c>",bufv.c,bufv.c+1,bufv.c+2)==3) {bufb[0]=(bufv.c[0]!='f');bufb[1]=(bufv.c[1]!='f');bufb[2]=(bufv.c[2]!='f');self.asBVec3=bufb;}
+            else if (sscanf(pc,"<%c,%c>",bufv.c,bufv.c+1)==2) {bufb[0]=(bufv.c[0]!='f');bufb[1]=(bufv.c[1]!='f');self.asBVec2=bufb;}
             else self.type=un_none;
         }
     +(NSString*)clearValuesInString:(NSString*)v {
             const char *pc=v.UTF8String;
-            Union128byte buf;
+            Union128byte bufv;
             
-            if ((sscanf(pc,"%c",buf.c)==1)&&((buf.c[0]=='t')||(buf.c[0]=='f'))) return(@"f");
-            else if (sscanf(pc,"i%d",buf.i)==1) return(@"i0");
-            else if (sscanf(pc,"%f",buf.f)==1) return(@"0.0");
-            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8,buf.f+9,buf.f+10,buf.f+11,buf.f+12,buf.f+13,buf.f+14,buf.f+15)==16) return(@"<<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>>");
-            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3,buf.f+4,buf.f+5,buf.f+6,buf.f+7,buf.f+8)==9) return(@"<<0.0,0.0,0.0>,<0.0,0.0,0.0>,<0.0,0.0,0.0>>");
-            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) return(@"<<0.0,0.0>,<0.0,0.0>>");
-            else if (sscanf(pc,"<%f,%f,%f,%f>",buf.f,buf.f+1,buf.f+2,buf.f+3)==4) return(@"<0.0,0.0,0.0,0.0>");
-            else if (sscanf(pc,"<%f,%f,%f>",buf.f,buf.f+1,buf.f+2)==3) return(@"<0.0,0.0,0.0>");
-            else if (sscanf(pc,"<%f,%f>",buf.f,buf.f+1)==2) return(@"<0.0,0.0>");
-            else if (sscanf(pc,"i<%d,%d,%d,%d>",buf.i,buf.i+1,buf.i+2,buf.i+3)==4) return(@"<0,0,0,0>");
-            else if (sscanf(pc,"i<%d,%d,%d>",buf.i,buf.i+1,buf.i+2)==3) return(@"<0,0,0>");
-            else if (sscanf(pc,"i<%d,%d>",buf.i,buf.i+1)==2) return(@"<0,0>");
-            else if (sscanf(pc,"<%c,%c,%c,%c>",buf.c,buf.c+1,buf.c+2,buf.c+3)==4) return(@"<f,f,f,f>");
-            else if (sscanf(pc,"<%c,%c,%c>",buf.c,buf.c+1,buf.c+2)==3) return(@"<f,f,f>");
-            else if (sscanf(pc,"<%c,%c>",buf.c,buf.c+1)==2) return(@"<f,f>");
+            if ((sscanf(pc,"%c",bufv.c)==1)&&((bufv.c[0]=='t')||(bufv.c[0]=='f'))) return(@"f");
+            else if (sscanf(pc,"i%d",bufv.i)==1) return(@"i0");
+            else if (sscanf(pc,"%f",bufv.f)==1) return(@"0.0");
+            else if (sscanf(pc,"<<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>,<%f,%f,%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3,bufv.f+4,bufv.f+5,bufv.f+6,bufv.f+7,bufv.f+8,bufv.f+9,bufv.f+10,bufv.f+11,bufv.f+12,bufv.f+13,bufv.f+14,bufv.f+15)==16) return(@"<<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>,<0.0,0.0,0.0,0.0>>");
+            else if (sscanf(pc,"<<%f,%f,%f>,<%f,%f,%f>,<%f,%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3,bufv.f+4,bufv.f+5,bufv.f+6,bufv.f+7,bufv.f+8)==9) return(@"<<0.0,0.0,0.0>,<0.0,0.0,0.0>,<0.0,0.0,0.0>>");
+            else if (sscanf(pc,"<<%f,%f>,<%f,%f>>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3)==4) return(@"<<0.0,0.0>,<0.0,0.0>>");
+            else if (sscanf(pc,"<%f,%f,%f,%f>",bufv.f,bufv.f+1,bufv.f+2,bufv.f+3)==4) return(@"<0.0,0.0,0.0,0.0>");
+            else if (sscanf(pc,"<%f,%f,%f>",bufv.f,bufv.f+1,bufv.f+2)==3) return(@"<0.0,0.0,0.0>");
+            else if (sscanf(pc,"<%f,%f>",bufv.f,bufv.f+1)==2) return(@"<0.0,0.0>");
+            else if (sscanf(pc,"i<%d,%d,%d,%d>",bufv.i,bufv.i+1,bufv.i+2,bufv.i+3)==4) return(@"<0,0,0,0>");
+            else if (sscanf(pc,"i<%d,%d,%d>",bufv.i,bufv.i+1,bufv.i+2)==3) return(@"<0,0,0>");
+            else if (sscanf(pc,"i<%d,%d>",bufv.i,bufv.i+1)==2) return(@"<0,0>");
+            else if (sscanf(pc,"<%c,%c,%c,%c>",bufv.c,bufv.c+1,bufv.c+2,bufv.c+3)==4) return(@"<f,f,f,f>");
+            else if (sscanf(pc,"<%c,%c,%c>",bufv.c,bufv.c+1,bufv.c+2)==3) return(@"<f,f,f>");
+            else if (sscanf(pc,"<%c,%c>",bufv.c,bufv.c+1)==2) return(@"<f,f>");
             else return(@"none");
         }
 
