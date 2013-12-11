@@ -1,6 +1,7 @@
 
 Singletons
-    RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));} (dealloc,readonly,ivar=renderUIViews)
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable renderUIViews has an ivar, but no default value. This is less a strict error than unclean !**/
+    RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));}=nil (dealloc,readonly,ivar=renderUIViews)
 
 
 RenderUIViews <BaseObject> "fn:shader"

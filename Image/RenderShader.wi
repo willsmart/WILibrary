@@ -87,6 +87,7 @@ MetaEnabled
 
 
 RenderLoopView:RenderUIView<UIViewMetaEnabled>
+/**! --    (notenote) Note: Please think about making property "renderShader" publicreadonly !**/
     RenderShader renderShader=[[RenderShader alloc] init] (dealloc,ivar=renderShader,readonly)
     -(init) {
         renderShader.renderedInView=self;

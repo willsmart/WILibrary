@@ -9,7 +9,7 @@ sys CMMotionManager
 Orientation<BaseObject>
     Mat44 zeroMat=nil
 
-    float magAdjustDegrees,magAdjustFactor,rotateMin=nil
+    float magAdjustDegrees=nil,magAdjustFactor=nil,rotateMin=nil
     bool mat44Inited=nil
     bool useReferenceFrame=nil
 
@@ -129,6 +129,7 @@ Orientation<BaseObject>
     }
 
 
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable rotZoomTransform has an ivar, but no default value. This is less a strict error than unclean !**/
     Mat44 rotZoomTransform={
         float zoom=self.currentZoom;//orientation.zoom;
         float rot=(self.rotateDegrees+self.currentRotateDegrees)*M_PI/180.0;
@@ -150,13 +151,14 @@ Orientation<BaseObject>
         svol=(svol<0?-pow(-svol,2):pow(svol,2));
         return(1.0/(1.0+fmax(-0.99,svol*zoomScale)));
     }
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable volume has an ivar, but no default value. This is less a strict error than unclean !**/
     float volume=
         {
             return(volume*1.0/zoomLevels);
         }
         -v{
             volume=(int)fmin(zoomLevels,fmax(0,v*zoomLevels));
-        } (ivar)
+        }=nil (ivar)
 
     float rotateDegrees={
         Vec4 xv={{1,0,0,1}},v2,yv={{0,1,0,1}};

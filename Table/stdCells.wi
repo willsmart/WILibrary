@@ -423,6 +423,7 @@ __Table__Cell "nac" "multi"
 
 <BasicTableModel:StdTableModel> "nac" "multi"
     __Table__TableController controller=nil (assign,ivar=controller)
+/**! --    (notenote) Note: Please think about making property "feedbacks" publicreadonly !**/
     MutableArray __table__s=[[MutableArray alloc] init] (readonly,dealloc,ivar=__table__s)
     -(init) {
         {

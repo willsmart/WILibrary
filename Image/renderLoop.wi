@@ -22,6 +22,7 @@ RenderLoop <BaseObject>
 
     CADisplayLink displayLink=nil
 
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable animating has an ivar, but no default value. This is less a strict error than unclean !**/
     BOOL animating=
         {return(animating);}
         -v{
@@ -38,8 +39,9 @@ RenderLoop <BaseObject>
                 self.displayLink = nil;
                 animating = FALSE;
             }
-        } (ivar)
+        }=nil (ivar)
 
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
     NSInteger animationFrameInterval=
         {return animationFrameInterval;}
         -v{
@@ -50,7 +52,7 @@ RenderLoop <BaseObject>
                     self.animating=YES;
                 }
             }
-        } (ivar)
+        }=nil (ivar)
 
     renderLoop ~- ShaderData shaderData
 
