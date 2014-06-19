@@ -62,7 +62,7 @@ NSString "fn:sys"
         return([NSString stringWithCharacters:to length:toLength]);
     }
 
-    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData**)pd retLength:(int*)retLength {
+    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(int*)retLength {
         if (N<0) N=(int)strlen(from);
         NSMutableData *d=(pd?*pd:nil);
         if (!d) {
@@ -100,7 +100,7 @@ NSString "fn:sys"
     }
 
 
-    +(NSString*)stringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding error:(NSError**)aerr timeoutInterval:(float)timeout {
+    +(NSString*)stringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding error:(NSError*__strong*)aerr timeoutInterval:(float)timeout {
         if (!g_singletons.online) return(nil);
         NSURLRequest *req=[[NSURLRequest alloc]
               initWithURL:aurl
@@ -127,7 +127,7 @@ NSString "fn:sys"
 
 
 NSData
-    -(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse**)retresponse error:(NSError**)reterr {
+    -(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse*__strong*)retresponse error:(NSError*__strong*)reterr {
         NSError *err=nil;
         NSURLResponse *response=nil;
         if (reterr) *reterr=nil;
@@ -235,7 +235,7 @@ Singletons
 
 Util "fn:util"
 
-    +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray**)pinss dels:(NSArray**)pdels  {
+    +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {
         NSMutableArray *dels=[[MutableArray alloc] init];
         NSMutableArray *inss=[[MutableArray alloc] init];
 
@@ -289,7 +289,7 @@ Util "fn:util"
         return(ret);
     }
 
-    +(bool) getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet**)pinss dels:(NSIndexSet**)pdels  {
+    +(bool) getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet*__strong*)pinss dels:(NSIndexSet*__strong*)pdels  {
         NSMutableArray *inss,*dels;
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:&inss dels:&dels]) return(NO);
         NSMutableIndexSet *s=[[NSMutableIndexSet alloc] init];
@@ -303,7 +303,7 @@ Util "fn:util"
         return(YES);
     }
 
-    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray**)pinss dels:(NSArray**)pdels {
+    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
         NSMutableArray *dels=[MutableArray array];
         NSMutableArray *inss=[MutableArray array];
@@ -314,7 +314,7 @@ Util "fn:util"
         return(YES);
     }*/
 
-    +(bool) getInsertsAndDeletesForSetWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet**)pinss dels:(NSSet**)pdels  {
+    +(bool) getInsertsAndDeletesForSetWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet*__strong*)pinss dels:(NSSet*__strong*)pdels  {
         if ([from isEqualToSet:to]) return(NO);
         if (!(pinss||pdels)) return(YES);
         if (pinss) [(NSMutableSet*)((*pinss=to.mutableCopy)) minusSet:from];
@@ -323,7 +323,7 @@ Util "fn:util"
     }
 
 
-    +(bool) getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet**)pinss delKeys:(NSSet**)pdels changeKeys:(NSSet**)pchanges  {
+    +(bool) getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet*__strong*)pinss delKeys:(NSSet*__strong*)pdels changeKeys:(NSSet*__strong*)pchanges  {
         NSSet *fromKeys=[[NSSet alloc] initWithArray:from.allKeys];
         NSSet *toKeys=[[NSSet alloc] initWithArray:to.allKeys];
         bool ret=[Util getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];

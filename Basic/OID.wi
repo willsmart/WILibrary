@@ -345,7 +345,7 @@ Singletons
     extern ULL g_sequence;
     extern Trace *g_trace;
     extern NSMutableString *g_newTraces;
-    #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((const void*)self)!=(const void*)g_trace)&&(((const void*)self)!=(const void*)[g_trace class]),__trcfnnm);
+    #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((__bridge const void*)self)!=(__bridge const void*)g_trace)&&(((__bridge const void*)self)!=(__bridge const void*)[g_trace class]),__trcfnnm);
     
     
     void addTrace(NSString *trace,int depth);
@@ -369,7 +369,7 @@ Singletons
                 if (!en) depth=-1;
                 else {
                     if (!key) pthread_key_create(&key,nil);
-                    depth=((int)pthread_getspecific(key))+1;
+                    depth=((int)(ULL)pthread_getspecific(key))+1;
                     if (depth<0) depth=0;
                     pthread_setspecific(key,(const void*)depth);
                     addTraceCString(fnName,depth);
@@ -378,7 +378,7 @@ Singletons
             ~TraceFunctionTracker() {
                 if (depth>=0) {
                     finishDepth(depth);
-                    pthread_setspecific(key,(const void*)(depth-1));
+                    pthread_setspecific(key,(const void*)(ULL)(depth-1));
                 }
             }
     };

@@ -545,7 +545,7 @@ JSMetaProperty<NamedDataListener>
     }
     
 
-    NSDictionary initWithMetaProperties=nil (readonly,ivar=initWithMetaProperties)
+    NSDictionary metaPropertiesToInitWith=nil (readonly,ivar=metaPropertiesToInitWith)
     NSObject<MetaEnabled> parentForInit=nil (readonly,ivar=parentForInit)
     kid keyInParentToInitWith=nil (readonly)
 
@@ -562,19 +562,19 @@ JSMetaProperty<NamedDataListener>
         @400 if ([self conformsToProtocol:@protocol(MetaComponent)]) {
             NSString *key=[(NSObject<MetaComponentClass>*)[self class] metaURLKey];
             if (key) {
-                if (initWithMetaProperties) {
-                    NSMutableDictionary *d=[initWithMetaProperties.mutableCopy autorelease];
+                if (metaPropertiesToInitWith) {
+                    NSMutableDictionary *d=[metaPropertiesToInitWith.mutableCopy autorelease];
                     [d setObject:key forKey:@"urlkey"];
-                    initWithMetaProperties=d;
+                    metaPropertiesToInitWith=d;
                 }
-                else initWithMetaProperties=[NSDictionary dictionaryWithObjectsAndKeys:
+                else metaPropertiesToInitWith=[NSDictionary dictionaryWithObjectsAndKeys:
                     key,@"urlkey",
                     nil];
             }
         }
-        @500 if (initWithMetaProperties) {
-            self.metaProperties=initWithMetaProperties;
-            initWithMetaProperties=nil;
+        @500 if (metaPropertiesToInitWith) {
+            self.metaProperties=metaPropertiesToInitWith;
+            metaPropertiesToInitWith=nil;
         }
         @600 [self refreshMetaFromRegisteredURLs];
     }
@@ -587,7 +587,7 @@ JSMetaProperty<NamedDataListener>
     -(void)metaEnabledPartialInitWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {
         parentForInit=aparent;
         keyInParentToInitWith=keyInParent;
-        initWithMetaProperties=metaProps;
+        metaPropertiesToInitWith=metaProps;
         metaURLWas=[[metaProps objectForKey:@"metaurl"] retain];
         frameWas=CGRectMake(0,0,1,1);
         {

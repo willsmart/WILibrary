@@ -216,7 +216,7 @@
     //Querying an Array
     –(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
     NSUInteger count={return([__array count]);}
-    -(void)getObjects:(id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
+    -(void)getObjects:(__strong id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
     id lastObject={return([__array lastObject]);}
     –(id)objectAtIndex:(NSUInteger)index {return([__array objectAtIndex:index]);}
     –(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {return([__array objectsAtIndexes:indexes]);}
@@ -465,7 +465,7 @@
     + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WI_CLASS__ alloc] initWithContentsOfURL:url] autorelease]);}
     + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WI_CLASS__ alloc] initWithDictionary:dictionary] autorelease]);}
     + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WI_CLASS__ alloc] initWithObject:object forKey:key] autorelease])
-    + (__WI_CLASS__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count] autorelease])
+    + (__WI_CLASS__*)dictionaryWithObjects:(__strong id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count] autorelease])
 
 
 
@@ -956,7 +956,7 @@ MutableArray : NSMutableArray
         return([__base containsObject:object]);
     }
     –(NSUInteger)count {return([__base count]);}
-    - (void)getObjects:(id[])aBuffer range:(NSRange)aRange {
+    - (void)getObjects:(__strong id[])aBuffer range:(NSRange)aRange {
         [__base getObjects:aBuffer range:aRange];
     }
     –(void)lastObject {
