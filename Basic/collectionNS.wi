@@ -2,7 +2,7 @@
 
 PointerKey <NSCopying> "-Object"
     id o=nil (readonly)
-    -(void)dealloc {[o release];}
+    -(void)dealloc {}
     -(id)initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         if (ao) {
@@ -88,31 +88,24 @@ NSMutableDictionary
     -(void)setObject:(id)anObject forPointerKey:(id)aKeyo {
         PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
         [self setObject:anObject forKey:k];
-        [k release];
     }
     -(void)setObject:(id)anObject forWeakKey:(id)aKeyo {
         WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
         [self setObject:anObject forKey:k];
-        [k release];
     }
     -(void)setWeakObject:(id)anObject forKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self setObject:v forKey:aKeyo];
-        [v release];
     }
     -(void)setWeakObject:(id)anObject forPointerKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
         [self setObject:v forKey:k];
-        [k release];
-        [v release];
     }
     -(void)setWeakObject:(id)anObject forWeakKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
         [self setObject:v forKey:k];
-        [k release];
-        [v release];
     }
 
 NSDictionary
@@ -128,7 +121,6 @@ NSMutableArray
     -(void)addWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self addObject:v];
-        [v release];
     }
 
     -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(NSUInteger)index {
@@ -138,7 +130,6 @@ NSMutableArray
     -(void)insertWeakObject:(id)anObject atIndex:(NSUInteger)index {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self insertObject:v atIndex:index];
-        [v release];
     }
 
     -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject weak:(bool)weakObject {
@@ -148,7 +139,6 @@ NSMutableArray
     -(void)replaceObjectAtIndex:(NSUInteger)index withWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self replaceObjectAtIndex:index withObject:v];
-        [v release];
     }
 
 NSArray
@@ -164,7 +154,6 @@ NSMutableSet
     -(void)addWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self addObject:v];
-        [v release];
     }
 
 

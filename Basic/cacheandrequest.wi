@@ -8,7 +8,7 @@ RequestCaches "fn:util"
             float resultSize (readonly)
             request >s<~ <RequestOwner> owner
                 -(void)doneRequestSync:(NSObject<Request>*)request {}
-                -(void)doneRequestAsync:(NSObject<Request>*)request {@990 [request release];}
+                -(void)doneRequestAsync:(NSObject<Request>*)request {@990}
             request ~s< RequestProxy proxy
 
         -(void)prntList {
@@ -261,7 +261,6 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                     NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0, 0, image.size.width, image.size.height)];
                     [image unlockFocus];
                     NSData *data=[bitmapRep representationUsingType:NSPNGFileType properties:nil];
-                    [bitmapRep release];
                     [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
                         [NSNumber numberWithFloat:item.size],@"size",
                         [NSNumber numberWithFloat:item.age],@"age",
@@ -282,7 +281,6 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                 }
             }
             if (ret.count) [ret setObject:list.copy forKey:@"___li_st___"];
-            [list release];
         }
         -v{
             [self clear];
@@ -316,7 +314,6 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                         if (age) item.age=age.floatValue;
                         if (initialSize) item.initialSize=initialSize.floatValue;
                         [self setObject:item forKey:key];
-                        [item release];
                     }
                 }
             }

@@ -9,7 +9,6 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
         NSMutableSet *s=[objectsOwnedOnlyByModels getAndClear];
         for (NSObject<RefCountedObject> *o in s) [o retract];
         [s removeAllObjects];
-        [s release];
     }
 
 
@@ -56,7 +55,6 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
     }
     -(void)modelrelease {
         modelRetaincount--;
-        [self release];
     }
     -(void)modelautorelease {
         modelRetaincount--;
@@ -378,12 +376,10 @@ Model<Model,Ticker,Waiter> "fn:model"
 
             //prnt("Commit c\n");
             //[changed removeAllObjects];
-            [changed release];
 
             //prnt("Commited\n");
         }
         //[_dirties removeAllObjects];
-        [_dirties release];
         @999 
         @synchronized (self) {
             inCommit=NO;

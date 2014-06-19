@@ -16,8 +16,8 @@ WIMyClass
  static NSArray *__myclass_dieList=nil; 
  static NSArray *__myclass_initList=nil; 
  +(void)clearPropData { 
- if (__myclass_dieList) {[__myclass_dieList release];__myclass_dieList=nil;} 
- if (__myclass_initList) {[__myclass_initList release];__myclass_initList=nil;} 
+ if (__myclass_dieList) {__myclass_dieList=nil;} 
+ if (__myclass_initList) {__myclass_initList=nil;} 
  } 
  +(NSArray*)___dieList { 
  return

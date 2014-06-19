@@ -247,7 +247,6 @@ Texture2D <BaseObject> "fn:render"
     /*interfaces:impl:
         void texture2D_releasedatacallback(void *info,const void *data,size_t size) {
             NSData *nsdata=(NSData*)info;
-            [nsdata release];
         }
     */
 

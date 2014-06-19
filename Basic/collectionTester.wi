@@ -243,7 +243,6 @@ CollectionTestSubObject
         for (int i=0;i<100;i++) {
             CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
             [array addObject:o];
-            [o release];
             [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
             printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
         }
@@ -1035,15 +1034,11 @@ ArrayTester <Tester>
         NSArray *aa=[[a arrayByAddingObject:self.object] retain];
         NSArray *bb=[[b arrayByAddingObject:self.object] retain];
         [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObject"];
-        [aa release];
-        [bb release];
     }
     -(void)arrayByAddingObjectsFromArray {
         NSArray *aa=[[a arrayByAddingObjectsFromArray:self.objectArray] retain];
         NSArray *bb=[[b arrayByAddingObjectsFromArray:self.objectArray] retain];
         [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObjectsFromArray"];
-        [aa release];
-        [bb release];
     }
     //-(void)filteredArrayUsingPredicate:(NSPredicate *)predicate {
     -(void)subarrayWithRange {
@@ -1051,8 +1046,6 @@ ArrayTester <Tester>
         NSArray *aa=[[a subarrayWithRange:self.range] retain];
         NSArray *bb=[[b subarrayWithRange:self.range] retain];
         [self passFail:[aa isEqualToArray:bb] format:@"subarrayWithRange"];
-        [aa release];
-        [bb release];
     }
 
 

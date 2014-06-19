@@ -128,7 +128,7 @@ type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_
 /*decl:impl:
 #define DEB(...) __VA_ARGS__
 NSMutableArray *singletons=nil;
-void clearSingletons() {[singletons release];singletons=nil;}
+void clearSingletons() {singletons=nil;}
 */
 /*decl:
 extern NSMutableArray *singletons;

@@ -117,7 +117,6 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
                                       [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA],
                                       kCVPixelBufferPixelFormatTypeKey, nil];
             videoDataOutput.videoSettings = settings;
-            [settings release];
             
             //  we don't need a high frame rate. this limits the capture to 5 frames per second.
             //videoDataOutput.minFrameDuration = CMTimeMake(1, 5);
@@ -127,7 +126,6 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
             
             [videoDataOutput setSampleBufferDelegate:self queue:queue];
             [sess addOutput:videoDataOutput];
-            [videoDataOutput release];
             
             dispatch_release(queue);
             

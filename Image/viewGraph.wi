@@ -153,7 +153,7 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
         {return(referencedPointBinding);}
         -v{
             if (referencedPointBinding!=v) {
-                [referencedPointBinding release];referencedPointBinding=[v retain];
+referencedPointBinding=[v retain];
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointForPoint:part];
                 }
@@ -163,7 +163,7 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
         {return(referencedObjectBinding);}
         -v{
             if (referencedObjectBinding!=v) {
-                [referencedObjectBinding release];referencedObjectBinding=[v retain];
+referencedObjectBinding=[v retain];
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointForPoint:part];
                 }
@@ -217,7 +217,7 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
         {return(referencedPointBinding);}
         -v{
             if (referencedPointBinding!=v) {
-                [referencedPointBinding release];referencedPointBinding=[v retain];
+referencedPointBinding=[v retain];
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointsForPoint:part];
                 }
@@ -227,7 +227,7 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
         {return(referencedObjectBinding);}
         -v{
             if (referencedObjectBinding!=v) {
-                [referencedObjectBinding release];referencedObjectBinding=[v retain];
+referencedObjectBinding=[v retain];
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointsForPoint:part];
                 }

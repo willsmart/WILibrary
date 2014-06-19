@@ -25,7 +25,7 @@ WIMyClass
     }
     
     -(void)cleanupCommit {
-        [previousHisqname release];previousHisqname=nil;
+previousHisqname=nil;
     }
 
     //NSMutableDictionary *asNewDictionary={
@@ -45,7 +45,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
         if (!ret) {
             [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
-            [ret release];
         }
         ret.hisqname=ahisqname;
         return(ret);
@@ -76,7 +75,6 @@ JustMyClassOverride<+Commitable>
         -v{hisqname=[v retain];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
 
     -(int)commitProperties:(int)substageIndex {
-        [previousHisqname release];
         previousHisqname=hisqname;
         hisqname=nil;
         useMyHisqname=NO;
@@ -85,7 +83,7 @@ JustMyClassOverride<+Commitable>
     }
     
     -(void)cleanupCommit {
-        [previousHisqname release];previousHisqname=nil;
+previousHisqname=nil;
         useMyHisqname=NO;
         [self removeAllSinkCommitters];
         self.baseWithHisqname=nil;

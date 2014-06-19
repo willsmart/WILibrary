@@ -21,8 +21,6 @@ WIMyClass
             if ([Util getInsertsAndDeletesForSetWhenChanging:hisname_keys_were to:v inss:&hisname_inss dels:&hisname_dels]) {
                 for (id<NSCopying> key in hisname_dels) [hisname_ep removeObjectForKey:key];
                 for (id<NSCopying> key in hisname_inss) [hisname_ep setObject:self forKey:key];
-                [hisname_inss release];
-                [hisname_dels release];
             }
         }
     kid keyInHisname=

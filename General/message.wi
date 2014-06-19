@@ -31,7 +31,6 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
-            [alert release];
             return(false);
         }
     }
@@ -51,7 +50,6 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
-            [alert release];
             return(false);
         }
     }
@@ -85,7 +83,6 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
                                                cancelButtonTitle:@"OK"
                                                otherButtonTitles:nil];
             [al show];
-            [al release];
         }        
     }
 
@@ -113,7 +110,6 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
                                                cancelButtonTitle:@"OK"
                                                otherButtonTitles:nil];
             [al show];
-            [al release];
         }        
     }
 
@@ -250,7 +246,6 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         if (title) pl.listName=pattern.patternName=title;
         [pl.rootPatterns addObject:pattern];
         NSString *url=pl.asURL;
-        [pl release];
         return(url);
     }
 

@@ -851,7 +851,6 @@ MutableArray : NSMutableArray
         for (id object in was) [self willRemoveObject:object];
         [__base removeAllObjects];
         for (id object in was) [self didRemoveObject:object];
-        [was release];
     }
     –(void)removeLastObject {
         id object=self.lastObject;
@@ -860,7 +859,6 @@ MutableArray : NSMutableArray
             [self willRemoveObject:object];
             [__base removeLastObject];
             [self didRemoveObject:object];
-            [object release];
         }
     }
     –(void)removeObject:(id)object {
@@ -869,7 +867,6 @@ MutableArray : NSMutableArray
             [self willRemoveObject:object];
             [__base removeObject:object];
             [self didRemoveObject:object];
-            [object release];
         }
     }
     –(void)removeObjectAtIndex:(NSUInteger)index {
@@ -878,7 +875,6 @@ MutableArray : NSMutableArray
         [self willRemoveObject:object];
         [__base removeObjectAtIndex:index];
         [self didRemoveObject:object];
-        [object release];
     }
     –(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
         for (NSUInteger index=indexes.lastIndex;index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {

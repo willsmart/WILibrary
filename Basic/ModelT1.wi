@@ -28,7 +28,7 @@ WIMyClass
     }
     
     -(void)cleanupCommit {
-        [previousNSHisqname release];previousNSHisqname=nil;
+previousNSHisqname=nil;
         memset(&previousHisqname,0,sizeof(previousHisqname));
     }
 
@@ -49,7 +49,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
         if (!ret) {
             [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
-            [ret release];
         }
 
         ret.nshisqname=anshisqname;
@@ -61,7 +60,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
         if (!ret) {
             [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
-            [ret release];
         }
 
         ret.hisqname=ahisqname;
@@ -107,7 +105,6 @@ JustMyClassOverride<Commitable>
         -v{nshisqname=[v retain];hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
 
     -(int)commitProperties:(int)substageIndex {
-        [previousNSHisqname release];
         previousNSHisqname=nshisqname;
         previousHisqname=hisqname;
         nshisqname=nil;
@@ -118,7 +115,7 @@ JustMyClassOverride<Commitable>
     }
     
     -(void)cleanupCommit {
-        [previousNSHisqname release];previousNSHisqname=nil;
+previousNSHisqname=nil;
         memset(&previousHisqname,0,sizeof(previousHisqname));
         useMyHisqname=NO;
         [self removeAllSinkCommitters];

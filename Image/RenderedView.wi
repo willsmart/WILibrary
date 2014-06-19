@@ -582,7 +582,6 @@ Singletons
     -(void)refreshImageViewURLs {
         NSSet *s=self.urlImageViews.urlImageViews.__set.copy;
         for (URLImageView *v in s) [v refreshFromRegisteredURLs];
-        [s release];
     }
 
     URLImageViews urlImageViews={
@@ -637,7 +636,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         {return(imageURLKey);}
         -v{
             if (v?![imageURLKey isEqualToString:v]:(imageURLKey!=nil)) {
-                [imageURLKey release];
                 imageURLKey=[v retain];
                 NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
@@ -649,7 +647,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         {return(highlightedImageURLKey);}
         -v{
             if (v?![highlightedImageURLKey isEqualToString:v]:(highlightedImageURLKey!=nil)) {
-                [highlightedImageURLKey release];
                 highlightedImageURLKey=[v retain];
                 NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
@@ -671,7 +668,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         -v{
             CGRect r=[__Class__ roundedRect:self.frame];
             if (!v) {
-                [imageURL release];
                 imageURL=nil;
                 self.sizedImageURL=nil;
             }
@@ -680,7 +676,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 (imageRenderedAsRect.origin.y==r.origin.y)&&
                 (imageRenderedAsRect.size.width==r.size.width)&&
                 (imageRenderedAsRect.size.height==r.size.height))) {
-                [imageURL release];
                 imageURL=[v retain];
                 self.sizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:imageURL] frame:self.frame toRect:&imageRenderedAsRect];
             }
@@ -691,7 +686,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         -v{
             CGRect r=[__Class__ roundedRect:self.frame];
             if (!v) {
-                [highlightedImageURL release];
                 highlightedImageURL=nil;
                 self.sizedHighlightedImageURL=nil;
             }
@@ -700,7 +694,6 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 (highlightedImageRenderedAsRect.origin.y==r.origin.y)&&
                 (highlightedImageRenderedAsRect.size.width==r.size.width)&&
                 (highlightedImageRenderedAsRect.size.height==r.size.height))) {
-                [highlightedImageURL release];
                 highlightedImageURL=[v retain];
                 self.sizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:highlightedImageURL] frame:self.frame toRect:&highlightedImageRenderedAsRect];
             }
@@ -717,13 +710,11 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                     self.image=nil;
                     [self notifyImageChanged];
                 }
-                [sizedImageURL release];
                 sizedImageURL=nil;
             }
             else if (![sizedImageURL isEqual:v]) {
                 needImage=NO;
                 if (!needHighlightedImage) [self stopWaiting];
-                [sizedImageURL release];
                 sizedImageURL=[v retain];
 
                 NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedImageURL]];
@@ -747,13 +738,11 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                     self.highlightedImage=nil;
                     [self notifyImageChanged];
                 }
-                [sizedHighlightedImageURL release];
                 sizedHighlightedImageURL=nil;
             }
             else if (![sizedHighlightedImageURL isEqual:v]) {
                 needHighlightedImage=NO;
                 if (!needImage) [self stopWaiting];
-                [sizedHighlightedImageURL release];
                 sizedHighlightedImageURL=[v retain];
 
                 NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedHighlightedImageURL]];

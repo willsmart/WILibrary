@@ -9,7 +9,6 @@ WIMyClass
     NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
 
     -(int)commitProperties:(int)substageIndex {@-3 
-        [previousKeysInHisqname release];
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=self.keysInHisname.copy;
         
@@ -19,7 +18,7 @@ WIMyClass
     }
     
     -(void)cleanupCommit {
-        [previousKeysInHisqname release];previousKeysInHisqname=nil;
+previousKeysInHisqname=nil;
     }
 
 
@@ -30,7 +29,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnameOverrideForKey:__acontext];
         if (!ret) [self setHisqnameOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
         [ret setHisqname:ahisqname myKeys:keys];
-        [ret release];
         return(ret);
     }
 
@@ -57,8 +55,6 @@ JustMyClassOverride
     -(void)setHisqname:(NSHisClass)v {@-1000 ERR("__Class__ Please set keys");}
 
     -(void)setHisqname:(NSHisClass)v myKeys:(NSSet*)keys {
-        [hisqname release];
-        [keysInHisqname release];
         hisqname=[v retain];
         keysInHisqname=keys.copy;
         useMyHisqname=YES;
@@ -66,13 +62,12 @@ JustMyClassOverride
     }
     
     -(int)commitProperties:(int)substageIndex {
-        [previousKeysInHisqname release];
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=nil;
     }
     
     -(void)cleanupCommit {
-        [previousKeysInHisqname release];previousKeysInHisqname=nil;
+previousKeysInHisqname=nil;
     }
 
 

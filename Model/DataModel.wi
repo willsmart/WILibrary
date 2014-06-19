@@ -269,9 +269,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             if (!ret) {
                 NSMutableDictionary *d=[[NSMutableDictionary alloc] init];
                 [__Class__ addPropertySelectorsToDictionary:d];
-                ret=d.copy;[d release];
-                [g_singletons.dataModelPropertySelectors setObject:ret forKey:NSStringFromClass([__Class__ class])];
-                [ret release];
+                ret=d.copy;                [g_singletons.dataModelPropertySelectors setObject:ret forKey:NSStringFromClass([__Class__ class])];
             }
             propertyDatas=ret;
             return(ret);

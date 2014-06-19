@@ -89,7 +89,6 @@ Singletons
     -(void)refreshMetaEnabledURLs {
         NSSet *s=self.urlMetaEnableds.urlMetaEnableds.copy;
         for (NSObject<MetaEnabled> *v in s) [v refreshMetaFromRegisteredURLs];
-        [s release];
     }
 
     URLMetaEnableds urlMetaEnableds={
@@ -259,12 +258,10 @@ JSMetaPropertyInState
 
     -(bool)didChangeValueOfProperty:(NSString*)propertyNamev alias:(NSString*)alias from:(NSObject*)fromValue to:(NSObject*)toValue {
         if ([var isEqualToString:propertyNamev]) {
-            [cachedValue release];
             cachedValue=nil;
             return(YES);
         }
         else if (js&&([js rangeOfString:alias].location!=NSNotFound)) {
-            [cachedValue release];
             cachedValue=nil;
             return(YES);
         }
@@ -392,10 +389,8 @@ JSMetaProperty<NamedDataListener>
                 [a insertObject:stateName atIndex:i];
             }
             stateOrder=a.copy;
-            [a release];
         }
                     
-        [propNames release];
     }
 
     +(bool)isJSProperty:(NSObject*)object {
@@ -460,7 +455,6 @@ JSMetaProperty<NamedDataListener>
                 NSObject<NSCopying> *v=self.currentState;
                 if (!(v?[cachedState isEqual:v]:!cachedState)) {
                     changed=YES;
-                    [cachedState release];
                     cachedState=v;
                 }
             }
@@ -486,7 +480,6 @@ JSMetaProperty<NamedDataListener>
         if (changed) {
             NSObject *v=self.currentValue;
             if (!(v?[cachedValue isEqual:v]:!cachedValue)) {
-                [cachedValue release];
                 cachedValue=[v retain];
                 //prnt("JS prop: %s\n= %s\n",((NSString*)self.keyInOwner).UTF8String,
                 //cachedValue.description.UTF8String
@@ -510,7 +503,6 @@ JSMetaProperty<NamedDataListener>
         {return(myDataRegistry);}
         -v{
             if (v!=myDataRegistry) {
-                [myDataRegistry release];
                 myDataRegistry=[v retain];
                 self.dataRegistry=v;
             }
@@ -715,7 +707,6 @@ JSMetaProperty<NamedDataListener>
                     if (child) child=[child initWithMeta:childMetaProps parent:self key:key];
                     if (child) {
                         [self didAttachChild:child withName:(NSString*)key];
-                        [child release];
                     }
                 }
                 child=nil;
@@ -799,7 +790,6 @@ JSMetaProperty<NamedDataListener>
                     (fabs(framev.size.width-frameWas.size.width)<1)&&
                     (fabs(framev.size.height-frameWas.size.height)<1)) return;
                 frameWas=framev;
-                [metaURLWas release];
                 metaURLWas=[url retain];
                 NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:framev];
                 if ([metaDict isKindOfClass:[NSDictionary class]]) {

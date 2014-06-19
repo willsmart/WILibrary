@@ -64,7 +64,6 @@ UnionSet<UnionSet>
     
     MutableSet sets=[[MutableSet alloc] init] (readonly,dealloc,ivar=sets)
     -(init) {@-5 
-        [__set release];
         __set=__mutableSet;
         delegateForSet=self;
         [sets addDelegate:self.setsDelegate=[UnionSetsMutableSetDelegate get]];
@@ -149,8 +148,6 @@ UnionSet<UnionSet>
                 }
             }
             if (changed) [self stateOK];
-            [inss release];
-            [rems release];
         }
     }
     
@@ -256,7 +253,6 @@ UnionDictionary<UnionDictionary>
     
     MutableArray dictionaries=[[MutableArray alloc] init] (readonly,dealloc,ivar=dictionaries)
     -(init) {@-5 
-        [__dictionary release];
         __dictionary=__mutableDictionary;
         delegateForDictionary=self;
         [dictionaries addDelegate:self.dictionariesDelegate=[UnionDictionariesMutableArrayDelegate get]];
@@ -321,7 +317,6 @@ UnionDictionary<UnionDictionary>
                 if (newObject) {
                     [self willAddObject:newObject forKey:key];
                     [__depthsForKeys setObject:n forKey:key];
-                    [n release];
                     [__mutableDictionary setObject:newObject forKey:key];
                     [self didAddObject:newObject forKey:key];
                 }
@@ -357,7 +352,6 @@ UnionDictionary<UnionDictionary>
             [self willRemoveObject:was forKey:key];
             [__mutableDictionary removeObjectForKey:key];
             [self didRemoveObject:was forKey:key];
-            [was release];
         }
         for (id<NSCopying> key in keys) {
             id object=nil;
@@ -381,7 +375,6 @@ UnionDictionary<UnionDictionary>
                     [self willRemoveObject:was forKey:key];
                     [__mutableDictionary removeObjectForKey:key];
                     [self didRemoveObject:was forKey:key];
-                    [was release];
                 }
             }
         }
@@ -478,7 +471,6 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
             UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
             if (!c) {
                 [shouldAddObjects setObject:c=[[UnionArrayDelegateCount alloc] init] forKey:[PointerKey keyWithObject:object]];
-                [c release];
             }
             c.willCount++;c.didCount++;
         }
@@ -553,7 +545,6 @@ UnionArray<UnionArray>
     
     MutableArray arrays=[[MutableArray alloc] init] (readonly,dealloc,ivar=arrays)
     -(init) {@-5 
-        [__array release];
         __array=__unionArray.__array;
         __unionArray.arrayDelegate=self;
         delegateForArray=self;

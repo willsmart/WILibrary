@@ -137,7 +137,6 @@ Singletons<Ticker> "-Object" "fn:object"
             Array<ClassCount*> cca;
             g_classCountht->asArray(cca);
             IterateArray(ClassCount*,cc,cca,
-                [cc release];
             );
             DELETE(QuickHashTable<ClassCount*>,g_classCountht);
         }
@@ -191,7 +190,6 @@ Singletons<Ticker> "-Object" "fn:object"
             [d setObject:[NSNumber numberWithInt:(int)cc.count] forKey:key];
         );
         [self.typeCountHistory insertObject:d atIndex:0];
-        [d release];
     }
     
 "<execinfo.h>"
@@ -313,7 +311,7 @@ Singletons<Ticker> "-Object" "fn:object"
     }
 
     -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return([super retain]);}
-    -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990 [super release];}
+    -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990}
     -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(super);}
 
     NSString description={@-999 
@@ -592,7 +590,7 @@ ObjectGraph<Ticker,BaseObject>
 
 <DerivedObject> "-Object"
     -(id)retain {@999 return([super retain]);}
-    -(void)release {@999 [super release];}
+    -(void)release {@999}
     -(id)autorelease {@999 return(super);}
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"

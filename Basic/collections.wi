@@ -433,7 +433,7 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
 MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
     NSMutableArray followerArray=
         {return(followerArray);}
-        -v{[followerArray release];followerArray=[v retain];[self refreshFollowerArray];}=nil (ivar=followerArray,dealloc)
+        -v{followerArray=[v retain];[self refreshFollowerArray];}=nil (ivar=followerArray,dealloc)
 
     -(id)objectForObject:(id)object {@-999 id ret=object;
         @999 return(ret);
@@ -468,8 +468,6 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
             [a addObject:object];
         }
         [followerArray setArray:a];
-        [a release];
-        [is release];
     }
     -(void)refreshFollowerArray {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
@@ -477,7 +475,6 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
             [a addObject:[self objectForObject:object]];
         }
         [followerArray setArray:a];
-        [a release];
     }
 
 

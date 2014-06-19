@@ -116,9 +116,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         if (!mls) [self setViewerListenerSet:mls=[[ViewerListenerSet alloc] init] forKey:viewerKey];
         ViewerPropertyListenerSet *mpls=[[mls viewerPropertyListenerSetForKey:propertyKey] retain];
         if (!mpls) [mls setViewerPropertyListenerSet:mpls=[[ViewerPropertyListenerSet alloc] init] forKey:propertyKey];
-        [mls release];
         [mpls addNamedDataListener:l];
-        [mpls release];
     }
 
     -(void)attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSString*)propertyNamev {
@@ -164,9 +162,6 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
                     for (NSObject<NSCopying> *propertyKey in changes) {
                         [self willChangeValueOfProperty:propertyKey inViewer:(NSObject<NSCopying>*)key from:(NSObject*)[fromv._properties objectForKey:propertyKey] to:(NSObject*)[tov._properties objectForKey:propertyKey]];
                     }
-                    [inss release];
-                    [dels release];
-                    [changes release];
                 }
             }
             else {
@@ -200,9 +195,6 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
                     for (NSObject<NSCopying> *propertyKey in changes) {
                         [self didChangeValueOfProperty:propertyKey inViewer:(NSObject<NSCopying>*)key from:(NSObject*)[fromv._properties objectForKey:propertyKey] to:(NSObject*)[tov._properties objectForKey:propertyKey]];
                     }
-                    [inss release];
-                    [dels release];
-                    [changes release];
                 }
             }
             else {
@@ -323,7 +315,6 @@ ViewerPropertyListenerSet
             if (v!=dataRegistry) {
                 NSSet *ns=self.propertyNamesListenedTo;
                 [self.namedDataListenerSets removeAllObjects];
-                [dataRegistry release];
                 dataRegistry=[v retain];
                 self.propertyNamesListenedTo=ns;
             }
@@ -344,13 +335,10 @@ ViewerPropertyListenerSet
                     NSMutableSet *dellss=[[NSMutableSet alloc] init];
                     for (ViewerPropertyListenerSet *ls in self.namedDataListenerSets) if ([dels containsObject:ls.propertyName]) [dellss addObject:ls];
                     [self.namedDataListenerSets minusSet:dellss];
-                    [dellss release];
                 }
                 for (NSObject *o in inss) if ([o isKindOfClass:[NSString class]]) {
                     [self.dataRegistry attachListener:self toProperty:(NSString*)o];
                 }
-                [inss release];
-                [dels release];
             }
         }
                     

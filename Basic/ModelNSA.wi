@@ -65,7 +65,7 @@ WIMyClass
     bool hisqnamesChanged=NO
     
     -(void)cleanupCommit {
-        [previousHisqnames release];previousHisqnames=nil;
+previousHisqnames=nil;
         hisqnamesChanged=NO;
     }
 
@@ -109,8 +109,6 @@ WIMyClass
         } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
-        [indexesOfHisqnamesThatWereAdded release];
-        [indexesOfHisqnamesThatWereRemoved release];
         indexesOfHisqnamesThatWereAdded=nil;
         indexesOfHisqnamesThatWereRemoved=nil;
     }
@@ -133,7 +131,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnamesOverrideForKey:__acontext];
         if (!ret) {
             [self setHisqnamesOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
-            [ret release];
         }
         [ret overrideWithArray:ahisqnames];
         return(ret);
@@ -192,16 +189,14 @@ JustMyClassOverride<+Commitable>
 
 
     -(int)commitProperties:(int)substageIndex {
-        [previousHisqnames release];
         previousHisqnames=hisqnames.copyAndClear;
-        [hisqnames release];
         hisqnames=nil;
         
         modelObjectHasChanged=YES;
     }
     
     -(void)cleanupCommit {
-        [previousHisqnames release];previousHisqnames=nil;
+previousHisqnames=nil;
         [self removeAllSinkCommitters];
         self.baseWithHisqnames=nil;
     }
@@ -230,8 +225,6 @@ JustMyClassOverride<+Commitable>
         } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
-        [indexesOfHisqnamesThatWereAdded release];
-        [indexesOfHisqnamesThatWereRemoved release];
         indexesOfHisqnamesThatWereAdded=nil;
         indexesOfHisqnamesThatWereRemoved=nil;
     }

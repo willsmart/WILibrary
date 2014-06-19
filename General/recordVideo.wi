@@ -335,11 +335,8 @@ RecordVideo
                 [assetWriter finishWritingWithCompletionHandler:^(void) {
                     if (assetWriter.status==AVAssetWriterStatusFailed) NSLog(@"finishWriting failed");
                     else if (assetWriter.status==AVAssetWriterStatusCompleted) {
-                        [pixelBufferAdaptor release];
                         pixelBufferAdaptor=nil;
-                        [assetWriterInput release];
                         assetWriterInput=nil;
-                        [assetWriter release];
                         assetWriter=nil;
                         
                         //id delegateObj = self.delegate;
@@ -351,9 +348,8 @@ RecordVideo
                         //    [delegateObj performSelectorOnMainThread:@selector(recordingFinished:) withObject:/(success ? outputURL : nil) waitUntilDone:YES];
                         // }
                         
-                        // [outputPath release];
-                        // [outputURL release];
-                    }
+                        //                        //
+                        }
                 }];
             }
             

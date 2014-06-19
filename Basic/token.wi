@@ -16,7 +16,6 @@ WReader <BaseObject> "fn:token"
                 NSString *to=[replaces objectForKey:from];
                 self._fileString=[v__fileString stringByReplacingOccurrencesOfString:from withString:to];
             }
-            [lines release];
             lines=[[v componentsSeparatedByString:@"\n"] retain];
             self.tokenizer.str=v;
             
@@ -243,8 +242,6 @@ JsonParser
         NSUInteger used=0;
         NSObject *ret=a.count?[__Class__ _unpack:a from:0 to:a.count-1 used:&used]:nil;
         if (used!=a.count) ret=nil;
-        [a release];
-        [tk release];
         return(ret);
     }
 
@@ -281,28 +278,23 @@ JsonParser
                 while (from<=to) {
                     NSObject *k=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!(k&&[k conformsToProtocol:@protocol(NSCopying)])) {
-                        [ret release];
                         return(nil);
                     }
                     from+=used;
                     if (from>to) {
-                        [ret release];
                         return(nil);
                     }
                     t=[tokens objectAtIndex:from];
                     if (![t.str isEqualToString:@":"]) {
-                        [ret release];
                         return(nil);
                     }
                     from++;
                     NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!v) {
-                        [ret release];
                         return(nil);
                     }
                     from+=used;
                     if (from>to) {
-                        [ret release];
                         return(nil);
                     }
                     [ret setObject:v forKey:(kid)k];
@@ -312,12 +304,10 @@ JsonParser
                         return(ret);
                     }
                     if (![t.str isEqualToString:@","]) {
-                        [ret release];
                         return(nil);
                     }
                     from++;
                 }
-                [ret release];
                 return(nil);
             }
             if ([t0.str isEqualToString:@"["]) {
@@ -333,12 +323,10 @@ JsonParser
                 while (from<=to) {
                     NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!v) {
-                        [ret release];
                         return(nil);
                     }
                     from+=used;
                     if (from>to) {
-                        [ret release];
                         return(nil);
                     }
                     [ret addObject:v];
@@ -348,12 +336,10 @@ JsonParser
                         return(ret);
                     }
                     if (![t.str isEqualToString:@","]) {
-                        [ret release];
                         return(nil);
                     }
                     from++;
                 }
-                [ret release];
                 return(nil);
             }
         }

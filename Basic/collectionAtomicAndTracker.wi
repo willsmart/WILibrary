@@ -14,7 +14,6 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     NSMutableSet<MutableSet> trackerSet=
         {return(trackerSet);}
         -v{
-            [trackerSet release];
             trackerSet=[v retain];
             version=v.version;
         }=nil (ivar=trackerSet,dealloc)
@@ -22,7 +21,6 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     -(void)setAtomicSet:(NSSet*)v {
         version=0;
         [self makeNonModel];
-        [__set release];
         __set=[[NSSet alloc] initWithSet:v];
         [self makeModel];
     }
@@ -30,7 +28,6 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     -(void)commitSet {
         if (version!=trackerSet.version) {
             [self makeNonModel];
-            [__set release];
             __set=[[NSSet alloc] initWithSet:trackerSet.__set];
             [self makeModel];
             version=trackerSet.version;
@@ -118,7 +115,6 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
     NSMutableDictionary<MinimalMutableDictionary> trackerDictionary=
         {return(trackerDictionary);}
         -v{
-            [trackerDictionary release];
             trackerDictionary=[v retain];
             version=v.version;
         }=nil (ivar=trackerDictionary,dealloc)
@@ -126,7 +122,6 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
     -(void)setAtomicDictionary:(NSDictionary*)v {
         version=0;
         [self makeNonModel];
-        [__dictionary release];
         __dictionary=[[NSDictionary alloc] initWithDictionary:v];
         [self makeModel];
     }
@@ -134,7 +129,6 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
     -(void)commitDictionary {
         if (version!=trackerDictionary.version) {
             [self makeNonModel];
-            [__dictionary release];
             __dictionary=[[NSDictionary alloc] initWithDictionary:trackerDictionary.__dictionary];
             [self makeModel];
             version=trackerDictionary.version;
@@ -214,7 +208,6 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     NSMutableArray<MinimalMutableArray> trackerArray=
         {return(trackerArray);}
         -v{
-            [trackerArray release];
             trackerArray=[v retain];
             version=v.version;
         }=nil (ivar=trackerArray,dealloc)
@@ -222,7 +215,6 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     -(void)setAtomicArray:(NSArray*)v {
         version=0;
         [self makeNonModel];
-        [__array release];
         __array=[[NSArray alloc] initWithArray:v];
         [self makeModel];
     }
@@ -230,7 +222,6 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     -(void)commitArray {
         if (version!=trackerArray.version) {
             [self makeNonModel];
-            [__array release];
             __array=[[NSArray alloc] initWithArray:trackerArray.__array];
             [self makeModel];
             version=trackerArray.version;
@@ -391,7 +382,6 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         }
         if (toRemove) {
             [self removeObjectsAtIndexes:toRemove];
-            [toRemove release];
         }
     }
     

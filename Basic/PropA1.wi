@@ -42,8 +42,6 @@ WIMyClass
                 [hisname_ep removeObjectAtIndex:hisname_wi];
                 hisname_wi=[hisname_indexes_were indexGreaterThanIndex:hisname_wi];
             }
-            [hisname_indexes_were release];
-            [v release];
         }
     NSUInteger indexInHisname=
         {

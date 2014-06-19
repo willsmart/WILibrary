@@ -161,7 +161,6 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     bool finished=nil
 
     -(void)dealloc {
-        [completionBlock release];
     }
 
     -(init[super init])initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock {
@@ -281,8 +280,6 @@ Util "fn:util"
             ret=(inss.count||dels.count);
         }
         if (!ret) {
-            [inss release];
-            [dels release];
             *pinss=nil;
             *pdels=nil;
         }
@@ -298,8 +295,6 @@ Util "fn:util"
         s=[[NSMutableIndexSet alloc] init];
         for (NSNumber *num in inss) [s addIndex:num.intValue];
         *pinss=s;
-        [inss release];
-        [dels release];
         return(YES);
     }
 
@@ -327,8 +322,6 @@ Util "fn:util"
         NSSet *fromKeys=[[NSSet alloc] initWithArray:from.allKeys];
         NSSet *toKeys=[[NSSet alloc] initWithArray:to.allKeys];
         bool ret=[Util getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];
-        [fromKeys release];
-        [toKeys release];
         id obj;
         NSMutableSet *changes=nil;
         if (from.count<to.count) {
@@ -367,7 +360,7 @@ Util "fn:util"
     }
 
     +(void)clearStaticData {
-        if (_Util_default) {[_Util_default release];_Util_default=nil;}
+        if (_Util_default) {_Util_default=nil;}
     }
 
 
@@ -951,7 +944,7 @@ Log<BaseObject>
     -(void)tick {
         NSString *s=value.copy;
         [value setString:@""];
-        [tim release];tim=nil;
+tim=nil;
         
         
         if (s.length) {
@@ -994,7 +987,6 @@ Log<BaseObject>
     NSString documentsCodingFilename=
         {return(v_documentsCodingFilename);}
         -v{
-            [v_documentsCodingFilename release];
             v_documentsCodingFilename=v;
             NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
             NSString *documentsDirectory = [paths objectAtIndex:0];

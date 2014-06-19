@@ -42,7 +42,6 @@ WIMyClass
         } (dealloc,ivar=hisqnames)
 
     -(void)_commitHisqnameProperties {
-        [previousHisqnames release];
         previousHisqnamesVersion=hisqnames.version;
         if (self.hisnames.version==hisqnames.version) {
             previousHisqnames=[hisqnames.__dictionary retain];
@@ -67,7 +66,7 @@ WIMyClass
     bool hisqnamesChanged=NO
     
     -(void)cleanupCommit {
-        [previousHisqnames release];previousHisqnames=nil;
+previousHisqnames=nil;
         hisqnamesChanged=NO;
     }
 
@@ -117,9 +116,6 @@ WIMyClass
         } (dealloc,ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
-        [hisqnamesThatWereAdded release];
-        [hisqnamesThatWereRemoved release];
-        [hisqnamesThatChanged release];
         hisqnamesThatWereAdded=nil;
         hisqnamesThatWereRemoved=nil;
         hisqnamesThatChanged=nil;
@@ -142,7 +138,6 @@ WIMyClass
         JustMyClassOverride *ret=[self hisqnamesOverrideForKey:__acontext];
         if (!ret) {
             [self setHisqnamesOverride:ret=[[JustMyClassOverride alloc] init] forKey:__acontext];
-            [ret release];
         }
         [ret overrideWithDictionary:ahisqnames];
         return(ret);
@@ -214,16 +209,14 @@ JustMyClassOverride<+Commitable>
 
 
     -(int)commitProperties:(int)substageIndex {
-        [previousHisqnames release];
         previousHisqnames=hisqnames.copyAndClear;
-        [hisqnames release];
         hisqnames=nil;
         
         modelObjectHasChanged=YES;
     }
 
     -(void)cleanupCommit {
-        [previousHisqnames release];previousHisqnames=nil;
+previousHisqnames=nil;
         [self removeAllSinkCommitters];
         self.baseWithHisqnames=nil;
     }
@@ -258,9 +251,6 @@ JustMyClassOverride<+Commitable>
         } (dealloc,ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
-        [hisqnamesThatWereAdded release];
-        [hisqnamesThatWereRemoved release];
-        [hisqnamesThatChanged release];
         hisqnamesThatWereAdded=nil;
         hisqnamesThatWereRemoved=nil;
         hisqnamesThatChanged=nil;

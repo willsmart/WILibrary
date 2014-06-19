@@ -2085,9 +2085,7 @@ Dictionary
                         *ptot=chtot;
                     }
                     else [seenSubtree setObject:[NSNumber numberWithInt:chtriei] forKey:nst];
-                    [nst release];
                 }
-                [n release];
             }
         }
         return(ret);
@@ -2491,7 +2489,6 @@ ProMPWords
                     if (ret.count<=retN) {
                         is=[[NSMutableIndexSet alloc] init];
                         [ret addObject:is];
-                        [is release];
                     }
                     else {
                         is=(NSMutableIndexSet*)[ret objectAtIndex:retN];
@@ -2599,7 +2596,6 @@ ProMPWords
             iti++;
         }
         fprintf(stderr,"\n%lu=%lu patterns total\n",ctxt.seenMaxHT->numCellsFilled(),prvRetCount);
-        [indsArray release];[wisIS release];
         return(prvRetCount);
     }
 

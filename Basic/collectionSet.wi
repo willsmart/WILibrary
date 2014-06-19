@@ -144,7 +144,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
             [v delegateForSetChanged];
         }
     }
-    -(void)removedDelegate {@-100 [setDelegate release];setDelegate=nil;}
+    -(void)removedDelegate {@-100setDelegate=nil;}
     -(void)removeDelegate:(NSObject<MutableSetDelegate>*)v {
         if (setDelegate) {
             if (setDelegate==v) {
@@ -152,7 +152,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
                 setDelegate=[v.setDelegate retain];
                 [v removedDelegate];
                 [v delegateForSetChanged];
-                [v release];
             }
             else [setDelegate removeDelegate:v];
         }
@@ -279,7 +278,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         }
         if (toRemove) {
             if ([self _minusSet:toRemove]) ret=YES;
-            [toRemove release];
         }
         return(ret);
     }
@@ -298,7 +296,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         for (id object in was) [self willRemoveObject:object];
         [__mutableSet removeAllObjects];
         for (id object in was) [self didRemoveObject:object];
-        [was release];
         return(YES);
     }
     -(bool)_addObjectsFromArray:(NSArray*)array {
@@ -325,7 +322,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         }
         if (toRemove) {
             if ([self _minusSet:toRemove]) ret=YES;
-            [toRemove release];
         }
         return(ret);
     }
@@ -342,7 +338,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 <WeakMutableSet>
     -(void)didAddObject:(id)object {@900 
-        [object release];
     }
     -(void)willRemoveObject:(id)object {@-900 
         [object retain];
@@ -399,7 +394,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
     NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
     MutableSet followerSet=
         {return(followerSet);}
-        -v{[followerSet release];followerSet=[v retain];[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
+        -v{followerSet=[v retain];[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -416,7 +411,6 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         id o=[self objectForObject:object];
         if (o) {
             [map1 setObject:o forKey:[PointerKey keyWithObject:object]];
-            [o release];
 
             IntCarrier *c=[ocounts objectForKey:o];
             if (c) c.intValue++;
@@ -430,7 +424,6 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
             if (s) {
                 [mapsets setObject:s forKey:[PointerKey keyWithObject:object]];
                 for (id o in s) {
-                    [o release];
 
                     IntCarrier *c=[ocounts objectForKey:o];
                     if (c) c.intValue++;
@@ -532,7 +525,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
 
     MutableSet unionSet=
         {return(unionSet);}
-        -v{[unionSet release];unionSet=[v retain];[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
+        -v{unionSet=[v retain];[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];
