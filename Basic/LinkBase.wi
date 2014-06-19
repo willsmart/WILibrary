@@ -33,7 +33,7 @@
         if (v==self) return;
         if (valueDelegate) [valueDelegate addDelegate:v];
         else {
-            valueDelegate=(v.retainsAsValueDelegate?[v retain]:v);
+            valueDelegate=v;
             valueDelegate.parentValueDelegate=self;
         }
     }
@@ -88,7 +88,6 @@
                 if (![[self endpointForObject:v] _addReferrer:self]) {
                     v_value=nil;
                 }
-                else if (retains) [v retain];
             }
             [self didSetValueTo:v];
         }=nil (assign,ivar=v_value)
@@ -101,7 +100,6 @@
             [[self endpointForObject:v_value] _removeReferrer:self];
         }
         if ((v_value=v)) {
-            if (retains) [v retain];
         }
         [self didSetValueTo:v];
         return(YES);
@@ -132,7 +130,6 @@
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
     }
     -(void)willRemoveObject:(id)object {@-900 
-        if (!retains) [object retain];
         if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 
@@ -173,7 +170,6 @@
         }
     }
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
-        if (!retains) [object retain];
         if (!__restrictRef) {
             [[self endpointForObject:object] _removeReferrer:self];
         }
@@ -217,7 +213,6 @@
     }
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
         if (fromObject) {
-            if (!retains) [fromObject retain];
             if (!__restrictRef) [[self endpointForObject:fromObject] _removeReferrer:self];
         }
     }

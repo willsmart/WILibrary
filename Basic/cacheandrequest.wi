@@ -56,7 +56,6 @@ RequestCaches "fn:util"
         
         for (NSObject<RequestOwner> *owner in self.owners) {
             [owner performSelectorOnMainThread:@selector(doneRequestSync:) withObject:self waitUntilDone:YES];
-            [self retain];
             [owner performSelectorOnMainThread:@selector(doneRequestAsync:) withObject:self waitUntilDone:NO];
         }
         [self removeAllOwners];
@@ -93,7 +92,6 @@ RequestProxy <WeakListItem> "fn:util"
             if (!req) return(nil);
         }
         else {
-            [req retain];
             [self removeRequestForKey:req.definingKey];
         }
         [req goRequest];
@@ -176,7 +174,6 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         NSObject<Request> *req=self.worthiestRequest;
         if (req) {
             //[req.cache prntList];
-            [req retain];
             [req goRequest];
             NSObject<RequestCache> *cache=req.cache;
             [cache.cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize]) forKey:req.definingKey];

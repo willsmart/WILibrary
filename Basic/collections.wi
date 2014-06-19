@@ -22,7 +22,6 @@
     -(void)makeWeak {
     }
     -(void)makeStrong {
-        for (id object in __set) [object retain];
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}
@@ -46,7 +45,6 @@
     -(void)makeWeak {
     }
     -(void)makeStrong {
-        for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] retain];
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}
@@ -77,7 +75,6 @@
     -(void)makeWeak {
     }
     -(void)makeStrong {
-        for (id object in __array) [object retain];
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}

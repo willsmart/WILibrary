@@ -855,7 +855,6 @@ MutableArray : NSMutableArray
     –(void)removeLastObject {
         id object=self.lastObject;
         if (object) {
-            [object retain];
             [self willRemoveObject:object];
             [__base removeLastObject];
             [self didRemoveObject:object];
@@ -863,7 +862,6 @@ MutableArray : NSMutableArray
     }
     –(void)removeObject:(id)object {
         if ([self containsObject:object]) {
-            [object retain];
             [self willRemoveObject:object];
             [__base removeObject:object];
             [self didRemoveObject:object];
@@ -871,7 +869,6 @@ MutableArray : NSMutableArray
     }
     –(void)removeObjectAtIndex:(NSUInteger)index {
         id object=[self objectAtIndex:index];
-        [object retain];
         [self willRemoveObject:object];
         [__base removeObjectAtIndex:index];
         [self didRemoveObject:object];

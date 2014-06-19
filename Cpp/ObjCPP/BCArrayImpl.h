@@ -16,7 +16,6 @@
 -(void) dealloc { \
     if (myCppArray) DELETE(Array<I>,cppArray); \
     cppArray=NULL; \
-    [super dealloc]; \
 } \
  \
 -(id)init { \

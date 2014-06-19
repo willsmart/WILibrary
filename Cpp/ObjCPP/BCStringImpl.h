@@ -16,7 +16,6 @@
 -(void) dealloc { \
     if (myCppString) DELETE(StringBuf<I>, cppString); \
     cppString=NULL; \
-    [super dealloc]; \
 } \
  \
 -(id)init { \

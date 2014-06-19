@@ -428,7 +428,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         if (![self shouldAddObject:object]) [self wontAddObject:object withIndex:index];
         else {
             [self willRemoveObjectsWithCount:1];
-            [self willRemoveObject:[object2 retain] fromIndex:index];
+            [self willRemoveObject:object2 fromIndex:index];
             [__mutableArray removeObjectAtIndex:index];
             [self didRemoveObject:object2];
 
@@ -598,7 +598,6 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         return(indexes.count>0);
     }
     /*-(void)removeObjectIdenticalTo:(id)object {
-        [object retain];
         int i=0,c=0,oi=NSNotFound;
         for (id object2 in __array) {
             if (object2==object) {
@@ -615,7 +614,6 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         [self stateOK];
     }*/
     /*-(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-        [object retain];
         int i=0,c=0,oi=NSNotFound;
         for (id object2 in __array) {
             if (i>=r.location) {
@@ -769,7 +767,6 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@900 
     }
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
-        [object retain];
     }
 
 

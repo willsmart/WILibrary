@@ -2,7 +2,7 @@
 
 WIMyClass
     -(void)die {/*__WIDERIVED__[super die]*/}
-    -(void)dealloc {@-151 [self die];@999 [super dealloc];}
+    -(void)dealloc {@-151 [self die];}
     -(init) {
         @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
         @999 return(self);

@@ -102,8 +102,6 @@ previousHisqnames=nil;
                     indexesOfHisqnamesThatWereAdded=[NSIndexSet indexSet];
                     indexesOfHisqnamesThatWereRemoved=[NSIndexSet indexSet];
                 }
-                [indexesOfHisqnamesThatWereAdded retain];
-                [indexesOfHisqnamesThatWereRemoved retain];
             }
             return(indexesOfHisqnamesThatWereRemoved);
         } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
@@ -218,8 +216,6 @@ previousHisqnames=nil;
                     indexesOfHisqnamesThatWereAdded=[NSIndexSet indexSet];
                     indexesOfHisqnamesThatWereRemoved=[NSIndexSet indexSet];
                 }
-                [indexesOfHisqnamesThatWereAdded retain];
-                [indexesOfHisqnamesThatWereRemoved retain];
             }
             return(indexesOfHisqnamesThatWereRemoved);
         } (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)

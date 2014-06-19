@@ -388,7 +388,6 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         if (was==object) return(NO);
         if (![self shouldAddObject:object forKey:key]) return(NO);
         if (was) {
-            [was retain];
             [self willReplaceObject:was withObject:object forKey:key];
             [__mutableDictionary setObject:object forKey:key];
             [self didReplaceObject:was withObject:object forKey:key];
@@ -434,7 +433,6 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         id was=[__dictionary valueForKey:key];
         if (was==object) return(NO);
         if (was) {
-            [was retain];
             [self willReplaceObject:was withObject:object forKey:key];
             [__mutableDictionary setValue:object forKey:key];
             [self didReplaceObject:was withObject:object forKey:key];
@@ -500,7 +498,6 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 <WeakMutableDictionary>
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
-        [fromObject retain];
     }
     -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
     }
@@ -639,7 +636,6 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
             id k=[mapk objectForKey:key];
             id o=[mapv objectForKey:key];
             if (o&&k) {
-                [o retain];
                 [followerDictionary _removeObjectForKey:k];
                 [mapk removeObjectForKey:key];
                 [mapv removeObjectForKey:key];
@@ -673,7 +669,6 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
         [followerDictionary stateOK];
     }
     -(void)_refreshFollowerDictionary {
-        for (kid key in mapv) [[mapv objectForKey:key] retain];
         [mapk removeAllObjects];
         [mapv removeAllObjects];
         
