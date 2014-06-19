@@ -687,7 +687,7 @@ PointerKey <NSCopying>
     - (void)dealloc {}
     - (id) initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
-        o=[ao retain];
+        o=ao;
         return(self);
     }
     +(PointerKey*)keyWithObject:(id)ao {
@@ -843,7 +843,7 @@ MutableSet : NSMutableSet
 
     -(id)init {
         if (!(self=[super init])) return(nil);
-        __base=[[NSMutableSet set] retain];
+        __base=[NSMutableSet set];
         weakObjects=NO;
         return(self);
     }
@@ -1267,7 +1267,7 @@ MutableArray : NSMutableArray
 
     -(id)init {
         if (!(self=[super init])) return(nil);
-        __base=[[NSMutableArray set] retain];
+        __base=[NSMutableArray set];
         weakObjects=NO;
         return(self);
     }

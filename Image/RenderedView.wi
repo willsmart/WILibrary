@@ -316,7 +316,7 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
 ImageShaderRequest<Request> "fn:renderimage"
     <HasURL,HasImageShader> object=nil (readonly,dealloc,ivar=object)
     -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader>*)aobject {
-        object=[aobject retain];
+        object=aobject;
     }
     float resultSize={return(0);}
     NSObject result={return(object.imageShader);}
@@ -345,7 +345,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
 ShaderImageRequest<Request> "fn:renderimage"
     <HasURL,HasImageShader,HasImage> object=nil (readonly,dealloc,ivar=object)
     -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject {
-        object=[aobject retain];
+        object=aobject;
     }
     float resultSize={return(800);}
     NSObject result={return(object.image);}
@@ -396,7 +396,7 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
     ImageToken token=nil (dealloc,ivar=token)
 
     -(init[super init])initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner {@100 
-        token=[atoken retain];
+        token=atoken;
         self.owner=aowner;
         [self requestImage];
     }
@@ -564,10 +564,10 @@ Singletons
     -(init) {
         {
             NSError *error=nil;
-            v_SingleURLImageView_szregex=[[NSRegularExpression regularExpressionWithPattern:@"usizeInPixels=U(0)" options:0 error:&error] retain];
+            v_SingleURLImageView_szregex=[NSRegularExpression regularExpressionWithPattern:@"usizeInPixels=U(0)" options:0 error:&error];
             if (error) ERR("Bad regex sz");
             error=nil;
-            v_SingleURLImageView_rectregex=[[NSRegularExpression regularExpressionWithPattern:@"urectInPixels=U(0)" options:0 error:&error] retain];
+            v_SingleURLImageView_rectregex=[NSRegularExpression regularExpressionWithPattern:@"urectInPixels=U(0)" options:0 error:&error];
             if (error) ERR("Bad regex rect");
         }
     }
@@ -636,7 +636,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         {return(imageURLKey);}
         -v{
             if (v?![imageURLKey isEqualToString:v]:(imageURLKey!=nil)) {
-                imageURLKey=[v retain];
+                imageURLKey=v;
                 NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
                 self.imageURL=url;
@@ -647,7 +647,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         {return(highlightedImageURLKey);}
         -v{
             if (v?![highlightedImageURLKey isEqualToString:v]:(highlightedImageURLKey!=nil)) {
-                highlightedImageURLKey=[v retain];
+                highlightedImageURLKey=v;
                 NSObject *o=(v?[g_singletons.imageViewURLRegistry objectForKey:v]:nil);
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
                 self.highlightedImageURL=url;
@@ -676,7 +676,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 (imageRenderedAsRect.origin.y==r.origin.y)&&
                 (imageRenderedAsRect.size.width==r.size.width)&&
                 (imageRenderedAsRect.size.height==r.size.height))) {
-                imageURL=[v retain];
+                imageURL=v;
                 self.sizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:imageURL] frame:self.frame toRect:&imageRenderedAsRect];
             }
         }=nil (ivar=imageURL,dealloc)
@@ -694,7 +694,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 (highlightedImageRenderedAsRect.origin.y==r.origin.y)&&
                 (highlightedImageRenderedAsRect.size.width==r.size.width)&&
                 (highlightedImageRenderedAsRect.size.height==r.size.height))) {
-                highlightedImageURL=[v retain];
+                highlightedImageURL=v;
                 self.sizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:highlightedImageURL] frame:self.frame toRect:&highlightedImageRenderedAsRect];
             }
         }=nil (ivar=highlightedImageURL,dealloc)
@@ -715,7 +715,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             else if (![sizedImageURL isEqual:v]) {
                 needImage=NO;
                 if (!needHighlightedImage) [self stopWaiting];
-                sizedImageURL=[v retain];
+                sizedImageURL=v;
 
                 NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedImageURL]];
                 if ([o isKindOfClass:[UIImage class]]) {
@@ -743,7 +743,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             else if (![sizedHighlightedImageURL isEqual:v]) {
                 needHighlightedImage=NO;
                 if (!needImage) [self stopWaiting];
-                sizedHighlightedImageURL=[v retain];
+                sizedHighlightedImageURL=v;
 
                 NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:sizedHighlightedImageURL]];
                 if ([o isKindOfClass:[UIImage class]]) {
@@ -800,9 +800,9 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }
         @-500
-        imageURL=[aurl retain];
+        imageURL=aurl;
         imageRenderedAsRect=aimageRenderedAsRect;
-        sizedImageURL=[asizedImageURL retain];
+        sizedImageURL=asizedImageURL;
         self.frame=frame;
 
         @200 
@@ -835,12 +835,12 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }
         @-500
-        imageURL=[aimageURL retain];
+        imageURL=aimageURL;
         imageRenderedAsRect=aimageRenderedAsRect;
-        sizedImageURL=[asizedImageURL retain];
-        highlightedImageURL=[ahighlightedImageURL retain];
+        sizedImageURL=asizedImageURL;
+        highlightedImageURL=ahighlightedImageURL;
         highlightedImageRenderedAsRect=ahighlightedImageRenderedAsRect;
-        sizedHighlightedImageURL=[asizedHighlightedImageURL retain];
+        sizedHighlightedImageURL=asizedHighlightedImageURL;
         self.frame=frame;
         
         @200 
@@ -872,10 +872,10 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }
         @-500 
-        imageURL=[aimageURL retain];
-        imageURLKey=[aurlKey retain];
+        imageURL=aimageURL;
+        imageURLKey=aurlKey;
         imageRenderedAsRect=aimageRenderedAsRect;
-        sizedImageURL=[asizedImageURL retain];
+        sizedImageURL=asizedImageURL;
         self.frame=frame;
         
         @200 
@@ -920,14 +920,14 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }
         @-500 
-        imageURLKey=[aimageURLKey retain];
-        highlightedImageURLKey=[ahighlightedImageURLKey retain];
-        imageURL=[aimageURL retain];
+        imageURLKey=aimageURLKey;
+        highlightedImageURLKey=ahighlightedImageURLKey;
+        imageURL=aimageURL;
         imageRenderedAsRect=aimageRenderedAsRect;
-        sizedImageURL=[asizedImageURL retain];
-        highlightedImageURL=[ahighlightedImageURL retain];
+        sizedImageURL=asizedImageURL;
+        highlightedImageURL=ahighlightedImageURL;
         highlightedImageRenderedAsRect=ahighlightedImageRenderedAsRect;
-        sizedHighlightedImageURL=[asizedHighlightedImageURL retain];
+        sizedHighlightedImageURL=asizedHighlightedImageURL;
         self.frame=frame;
         
         @200 

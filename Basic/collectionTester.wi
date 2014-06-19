@@ -1031,20 +1031,20 @@ ArrayTester <Tester>
 
     //Deriving New Arrays
     -(void)arrayByAddingObject {
-        NSArray *aa=[[a arrayByAddingObject:self.object] retain];
-        NSArray *bb=[[b arrayByAddingObject:self.object] retain];
+        NSArray *aa=[a arrayByAddingObject:self.object];
+        NSArray *bb=[b arrayByAddingObject:self.object];
         [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObject"];
     }
     -(void)arrayByAddingObjectsFromArray {
-        NSArray *aa=[[a arrayByAddingObjectsFromArray:self.objectArray] retain];
-        NSArray *bb=[[b arrayByAddingObjectsFromArray:self.objectArray] retain];
+        NSArray *aa=[a arrayByAddingObjectsFromArray:self.objectArray];
+        NSArray *bb=[b arrayByAddingObjectsFromArray:self.objectArray];
         [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObjectsFromArray"];
     }
     //-(void)filteredArrayUsingPredicate:(NSPredicate *)predicate {
     -(void)subarrayWithRange {
         if (!a.count) return;
-        NSArray *aa=[[a subarrayWithRange:self.range] retain];
-        NSArray *bb=[[b subarrayWithRange:self.range] retain];
+        NSArray *aa=[a subarrayWithRange:self.range];
+        NSArray *bb=[b subarrayWithRange:self.range];
         [self passFail:[aa isEqualToArray:bb] format:@"subarrayWithRange"];
     }
 

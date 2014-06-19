@@ -45,7 +45,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
             if (uiScrollView) {
                 uiScrollView.delegate=nil;
             }
-            uiScrollView=[v retain];
+            uiScrollView=v;
             uiScrollView.contentSize=CGSizeMake(1000,1000);
             uiScrollView.contentOffset=CGPointMake(500,500);
             //uiScrollView.delegate=self;

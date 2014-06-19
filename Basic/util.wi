@@ -938,7 +938,7 @@ Log<BaseObject>
         va_list args;va_start(args,format);
         [log->value appendString:[[NSString alloc] initWithFormat:format arguments:args]];
         va_end(args);
-        if (!log->tim) log->tim=[[NSTimer scheduledTimerWithTimeInterval:1 target:log selector:@selector(tick) userInfo:nil repeats:NO] retain];
+        if (!log->tim) log->tim=[NSTimer scheduledTimerWithTimeInterval:1 target:log selector:@selector(tick) userInfo:nil repeats:NO];
     }
 
     -(void)tick {

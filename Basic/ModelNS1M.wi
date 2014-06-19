@@ -55,7 +55,7 @@ JustMyClassOverride
     -(void)setHisqname:(NSHisClass)v {@-1000 ERR("__Class__ Please set keys");}
 
     -(void)setHisqname:(NSHisClass)v myKeys:(NSSet*)keys {
-        hisqname=[v retain];
+        hisqname=v;
         keysInHisqname=keys.copy;
         useMyHisqname=YES;
         [self markDirty];

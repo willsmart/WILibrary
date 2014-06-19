@@ -22,7 +22,7 @@ WIMyClass
         previousNSHisqname=nshisqname;
         previousHisqname=hisqname;
         hisqname=self.hisname;
-        nshisqname=[[NSHisClass:hisqname:NSHisClass] retain];
+        nshisqname=[NSHisClass:hisqname:NSHisClass];
         
         if (previousHisqname!=hisqname) modelObjectHasChanged=YES;
     }
@@ -102,7 +102,7 @@ JustMyClassOverride<Commitable>
     NSHisClass previousNSHisqname (nodef,dealloc,readonly,ivar=previousNSHisqname)
     NSHisClass nshisqname=
         {return(useMyHisqname?nshisqname:self.baseWithHisqname.nshisqname);}
-        -v{nshisqname=[v retain];hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
+        -v{nshisqname=v;hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
 
     -(int)commitProperties:(int)substageIndex {
         previousNSHisqname=nshisqname;

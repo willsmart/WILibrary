@@ -87,20 +87,20 @@ RecordVideo
                                       // videoCompressionProps, AVVideoCompressionPropertiesKey,
                                        nil];
         
-        assetWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
+        assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
         
         NSParameterAssert(assetWriterInput);
         assetWriterInput.expectsMediaDataInRealTime = YES;
         NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                           [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];
         
-        pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
+        pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterInput sourcePixelBufferAttributes:bufferAttributes];
         
         //add input
         [assetWriter addInput:assetWriterInput];
         [assetWriter startWriting];
         [assetWriter startSessionAtSourceTime:CMTimeMake(0, 1000)];
-        startedAt = [[NSDate date] retain];
+        startedAt = [NSDate date];
         
     //    _recording=true;
         
@@ -120,9 +120,9 @@ RecordVideo
              
              nil];
         
-        assetWriterInput = [[AVAssetWriterInput 
+        assetWriterInput = [AVAssetWriterInput 
                                                 assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                outputSettings:outputSettings] retain];
+                                                outputSettings:outputSettings];
         
         / * I'm going to push pixel buffers to it, so will need a 
          AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've

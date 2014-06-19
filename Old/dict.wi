@@ -925,7 +925,7 @@ Dictionary
     }
 
 
-    NSMutableArray dictsForLengths=[[NSMutableArray array] retain] (readonly,dealloc,ivar=dictsForLengths)
+    NSMutableArray dictsForLengths=[NSMutableArray array] (readonly,dealloc,ivar=dictsForLengths)
     bool changed=NO,inited=NO
 
     NSString dictPath={
@@ -2256,7 +2256,7 @@ ProMPWords
     
 
 
-    NSMutableArray incIndsStack=[[NSMutableArray array] retain] (readonly,ivar=incIndsStack,dealloc)
+    NSMutableArray incIndsStack=[NSMutableArray array] (readonly,ivar=incIndsStack,dealloc)
     -(NSMutableArray*)incIndsArrayForDepth:(int)depth {
         NSMutableArray *ret;
         while (incIndsStack.count<=depth) [incIndsStack addObject:[NSMutableArray array]];
@@ -2265,7 +2265,7 @@ ProMPWords
         return(ret);
     }
 
-    NSMutableArray indsStack=[[NSMutableArray array] retain] (readonly,ivar=indsStack,dealloc)
+    NSMutableArray indsStack=[NSMutableArray array] (readonly,ivar=indsStack,dealloc)
     -(NSMutableIndexSet*)indsIndexSetForDepth:(int)depth {
         NSMutableIndexSet *ret;
         while (indsStack.count<=depth) [indsStack addObject:[NSMutableIndexSet indexSet]];
@@ -2281,7 +2281,7 @@ ProMPWords
 
 
 
-    NSMutableArray maxPattIndsStack=[[NSMutableArray array] retain] (readonly,ivar=maxPattIndsStack,dealloc)
+    NSMutableArray maxPattIndsStack=[NSMutableArray array] (readonly,ivar=maxPattIndsStack,dealloc)
 
     -(int*)getMaxPattIndsForDepth:(int)d num:(int)n {
         while (maxPattIndsStack.count<=d) [maxPattIndsStack addObject:[NSMutableData dataWithLength:n*sizeof(int)]];

@@ -16,7 +16,7 @@ WReader <BaseObject> "fn:token"
                 NSString *to=[replaces objectForKey:from];
                 self._fileString=[v__fileString stringByReplacingOccurrencesOfString:from withString:to];
             }
-            lines=[[v componentsSeparatedByString:@"\n"] retain];
+            lines=[v componentsSeparatedByString:@"\n"];
             self.tokenizer.str=v;
             
             pos=-1;

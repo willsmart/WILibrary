@@ -261,7 +261,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         if (v==self) return;
         if (arrayDelegate) [arrayDelegate addDelegate:v];
         else {
-            arrayDelegate=[v retain];
+            arrayDelegate=v;
             v.delegateForArray=self.delegateForArray;
             [v delegateForArrayChanged];
         }
@@ -271,7 +271,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         if (arrayDelegate) {
             if (arrayDelegate==v) {
                 v.delegateForArray=nil;
-                arrayDelegate=[v.arrayDelegate retain];
+                arrayDelegate=v.arrayDelegate;
                 [v removedDelegate];
                 [v delegateForArrayChanged];
             }
@@ -404,7 +404,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
                 ERR("%d outside bounds [0,%d)\n",int(index),int(__array.count));
                 return(NO);
             }
-            id object=[[__array objectAtIndex:index] retain];
+            id object=[__array objectAtIndex:index];
             [self willRemoveObjectsWithCount:1];
             [self willRemoveObject:object fromIndex:index];
             [__mutableArray removeObjectAtIndex:index];
@@ -585,7 +585,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     -(bool)_removeObjectsAtIndexes:(NSIndexSet*)indexes {
         [self willRemoveObjectsWithCount:indexes.count];
         for (NSUInteger index=[indexes lastIndex];index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
-            id object=[[__array objectAtIndex:index] retain];
+            id object=[__array objectAtIndex:index];
             [self willRemoveObject:object fromIndex:index];
             [__mutableArray removeObjectAtIndex:index];
             [self didRemoveObject:object];
@@ -639,7 +639,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     }*/
     /*-(void)removeObjectsInRange:(NSRange)r {
         for (int i=((int)r.length)-1;i>=0;i--) {
-            id object=[[__array objectAtIndex:r.location+i] retain];
+            id object=[__array objectAtIndex:r.location+i];
             [self willRemoveObject:object fromIndex:r.location+i];
             [__mutableArray removeObjectAtIndex:r.location+i];
             [self didRemoveObject:object];

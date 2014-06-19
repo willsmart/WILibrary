@@ -255,7 +255,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
     NSObject<NSCopying> source=nil (ivar=source,readonly,dealloc)
     -(init[super init])initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource {
         owner=aowner;
-        source=[asource retain];
+        source=asource;
     }
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         [owner basic_willReplaceObject:fromObject withObject:toObject forKey:key source:source];
@@ -296,7 +296,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         if (v==self) return;
         if (dictionaryDelegate) [dictionaryDelegate addDelegate:v];
         else {
-            dictionaryDelegate=[v retain];
+            dictionaryDelegate=v;
             v.delegateForDictionary=self.delegateForDictionary;
             [v delegateForDictionaryChanged];
         }
@@ -306,7 +306,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         if (dictionaryDelegate) {
             if (dictionaryDelegate==v) {
                 v.delegateForDictionary=nil;
-                dictionaryDelegate=[v.dictionaryDelegate retain];
+                dictionaryDelegate=v.dictionaryDelegate;
                 [v removedDelegate];
                 [v delegateForDictionaryChanged];
             }
@@ -584,7 +584,7 @@ MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
     NSString keyPrefix=
         {return(keyPrefix);}
         -v{
-keyPrefix=[v retain];
+keyPrefix=v;
             [self refreshFollowerDictionary];
         }=nil (dealloc,ivar=keyPrefix)
     int keepKeyPrefixSuffixLength=
@@ -596,7 +596,7 @@ keyPrefix=[v retain];
     NSString filterKeyPrefix=
         {return(filterKeyPrefix);}
         -v{
-filterKeyPrefix=[v retain];
+filterKeyPrefix=v;
             [self refreshFollowerDictionary];
         }=nil (dealloc,ivar=filterKeyPrefix)
 
@@ -628,7 +628,7 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
     NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] (readonly,ivar=mapv,dealloc)
     <MutableDictionary> followerDictionary=
         {return(followerDictionary);}
-        -v{followerDictionary=[v retain];[self refreshFollowerDictionary];}=nil (ivar=followerDictionary,dealloc)
+        -v{followerDictionary=v;[self refreshFollowerDictionary];}=nil (ivar=followerDictionary,dealloc)
 
     -(void)delegateForDictionaryChanged {
         [self refreshFollowerDictionary];
@@ -721,7 +721,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
 
     <MutableDictionary> unionDictionary=
         {return(unionDictionary);}
-        -v{unionDictionary=[v retain];[self refreshUnionDictionary];}=nil (ivar=unionDictionary,dealloc)
+        -v{unionDictionary=v;[self refreshUnionDictionary];}=nil (ivar=unionDictionary,dealloc)
 
     //-(void)setDelegateInArray:(NSObject<NSArray>*)v {@500 
     //    if (unionDictionary) [self refreshUnionDictionary];
@@ -786,8 +786,8 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
 
     -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
         if (fromIndex!=toIndex) {
-            MutableDictionary *fromd=[[mapdicts objectAtIndex:fromIndex] retain];
-            MutableDictionary *tod=[[mapdicts objectAtIndex:toIndex] retain];
+            MutableDictionary *fromd=[mapdicts objectAtIndex:fromIndex];
+            MutableDictionary *tod=[mapdicts objectAtIndex:toIndex];
             for (kid key in fromd) [self unionWillReplaceObject1:[fromd objectForKey:key] withObject:nil forKey:key depth:fromIndex];
             [mapdicts removeObjectAtIndex:fromIndex];
             if (toIndex>fromIndex) toIndex--;

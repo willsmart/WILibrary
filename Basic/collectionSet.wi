@@ -139,7 +139,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         if (v==self) return;
         if (setDelegate) [setDelegate addDelegate:v];
         else {
-            setDelegate=[v retain];
+            setDelegate=v;
             v.delegateForSet=self.delegateForSet;
             [v delegateForSetChanged];
         }
@@ -149,7 +149,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         if (setDelegate) {
             if (setDelegate==v) {
                 v.delegateForSet=nil;
-                setDelegate=[v.setDelegate retain];
+                setDelegate=v.setDelegate;
                 [v removedDelegate];
                 [v delegateForSetChanged];
             }
@@ -394,7 +394,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
     NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
     MutableSet followerSet=
         {return(followerSet);}
-        -v{followerSet=[v retain];[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
+        -v{followerSet=v;[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -525,7 +525,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
 
     MutableSet unionSet=
         {return(unionSet);}
-        -v{unionSet=[v retain];[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
+        -v{unionSet=v;[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
 
     -(void)delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];

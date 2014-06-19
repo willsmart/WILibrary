@@ -77,7 +77,7 @@
 
 <ValueLinkEndpoint:MutableValueDelegate>
     id value=
-        {return([v_value retain]);}
+        {return(v_value);}
         -v{
             if ((v_value==v)||(v&&[self unacceptable:v])) return;
             [self willChangeValueFrom:v_value to:v];

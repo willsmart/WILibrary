@@ -177,7 +177,7 @@
 <TableModelFollower:Commitable>
     <TableModel> model=nil (readonly)
 
-    kid context=[[PointerKey keyWithObject:nil] retain] (retain)
+    kid context=[PointerKey keyWithObject:nil] (retain)
 
     -(init) {@100 
         [self addSourceCommitter:model];
@@ -495,7 +495,7 @@
         else {
             NSObject<SectionModel> *fromm=[self sectionAtIndex:fromIndexPath.section];
             NSObject<SectionModel> *tom=[model sectionAtIndex:toIndexPath.section givenContext:context];
-            NSObject<CellModel> *n=[[fromm cellAtIndex:fromIndexPath.row givenContext:context] retain];
+            NSObject<CellModel> *n=[fromm cellAtIndex:fromIndexPath.row givenContext:context];
             AtomiclyMutableArray *fromama=[fromm cellsGivenContext:context];
             NSMutableArray *froma=fromama.mutableCopy;
             AtomiclyMutableArray *toama=[tom cellsGivenContext:context];

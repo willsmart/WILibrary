@@ -72,7 +72,7 @@ JustMyClassOverride<+Commitable>
     WIHisClass previousHisqname (nodef,dealloc,readonly,ivar=previousHisqname)
     WIHisClass hisqname=
         {return(useMyHisqname&&hisqname?hisqname:self.baseWithHisqname.hisqname);}
-        -v{hisqname=[v retain];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
+        -v{hisqname=v;useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
 
     -(int)commitProperties:(int)substageIndex {
         previousHisqname=hisqname;

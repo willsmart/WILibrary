@@ -153,7 +153,7 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
         {return(referencedPointBinding);}
         -v{
             if (referencedPointBinding!=v) {
-referencedPointBinding=[v retain];
+referencedPointBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointForPoint:part];
                 }
@@ -163,7 +163,7 @@ referencedPointBinding=[v retain];
         {return(referencedObjectBinding);}
         -v{
             if (referencedObjectBinding!=v) {
-referencedObjectBinding=[v retain];
+referencedObjectBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointForPoint:part];
                 }
@@ -217,7 +217,7 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
         {return(referencedPointBinding);}
         -v{
             if (referencedPointBinding!=v) {
-referencedPointBinding=[v retain];
+referencedPointBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointsForPoint:part];
                 }
@@ -227,7 +227,7 @@ referencedPointBinding=[v retain];
         {return(referencedObjectBinding);}
         -v{
             if (referencedObjectBinding!=v) {
-referencedObjectBinding=[v retain];
+referencedObjectBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
                     [self setReferencedPointsForPoint:part];
                 }
@@ -1020,7 +1020,7 @@ ViewGraph<BaseObject> "fn:graph"
     _prev>>prev -- <TreeCell> _next>>next
     _parent>>parent ~a< <TreeCell> _child>>child
 
-    NSMutableDictionary bindings=[[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] retain] (ivar=bindings,readonly,dealloc)
+    NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (ivar=bindings,readonly,dealloc)
     NSMutableSet bindingsThanChanged=[NSMutableSet set] (ivar=bindingsThanChanged,dealloc,readonly)
 
     -(int)commitProperties:(int)substageIndex {@100 

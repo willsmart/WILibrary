@@ -16,9 +16,9 @@ PropertyData
     NSString clasName=nil (readonly,dealloc,ivar=clasName)
     -(init[super init])initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect {
         direct=adirect;
-        name=[aname retain];
+        name=aname;
         clas=aclas;
-        clasName=[aclasName retain];
+        clasName=aclasName;
         getter=agetter;
         setter=asetter;
     }

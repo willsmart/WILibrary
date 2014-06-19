@@ -6,7 +6,7 @@ PointerKey <NSCopying> "-Object"
     -(id)initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         if (ao) {
-            o=[ao retain];
+            o=ao;
             hash=[o hash];
         }
         else {

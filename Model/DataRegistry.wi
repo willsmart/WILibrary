@@ -112,9 +112,9 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
     }
 
     -(void)attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
-        ViewerListenerSet *mls=[[self viewerListenerSetForKey:viewerKey] retain];
+        ViewerListenerSet *mls=[self viewerListenerSetForKey:viewerKey];
         if (!mls) [self setViewerListenerSet:mls=[[ViewerListenerSet alloc] init] forKey:viewerKey];
-        ViewerPropertyListenerSet *mpls=[[mls viewerPropertyListenerSetForKey:propertyKey] retain];
+        ViewerPropertyListenerSet *mpls=[mls viewerPropertyListenerSetForKey:propertyKey];
         if (!mpls) [mls setViewerPropertyListenerSet:mpls=[[ViewerPropertyListenerSet alloc] init] forKey:propertyKey];
         [mpls addNamedDataListener:l];
     }
@@ -315,7 +315,7 @@ ViewerPropertyListenerSet
             if (v!=dataRegistry) {
                 NSSet *ns=self.propertyNamesListenedTo;
                 [self.namedDataListenerSets removeAllObjects];
-                dataRegistry=[v retain];
+                dataRegistry=v;
                 self.propertyNamesListenedTo=ns;
             }
         }=nil (ivar=dataRegistry,dealloc)

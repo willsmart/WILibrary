@@ -55,7 +55,7 @@ JustMyClassOverride
     -(void)setHisqname:(NSHisClass)v {@-1000 ERR("__Class__ Please set indexes");}
 
     -(void)setHisqname:(NSHisClass)v myIndexes:(NSIndexSet*)indexes {
-        hisqname=[v retain];
+        hisqname=v;
         indexesInHisqname=indexes.copy;
         useMyHisqname=YES;
         [self markDirty];

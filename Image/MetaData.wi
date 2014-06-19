@@ -71,10 +71,10 @@ Singletons
     -(init) {
         {
             NSError *error=nil;
-            v_MetaEnabled_szregex=[[NSRegularExpression regularExpressionWithPattern:@"usize=U(%3F)" options:0 error:&error] retain];
+            v_MetaEnabled_szregex=[NSRegularExpression regularExpressionWithPattern:@"usize=U(%3F)" options:0 error:&error];
             if (error) ERR("Bad regex sz");
             error=nil;
-            v_MetaEnabled_rectregex=[[NSRegularExpression regularExpressionWithPattern:@"uframe=U(%3F)" options:0 error:&error] retain];
+            v_MetaEnabled_rectregex=[NSRegularExpression regularExpressionWithPattern:@"uframe=U(%3F)" options:0 error:&error];
             if (error) ERR("Bad regex rect");
         }
     }
@@ -213,8 +213,8 @@ JSMetaPropertyInState
     NSObject cachedValue=nil (readonly,dealloc,ivar=cachedValue)
 
     -(init[super init])initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar {
-        js=[ajs retain];
-        if (!js) cachedValue=[avalue retain];
+        js=ajs;
+        if (!js) cachedValue=avalue;
         if (avar&&!(js||cachedValue)) {
             NSRange r=[avar rangeOfString:@"="];
             NSString *propName;
@@ -224,8 +224,8 @@ JSMetaPropertyInState
                 propName=[avar substringToIndex:r.location];
                 def=[JsonParser unpackString:[avar substringFromIndex:r.location+r.length]];
             }
-            var=[propName retain];
-            varDef=[def retain];
+            var=propName;
+            varDef=def;
         }
     }
     NSString currentjs={
@@ -242,7 +242,7 @@ JSMetaPropertyInState
         return(rawjs?rawjs:js);
     }
     NSObject value={
-        if (!cachedValue) cachedValue=[self.currentValue retain];
+        if (!cachedValue) cachedValue=self.currentValue;
         return(cachedValue);
     }
     NSObject currentValue={
@@ -343,7 +343,7 @@ JSMetaProperty<NamedDataListener>
             }
         }
         if (statev) {
-            stateProp=[statev retain];
+            stateProp=statev;
             [propNames addObject:statev];
         }
         NSDictionary *vars=([[d objectForKey:@"props"] isKindOfClass:[NSDictionary class]]?(NSDictionary*)[d objectForKey:@"props"]:nil);
@@ -407,11 +407,11 @@ JSMetaProperty<NamedDataListener>
     NSObject cachedValue=nil (readonly,dealloc,ivar=cachedValue)
 
     NSObject<NSCopying> state={
-        if (!cachedState) cachedState=[self.currentState retain];
+        if (!cachedState) cachedState=self.currentState;
         return(cachedState);
     }
     NSObject value={
-        if (!cachedValue) cachedValue=[self.currentValue retain];
+        if (!cachedValue) cachedValue=self.currentValue;
         return(cachedValue);
     }
     NSObject<NSCopying> cachedState=nil (readonly,dealloc,ivar=cachedState)
@@ -480,7 +480,7 @@ JSMetaProperty<NamedDataListener>
         if (changed) {
             NSObject *v=self.currentValue;
             if (!(v?[cachedValue isEqual:v]:!cachedValue)) {
-                cachedValue=[v retain];
+                cachedValue=v;
                 //prnt("JS prop: %s\n= %s\n",((NSString*)self.keyInOwner).UTF8String,
                 //cachedValue.description.UTF8String
                 //);
@@ -503,7 +503,7 @@ JSMetaProperty<NamedDataListener>
         {return(myDataRegistry);}
         -v{
             if (v!=myDataRegistry) {
-                myDataRegistry=[v retain];
+                myDataRegistry=v;
                 self.dataRegistry=v;
             }
         }=nil (ivar=myDataRegistry,dealloc)
@@ -580,7 +580,7 @@ JSMetaProperty<NamedDataListener>
         parentForInit=aparent;
         keyInParentToInitWith=keyInParent;
         metaPropertiesToInitWith=metaProps;
-        metaURLWas=[[metaProps objectForKey:@"metaurl"] retain];
+        metaURLWas=[metaProps objectForKey:@"metaurl"];
         frameWas=CGRectMake(0,0,1,1);
         {
             NSObject *object=[metaProps objectForKey:@"frame"];
@@ -790,7 +790,7 @@ JSMetaProperty<NamedDataListener>
                     (fabs(framev.size.width-frameWas.size.width)<1)&&
                     (fabs(framev.size.height-frameWas.size.height)<1)) return;
                 frameWas=framev;
-                metaURLWas=[url retain];
+                metaURLWas=url;
                 NSObject *metaDict=[MetaRequestCache metaDataForURL:url frame:framev];
                 if ([metaDict isKindOfClass:[NSDictionary class]]) {
                     [mmetaProps addEntriesFromDictionary:(NSDictionary*)metaDict];

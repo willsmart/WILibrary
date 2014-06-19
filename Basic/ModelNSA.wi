@@ -43,7 +43,7 @@ WIMyClass
     -(void)_commitHisqnameProperties {
         previousHisqnamesVersion=hisqnames.version;
         if (self.hisnames.version==hisqnames.version) {
-            previousHisqnames=[hisqnames.__array retain];
+            previousHisqnames=hisqnames.__array;
         }
         else {
             previousHisqnames=hisqnames.copyAndClear;

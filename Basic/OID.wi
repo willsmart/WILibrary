@@ -99,7 +99,7 @@ ClassCount "-Object" "fn:object"
         return([[ClassCount alloc] init]);
     }
     -(init[super init])initWithName:(NSString*)aname {
-        name=[aname retain];
+        name=aname;
         count=0;nextID=1;
     }
     NSString description={return([NSString stringWithFormat:@"%@x%qu",name,count]);}
@@ -179,7 +179,7 @@ Singletons<Ticker> "-Object" "fn:object"
     -(void)tick {
         [Log sendToLog:@"Singletons" format:@"Singletons at %@\n%@\n\n",((NSDate*)[NSDate date]).description,self.description];
         if (!self.online) prnt("%s\n",self.description.UTF8String);
-        NSMutableDictionary *d=[(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4] retain];
+        NSMutableDictionary *d=(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4];
         [self.typeCountHistory removeLastObject];
         [d removeAllObjects];
 
@@ -310,7 +310,7 @@ Singletons<Ticker> "-Object" "fn:object"
 #endif
     }
 
-    -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return([super retain]);}
+    -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return(super);}
     -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990}
     -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(super);}
 
@@ -589,7 +589,7 @@ ObjectGraph<Ticker,BaseObject>
     
 
 <DerivedObject> "-Object"
-    -(id)retain {@999 return([super retain]);}
+    -(id)retain {@999 return(super);}
     -(void)release {@999}
     -(id)autorelease {@999 return(super);}
 

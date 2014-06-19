@@ -689,7 +689,7 @@ MutableSet : NSMutableSet
 
     -(id)init {
         if (!(self=[super init])) return(nil);
-        __base=[[NSMutableSet set] retain];
+        __base=[NSMutableSet set];
         weakObjects=NO;
         return(self);
     }
@@ -1113,7 +1113,7 @@ MutableArray : NSMutableArray
 
     -(id)init {
         if (!(self=[super init])) return(nil);
-        __base=[[NSMutableArray set] retain];
+        __base=[NSMutableArray set];
         weakObjects=NO;
         return(self);
     }

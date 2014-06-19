@@ -139,14 +139,14 @@ RequestProxy <WeakListItem> "fn:util"
     <Request> worthiestRequest={
         RequestProxy *proxy;
         NSObject<Request> *req=nil;
-        while (((proxy=[(RequestProxy*)proxyList.headItem retain]))&&!((req=proxy.request))) {
+        while (((proxy=(RequestProxy*)proxyList.headItem))&&!((req=proxy.request))) {
             [proxy unlink];
         }
         if (req) {
             float worth=req.worthAsRequest;
             RequestProxy *proxyTail;
             NSObject<Request> *reqTail=nil;
-            while (((proxyTail=[(RequestProxy*)proxyList.tailItem retain]))&&!((reqTail=proxyTail.request))) {
+            while (((proxyTail=(RequestProxy*)proxyList.tailItem))&&!((reqTail=proxyTail.request))) {
                 [proxyTail unlink];
             }
             if (reqTail&&(reqTail!=req)) {
@@ -220,7 +220,7 @@ LRUCacheItem<LRUCacheItem> "fn:util"
     float size=nil (ivar)
     -(init[super init])initWithObject:(NSObject*)aobject size:(float)asize {
         size=asize;
-        object=[aobject retain];
+        object=aobject;
     }
 
 

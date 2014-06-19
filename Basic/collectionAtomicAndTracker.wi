@@ -14,7 +14,7 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     NSMutableSet<MutableSet> trackerSet=
         {return(trackerSet);}
         -v{
-            trackerSet=[v retain];
+            trackerSet=v;
             version=v.version;
         }=nil (ivar=trackerSet,dealloc)
 
@@ -115,7 +115,7 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
     NSMutableDictionary<MinimalMutableDictionary> trackerDictionary=
         {return(trackerDictionary);}
         -v{
-            trackerDictionary=[v retain];
+            trackerDictionary=v;
             version=v.version;
         }=nil (ivar=trackerDictionary,dealloc)
 
@@ -208,7 +208,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     NSMutableArray<MinimalMutableArray> trackerArray=
         {return(trackerArray);}
         -v{
-            trackerArray=[v retain];
+            trackerArray=v;
             version=v.version;
         }=nil (ivar=trackerArray,dealloc)
 
