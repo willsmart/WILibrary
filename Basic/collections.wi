@@ -20,7 +20,6 @@
 
 <WeakSet:Set>
     -(void)makeWeak {
-        for (id object in __set) [object release];
     }
     -(void)makeStrong {
         for (id object in __set) [object retain];
@@ -45,7 +44,6 @@
 
 <WeakDictionary:Dictionary>
     -(void)makeWeak {
-        for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] release];
     }
     -(void)makeStrong {
         for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] retain];
@@ -77,7 +75,6 @@
 
 <WeakArray:Array>
     -(void)makeWeak {
-        for (id object in __array) [object release];
     }
     -(void)makeStrong {
         for (id object in __array) [object retain];

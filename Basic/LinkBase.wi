@@ -53,7 +53,6 @@
                 
                 [v removedDelegate];
 
-                if (v.retainsAsValueDelegate) [v release];
             }
             else [valueDelegate removeDelegate:v];
         }
@@ -63,7 +62,6 @@
         [parentValueDelegate removeDelegate:self];
         if (valueDelegate) {
             valueDelegate.parentValueDelegate=nil;
-            if (valueDelegate.retainsAsValueDelegate) [valueDelegate release];
             valueDelegate=nil;
         }
         if (parentValueDelegate) ERR("Bad");
@@ -85,7 +83,6 @@
             [self willChangeValueFrom:v_value to:v];
             if (v_value) {
                 [[self endpointForObject:v_value] _removeReferrer:self];
-                if (retains) [v_value release];
             }
             if ((v_value=v)) {
                 if (![[self endpointForObject:v] _addReferrer:self]) {
@@ -102,7 +99,6 @@
         [self willChangeValueFrom:v_value to:v];
         if (v_value) {
             [[self endpointForObject:v_value] _removeReferrer:self];
-            if (retains) [v_value release];
         }
         if ((v_value=v)) {
             if (retains) [v retain];
@@ -114,7 +110,6 @@
         id v=ep.owner;
         if (v&&(v==v_value)) {
             [self willChangeValueFrom:v_value to:nil];
-            if (retains) [v_value release];
             v_value=nil;
             [self didSetValueTo:nil];
         }
@@ -135,7 +130,6 @@
     }
     -(void)didAddObject:(id)object {@900 
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
-        if (!retains) [object release];
     }
     -(void)willRemoveObject:(id)object {@-900 
         if (!retains) [object retain];
@@ -177,7 +171,6 @@
         if (!__restrictRef) {
             [[self endpointForObject:object] _addReferrer:self];
         }
-        if (!retains) [object release];
     }
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
         if (!retains) [object retain];
@@ -220,7 +213,6 @@
     -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
         if (toObject) {
             if (!__restrictRef) [[self endpointForObject:toObject] _addReferrer:self];
-            if (!retains) [toObject release];
         }
     }
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
