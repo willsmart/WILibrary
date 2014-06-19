@@ -247,7 +247,7 @@ App<HasProperties,BaseObject>
 
     -(id)addSection:(Class)clas {
         if (!clas) return(nil);
-        NSObject<StdSectionModel> *sec=[[[clas alloc] init] autorelease];
+        NSObject<StdSectionModel> *sec=[[clas alloc] init];
         [self.sections addObject:sec];
         return(sec);
     }
@@ -280,12 +280,12 @@ App<HasProperties,BaseObject>
 
 <StdSectionModel:SectionModelFromMeta,StdHasProperties,BaseObject>
     -(init) {
-        [self._table_endpoint addDelegate:[[[ParentPropertyValueDelegate alloc] initWithOwner:self] autorelease]];
+        [self._table_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
     -(id)addCell:(Class)clas {
         if (!clas) return(nil);
-        NSObject<StdCellModel> *cell=[[[clas alloc] init] autorelease];
+        NSObject<StdCellModel> *cell=[[clas alloc] init];
         [self.cells addObject:cell];
         return(cell);
     }
@@ -302,7 +302,7 @@ App<HasProperties,BaseObject>
         self.keyPrefix=@"cell:";
     }
     -(init) {
-        [self._section_endpoint addDelegate:[[[ParentPropertyValueDelegate alloc] initWithOwner:self] autorelease]];
+        [self._section_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
     -(bool)canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below {@-999 bool ret=YES;
@@ -446,7 +446,7 @@ __Table__Cell "nac" "multi"
         }
     }
     -(NSObject<__ItemData____viewedObject>*)make__ItemData__ViewedObjectForModelObject:(NSObject<__ItemData____modelObject>*)modelObject {
-        ret=[[[__Table__CellModel alloc] init] autorelease];
+        ret=[[__Table__CellModel alloc] init];
         ret.dataModel=modelObject;
     }
 

@@ -1059,7 +1059,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                 }
 
                 for (NSString *name in uniformNames) [s appendFormat:@"%@",[self uniformForKey:name].shaderString];
-                NSMutableString *s2=[s.mutableCopy autorelease];
+                NSMutableString *s2=s.mutableCopy;
             
                 NSMutableString *assignStr=[NSMutableString string];
 
@@ -1130,8 +1130,8 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                     }
                 }
 
-                self._fragShaderString=[s.copy autorelease];
-                self._vertShaderString=[s2.copy autorelease];
+                self._fragShaderString=s.copy;
+                self._vertShaderString=s2.copy;
             //}
         }
     }
@@ -1274,8 +1274,8 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                     [t.str isEqualToString:@"mat3"]||
                     [t.str isEqualToString:@"mat4"]) {
                     if (!hasp) {
-                        [r.tokenizer.tokens insertObject:[[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] autorelease] atIndex:r.pos++];
-                        [r.tokenizer.tokens insertObject:[[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] autorelease] atIndex:r.pos++];
+                        [r.tokenizer.tokens insertObject:[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] atIndex:r.pos++];
+                        [r.tokenizer.tokens insertObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] atIndex:r.pos++];
                         changed=YES;
                     }
                 }
@@ -1397,14 +1397,14 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         else {utype=un_vec2;N=2;}
                         
                         NSMutableArray *newTokens=[MutableArray array];
-                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] autorelease]];
-                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] autorelease]];
-                        [newTokens addObject:[[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w'] autorelease]];
-                        [newTokens addObject:[[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o'] autorelease]];
+                        [newTokens addObject:[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w']];
+                        [newTokens addObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z']];
+                        [newTokens addObject:[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w']];
+                        [newTokens addObject:[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o']];
                         for (int i=0;i<N;i++) {
-                            if (i) [newTokens addObject:[[[WReaderToken alloc] initWithString:@"," bracketCount:t.bracketCount type:'o'] autorelease]];
+                            if (i) [newTokens addObject:[[WReaderToken alloc] initWithString:@"," bracketCount:t.bracketCount type:'o']];
                             if (tokens[0][i]) [newTokens addObjectsFromArray:tokens[0][i]];
-                            else [newTokens addObject:[[[WReaderToken alloc] initWithString:@"0.0" bracketCount:t.bracketCount type:'n'] autorelease]];
+                            else [newTokens addObject:[[WReaderToken alloc] initWithString:@"0.0" bracketCount:t.bracketCount type:'n']];
                         }
                         [r.tokenizer.tokens replaceObjectsInRange:NSMakeRange(posWas,r.pos-posWas) withObjectsFromArray:newTokens];
                         changed=YES;

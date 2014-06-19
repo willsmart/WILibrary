@@ -82,7 +82,7 @@ Singletons
     MutableDictionary metaEnabledURLRegistry={
         if (!metaEnabledURLRegistry) {
             metaEnabledURLRegistry=[[MutableDictionary alloc] init];
-            [metaEnabledURLRegistry addDelegate:[[[MetaEnabledURLRegistryDelegate alloc] init] autorelease]];
+            [metaEnabledURLRegistry addDelegate:[[MetaEnabledURLRegistryDelegate alloc] init]];
         }
         return(metaEnabledURLRegistry);
         }=nil (ivar=metaEnabledURLRegistry,dealloc,publicreadonly)
@@ -144,7 +144,7 @@ MetaRequestCache<BaseObject,RootCodable> "fn:meta"
         if (!ret) {
             ret=[g_singletons.metaRenderer objectByEvaluatingURL:url];
             if (!ret) ret=[NSNull null];
-            [cache setObject:[[[LRUCacheItem alloc] initWithObject:ret size:1] autorelease] forKey:url];
+            [cache setObject:[[LRUCacheItem alloc] initWithObject:ret size:1] forKey:url];
         }
         return([ret isKindOfClass:[NSNull class]]?nil:ret);
     }
@@ -234,7 +234,7 @@ JSMetaPropertyInState
         NSMutableString *rawjs=nil;
         for (NSString *var2 in self.property.varProps) {
             if ([(rawjs?rawjs:js) rangeOfString:var2].location!=NSNotFound) {
-                if (!rawjs) rawjs=[js.mutableCopy autorelease];
+                if (!rawjs) rawjs=js.mutableCopy;
                 NSObject *v=[self.property.dataRegistry valueForProperty:(NSString*)[self.property.varProps objectForKey:var2]];
                 NSString *s=(v?v.description:(NSString*)[self.property.varDefs objectForKey:var2]);
                 [rawjs replaceOccurrencesOfString:var2 withString:s options:0 range:NSMakeRange(0,rawjs.length)];
@@ -297,7 +297,7 @@ JSMetaProperty<NamedDataListener>
         for (NSString *key in d) {
             if ([key hasPrefix:@"js"]) {
                 if ([[d objectForKey:key] isKindOfClass:[NSString class]]) {
-                    JSMetaPropertyInState *ps=[[[JSMetaPropertyInState alloc] initWithJs:(NSString*)[d objectForKey:key] value:nil var:nil] autorelease];
+                    JSMetaPropertyInState *ps=[[JSMetaPropertyInState alloc] initWithJs:(NSString*)[d objectForKey:key] value:nil var:nil];
                     if ([key isEqualToString:@"js"]) {
                         if (![self propertyInStateForKey:[NSNull null]]) {
                             [self.propertyInStates setObject:ps forKey:[NSNull null]];
@@ -316,7 +316,7 @@ JSMetaProperty<NamedDataListener>
             }
             else if ([key hasPrefix:@"prop"]) {
                 if ([[d objectForKey:key] isKindOfClass:[NSString class]]) {
-                    JSMetaPropertyInState *ps=[[[JSMetaPropertyInState alloc] initWithJs:nil value:nil var:(NSString*)[d objectForKey:key]] autorelease];
+                    JSMetaPropertyInState *ps=[[JSMetaPropertyInState alloc] initWithJs:nil value:nil var:(NSString*)[d objectForKey:key]];
                     [propNames addObject:ps.var];
                     if ([key isEqualToString:@"prop"]) {
                         if (![self propertyInStateForKey:[NSNull null]]) {
@@ -335,7 +335,7 @@ JSMetaProperty<NamedDataListener>
                 }
             }
             else if ([key hasPrefix:@"~"]&&![key isEqualToString:@"~~"]) {
-                JSMetaPropertyInState *ps=[[[JSMetaPropertyInState alloc] initWithJs:nil value:[d objectForKey:key] var:nil] autorelease];
+                JSMetaPropertyInState *ps=[[JSMetaPropertyInState alloc] initWithJs:nil value:[d objectForKey:key] var:nil];
                 if (!statev) statev=@"app::state";
                 NSArray *ss=[key componentsSeparatedByString:@"~"];
                 int i=0;for (NSString *s in ss) if (i++) {
@@ -563,7 +563,7 @@ JSMetaProperty<NamedDataListener>
             NSString *key=[(NSObject<MetaComponentClass>*)[self class] metaURLKey];
             if (key) {
                 if (metaPropertiesToInitWith) {
-                    NSMutableDictionary *d=[metaPropertiesToInitWith.mutableCopy autorelease];
+                    NSMutableDictionary *d=metaPropertiesToInitWith.mutableCopy;
                     [d setObject:key forKey:@"urlkey"];
                     metaPropertiesToInitWith=d;
                 }
@@ -638,7 +638,7 @@ JSMetaProperty<NamedDataListener>
             
             JSMetaProperty *jsp=nil;
             if ([JSMetaProperty isJSProperty:object]) {
-                jsp=[[[JSMetaProperty alloc] initWithOwner:self name:key dictionary:(NSDictionary*)object] autorelease];
+                jsp=[[JSMetaProperty alloc] initWithOwner:self name:key dictionary:(NSDictionary*)object];
             }
             else [self.jspropertys removeObjectForKey:key];
 
@@ -993,7 +993,7 @@ MetaEnabled
             self.tap1Selector=objectStr;
             if (objectStr) {
                 if (!self.tap1GestureRecognizer) {
-                    self.tap1GestureRecognizer=[[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped1)] autorelease];
+                    self.tap1GestureRecognizer=[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped1)];
                     [self.tap1GestureRecognizer setNumberOfTapsRequired:1];
                     [self.tap1GestureRecognizer setNumberOfTouchesRequired:1];
                     [self addGestureRecognizer:self.tap1GestureRecognizer];

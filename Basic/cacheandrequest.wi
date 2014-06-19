@@ -93,11 +93,11 @@ RequestProxy <WeakListItem> "fn:util"
             if (!req) return(nil);
         }
         else {
-            [[req retain] autorelease];
+            [req retain];
             [self removeRequestForKey:req.definingKey];
         }
         [req goRequest];
-        [cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize] autorelease]) forKey:req.definingKey];
+        [cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize]) forKey:req.definingKey];
         return(req.result);
     }
 
@@ -127,7 +127,7 @@ RequestProxy <WeakListItem> "fn:util"
         if (!req.result) {
     //prnt("%s request: %s add owner %s\n",self.cdescription,((NSObject<Object>*)req).cdescription,((NSObject<Object>*)owner).cdescription);
             [req addOwner:owner];
-            RequestProxy *proxy=[[[RequestProxy alloc] initWithRequest:req] autorelease];
+            RequestProxy *proxy=[[RequestProxy alloc] initWithRequest:req];
             [req addProxy:proxy];
             [proxyList append:proxy];
             return(nil);
@@ -139,14 +139,14 @@ RequestProxy <WeakListItem> "fn:util"
     <Request> worthiestRequest={
         RequestProxy *proxy;
         NSObject<Request> *req=nil;
-        while (((proxy=[[(RequestProxy*)proxyList.headItem retain] autorelease]))&&!((req=proxy.request))) {
+        while (((proxy=[(RequestProxy*)proxyList.headItem retain]))&&!((req=proxy.request))) {
             [proxy unlink];
         }
         if (req) {
             float worth=req.worthAsRequest;
             RequestProxy *proxyTail;
             NSObject<Request> *reqTail=nil;
-            while (((proxyTail=[[(RequestProxy*)proxyList.tailItem retain] autorelease]))&&!((reqTail=proxyTail.request))) {
+            while (((proxyTail=[(RequestProxy*)proxyList.tailItem retain]))&&!((reqTail=proxyTail.request))) {
                 [proxyTail unlink];
             }
             if (reqTail&&(reqTail!=req)) {
@@ -176,10 +176,10 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         NSObject<Request> *req=self.worthiestRequest;
         if (req) {
             //[req.cache prntList];
-            [[req retain] autorelease];
+            [req retain];
             [req goRequest];
             NSObject<RequestCache> *cache=req.cache;
-            [cache.cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize] autorelease]) forKey:req.definingKey];
+            [cache.cache setObject:([req.result conformsToProtocol:@protocol(LRUCacheItem)]?req.result:[[LRUCacheItem alloc] initWithObject:req.result size:req.resultSize]) forKey:req.definingKey];
             [cache removeRequestForKey:req.definingKey];
             //[req.cache prntList];
             return(YES);
@@ -281,7 +281,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                     [list addObject:item._cacheKey];
                 }
             }
-            if (ret.count) [ret setObject:[list.copy autorelease] forKey:@"___li_st___"];
+            if (ret.count) [ret setObject:list.copy forKey:@"___li_st___"];
             [list release];
         }
         -v{
@@ -307,7 +307,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                     if (!object) {
                         object=[d objectForKey:@"objectImage"];
                         if (object) {
-                            if ([object isKindOfClass:[NSData class]]) object=[[[NSImage alloc] initWithData:(NSData*)object] autorelease];
+                            if ([object isKindOfClass:[NSData class]]) object=[[NSImage alloc] initWithData:(NSData*)object];
                             else object=nil;
                         }
                     })

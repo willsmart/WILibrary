@@ -24,12 +24,12 @@
 
 NSString "fn:sys"
     -(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
-        return([(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease]);
+        return((NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)));
     }
 
 
     -(NSString*)stringByReplacingPairs:(NSObject*)firstNeedle,... {
-        NSMutableString *s=[self.mutableCopy autorelease];
+        NSMutableString *s=self.mutableCopy;
         va_list args;va_start(args,firstNeedle);
         for (NSObject *k=firstNeedle;k!=nil;k=va_arg(args,NSObject*)) {
             NSObject *o=va_arg(args,NSObject*);
@@ -38,7 +38,7 @@ NSString "fn:sys"
                 [s replaceOccurrencesOfString:(NSString*)k withString:(NSString*)o options:0 range:NSMakeRange(0, s.length)];
             }
         }
-        return([s.copy autorelease]);
+        return(s.copy);
     }
 
     -(NSString*)stringByEncodingHTMLEntities {
@@ -173,20 +173,20 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     }
 
     - (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
-        NSString *str=[[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+        NSString *str=[[NSString alloc] initWithData:data encoding:encoding];
         if (str) [self.partialRequestedString appendString:str];
     }
 
     - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError *)error {
         completionBlock(nil,error);
-        [self autorelease];
+        self;
         finished=YES;
         self.connection=nil;
     }
 
     - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
         completionBlock(self.partialRequestedString,nil);
-        [self autorelease];
+        self;
         finished=YES;
         self.connection=nil;
     }
@@ -194,7 +194,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     - (void)cancel {
         if (self.connection&&!finished) {
             [self.connection cancel];
-            [self autorelease];
+            self;
             finished=YES;
             self.connection=nil;
         }
@@ -222,7 +222,7 @@ Singletons
     -(init)init {}
     +(Singletons*)getDefault {
         if (!g_singletons) {
-            ADDSINGLETON(g_singletons=[[[Singletons alloc] init] autorelease]);
+            ADDSINGLETON(g_singletons=[[Singletons alloc] init]);
         }
         return(g_singletons);
     }
@@ -435,7 +435,7 @@ Util "fn:util"
 IntCarrier "fn:util"
     int intValue=nil
     +(IntCarrier*)carrierWithInt:(int)v {
-        return([[[IntCarrier alloc] initWithInt:v] autorelease]);
+        return([[IntCarrier alloc] initWithInt:v]);
     }
     -(init[super init])initWithInt:(int)v {
         intValue=v;
@@ -446,7 +446,7 @@ IntCarrier "fn:util"
 ULLCarrier "fn:util"
     ULL ullValue=nil
     +(ULLCarrier*)carrierWithULL:(ULL)v {
-        return([[[ULLCarrier alloc] initWithULL:v] autorelease]);
+        return([[ULLCarrier alloc] initWithULL:v]);
     }
     -(init[super init])initWithULL:(ULL)v {
         ullValue=v;
@@ -515,7 +515,7 @@ URLHandlerRegistry "fn:util"
 
     +(URLHandlerRegistry*)getDefault {
         if (!_URLHandlerRegistry_default) {
-            ADDSINGLETON(_URLHandlerRegistry_default=[[[URLHandlerRegistry alloc] init] autorelease]);
+            ADDSINGLETON(_URLHandlerRegistry_default=[[URLHandlerRegistry alloc] init]);
         }
         return(_URLHandlerRegistry_default);
     }
@@ -560,7 +560,7 @@ URLHandlerRegistry "fn:util"
         NSString *s=url.absoluteString;
         if ([s hasPrefix:[__Class__ urlPrefix]]) {
             NSObject<URLResource> *o=[__Class__ cacheObjectForURL:url];
-            if (!o) o=[[[__Class__ alloc] init] autorelease];
+            if (!o) o=[[__Class__ alloc] init];
             o.asURL=url;
             if (o.urlValid) return(o);
         }
@@ -828,7 +828,7 @@ WeakList <BaseObject,WeakList> "fn:util"
     <ListItem> next=nil
 
     -(void)unlink {
-        [[self retain] autorelease];
+        [self retain];
         if (self.prev) self.prev.next=self.next;
         else if (list.headItem==self) list.headItem=self.next;
         if (self.next) self.next.prev=self.prev;
@@ -943,7 +943,7 @@ Log<BaseObject>
     +(void)log:(NSString*)format,... {
         Log *log=[Log getDefault];
         va_list args;va_start(args,format);
-        [log->value appendString:[[[NSString alloc] initWithFormat:format arguments:args] autorelease]];
+        [log->value appendString:[[NSString alloc] initWithFormat:format arguments:args]];
         va_end(args);
         if (!log->tim) log->tim=[[NSTimer scheduledTimerWithTimeInterval:1 target:log selector:@selector(tick) userInfo:nil repeats:NO] retain];
     }

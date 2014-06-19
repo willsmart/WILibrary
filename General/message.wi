@@ -14,7 +14,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
 
     - (bool)sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML attachData:(NSData*)attachData attachMimeType:(NSString*)attachMimeType attachFileName:(NSString*)attachFileName {
         if ([MFMailComposeViewController canSendMail]) {
-            MFMailComposeViewController *mailer = [[[MFMailComposeViewController alloc] init] autorelease];
+            MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
             mailer.mailComposeDelegate = self;
             [mailer setSubject:subject];
             [mailer setMessageBody:content isHTML:isHTML];
@@ -38,7 +38,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
 
     -(bool)sendMessageWithContent:(NSString*)content {
         if ([MFMailComposeViewController canSendMail]) {
-            MFMessageComposeViewController *mailer = [[[MFMessageComposeViewController alloc] init] autorelease];
+            MFMessageComposeViewController *mailer = [[MFMessageComposeViewController alloc] init];
             mailer.messageComposeDelegate = self;
             [mailer setBody:content];
             [self.vc presentViewController:mailer animated:YES completion:nil];
@@ -246,7 +246,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
 
     - (NSString*)getBBookmarkURLForURL:(NSString*)aurl title:(NSString*)title {
         PageList *pl=[[PageList alloc] init];
-        NamedURLPattern *pattern=[[[NamedURLPattern alloc] initWithPageList:nil URL:aurl named:nil parent:nil] autorelease];
+        NamedURLPattern *pattern=[[NamedURLPattern alloc] initWithPageList:nil URL:aurl named:nil parent:nil];
         if (title) pl.listName=pattern.patternName=title;
         [pl.rootPatterns addObject:pattern];
         NSString *url=pl.asURL;

@@ -308,7 +308,7 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
     -(init) {cache.maxSize=100000;cache.maxCount=1000;}
     -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]) {
-            return([[[ImageShaderRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader>*)reqData] autorelease]);
+            return([[ImageShaderRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader>*)reqData]);
         }
         return(nil);
     }
@@ -337,7 +337,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
     -(init) {cache.maxSize=10000000;cache.maxCount=1000;}
     -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]&&[reqData conformsToProtocol:@protocol(HasImage)]) {
-            return([[[ShaderImageRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)reqData] autorelease]);
+            return([[ShaderImageRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)reqData]);
         }
         return(nil);
     }
@@ -384,8 +384,8 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
     -(void)gotImage:(UIImage*)aimage forURL:(NSURL*)aurl;
 
     -(ImageToken*)goRequestWithURL:(NSURL*)url {
-        ImageToken *token=[[[ImageToken alloc] initWithURL:url] autorelease];
-        [[[ImageRequestProxyOwner alloc] initWithToken:token owner:self] autorelease];
+        ImageToken *token=[[ImageToken alloc] initWithURL:url];
+        [[ImageRequestProxyOwner alloc] initWithToken:token owner:self];
         return(token);
     }
 
@@ -575,7 +575,7 @@ Singletons
     MutableDictionary imageViewURLRegistry={
         if (!imageViewURLRegistry) {
             imageViewURLRegistry=[[MutableDictionary alloc] init];
-            [imageViewURLRegistry addDelegate:[[[ImageViewURLRegistryDelegate alloc] init] autorelease]];
+            [imageViewURLRegistry addDelegate:[[ImageViewURLRegistryDelegate alloc] init]];
         }
         return(imageViewURLRegistry);
     }=nil (ivar=imageViewURLRegistry,dealloc,publicreadonly)

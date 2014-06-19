@@ -62,12 +62,12 @@
 
 
     // Creating a set
-    + (__WI_CLASS__*)set {return([[[__WI_CLASS__ alloc] init] autorelease]);}
-    + (__WI_CLASS__*)setWithArray:(NSArray*)array {return([[[__WI_CLASS__ alloc] initWithArray:array] autorelease]);}
-    + (__WI_CLASS__*)setWithObject:(id)object {return([[[__WI_CLASS__ alloc] initWithObjects:&object count:1] autorelease]);}
-    //+ (__WI_CLASS__*)setWithObjects:( {return([[[__WI_CLASS__ alloc] init] autorelease]);}
-    + (__WI_CLASS__*)setWithObjects:(id*)objects count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects count:count] autorelease]);}
-    + (__WI_CLASS__*)setWithSet:(NSSet*)set {return([[[__WI_CLASS__ alloc] initWithSet:set] autorelease]);}
+    + (__WI_CLASS__*)set {return([[__WI_CLASS__ alloc] init]);}
+    + (__WI_CLASS__*)setWithArray:(NSArray*)array {return([[__WI_CLASS__ alloc] initWithArray:array]);}
+    + (__WI_CLASS__*)setWithObject:(id)object {return([[__WI_CLASS__ alloc] initWithObjects:&object count:1]);}
+    //+ (__WI_CLASS__*)setWithObjects:( {return([[__WI_CLASS__ alloc] init]);}
+    + (__WI_CLASS__*)setWithObjects:(id*)objects count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
+    + (__WI_CLASS__*)setWithSet:(NSSet*)set {return([[__WI_CLASS__ alloc] initWithSet:set]);}
     -(NSSet*)setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
     //-(NSSet*)setByAddingObjects: {return([__set setByAddingObject:object]);}
     -(NSSet*)setByAddingObjects:(id*)objects count:(NSUInteger)count {return([__set setByAddingObjects:objects count:count]);}
@@ -200,13 +200,13 @@
 
 
     // Creating an array
-    + (__WI_CLASS__*)array {return([[[__WI_CLASS__ alloc] init] autorelease]);}
-    + (__WI_CLASS__*)arrayWithArray:(NSArray*)array {return([[[__WI_CLASS__ alloc] initWithArray:array] autorelease]);}
-    + (__WI_CLASS__*)arrayWithContentsOfFile:(NSString*)file {return([[[__WI_CLASS__ alloc] initWithContentsOfFile:file] autorelease]);}
-    + (__WI_CLASS__*)arrayWithContentsOfURL:(NSURL*)url {return([[[__WI_CLASS__ alloc] initWithContentsOfURL:url] autorelease]);}
-    + (__WI_CLASS__*)arrayWithObject:(id)object {return([[[__WI_CLASS__ alloc] initWithObjects:&object count:1] autorelease]);}
-    //+ (__WI_CLASS__*)arrayWithObjects:( {return([[[__WI_CLASS__ alloc] init] autorelease]);}
-    + (__WI_CLASS__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects count:count] autorelease]);}
+    + (__WI_CLASS__*)array {return([[__WI_CLASS__ alloc] init]);}
+    + (__WI_CLASS__*)arrayWithArray:(NSArray*)array {return([[__WI_CLASS__ alloc] initWithArray:array]);}
+    + (__WI_CLASS__*)arrayWithContentsOfFile:(NSString*)file {return([[__WI_CLASS__ alloc] initWithContentsOfFile:file]);}
+    + (__WI_CLASS__*)arrayWithContentsOfURL:(NSURL*)url {return([[__WI_CLASS__ alloc] initWithContentsOfURL:url]);}
+    + (__WI_CLASS__*)arrayWithObject:(id)object {return([[__WI_CLASS__ alloc] initWithObjects:&object count:1]);}
+    //+ (__WI_CLASS__*)arrayWithObjects:( {return([[__WI_CLASS__ alloc] init]);}
+    + (__WI_CLASS__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
 
 
 
@@ -460,12 +460,12 @@
 
 
     // Creating an dictionary
-    + (__WI_CLASS__*)dictionary {return([[[__WI_CLASS__ alloc] init] autorelease]);}
-    + (__WI_CLASS__*)dictionaryWithContentsOfFile:(NSString*)file {return([[[__WI_CLASS__ alloc] initWithContentsOfFile:file] autorelease]);}
-    + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WI_CLASS__ alloc] initWithContentsOfURL:url] autorelease]);}
-    + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WI_CLASS__ alloc] initWithDictionary:dictionary] autorelease]);}
-    + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WI_CLASS__ alloc] initWithObject:object forKey:key] autorelease])
-    + (__WI_CLASS__*)dictionaryWithObjects:(__strong id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count] autorelease])
+    + (__WI_CLASS__*)dictionary {return([[__WI_CLASS__ alloc] init]);}
+    + (__WI_CLASS__*)dictionaryWithContentsOfFile:(NSString*)file {return([[__WI_CLASS__ alloc] initWithContentsOfFile:file]);}
+    + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WI_CLASS__ alloc] initWithContentsOfURL:url]);}
+    + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WI_CLASS__ alloc] initWithDictionary:dictionary]);}
+    + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WI_CLASS__ alloc] initWithObject:object forKey:key])
+    + (__WI_CLASS__*)dictionaryWithObjects:(__strong id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count])
 
 
 
@@ -624,7 +624,7 @@
         }
         return(ret);
     }
-    +(MutableSet*)set {return([[[MutableSet alloc] init] autorelease]);}
+    +(MutableSet*)set {return([[MutableSet alloc] init]);}
     –(NSUInteger)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
@@ -712,7 +712,7 @@ MutableSet : NSMutableSet
         return([[MutableSet allocWithZone:zone] initWithZone:zone]);
     }
 
-    +(MutableSet*)setWithCapacity {return([[[MutableSet alloc] init] autorelease]);}
+    +(MutableSet*)setWithCapacity {return([[MutableSet alloc] init]);}
     –(bool)addObject:(id)object {
         if ((![self containsObject:object])&&[self shouldAddObject:object]) {
             [__base addObject:object weak:weakObjects];
@@ -768,7 +768,7 @@ MutableSet : NSMutableSet
         }
         return(ret);
     }
-    +(MutableSet*)set {return([[[MutableSet alloc] init] autorelease]);}
+    +(MutableSet*)set {return([[MutableSet alloc] init]);}
     –(NSUInteger)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
@@ -950,7 +950,7 @@ MutableArray : NSMutableArray
         return([__base countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
     +(MutableArray*)array {
-        return([[[MutableArray alloc] init] autorelease]);
+        return([[MutableArray alloc] init]);
     }
     –(BOOL)containsObject:(id)object {
         return([__base containsObject:object]);
@@ -1195,7 +1195,7 @@ MutableArray : NSMutableArray
         }
         return(ret);
     }
-    +(MutableArray*)set {return([[[MutableArray alloc] init] autorelease]);}
+    +(MutableArray*)set {return([[MutableArray alloc] init]);}
     –(NSUInteger)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];

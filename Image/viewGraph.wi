@@ -119,23 +119,23 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
 
 <VGObjectPattern>
     -(init) {
-        [self.objects addDelegate:self.objectsSetDelegate=[[[VGObjectsSetDelegate alloc] init] autorelease]];
-        [self.pointPatterns addDelegate:self.pointDictionaryDelegate=[[[VGObjectPointDictionaryDelegate alloc] init] autorelease]];
+        [self.objects addDelegate:self.objectsSetDelegate=[[VGObjectsSetDelegate alloc] init]];
+        [self.pointPatterns addDelegate:self.pointDictionaryDelegate=[[VGObjectPointDictionaryDelegate alloc] init]];
     }
 
 
 <VGPointPattern>
     -(init) {
-        //[self.partPatterns addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
-        [self.points addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
-        [self.points addDelegate:self.pointsSetDelegate=[[[VGPointsSetDelegate alloc] init] autorelease]];
-        [self.partPatterns addDelegate:self.partArrayDelegate=[[[VGPointPartFollowerArrayDelegate alloc] init] autorelease]];
+        //[self.partPatterns addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
+        [self.points addDelegate:[[SinkCommitterSetDelegate alloc] initWithOwner:self]];
+        [self.points addDelegate:self.pointsSetDelegate=[[VGPointsSetDelegate alloc] init]];
+        [self.partPatterns addDelegate:self.partArrayDelegate=[[VGPointPartFollowerArrayDelegate alloc] init]];
     }
 
 
 <SinglyReferentialVGPointPartPattern>
     -(init) {
-        [self.parts addDelegate:self.partsSetDelegate=[[[VGPartsSinglyReferencedPointFollowerSetDelegate alloc] init] autorelease]];
+        [self.parts addDelegate:self.partsSetDelegate=[[VGPartsSinglyReferencedPointFollowerSetDelegate alloc] init]];
     }
     -(void)setReferencedPointForPart:(NSObject<ReferentialVGPointPart>*)part {
         if (referencedObjectBinding) [part.objectBindings setSet:[NSSet setWithObject:[part.point.object objectBindingReferenceForKey:referencedObjectBinding]]];
@@ -190,7 +190,7 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
 
 <GreedilyReferentialVGPointPartPattern>
     -(init) {
-        [self.parts addDelegate:self.partsSetDelegate=[[[VGPartsGreedilyReferencedPointFollowerSetDelegate alloc] init] autorelease]];
+        [self.parts addDelegate:self.partsSetDelegate=[[VGPartsGreedilyReferencedPointFollowerSetDelegate alloc] init]];
     }
     -(void)setReferencedPointsForPart:(NSObject<ReferentialVGPointPart>*)part {
         NSMutableSet *obbs=[NSMutableSet set],*ptbs=[NSMutableSet set],*rpts=[NSMutableSet set];
@@ -270,7 +270,7 @@ type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
     }
 
     -(init) {
-        [self.parts addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        [self.parts addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
         pointStack=NEW(ArrayOfCGPoints);
         pointStack->setUpperBound(63);
         if (!g_VGPoints) {
@@ -322,24 +322,24 @@ type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
     }
     -(VGCalculatedPoint*)makeCalculatedPointForKey:(id<NSCopying>)key {
       VGCalculatedPoint *ret=[self _calculatedPointForKey:key];
-      if (!ret) [self set_calculatedPoint:ret=[[[VGCalculatedPoint alloc] init] autorelease] forKey:key];
+      if (!ret) [self set_calculatedPoint:ret=[[VGCalculatedPoint alloc] init] forKey:key];
       return(ret);
     }
 
     -(init) {
-        [self._objects addDelegate:[[[VGObjectObjectDictionaryDelegate alloc] init] autorelease]];
-        [self.points addDelegate:[[[VGObjectPointDictionaryDelegate alloc] init] autorelease]];
-        [self._calculatedPoints addDelegate:[[[VGObjectCalculatedPointDictionaryDelegate alloc] init] autorelease]];
+        [self._objects addDelegate:[[VGObjectObjectDictionaryDelegate alloc] init]];
+        [self.points addDelegate:[[VGObjectPointDictionaryDelegate alloc] init]];
+        [self._calculatedPoints addDelegate:[[VGObjectCalculatedPointDictionaryDelegate alloc] init]];
     }
 
 VGPointBindingReference
     -(init) {
-        [self.parts addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
+        [self.parts addDelegate:[[SinkCommitterSetDelegate alloc] initWithOwner:self]];
     }
 
 VGObjectBindingReference
     -(init) {
-        [self.parts addDelegate:[[[SinkCommitterSetDelegate alloc] initWithOwner:self] autorelease]];
+        [self.parts addDelegate:[[SinkCommitterSetDelegate alloc] initWithOwner:self]];
     }
 
 
@@ -362,7 +362,7 @@ VGObjectObjectDictionaryDelegate
             NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
             if (pt) {
                 VGCalculatedPoint *cpt=[self.object makeCalculatedPointForKey:key];
-                VGRelativePosition *rel=[[[VGRelativePosition alloc] initFrom:self.object to:(NSObject<VGPoint>*)toObject calculatedPoint:cpt] autorelease];
+                VGRelativePosition *rel=[[VGRelativePosition alloc] initFrom:self.object to:(NSObject<VGPoint>*)toObject calculatedPoint:cpt];
                 [self setRelativePosition:rel forKey:key];
             }
         }
@@ -388,7 +388,7 @@ VGObjectPointDictionaryDelegate
             NSObject<VGObject> *obj=[self.object._objects objectForKey:key];
             if (obj) {
                 VGCalculatedPoint *cpt=[self.object makeCalculatedPointForKey:key];
-                VGRelativePosition *rel=[[[VGRelativePosition alloc] initFrom:self.object to:obj calculatedPoint:cpt] autorelease];
+                VGRelativePosition *rel=[[VGRelativePosition alloc] initFrom:self.object to:obj calculatedPoint:cpt];
                 [self setRelativePosition:rel forKey:key];
             }
         }
@@ -439,7 +439,7 @@ VGCalculatedPoint
 
 <ReferentialVGPointPart>
     -(init) {
-        [self.referencedPoints addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        [self.referencedPoints addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
     <VGPoint> referencedPoint=
         {return(self.referencedPoints.count==1?[self.referencedPoints objectAtIndex:0]:nil);}
@@ -607,7 +607,7 @@ VGConstantPointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         } (ivar)
-    <VGPointPart> makePart={return([[[VGConstantPointPart alloc] init] autorelease]);}
+    <VGPointPart> makePart={return([[VGConstantPointPart alloc] init]);}
 
 VGConstantPointPart<VGPointPart>
     -(void)calculatePart {self.point.pointStack->a[0]=self.pattern.value;}
@@ -631,7 +631,7 @@ VGScalerPointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         } (ivar)
-    <VGPointPart> makePart={return([[[VGScalerPointPart alloc] init] autorelease]);}
+    <VGPointPart> makePart={return([[VGScalerPointPart alloc] init]);}
 
 VGScalerPointPart<VGPointPart>
     -(void)calculatePart {
@@ -660,7 +660,7 @@ VGSwizzlePointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         } (ivar)
-    <VGPointPart> makePart={return([[[VGSwizzlePointPart alloc] init] autorelease]);}
+    <VGPointPart> makePart={return([[VGSwizzlePointPart alloc] init]);}
 
 VGSwizzlePointPart<VGPointPart>
     -(void)calculatePart {
@@ -733,7 +733,7 @@ VGAddSubPointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         }
-    <VGPointPart> makePart={return([[[VGAddSubPointPart alloc] init] autorelease]);}
+    <VGPointPart> makePart={return([[VGAddSubPointPart alloc] init]);}
 
 VGAddSubPointPart<VGPointPart>
     -(void)calculatePart {
@@ -791,7 +791,7 @@ VGAddSubPointPart<VGPointPart>
 
 
 VGSumPointPartPattern<VGPointPartPattern>
-    <VGPointPart> makePart={return([[[VGSumPointPart alloc] init] autorelease]);}
+    <VGPointPart> makePart={return([[VGSumPointPart alloc] init]);}
 
 VGSumPointPart<VGPointPart>
     -(void)calculatePart {
@@ -815,7 +815,7 @@ VGSumPointPart<VGPointPart>
     -(NSObject<VGObject>*)objectForBinding:(NSString*)binding;
 
     -(init) {
-        [self.bindings addDelegate:[[[ViewGraphBindingDelegate alloc] initWithOwner:self] autorelease]];
+        [self.bindings addDelegate:[[ViewGraphBindingDelegate alloc] initWithOwner:self]];
     }
 
     -(int)commitProperties:(int)substageIndex {@-998 |1@2 
@@ -888,7 +888,7 @@ ViewGraph<BaseObject> "fn:graph"
     <VGObject> _focus>>focus
     graph -s< <VGObject> item
     -(init) {
-        [self.items addDelegate:[[[ViewGraphItemDelegate alloc] initWithGraph:self] autorelease]];
+        [self.items addDelegate:[[ViewGraphItemDelegate alloc] initWithGraph:self]];
     }
 
     -(void)itemMoved:(int)aindex {

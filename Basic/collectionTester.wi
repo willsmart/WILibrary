@@ -7,7 +7,7 @@
 
     -(bool)passFail:(bool)pass format:(NSString*)format,... {
         va_list args;va_start(args,format);
-        NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+        NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
         if (pass) printf("pass: %s\n",s.UTF8String);
         else {
             printf("!!FAIL: %s\n",s.UTF8String);
@@ -31,9 +31,9 @@ CollectionTestObject
     <Tester> tester=nil (assign)
 
     -(init) {
-        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"std"];
-        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"strong"];
-        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"weak"];
+        [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"std"];
+        [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"strong"];
+        [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"weak"];
     }
 
     NSString description={
@@ -324,7 +324,7 @@ CollectionTestSubObject
     -(bool)passFailWithFormat:(NSString*)format,... {
         bool pass=self.stateGood;
         va_list args;va_start(args,format);
-        NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+        NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
         if (pass) printf("pass: %s\n",s.UTF8String);
         else {
             printf("!!FAIL: %s\n",s.UTF8String);

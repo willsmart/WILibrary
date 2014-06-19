@@ -11,7 +11,7 @@ WReader <BaseObject> "fn:token"
     NSString fileString=
         {return(v__fileString);}
         -v{
-            self._fileString=[(v?[v.copy autorelease]:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+            self._fileString=[(v?v.copy:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
             for (NSString *from in replaces.allKeys) {
                 NSString *to=[replaces objectForKey:from];
                 self._fileString=[v__fileString stringByReplacingOccurrencesOfString:from withString:to];
@@ -92,7 +92,7 @@ WReaderToken "fn:token"
 
 
     -(init[super init])initWithString:(NSString*)astr bracketCount:(int)bc type:(char)atype {
-        self.str=[astr.copy autorelease];
+        self.str=astr.copy;
         bracketCount=bc;
         type=atype;
     }
@@ -117,7 +117,7 @@ WReaderTokenizer <BaseObject> "fn:token"
             return(v__str);
         }
         -v{
-            self._str=(v?[v.copy autorelease]:@"");
+            self._str=(v?v.copy:@"");
             const char *mat[]={
                 "     r  w  n  .  +  -  *  /  \\  Q  q  _  ? ",
                 "z zz rr ww nn .o +o -o zo co zo qs ss ww zo",
@@ -192,7 +192,7 @@ WReaderTokenizer <BaseObject> "fn:token"
                 else {
                     if ([s isEqualToString:@"}"]) bc--;
                     if ((typeWas=='c')&&[s hasPrefix:@"/*"]&&((s.length<4)||![s hasSuffix:@"*/"])) [s appendString:@"*/"];
-                    [self.tokens addObject:[[[WReaderToken alloc] initWithString:s bracketCount:bc+indent type:typeWas] autorelease]];
+                    [self.tokens addObject:[[WReaderToken alloc] initWithString:s bracketCount:bc+indent type:typeWas]];
                     if ([s isEqualToString:@"{"]) bc++;
                     [s setString:@""];
                     [s appendFormat:@"%c",[v characterAtIndex:ci]];
@@ -201,9 +201,9 @@ WReaderTokenizer <BaseObject> "fn:token"
             }
             if (s.length) {
                 if ([s isEqualToString:@"}"]) bc--;
-                [self.tokens addObject:[[[WReaderToken alloc] initWithString:s bracketCount:bc type:typeWas] autorelease]];
+                [self.tokens addObject:[[WReaderToken alloc] initWithString:s bracketCount:bc type:typeWas]];
                 if ((typeWas=='c')&&[s hasPrefix:@"//"]) {
-                    [self.tokens addObject:[[[WReaderToken alloc] initWithString:@"\n" bracketCount:bc type:'r'] autorelease]];
+                    [self.tokens addObject:[[WReaderToken alloc] initWithString:@"\n" bracketCount:bc type:'r']];
                 }
             }
 
@@ -275,7 +275,7 @@ JsonParser
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"}"]) {
                     *pused=from+1-fromWas;
-                    return([ret autorelease]);
+                    return(ret);
                 }
                 NSUInteger used;
                 while (from<=to) {
@@ -309,7 +309,7 @@ JsonParser
                     t=[tokens objectAtIndex:from];
                     if ([t.str isEqualToString:@"}"]) {
                         *pused=from+1-fromWas;
-                        return([ret autorelease]);
+                        return(ret);
                     }
                     if (![t.str isEqualToString:@","]) {
                         [ret release];
@@ -327,7 +327,7 @@ JsonParser
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"]"]) {
                     *pused=from+1-fromWas;
-                    return([ret autorelease]);
+                    return(ret);
                 }
                 NSUInteger used;
                 while (from<=to) {
@@ -345,7 +345,7 @@ JsonParser
                     t=[tokens objectAtIndex:from];
                     if ([t.str isEqualToString:@"]"]) {
                         *pused=from+1-fromWas;
-                        return([ret autorelease]);
+                        return(ret);
                     }
                     if (![t.str isEqualToString:@","]) {
                         [ret release];

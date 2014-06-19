@@ -919,7 +919,7 @@ Dictionary
 
     +(Dictionary*)getDefault {
         if (!_Dictionary_default) {
-            ADDSINGLETON(_Dictionary_default=[[[Dictionary alloc] init] autorelease]);
+            ADDSINGLETON(_Dictionary_default=[[Dictionary alloc] init]);
         }
         return(_Dictionary_default);
     }
@@ -961,11 +961,11 @@ Dictionary
         [[NSFileManager defaultManager] removeItemAtPath:self.dictPath error:nil];
         [self load];
         
-        //[[[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"The dictionary has been reverted to the one that came with clumsy thums"]
+        //[[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"The dictionary has been reverted to the one that came with clumsy thums"]
           //                           message:nil
           //                          delegate:nil
           //                 cancelButtonTitle:@"OK"
-          //                 otherButtonTitles:nil] autorelease] show];
+          //                 otherButtonTitles:nil] show];
     }
 
 
@@ -1225,11 +1225,11 @@ Dictionary
     - (bool)verifyOrAlert {
         NSString *err=[self verify];
         if (err.length) {
-            //[[[[UIAlertView alloc] initWithTitle:@"Error: the dictionary was in an invalid state, and has been reloaded"
+            //[[[UIAlertView alloc] initWithTitle:@"Error: the dictionary was in an invalid state, and has been reloaded"
             //                             message:nil
             //                            delegate:nil
             //                   cancelButtonTitle:@"OK"
-            //                   otherButtonTitles:nil] autorelease] show];
+            //                   otherButtonTitles:nil] show];
             return(NO);
         }
         else return(YES);
@@ -1785,7 +1785,7 @@ Dictionary
                 unsigned short *ps=pot_best[i];
                 UnpackedWord wd;
                 unpackWord(&ps,&wd);
-                [ret addObject:[[[DictionaryWord alloc] initWithUnpackedWord:wd calculatedProb:pot_bestp[i]] autorelease]];
+                [ret addObject:[[DictionaryWord alloc] initWithUnpackedWord:wd calculatedProb:pot_bestp[i]]];
             }
             
             return(ret);
@@ -2820,7 +2820,7 @@ ProMPWords
         if (!v__sortedPatternIndexes_length) {
             WPatternArray &pa=*self.patterns;
             Array<long> tmpa;
-            BCArray_int *ret=[[[BCArray_int alloc] init] autorelease];
+            BCArray_int *ret=[[BCArray_int alloc] init];
             Array<int> &reta=*ret.cppArray,froma;
             froma.setUpperBound(pa.upperBound());
             IterateArray(int,i,froma,   i=(int)iIndex;);
@@ -2847,7 +2847,7 @@ ProMPWords
         if (!v__sortedPatternIndexes_freq) {
             WPatternArray &pa=*self.patterns;
             Array<long> tmpa;
-            BCArray_int *ret=[[[BCArray_int alloc] init] autorelease];
+            BCArray_int *ret=[[BCArray_int alloc] init];
             Array<int> &reta=*ret.cppArray;
             reta.setUpperBound(pa.upperBound());
             IterateArray(int,i,reta,   i=(int)iIndex;);

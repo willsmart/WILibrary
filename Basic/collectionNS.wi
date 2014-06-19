@@ -16,7 +16,7 @@ PointerKey <NSCopying> "-Object"
         return(self);
     }
     +(PointerKey*)keyWithObject:(id)ao {
-        return([[[PointerKey alloc] initWithObject:ao] autorelease]);
+        return([[PointerKey alloc] initWithObject:ao]);
     }
 
     NSString description={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
@@ -44,7 +44,7 @@ WeakObject <NSCopying> "-Object"
     }
 
     +(WeakObject*)keyWithObject:(id)ao {
-        return([[[WeakObject alloc] initWithObject:ao] autorelease]);
+        return([[WeakObject alloc] initWithObject:ao]);
     }
 
     +(NSObject*)deref:(NSObject*)ao {

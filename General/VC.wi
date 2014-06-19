@@ -72,7 +72,7 @@
     +(__WIClass__*)getUsingNib {
         NSString *__nibName=[__WIClass__ stnibName];
         if (!__nibName) return(nil);
-        return([[[__WIClass__ alloc] initWithNibName:__nibName bundle:nil] autorelease]);
+        return([[__WIClass__ alloc] initWithNibName:__nibName bundle:nil]);
     }
 
 

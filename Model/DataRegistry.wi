@@ -82,8 +82,8 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
     -(init) {
         @10
         {
-            [self.setOfMyViewers addDelegate:[[[DataRegistryMyViewersSetDelegate alloc] initWithOwner:self] autorelease]];
-            [self.myViewers addDelegate:[[[DataRegistryMyViewersDictionaryDelegate alloc] initWithOwner:self] autorelease]];
+            [self.setOfMyViewers addDelegate:[[DataRegistryMyViewersSetDelegate alloc] initWithOwner:self]];
+            [self.myViewers addDelegate:[[DataRegistryMyViewersDictionaryDelegate alloc] initWithOwner:self]];
             [self.parent_endpoint addDelegate:parentDel];
             MutableDictionaryUnionDelegate *del=[MutableDictionaryUnionDelegate get];
             del.unionDictionary=allViewers;

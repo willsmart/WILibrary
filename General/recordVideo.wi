@@ -56,7 +56,7 @@ RecordVideo
 
     -(id)initWithURL:(NSURL*)url size:(CGSize)asize {
         if (!(self=[super init])) return(nil);    
-       // AVCaptureVideoDataOutput *output = [[[AVCaptureVideoDataOutput alloc] init] autorelease];// output for 32BGRA pixel format, with me as the delegate and a suitable dispatch queue affixed.
+       // AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];// output for 32BGRA pixel format, with me as the delegate and a suitable dispatch queue affixed.
         //[output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
         //output.videoSettings=     [NSDictionary dictionaryWithObjectsAndKeys:
         //                           [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], 

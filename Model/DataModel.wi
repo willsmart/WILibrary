@@ -33,7 +33,7 @@ PropertyData
 
 <FieldProperty:DataModel> "nac" "multi"
     +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
-        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSObject class] clasName:@"<__PropertyProtocol__>" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+        [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSObject class] clasName:@"<__PropertyProtocol__>" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     <__PropertyProtocol__> __property__=
         {NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
@@ -53,7 +53,7 @@ PropertyData
 
 <StringProperty:DataModel> "nac" "multi"
     +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
-        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSString class] clasName:@"NSString" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+        [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSString class] clasName:@"NSString" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     NSString __property__=
         {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
@@ -73,7 +73,7 @@ PropertyData
 
 <NumberProperty:DataModel> "nac" "multi"
     +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
-        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__" clas:[NSNumber class] clasName:@"NSNumber" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] autorelease] forKey:@"__property__"];
+        [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSNumber class] clasName:@"NSNumber" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     NSNumber __property__=
         {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
@@ -122,11 +122,11 @@ PropertyData
 
 <ChildArrayProperty:DataModel> "nac" "multi"
     +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
-        [apropertyDatas setObject:[[[PropertyData alloc] initWithName:@"__property__s" clas:[MutableArray class] clasName:@"MutableArray" getter:@selector(__property__s) setter:nil direct:NO] autorelease] forKey:@"__property__s"];
+        [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__s" clas:[MutableArray class] clasName:@"MutableArray" getter:@selector(__property__s) setter:nil direct:NO] forKey:@"__property__s"];
     }
     //__property__s_parent ~a< <__Property____modelObject> __property__
     -(init) {
-        [self.__property__s addDelegate:[[[__Property__s__modelDelegate alloc] initWithOwner:self] autorelease]];
+        [self.__property__s addDelegate:[[__Property__s__modelDelegate alloc] initWithOwner:self]];
     }
     -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {@-100 
         {
@@ -215,7 +215,7 @@ PropertyViewerDelegate<MutableSetDelegate>
     -(init) {@15 
         [propertyStack addObject:_dataModelParentProperties];
         dataModelParentFilterDel.followerDictionary=_dataModelParentProperties;
-        [self.dataModelViewers addDelegate:[[[PropertyViewerDelegate alloc] initWithOwner:self] autorelease]];
+        [self.dataModelViewers addDelegate:[[PropertyViewerDelegate alloc] initWithOwner:self]];
     }
     -(void)dealloc {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) [viewer._properties removeDelegate:dataModelParentFilterDel];
@@ -347,7 +347,7 @@ Singletons
     }
     -(NSString*)jsForObject:(NSObject*)object {
         if ([object isKindOfClass:[NSDictionary class]]&&[[(NSDictionary*)object objectForKey:@"js"] isKindOfClass:[NSString class]]&&[[(NSDictionary*)object objectForKey:@"vars"] isKindOfClass:[NSDictionary class]]) {
-            NSMutableString *rawjs=[((NSString*)[(NSDictionary*)object objectForKey:@"js"]).mutablecopy autorelease];
+            NSMutableString *rawjs=((NSString*)[(NSDictionary*)object objectForKey:@"js"]).mutablecopy;
             NSDictionary *vars=(NSDictionary*)[(NSDictionary*)object objectForKey:@"vars"];
             for (NSString *k in vars) {
                 NSObject *v=[vars objectForKey:k];

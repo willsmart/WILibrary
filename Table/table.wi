@@ -7,7 +7,7 @@
 <TableModel:Commitable>
     _table>>table ~a< <SectionModel> _section>>section
     -(init) {@-190 
-        [self._sections addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        [self._sections addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
     -(void)invalidateLayout {
         [self markDirty];self.propertiesChanged=YES;
@@ -17,7 +17,7 @@
 <SectionModel:Commitable>
     _section>>section ~a< <CellModel> _cell>>cell
     -(init) {@-190 
-        [self._cells addDelegate:[[[SourceCommitterArrayDelegate alloc] initWithOwner:self] autorelease]];
+        [self._cells addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
     -(void)invalidateLayout {
         [self markDirty];self.propertiesChanged=YES;
@@ -130,7 +130,7 @@
         {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}=nil (ivar=cellReuseIdentifier,readonly!)
 
     UITableViewCell newUITVCell={
-        UITableViewCell *ret=[[[__CellClass__ alloc] init] autorelease];
+        UITableViewCell *ret=[[__CellClass__ alloc] init];
         if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
             ERR("Cell reuse id (%s) should be %s\n",ret.reuseIdentifier.UTF8String,self.cellReuseIdentifier.UTF8String);
         }
@@ -681,7 +681,7 @@
     -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10 ret=0;}
 
     -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-        @!-10 ret=[[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)] autorelease];
+        @!-10 ret=[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)];
         ret.backgroundColor=[UIColor redColor];
     }
     -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -690,7 +690,7 @@
 
 
     -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {@-999 
-        @!-10 ret=[[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)] autorelease];
+        @!-10 ret=[[UIView alloc] initWithFrame:CGRectMake(0,0,100,10)];
         ret.backgroundColor=[UIColor greenColor];
     }
     -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -701,7 +701,7 @@
     -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10 ret=15;}
 
     -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {@!-10
-        ret=[[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hi"] autorelease];
+        ret=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"hi"];
         ret.backgroundColor=[UIColor blueColor];
     }
 

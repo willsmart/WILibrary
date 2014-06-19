@@ -56,7 +56,7 @@ RenderUIViews <BaseObject>
     */
     +(RenderUIViews*)getDefault {
         if (!_RenderUIViews_default) {
-            ADDSINGLETON(_RenderUIViews_default=[[[RenderUIViews alloc] init] autorelease]);
+            ADDSINGLETON(_RenderUIViews_default=[[RenderUIViews alloc] init]);
         }
         return(_RenderUIViews_default);
     }

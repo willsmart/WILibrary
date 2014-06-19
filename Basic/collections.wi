@@ -243,7 +243,7 @@ MutableSet:NSMutableSet<MutableSet> {}
 MutableValueDebuggerDelegate<MutableValueDelegate,MutableObjectDebuggerDelegate>
     +(void)attachTo:(NSObject<ValueLinkEndpoint>*)a named:(NSString*)aname {
         if (!a) prnt("Value %s is nil\n",aname.UTF8String);
-        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+        else [a addDelegate:[[__Class__ alloc] initWithName:aname]];
     }
     +(void)dettachFrom:(NSObject<ValueLinkEndpoint>*)a named:(NSString*)aname {
         for (NSObject<MutableValueDelegate> *del=a.valueDelegate;del;del=del.valueDelegate) {
@@ -275,7 +275,7 @@ MutableValueDebuggerDelegate<MutableValueDelegate,MutableObjectDebuggerDelegate>
 MutableSetDebuggerDelegate<MutableSetDelegate,MutableObjectDebuggerDelegate>
     +(void)attachTo:(NSObject<MutableSet>*)a named:(NSString*)aname {
         if (!a) prnt("Set %s is nil\n",aname.UTF8String);
-        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+        else [a addDelegate:[[__Class__ alloc] initWithName:aname]];
     }
     +(void)dettachFrom:(NSObject<MutableSet>*)a named:(NSString*)aname {
         for (NSObject<MutableSetDelegate> *del=a.setDelegate;del;del=del.setDelegate) {
@@ -316,7 +316,7 @@ MutableSetDebuggerDelegate<MutableSetDelegate,MutableObjectDebuggerDelegate>
 MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebuggerDelegate>
     +(void)attachTo:(NSObject<MinimalMutableDictionary>*)a named:(NSString*)aname {
         if (!a) prnt("Dictionary %s is nil\n",aname.UTF8String);
-        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+        else [a addDelegate:[[__Class__ alloc] initWithName:aname]];
     }
     +(void)dettachFrom:(NSObject<MinimalMutableDictionary>*)a named:(NSString*)aname {
         for (NSObject<MutableDictionaryDelegate> *del=a.dictionaryDelegate;del;del=del.dictionaryDelegate) {
@@ -368,7 +368,7 @@ MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebugge
 MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
     +(void)attachTo:(NSObject<MinimalMutableArray>*)a named:(NSString*)aname {
         if (!a) prnt("Array %s is nil\n",aname.UTF8String);
-        else [a addDelegate:[[[__Class__ alloc] initWithName:aname] autorelease]];
+        else [a addDelegate:[[__Class__ alloc] initWithName:aname]];
     }
     +(void)dettachFrom:(NSObject<MinimalMutableArray>*)a named:(NSString*)aname {
         for (NSObject<MutableArrayDelegate> *del=a.arrayDelegate;del;del=del.arrayDelegate) {

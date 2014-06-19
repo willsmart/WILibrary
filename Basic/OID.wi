@@ -96,7 +96,7 @@ ClassCount "-Object" "fn:object"
     LL count=nil,nextID=nil
     NSString name=nil (readonly,dealloc,ivar=name)
     +(ClassCount*)classCount {
-        return([[[ClassCount alloc] init] autorelease]);
+        return([[ClassCount alloc] init]);
     }
     -(init[super init])initWithName:(NSString*)aname {
         name=[aname retain];
@@ -314,7 +314,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
     -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return([super retain]);}
     -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990 [super release];}
-    -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return([super autorelease]);}
+    -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(super);}
 
     NSString description={@-999 
         NSMutableString *ret=self.objectName;
@@ -593,7 +593,7 @@ ObjectGraph<Ticker,BaseObject>
 <DerivedObject> "-Object"
     -(id)retain {@999 return([super retain]);}
     -(void)release {@999 [super release];}
-    -(id)autorelease {@999 return([super autorelease]);}
+    -(id)autorelease {@999 return(super);}
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     LL objectIDInTotal=nil (readonly)

@@ -54,11 +54,11 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
     // Creating a set
-    +(__WIClass__*)set {return([[[__WIClass__ alloc] init] autorelease]);}
-    +(__WIClass__*)setWithArray:(NSArray*)array {return([[[__WIClass__ alloc] initWithArray:array] autorelease]);}
-    +(__WIClass__*)setWithObject:(id)object {return([[[__WIClass__ alloc] initWithObjects:&object count:1] autorelease]);}
-    //+(__WIClass__*)setWithObjects:( {return([[[__WIClass__ alloc] init] autorelease]);}
-    +(__WIClass__*)setWithSet:(NSSet*)set {return([[[__WIClass__ alloc] initWithSet:set] autorelease]);}
+    +(__WIClass__*)set {return([[__WIClass__ alloc] init]);}
+    +(__WIClass__*)setWithArray:(NSArray*)array {return([[__WIClass__ alloc] initWithArray:array]);}
+    +(__WIClass__*)setWithObject:(id)object {return([[__WIClass__ alloc] initWithObjects:&object count:1]);}
+    //+(__WIClass__*)setWithObjects:( {return([[__WIClass__ alloc] init]);}
+    +(__WIClass__*)setWithSet:(NSSet*)set {return([[__WIClass__ alloc] initWithSet:set]);}
     -(NSSet*)setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
     //-(NSSet*)setByAddingObjects: {return([__set setByAddingObject:object]);}
     -(NSSet*)setByAddingObjectsFromSet:(NSSet*)set {return([__set setByAddingObjectsFromSet:set]);}
@@ -194,7 +194,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
     //Creating a Mutable Set
     +(id)setWithCapacity:(NSUInteger)numItems {
-        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+        return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     -(init)init {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] init];
@@ -548,7 +548,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         }
         NSObject<MutableSet>* s=[self setForObject:object];
         if (s) {
-            [s addDelegate:[[[MutableSetUnionDelegate1 alloc] initWithOwner:self] autorelease]];
+            [s addDelegate:[[MutableSetUnionDelegate1 alloc] initWithOwner:self]];
             [mapsets setObject:s forKey:[PointerKey keyWithObject:object]];
             for (id o in s) {
                 [self unionWillAddObject1:o];

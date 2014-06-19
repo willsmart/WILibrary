@@ -67,7 +67,7 @@
 -(NSArray*)asNSArray { \
     NSMutableArray *ret=[NSMutableArray arrayWithCapacity:self.num]; \
     IterateArray(I,value,*cppArray,[ret addObject:valueToNSObject];); \
-    return([ret.copy autorelease]); \
+    return(ret.copy); \
 } \
 -(void)setAsNSArray:(NSArray*)v { \
     int lb=(int)cppArray->lowerBound(); \

@@ -144,7 +144,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
     int maxCount=10000
     -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {
         if ([key isKindOfClass:[NSURL class]]) {
-            return([[[ShaderURLConversion alloc] initWithURL:(NSURL*)key] autorelease]);
+            return([[ShaderURLConversion alloc] initWithURL:(NSURL*)key]);
         }
     }
 

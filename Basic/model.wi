@@ -70,7 +70,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
-        [self autorelease];
+        self;
     }
     -(id)modelretain {
         modelRetaincount++;
@@ -394,7 +394,7 @@ Model<Model,Ticker,Waiter> "fn:model"
 
     +(Model*)getDefault {
         if (!_Model_default) {
-            ADDSINGLETON(_Model_default=[[[Model alloc] init] autorelease]);
+            ADDSINGLETON(_Model_default=[[Model alloc] init]);
         }
         return(_Model_default);
     }

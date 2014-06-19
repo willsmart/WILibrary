@@ -79,7 +79,7 @@
 
 <ValueLinkEndpoint:MutableValueDelegate>
     id value=
-        {return([[v_value retain] autorelease]);}
+        {return([v_value retain]);}
         -v{
             if ((v_value==v)||(v&&[self unacceptable:v])) return;
             [self willChangeValueFrom:v_value to:v];
@@ -258,21 +258,21 @@
 
 Endpoint1:NSObject<LinkEndpoint,ValueLinkEndpoint>
     +(Endpoint1*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-        return((Endpoint1*)[[[Endpoint1 alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+        return((Endpoint1*)[[Endpoint1 alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 
 EndpointS:NSMutableSet<LinkEndpoint,SetLinkEndpoint,MutableSet>
     +(EndpointS*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-        return((EndpointS*)[[[EndpointS alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+        return((EndpointS*)[[EndpointS alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 
 EndpointA:NSMutableArray<LinkEndpoint,ArrayLinkEndpoint,MutableArray>
     +(EndpointA*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-        return((EndpointA*)[[[EndpointA alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+        return((EndpointA*)[[EndpointA alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 
 EndpointD:NSMutableDictionary<LinkEndpoint,DictionaryLinkEndpoint,MutableDictionary>
     +(EndpointD*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-        return((EndpointD*)[[[EndpointD alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+        return((EndpointD*)[[EndpointD alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 

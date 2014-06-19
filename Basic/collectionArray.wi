@@ -54,13 +54,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 
     // Creating an array
-    +(__WIClass__*)array {return([[[__WIClass__ alloc] init] autorelease]);}
-    +(__WIClass__*)arrayWithArray:(NSArray*)array {return([[[__WIClass__ alloc] initWithArray:array] autorelease]);}
-    +(__WIClass__*)arrayWithContentsOfFile:(NSString*)file {return([[[__WIClass__ alloc] initWithContentsOfFile:file] autorelease]);}
-    +(__WIClass__*)arrayWithContentsOfURL:(NSURL*)url {return([[[__WIClass__ alloc] initWithContentsOfURL:url] autorelease]);}
-    +(__WIClass__*)arrayWithObject:(id)object {return([[[__WIClass__ alloc] initWithObjects:&object count:1] autorelease]);}
-    //+(__WIClass__*)arrayWithObjects:( {return([[[__WIClass__ alloc] init] autorelease]);}
-    +(__WIClass__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects count:count] autorelease]);}
+    +(__WIClass__*)array {return([[__WIClass__ alloc] init]);}
+    +(__WIClass__*)arrayWithArray:(NSArray*)array {return([[__WIClass__ alloc] initWithArray:array]);}
+    +(__WIClass__*)arrayWithContentsOfFile:(NSString*)file {return([[__WIClass__ alloc] initWithContentsOfFile:file]);}
+    +(__WIClass__*)arrayWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
+    +(__WIClass__*)arrayWithObject:(id)object {return([[__WIClass__ alloc] initWithObjects:&object count:1]);}
+    //+(__WIClass__*)arrayWithObjects:( {return([[__WIClass__ alloc] init]);}
+    +(__WIClass__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[__WIClass__ alloc] initWithObjects:objects count:count]);}
 
 
 
@@ -338,7 +338,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
     //Creating a Mutable Array
     +(id)arrayWithCapacity:(NSUInteger)numItems {
-        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+        return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     -(init)init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
     }

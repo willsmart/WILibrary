@@ -15,7 +15,7 @@ UIImage
 ImageFromCGImage:UIImage
     CGImageRef sourceImage=nil
     +(__Class__*)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
-        return([[[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation] autorelease]);
+        return([[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation]);
     }
     -(init)initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         sourceImage=CGImageRetain(imageRef);

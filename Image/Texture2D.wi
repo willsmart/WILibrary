@@ -83,7 +83,7 @@ Texture2D <BaseObject> "fn:render"
 
     -(BOOL)initContext {
         self.context=nil;
-        EAGLContext *aContext = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
+        EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
         if (!aContext) {
             NSLog(@"Failed to make context");
             return(NO);
