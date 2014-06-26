@@ -55,7 +55,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -193,7 +193,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__array countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -453,7 +453,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__dictionary countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -617,7 +617,7 @@
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
         for (NSUInteger i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];
@@ -915,7 +915,7 @@ MutableSet : NSMutableSet
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
         for (NSUInteger i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];
@@ -1093,7 +1093,7 @@ MutableArray : NSMutableArray
     - (id)mutableCopyWithZone:(NSZone*)zone {
         return(self.copy);
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__base countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
     +(MutableArray*)array {
@@ -1335,7 +1335,7 @@ MutableArray : NSMutableArray
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
         for (NSUInteger i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];

@@ -310,9 +310,9 @@ Singletons<Ticker> "-Object" "fn:object"
 #endif
     }
 
-    -(id)retain {@-900 retainFn(self,___rc,___arc); @999 return(super);}
-    -(void)release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990}
-    -(id)autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(super);}
+    -(id)w_retain {@-900 retainFn(self,___rc,___arc); @999 return(nil/*super*/);}
+    -(void)w_release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990}
+    -(id)w_autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(nil/*super*/);}
 
     NSString description={@-999 
         NSMutableString *ret=self.objectName;
@@ -589,9 +589,9 @@ ObjectGraph<Ticker,BaseObject>
     
 
 <DerivedObject> "-Object"
-    -(id)retain {@999 return(super);}
-    -(void)release {@999}
-    -(id)autorelease {@999 return(super);}
+    -(id)w_retain {@999 return(nil/*super*/);}
+    -(void)w_release {@999}
+    -(id)w_autorelease {@999 return(nil/*super*/);}
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     LL objectIDInTotal=nil (readonly)

@@ -46,21 +46,21 @@ CollectionTestObject
         intValue=v;
         self.tester=atester;
     }
-    -(id)retain {
+    -(id)w_retain {
         if (testKey) {
             CollectionTestSubObject *so=[subObjects objectForKey:testKey];
             if (so) [so _retain];
         }
         //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
     }
-    -(void)release {
+    -(void)w_release {
         if (testKey) {
             CollectionTestSubObject *so=[subObjects objectForKey:testKey];
             if (so) [so _release];
         }
         //printf("release %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
     }
-    -(id)autorelease {
+    -(id)w_autorelease {
         if (testKey) {
             CollectionTestSubObject *so=[subObjects objectForKey:testKey];
             if (so) [so _autorelease];

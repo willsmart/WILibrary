@@ -7,7 +7,7 @@
 //
 
 #import "BCArray.h"
-#include "Array.h"
+#include "../Array.h"
 
 #ifdef MAINCPPFILE
 

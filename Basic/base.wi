@@ -33,19 +33,19 @@
 
     //NSString __description={return([self respondsToSelector:@selector(description)]?self.description:[NSString stringWithFormat:@"Obj:%p",self]);}
 
-    -(id)retain {
+    -(id)w_retain {
         __rc++;
         DEB(printf("%d -> %d retain %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
     }
     -(void)dealloc {@-999 
         DEB(printf("%d -> %d dealloc %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
     }
-    -(void)release {
+    -(void)w_release {
         __rc--;
         if (__arc>__rc) __arc--;
         DEB(printf("%d -> %d release %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
     }
-    -(id)autorelease {
+    -(id)w_autorelease {
         __arc++;
         DEB(printf("%d -> %d autorelease %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
     }

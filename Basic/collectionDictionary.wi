@@ -53,7 +53,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         return([[MutableDictionary allocWithZone:zone] initWithDictionary:__dictionary]);
     }
 
-    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         NSUInteger ret=[__dictionary countByEnumeratingWithState:state objects:stackbuf count:len];
         return(ret);
     }

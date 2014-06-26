@@ -13,40 +13,40 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
 
 
 <RefCountedObject>
-    int retainCount=1,modelRetaincount=0 (readonly)
+    int totalRetainCount=1,modelRetaincount=0 (readonly)
     bool noMOForNextRetain=NO
 
     -(void)dealloc {
-        if (modelRetaincount&&(retainCount==modelRetaincount)) {
+        if (modelRetaincount&&(totalRetainCount==modelRetaincount)) {
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
         }
     }
-    -(void)release {
-        if (modelRetaincount&&(retainCount==modelRetaincount+1)) {
+    -(void)w_release {
+        if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
             int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
-        retainCount--;
+        totalRetainCount--;
     }
-    -(id)retain {
-        retainCount++;
+    -(id)w_retain {
+        totalRetainCount++;
         if (noMOForNextRetain) noMOForNextRetain=NO;
-        else if (modelRetaincount&&(retainCount==modelRetaincount+1)) {
+        else if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
             int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
         }
     }
     -(void)modeladd {
-        if ((++modelRetaincount)&&(retainCount==modelRetaincount)) {
+        if ((++modelRetaincount)&&(totalRetainCount==modelRetaincount)) {
             int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
     }
     -(void)modelsub {
-        if (modelRetaincount&&(retainCount==modelRetaincount)) {
+        if (modelRetaincount&&(totalRetainCount==modelRetaincount)) {
             int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
@@ -63,7 +63,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
         }
-        else if (retainCount==modelRetaincount) {
+        else if (totalRetainCount==modelRetaincount) {
             int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
@@ -75,7 +75,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
         return(self);
     }
 
-    bool onlyOwnedByModels={return(retainCount==modelRetaincount);}
+    bool onlyOwnedByModels={return(totalRetainCount==modelRetaincount);}
 
     -(void)retract {
         noMOForNextRetain=NO;

@@ -47,7 +47,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         return([[MutableSet allocWithZone:zone] initWithSet:__set]);
     }
 
-    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 

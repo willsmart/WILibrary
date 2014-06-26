@@ -47,7 +47,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         return([[MutableArray allocWithZone:zone] initWithArray:__array]);
     }
 
-    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+    -(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
         return([__array countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 

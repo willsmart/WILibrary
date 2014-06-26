@@ -120,9 +120,9 @@ type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_
 
 
 <Retains>
-    -(id)retain;
-    -(void)release;
-    -(id)autorelease;
+    -(id)w_retain;
+    -(void)w_release;
+    -(id)w_autorelease;
 
 
 /*decl:impl:

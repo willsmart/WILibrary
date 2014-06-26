@@ -7,7 +7,7 @@
 //
 
 #import "BCString.h"
-#include "String.h"
+#include "../String.h"
 
 #ifdef MAINCPPFILE
 
