@@ -228,9 +228,10 @@ Texture2D <BaseObject> "fn:render"
         }
         
         NSUInteger len=w*h*fmtSize;
-        NSData *nsdata=[[NSData alloc] initWithBytes:data length:len];
-        data=nsdata.bytes;
-        CGDataProviderRef provider = CGDataProviderCreateWithData(nsdata,data,len,texture2D_releasedatacallback);
+        const BYT *datablock=NEWA(Makecc('i','m'),BYT,len);
+        memcpy((void*)datablock,data,len);
+        data=(const void*)datablock;
+        CGDataProviderRef provider = CGDataProviderCreateWithData((void*)data,data,len,texture2D_releasedatacallback);
         
         CGImageRef imageRef = CGImageCreate(w,h,8,8*fmtSize,fmtSize*w,colorSpaceRef,bitmapInfo,provider,NULL,NO,kCGRenderingIntentDefault);
         //prnt("%p im\n",imageRef);
@@ -246,7 +247,8 @@ Texture2D <BaseObject> "fn:render"
     */
     /*interfaces:impl:
         void texture2D_releasedatacallback(void *info,const void *data,size_t size) {
-            NSData *nsdata=(NSData*)info;
+            BYT *dataBytes=(BYT*)info;
+            DELETEA(Makecc('i','m'),dataBytes,size);
         }
     */
 

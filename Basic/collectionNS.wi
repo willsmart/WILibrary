@@ -6,12 +6,12 @@ PointerKey <NSCopying> "-Object"
     -(id)initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         if (ao) {
-            o=ao;
-            hash=[o hash];
+            v_o=ao;
+            hash=[v_o hash];
         }
         else {
-            o=ao=self;
-            hash=obfuscateULL((ULL)o);
+            v_o=ao=self;
+            hash=(NSUInteger)obfuscateULL((ULL)v_o);
         }
         return(self);
     }
@@ -19,14 +19,14 @@ PointerKey <NSCopying> "-Object"
         return([[PointerKey alloc] initWithObject:ao]);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
+    NSString description={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
+    NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
     -(id)copyWithZone:(NSZone*)zone {
-        return([[PointerKey allocWithZone:zone] initWithObject:o]);
+        return([[PointerKey allocWithZone:zone] initWithObject:v_o]);
     }
     -(BOOL)isEqual:(id)object {
-        bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):
-              ([object isKindOfClass:[WeakObject class]]?(o==((WeakObject*)object).o):(o==object)))
+        bool ret=(([object isKindOfClass:[PointerKey class]]?(v_o==((PointerKey*)object).o):
+              ([object isKindOfClass:[WeakObject class]]?(v_o==((WeakObject*)object).o):(v_o==object)))
               ||[super isEqual:object]);
         return(ret);
     }
@@ -38,7 +38,7 @@ WeakObject <NSCopying> "-Object"
     id o=nil (readonly)
     -(id)initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
-        o=ao;
+        v_o=ao;
         hash=[ao hash];
         return(self);
     }
@@ -52,14 +52,14 @@ WeakObject <NSCopying> "-Object"
             ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Weak:%p",o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",o]);}
+    NSString description={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
+    NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
     -(id)copyWithZone:(NSZone*)zone {
-        return([[WeakObject allocWithZone:zone] initWithObject:o]);
+        return([[WeakObject allocWithZone:zone] initWithObject:v_o]);
     }
     -(BOOL)isEqual:(id)object {
-        bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):
-              ([object isKindOfClass:[WeakObject class]]?(o==((WeakObject*)object).o):(o==object)))
+        bool ret=(([object isKindOfClass:[PointerKey class]]?(v_o==((PointerKey*)object).o):
+              ([object isKindOfClass:[WeakObject class]]?(v_o==((WeakObject*)object).o):(v_o==object)))
               ||[super isEqual:object]);
         return(ret);
     }

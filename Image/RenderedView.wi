@@ -273,8 +273,7 @@ Singletons
 
     
 ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
-/**! --    (notenote) Note: {       atomic = 0;       getterName = imageShaderRequestCache;       getterSig = "-(ImageShaderRequestCache*)imageShaderRequestCache";       hasDefaultValue = 0;       hasGetter = 0;       hasIVar = 1;       hasSetter = 0;       imaginary = 0;       isType = 0;       justivar = 0;       localizedGetterName = imageShaderRequestCache;       localizedGetterSig = "-(ImageShaderRequestCache*)imageShaderRequestCache";       localizedSetterName = setImageShaderRequestCache;       localizedSetterSig = "-(void)setImageShaderRequestCache:(ImageShaderRequestCache*)v";       localizedVarName = imageShaderRequestCache;       modelRetains = 0;       needsGetter = 1;       needsSetter = 1;       "objc_readonly" = 0;       readonly = 1;       retains = 1;       setterName = setImageShaderRequestCache;       setterSig = "-(void)setImageShaderRequestCache:(ImageShaderRequestCache*)v";       synthesized = 1;       tracked = 1;   } !**/
-    ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (publicreadonly,explain,dealloc,ivar=imageShaderRequestCache)
+    ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (publicreadonly,dealloc,ivar=imageShaderRequestCache)
     ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] (publicreadonly,dealloc,ivar=shaderImageRequestCache)
 
     -(init) {
@@ -385,7 +384,7 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
 
     -(ImageToken*)goRequestWithURL:(NSURL*)url {
         ImageToken *token=[[ImageToken alloc] initWithURL:url];
-        [[ImageRequestProxyOwner alloc] initWithToken:token owner:self];
+        (void)[[ImageRequestProxyOwner alloc] initWithToken:token owner:self];
         return(token);
     }
 

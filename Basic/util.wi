@@ -19,12 +19,74 @@
 <RecievesSelector>
     selectorReceiver >s< <SendsSelector> selectorSender
 
+NSObject "fn:sys"
+    -(id)performUnknownSelector:(SEL)aSelector {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self performSelector:aSelector];
+#pragma clang diagnostic pop
+    }
+    -(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self performSelector:aSelector withObject:anObject];
+#pragma clang diagnostic pop
+    }
+    -(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self performSelector:aSelector withObject:anObject withObject:anotherObject];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait modes:array];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelector:aSelector withObject:anArgument afterDelay:delay];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelector:aSelector withObject:anArgument afterDelay:delay inModes:modes];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelectorInBackground:aSelector withObject:arg];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait];
+#pragma clang diagnostic pop
+    }
+    -(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait modes:array];
+#pragma clang diagnostic pop
+    }
+
 
 
 
 NSString "fn:sys"
     -(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
-        return((NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)));
+        return((NSString*)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding))));
     }
 
 
@@ -107,7 +169,9 @@ NSString "fn:sys"
               cachePolicy:NSURLRequestUseProtocolCachePolicy
               timeoutInterval:timeout];
         NSURLResponse *response;
-        NSData *data=[NSURLConnection sendSynchronousRequest:req returningResponse:&response error:aerr];
+        NSError *error=nil;
+        NSData *data=[NSURLConnection sendSynchronousRequest:req returningResponse:&response error:&error];
+        aerr=&error;
         return([[NSString alloc] initWithData:data encoding:encoding]);
     }
 
@@ -151,7 +215,7 @@ NSData
 
 
 
-type StringRequestURLDelegateCompletionBlock "typedef:void(^__type__)(NSString*,NSError*)"
+block StringRequestURLDelegateCompletionBlock "void(^__type__)(NSString*,NSError*)"
 
 StringRequestURLDelegate<NSURLConnectionDelegate>
     StringRequestURLDelegateCompletionBlock completionBlock=nil
@@ -165,7 +229,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
 
     -(init[super init])initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock {
         encoding=aencoding;
-        completionBlock=Block_copy(acompletionBlock);
+        self.completionBlock=acompletionBlock;
     }
 
     - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
@@ -177,15 +241,15 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     }
 
     - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError *)error {
-        completionBlock(nil,error);
-        self;
+        self.completionBlock(nil,error);
+        //self;
         finished=YES;
         self.connection=nil;
     }
 
     - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-        completionBlock(self.partialRequestedString,nil);
-        self;
+        self.completionBlock(self.partialRequestedString,nil);
+        //self;
         finished=YES;
         self.connection=nil;
     }
@@ -193,7 +257,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     - (void)cancel {
         if (self.connection&&!finished) {
             [self.connection cancel];
-            self;
+            //self;
             finished=YES;
             self.connection=nil;
         }
@@ -245,13 +309,13 @@ Util "fn:util"
         if (from==nil) {
             if (to) {
                 int i=0;
-                for (id o in to) [inss addObject:[NSNumber numberWithInt:i++]];
+                while (i<to.count) [inss addObject:[NSNumber numberWithInt:i++]];
                 ret=(i>0);
             }
         }
         else if (to==nil) {
             int i=0;
-            for (id o in from) [dels addObject:[NSNumber numberWithInt:i++]];
+            while (i<from.count) [dels addObject:[NSNumber numberWithInt:i++]];
             ret=(i>0);
         }
         else {

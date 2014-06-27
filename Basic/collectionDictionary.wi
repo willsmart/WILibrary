@@ -66,7 +66,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
     +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WIClass__ alloc] initWithDictionary:dictionary]);}
     +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1]);}
-    +(__WIClass__*)dictionaryWithObjects:(__strong id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count]);}
+    +(__WIClass__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count]);}
 
 
 

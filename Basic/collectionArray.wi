@@ -70,7 +70,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     //Querying an Array
     -(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
     NSUInteger count={return([__array count]);}
-    -(void)getObjects:(__strong id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
+    -(void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
     id lastObject={return([__array lastObject]);}
     -(id)objectAtIndex:(NSUInteger)index {
         if (index>=__array.count) ERR("Index %d is out of bounds [0,%d)",int(index),int(__array.count));

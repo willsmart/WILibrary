@@ -68,7 +68,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
-        self;
+        //self;
     }
     -(id)modelretain {
         modelRetaincount++;

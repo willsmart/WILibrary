@@ -107,45 +107,54 @@ ClassCount "-Object" "fn:object"
 type QuickHashTableOfClassCounts
 
 
+type QuickHashTableOfClassCounts "typedef:QuickHashTable<ClassCount*__unsafe_unretained>"
+type ArrayOfClassCounts "typedef:Array<ClassCount*__unsafe_unretained>"
 /*decl:
-    typedef QuickHashTable<ClassCount*> QuickHashTableOfClassCounts;
-    extern QuickHashTable<ClassCount*> *g_classCountht;
+    extern QuickHashTableOfClassCounts *g_classCountht;
+    extern ArrayOfClassCounts *g_classCountArray;
+    extern NSMutableArray *g_classCounts;
     extern ClassCount *g_totalObjectCount;
     extern ClassCount *g_classCountForClass(Class clas);
 */
 /*decl:impl:
-    QuickHashTable<ClassCount*> *g_classCountht=nil;
+    QuickHashTableOfClassCounts *g_classCountht=nil;
+    ArrayOfClassCounts *g_classCountArray=nil;
+    NSMutableArray *g_classCounts=nil;
     ClassCount *g_totalObjectCount=nil;
     ClassCount *g_classCountForClass(Class clas) {
         ULL hash=obfuscateHash((ULL)clas);
         ClassCount *ret=g_classCountht->find(hash);
         if (!ret) {
-            g_classCountht->add(hash,ret=[[ClassCount alloc] initWithName:[NSString stringWithFormat:@"%s",class_getName(clas)]]);
+            ret=[[ClassCount alloc] initWithName:[NSString stringWithFormat:@"%s",class_getName(clas)]];
+            (*g_classCountArray)+=ret;
+            [g_classCounts addObject:ret];
+            g_classCountht->add(hash,ret);
         }
         return(ret);
     }
-    template ManagedArray<QuickHashTableContext<ClassCount*> > QuickHashTableContext<ClassCount*>::contexts;
+    template ManagedArray<QuickHashTableContext<ClassCount*__unsafe_unretained> > QuickHashTableContext<ClassCount*__unsafe_unretained>::contexts;
 */
 
 Singletons<Ticker> "-Object" "fn:object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
     QuickHashTableOfClassCounts *classCountht=nil (readonly)
+    ArrayOfClassCounts *classCountArray=nil (readonly)
     ClassCount totalObjectCount=nil (publicreadonly,dealloc,ivar=totalObjectCount)
 
     -(void)dealloc {
         {
-            Array<ClassCount*> cca;
-            g_classCountht->asArray(cca);
-            IterateArray(ClassCount*,cc,cca,
-            );
-            DELETE(QuickHashTable<ClassCount*>,g_classCountht);
+            DELETE(QuickHashTableOfClassCounts,g_classCountht);
+            DELETE(ArrayOfClassCounts,g_classCountArray);
+            g_classCounts=nil;
         }
     }
 
     -(init) {@-800
         g_totalObjectCount=totalObjectCount=[[ClassCount alloc] initWithName:@"All classes"];
         ContextIndex ci={0};
+        g_classCounts=[NSMutableArray array];
         g_classCountht=classCountht=NEWCONSb(QuickHashTableOfClassCounts,(ci,nil,2048));
+        g_classCountArray=classCountArray=NEWCONSb(ArrayOfClassCounts,(256));
         @0
         for (int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
     }
@@ -153,11 +162,9 @@ Singletons<Ticker> "-Object" "fn:object"
     NSString description={@-999
         NSMutableString *ret=[NSMutableString stringWithFormat:@"\nx%qu Objects:\n",totalObjectCount.count];
         {
-            Array<ClassCount*> cca;
-            g_classCountht->asArray(cca);
             ClassCount *pcc;
-            arrHeapSortb(ClassCount*,cca.a,obja.count>objb.count,0,cca.upperBound(),pcc);
-            IterateArray(ClassCount*,cc,cca,
+            arrHeapSortb(ClassCount*__unsafe_unretained,g_classCountArray->a,obja.count>objb.count,0,g_classCountArray->upperBound(),pcc);
+            IterateArray(ClassCount*__unsafe_unretained,cc,*g_classCountArray,
                 NSString *name=cc.name;
                 [ret appendFormat:@"%@    %@ x %qu << %u, %u, %u, %u, %u -- %d\n",
                     (int(cc.count)==
@@ -183,9 +190,7 @@ Singletons<Ticker> "-Object" "fn:object"
         [self.typeCountHistory removeLastObject];
         [d removeAllObjects];
 
-        Array<ClassCount*> cca;
-        g_classCountht->asArray(cca);
-        IterateArray(ClassCount*,cc,cca,
+        IterateArray(ClassCount*__unsafe_unretained,cc,*g_classCountArray,
             NSString *key=cc.name;
             [d setObject:[NSNumber numberWithInt:(int)cc.count] forKey:key];
         );

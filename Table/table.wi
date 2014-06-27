@@ -181,7 +181,7 @@
 
     -(init) {@100 
         [self addSourceCommitter:model];
-        //[model overrideSectionsAs:[NSArray array] forContext:context];
+        //[model overrideSectionsAs:[NSArray array] forContext:v_context];
         [model markDirty];
     }
     
@@ -202,28 +202,28 @@
     -(void)commit {
         if (!self.table) return;
         
-        NSIndexSet *remSecis=[model indexesOfSectionsThatWereRemovedGivenContext:context];
+        NSIndexSet *remSecis=[model indexesOfSectionsThatWereRemovedGivenContext:v_context];
         if (remSecis) [self.table deleteSections:remSecis withRowAnimation:self.rowAnimation];
         
         
         
-        NSIndexSet *insSecis=[model indexesOfSectionsThatWereAddedGivenContext:context];
+        NSIndexSet *insSecis=[model indexesOfSectionsThatWereAddedGivenContext:v_context];
         if (insSecis) [self.table insertSections:insSecis withRowAnimation:self.rowAnimation];
         
         
         
         
-        NSArray *secs=[model sectionsGivenContext:context];
+        NSArray *secs=[model sectionsGivenContext:v_context];
 
         NSMutableArray *dirtyIndexes=[MutableArray array];
 
         NSUInteger si=0;
         for (NSObject<SectionModel> *sec in secs) {
             if (![insSecis containsIndex:si]) {
-                NSArray *cells=[sec cellsGivenContext:context];
+                NSArray *cells=[sec cellsGivenContext:v_context];
                 NSIndexSet *insCellis=nil;
-                if ([sec cellsChangedGivenContext:context]) {
-                    NSIndexSet *remCellis=[sec indexesOfCellsThatWereRemovedGivenContext:context];
+                if ([sec cellsChangedGivenContext:v_context]) {
+                    NSIndexSet *remCellis=[sec indexesOfCellsThatWereRemovedGivenContext:v_context];
                     if (remCellis) {
                         NSMutableArray *paths=[MutableArray array];
                         for (int ind=remCellis.firstIndex;ind!=NSNotFound;ind=[remCellis indexGreaterThanIndex:ind]) {
@@ -233,7 +233,7 @@
                     }
                     
                     
-                    insCellis=[sec indexesOfCellsThatWereAddedGivenContext:context];
+                    insCellis=[sec indexesOfCellsThatWereAddedGivenContext:v_context];
                     if (insCellis) {
                         NSMutableArray *paths=[MutableArray array];
                         for (int ind=insCellis.firstIndex;ind!=NSNotFound;ind=[insCellis indexGreaterThanIndex:ind]) {
@@ -320,10 +320,10 @@
     }
 
     -(NSObject<SectionModel>*)sectionAtIndex:(int)index {
-        return([model sectionAtIndex:index givenContext:context]);
+        return([model sectionAtIndex:index givenContext:v_context]);
     }
     -(NSObject<CellModel>*)cellAtIndex:(int)rowIndex inSectionAtIndex:(int)sectionIndex {
-        return([[model sectionAtIndex:sectionIndex givenContext:context] cellAtIndex:rowIndex givenContext:context]);
+        return([[model sectionAtIndex:sectionIndex givenContext:v_context] cellAtIndex:rowIndex givenContext:v_context]);
     }
     -(NSObject<CellModel>*)cellAtIndexPath:(NSIndexPath*)indexPath {
         return([self cellAtIndex:indexPath.row inSectionAtIndex:indexPath.section]);
@@ -338,13 +338,13 @@
 
     -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
     {@-999 int ret=0;
-        @-10 ret=[model sectionsGivenContext:context].count;
+        @-10 ret=[model sectionsGivenContext:v_context].count;
         @999 return(ret);
     }
 
     -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
     {@-999 int ret=0;
-        @-10 ret=[[self sectionAtIndex:section] cellsGivenContext:context].count;
+        @-10 ret=[[self sectionAtIndex:section] cellsGivenContext:v_context].count;
         @999 return(ret);
     }
 
@@ -416,7 +416,7 @@
     {
         @90 if (editingStyle==UITableViewCellEditingStyleDelete) {
             @100 
-            [[[self sectionAtIndex:indexPath.section] cellsGivenContext:context] removeObjectAtIndex:indexPath.row];
+            [[[self sectionAtIndex:indexPath.section] cellsGivenContext:v_context] removeObjectAtIndex:indexPath.row];
         @150 }
         else if (editingStyle==UITableViewCellEditingStyleInsert) {
             @200 
@@ -430,7 +430,7 @@
             }
             if (asIndexPath) {
                 NSObject<CellModel> *cell=driver.newCellModel;
-                if (cell) [[[self sectionAtIndex:asIndexPath.section] cellsGivenContext:context] insertObject:cell atIndex:asIndexPath.row];
+                if (cell) [[[self sectionAtIndex:asIndexPath.section] cellsGivenContext:v_context] insertObject:cell atIndex:asIndexPath.row];
             }
         }
     }
@@ -447,7 +447,7 @@
 
         NSIndexPath *ret=nil;
         @-100 
-        while ((sm>=0)||(sp<[model sectionsGivenContext:context].count)) {
+        while ((sm>=0)||(sp<[model sectionsGivenContext:v_context].count)) {
             if (sm>=0) {
                 if ([cell canMoveToSection:[self sectionAtIndex:sm] belowCell:(rm?[self cellAtIndex:rm-1 inSectionAtIndex:sm]:nil)]) {
                     ret=[NSIndexPath indexPathForRow:rm-((sm==sourceIndexPath.section)&&(rm>sourceIndexPath.row)?1:0) inSection:sm];
@@ -455,17 +455,17 @@
                 }
                 if ((--rm)<0) {
                     if ((--sm)>=0) {
-                        rm=[[self sectionAtIndex:sm] cellsGivenContext:context].count;
+                        rm=[[self sectionAtIndex:sm] cellsGivenContext:v_context].count;
                     }
                 }
             }
-            if ((sp<[model sectionsGivenContext:context].count)&&((sp!=proposedDestinationIndexPath.section)||(rp!=proposedDestinationIndexPath.row))) {
+            if ((sp<[model sectionsGivenContext:v_context].count)&&((sp!=proposedDestinationIndexPath.section)||(rp!=proposedDestinationIndexPath.row))) {
                 if ([cell canMoveToSection:[self sectionAtIndex:sp] belowCell:(rp?[self cellAtIndex:rp-1 inSectionAtIndex:sp]:nil)]) {
                     ret=[NSIndexPath indexPathForRow:rp-((sp==sourceIndexPath.section)&&(rp>sourceIndexPath.row)?1:0) inSection:sp];
                     break;
                 }
-                if ((++rp)>=[[self sectionAtIndex:sm] cellsGivenContext:context].count+(sp>proposedDestinationIndexPath.section?1:0)) {
-                    if ((++sp)<[model sectionsGivenContext:context].count) {
+                if ((++rp)>=[[self sectionAtIndex:sm] cellsGivenContext:v_context].count+(sp>proposedDestinationIndexPath.section?1:0)) {
+                    if ((++sp)<[model sectionsGivenContext:v_context].count) {
                         rp=0;
                     }
                 }
@@ -483,29 +483,29 @@
         if ((fromIndexPath.section==toIndexPath.section)&&(fromIndexPath.row==toIndexPath.row)) return;
         else if (fromIndexPath.section==toIndexPath.section) {
             NSObject<SectionModel> *m=[self sectionAtIndex:fromIndexPath.section];
-            NSObject<CellModel> *n=[m cellAtIndex:fromIndexPath.row givenContext:context];
-            AtomiclyMutableArray *ama=[m cellsGivenContext:context];
+            NSObject<CellModel> *n=[m cellAtIndex:fromIndexPath.row givenContext:v_context];
+            AtomiclyMutableArray *ama=[m cellsGivenContext:v_context];
             NSMutableArray *a=ama.mutableCopy;
             [ama removeObjectAtIndex:fromIndexPath.row];
             [a removeObjectAtIndex:fromIndexPath.row];
             [ama insertObject:n atIndex:toIndexPath.row+(toIndexPath.row>fromIndexPath.row?1:0)];
             [a insertObject:n atIndex:toIndexPath.row];
-            [m overrideCellsAs:a forContext:context];
+            [m overrideCellsAs:a forContext:v_context];
         }
         else {
             NSObject<SectionModel> *fromm=[self sectionAtIndex:fromIndexPath.section];
-            NSObject<SectionModel> *tom=[model sectionAtIndex:toIndexPath.section givenContext:context];
-            NSObject<CellModel> *n=[fromm cellAtIndex:fromIndexPath.row givenContext:context];
-            AtomiclyMutableArray *fromama=[fromm cellsGivenContext:context];
+            NSObject<SectionModel> *tom=[model sectionAtIndex:toIndexPath.section givenContext:v_context];
+            NSObject<CellModel> *n=[fromm cellAtIndex:fromIndexPath.row givenContext:v_context];
+            AtomiclyMutableArray *fromama=[fromm cellsGivenContext:v_context];
             NSMutableArray *froma=fromama.mutableCopy;
-            AtomiclyMutableArray *toama=[tom cellsGivenContext:context];
+            AtomiclyMutableArray *toama=[tom cellsGivenContext:v_context];
             NSMutableArray *toa=toama.mutableCopy;
             [fromama removeObjectAtIndex:fromIndexPath.row];
             [froma removeObjectAtIndex:fromIndexPath.row];
             [toama insertObject:n atIndex:toIndexPath.row];
             [toa insertObject:n atIndex:toIndexPath.row];
-            [fromm overrideCellsAs:froma forContext:context];
-            [tom overrideCellsAs:toa forContext:context];
+            [fromm overrideCellsAs:froma forContext:v_context];
+            [tom overrideCellsAs:toa forContext:v_context];
         }
         [Model delayCommitsForSeconds:0.5];
     }
@@ -634,7 +634,7 @@
         [self scrollToMiddle];
     }
     -(void)scrollToMiddle {
-        NSArray *cells=[[self sectionAtIndex:0] cellsGivenContext:context];
+        NSArray *cells=[[self sectionAtIndex:0] cellsGivenContext:v_context];
         if (!cells.count) return;
         NSArray *vis=self.table.indexPathsForVisibleRows;
         if (!(vis&&vis.count)) return;

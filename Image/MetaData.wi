@@ -549,7 +549,7 @@ JSMetaProperty<NamedDataListener>
         }
 
     -(init) {
-        @-400 if (parentForInit) [parentForInit.childMetas setObject:self forKey:keyInParentToInitWith];
+        @-400 if (parentForInit) [parentForInit.childMetas setObject:self forKey:v_keyInParentToInitWith];
         @-100 [self meta_attachDictionaryDelegateTo:_metaProperties];
         @400 if ([self conformsToProtocol:@protocol(MetaComponent)]) {
             NSString *key=[(NSObject<MetaComponentClass>*)[self class] metaURLKey];
@@ -578,7 +578,7 @@ JSMetaProperty<NamedDataListener>
 
     -(void)metaEnabledPartialInitWithMeta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {
         parentForInit=aparent;
-        keyInParentToInitWith=keyInParent;
+        v_keyInParentToInitWith=keyInParent;
         metaPropertiesToInitWith=metaProps;
         metaURLWas=[metaProps objectForKey:@"metaurl"];
         frameWas=CGRectMake(0,0,1,1);
@@ -1008,20 +1008,20 @@ MetaEnabled
             selStr=[DataRegistry propertyKeyFromProperty:selStr];
             SEL sel=NSSelectorFromString(selStr);
             if (!viewerKey) {
-                if ([self respondsToSelector:sel]) [self performSelector:sel];
+                if ([self respondsToSelector:sel]) [self performUnknownSelector:sel];
                 else {
                     NSObject<DataModelViewer> *v=self.nearestViewer;
                     if (v) {
-                        if ([v respondsToSelector:sel]) [v performSelector:sel];
-                        else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performSelector:sel];
+                        if ([v respondsToSelector:sel]) [v performUnknownSelector:sel];
+                        else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownSelector:sel];
                     }
                 }
             }
             else {
                 NSObject<DataModelViewer> *v=[self.dataRegistry.allViewers objectForKey:viewerKey];
                 if (v) {
-                    if ([v respondsToSelector:sel]) [v performSelector:sel];
-                    else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performSelector:sel];
+                    if ([v respondsToSelector:sel]) [v performUnknownSelector:sel];
+                    else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownSelector:sel];
                 }
             }
         }
@@ -1263,7 +1263,7 @@ MetaEnabled
     }
 
 UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
-    CGRect framev={return(CGRectMake(0,0,20,20));}
+    CGRect frame={return(CGRectMake(0,0,20,20));}
     -(id)superInitWithBarButtonSystemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action {return([super initWithBarButtonSystemItem:item target:target action:action]);}
     -(id)superInitWithTitle:(NSString*)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithTitle:title style:style target:target action:action]);}
     -(id)superInitWithImage:(UIImage*)image style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithImage:image style:style target:target action:action]);}
@@ -1368,7 +1368,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         self.image=imageView.image;
     }
     -(void)buttonPressed {
-        [self.currentTarget performSelector:self.finalAction];
+        [self.currentTarget performUnknownSelector:self.finalAction];
     }
     
     

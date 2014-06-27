@@ -454,12 +454,11 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
             while ((index!=NSNotFound)&&[is containsIndex:index]) {
                 index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.count-(index+1))]);
             }
-            if (index==NSNotFound) object=[self objectForObject:object];
+            if (index==NSNotFound) [a addObject:[self objectForObject:object]];
             else {
-                object=[followerArray objectAtIndex:index];
+                [a addObject:[followerArray objectAtIndex:index]];
                 [is addIndex:index];
             }
-            [a addObject:object];
         }
         [followerArray setArray:a];
     }

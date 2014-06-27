@@ -4,10 +4,10 @@
     bool retains=nil (readonly,nonatomic)
     SEL otherEndObjectToEndpoint=nil,acceptableSel=nil (readonly,nonatomic)
 
-    -(bool)unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performSelector:acceptableSel withObject:obj]));}
+    -(bool)unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performUnknownSelector:acceptableSel withObject:obj]));}
 
     -(NSObject<LinkEndpoint>*)endpointForObject:(id)obj {
-        if (obj) return((NSObject<LinkEndpoint>*)[self.owner performSelector:otherEndObjectToEndpoint withObject:obj]);
+        if (obj) return((NSObject<LinkEndpoint>*)[self.owner performUnknownSelector:otherEndObjectToEndpoint withObject:obj]);
         else return(nil);
     }
 

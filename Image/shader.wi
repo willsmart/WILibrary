@@ -91,13 +91,13 @@ Shader
             if (a.type!=un_none) [self.program setAttribute:a forKey:[d objectForKey:@"name"]];
         }
         for (NSString *v in self.fragFunctionNames) {
-            NSDictionary *d=[self performSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
+            NSDictionary *d=[self performUnknownSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
             SHFn *fn=[SHFn get];
             fn.body=[d objectForKey:@"body"];
             [self.program setFragFn:fn forKey:[[d objectForKey:@"signature"] substringFromIndex:1]];
         }
         for (NSString *v in self.vertFunctionNames) {
-            NSDictionary *d=[self performSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
+            NSDictionary *d=[self performUnknownSelector:NSSelectorFromString([NSString stringWithFormat:@"%@",v])];
             SHFn *fn=[SHFn get];
             fn.body=[d objectForKey:@"body"];
             [self.program setVertFn:fn forKey:[[d objectForKey:@"signature"] substringFromIndex:1]];

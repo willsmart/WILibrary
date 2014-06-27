@@ -216,7 +216,7 @@
     //Querying an Array
     –(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
     NSUInteger count={return([__array count]);}
-    -(void)getObjects:(__strong id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
+    -(void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
     id lastObject={return([__array lastObject]);}
     –(id)objectAtIndex:(NSUInteger)index {return([__array objectAtIndex:index]);}
     –(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {return([__array objectsAtIndexes:indexes]);}
@@ -465,7 +465,7 @@
     + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WI_CLASS__ alloc] initWithContentsOfURL:url]);}
     + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WI_CLASS__ alloc] initWithDictionary:dictionary]);}
     + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WI_CLASS__ alloc] initWithObject:object forKey:key])
-    + (__WI_CLASS__*)dictionaryWithObjects:(__strong id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count])
+    + (__WI_CLASS__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count])
 
 
 
@@ -639,12 +639,12 @@
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector];
+            [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector withObject:obj];
+            [object performUnknownSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {
@@ -783,12 +783,12 @@ MutableSet : NSMutableSet
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector];
+            [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector withObject:obj];
+            [object performUnknownSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {
@@ -949,7 +949,7 @@ MutableArray : NSMutableArray
         return([__base containsObject:object]);
     }
     –(NSUInteger)count {return([__base count]);}
-    - (void)getObjects:(__strong id[])aBuffer range:(NSRange)aRange {
+    - (void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
         [__base getObjects:aBuffer range:aRange];
     }
     –(void)lastObject {
@@ -1203,12 +1203,12 @@ MutableArray : NSMutableArray
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector];
+            [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (id object in self) if ([object respondsToSelector:selector]) {
-            [object performSelector:selector withObject:obj];
+            [object performUnknownSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {
