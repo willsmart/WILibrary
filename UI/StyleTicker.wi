@@ -1,0 +1,138 @@
+Singletons
+    StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil (dealloc,ivar=styleTicker)
+
+StyleTicker<Ticker,BaseObject> "fn:style"
+    +(StyleTicker*)getDefault {return(g_singletons.styleTicker);}
+
+    -(void)go {
+        [self startWithInterval:4];
+    }
+
+    bool debug=NO
+    
+    -(void)setProp:(NSString*)prop toArgs:(NSDictionary*)args {@-100
+        if (prop) {
+            NSURL *url=[ImageShader urlForArgStringDictionary:args];
+            if (debug) NSLog(@">%@:\n  --  %@",prop,args.description);
+            @0
+            if ([prop hasPrefix:@"prop-"]) {
+                [g_singletons.app.myProperties setObject:url forKey:[prop substringFromIndex:@"prop-".length]];
+            }
+            @100
+        }
+    }
+
+    -(void)setProp:(NSString*)prop toObject:(NSObject*)object {
+        if (prop&&object) {
+            if (debug) NSLog(@">%@ = %@",prop,object.description);
+            [g_singletons.app.myProperties setObject:object forKey:prop];
+        }
+    }
+
+    -(init) {
+        NSError *err=nil;
+        NSString *s=[NSString stringWithContentsOfFile:[__Class__ stylerFileName] encoding:NSUTF8StringEncoding error:&err];
+        if (s) {
+            self.stylerString=s;
+        };
+    }
+
+    +(NSString*)stylerFileName {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        return([documentsDirectory stringByAppendingPathComponent:@"styler.txt"]);
+    }
+
+
+    NSString stylerString=
+        {return(stylerString);}
+        -v{
+            if (v&&![v isEqualToString:stylerString]) {
+                prnt("New Shader string\n");
+                if (debug) prnt(">> %s\n",v.UTF8String);
+                NSError *err=nil;
+                [v writeToFile:[__Class__ stylerFileName] atomically:YES encoding:NSUTF8StringEncoding error:&err];
+
+                stylerString=v;
+                NSString *prop=nil;
+                NSMutableDictionary *commonArgs=[NSMutableDictionary dictionary];
+                NSMutableDictionary *args=[NSMutableDictionary dictionary];
+                NSObject *value=nil;
+                NSArray *a=[v componentsSeparatedByString:@"\n"];
+                NSMutableArray *aa=[NSMutableArray array];
+                NSMutableString *adds=[NSMutableString string];
+                for (NSString *s in a) {
+                    if ([s hasPrefix:@" "]) [adds appendFormat:(adds.length?@"\n%@":@"%@"),s];
+                    else {
+                        [aa addObject:adds.copy];
+                        [adds setString:s];
+                    }
+                }
+                if (adds.length) [aa addObject:adds.copy];
+                a=aa;
+                
+                for (NSString *s in a) {
+                    if ([s hasPrefix:@">"]&&([s rangeOfString:@"\n"].location==NSNotFound)) {
+                        if (prop) {
+                            if (value) {
+                                [self setProp:prop toObject:value];
+                            }
+                            else {
+                                [self setProp:prop toArgs:args];
+                            }
+                        }
+                        if ([prop isEqualToString:@"common"]) {
+                            [commonArgs setDictionary:args];
+                        }
+                        else {
+                            [args setDictionary:commonArgs];
+                        }
+                        prop=[s substringFromIndex:1];
+                        value=nil;
+                    }
+                    if (prop) {
+                        if ([s hasPrefix:@"#"]) {
+                            value=[NSNumber numberWithDouble:[s substringFromIndex:1].doubleValue];
+                        }
+                        else if ([s hasPrefix:@"="]) {
+                            value=[s substringFromIndex:1];
+                        }
+                        else if ([s hasPrefix:@"-"]) {
+                            NSRange r=[s rangeOfString:@"="];
+                            if (r.location!=NSNotFound) {
+                                [args setObject:[@"S" stringByAppendingString:[s substringFromIndex:r.location+r.length]] forKey:[@"m" stringByAppendingString:[s substringWithRange:NSMakeRange(1,r.location-1)]]];
+                            }
+                        }
+                        else if ([s hasPrefix:@"$"]&&([s rangeOfString:@"\n"].location==NSNotFound)) {
+                            NSRange r=[s rangeOfString:@"="];
+                            if (r.location!=NSNotFound) {
+                                [args setObject:[@"U" stringByAppendingString:[s substringFromIndex:r.location+r.length]] forKey:[@"u" stringByAppendingString:[s substringWithRange:NSMakeRange(1,r.location-1)]]];
+                            }
+                        }
+                    }
+                }
+                if (prop) {
+                    if (value) {
+                        [self setProp:prop toObject:value];
+                    }
+                    else {
+                        [self setProp:prop toArgs:args];
+                    }
+                }
+            }
+        }=nil (ivar=stylerString,dealloc)
+
+    -(void)tick {
+        prnt(".");
+        [NSString requestStringWithContentsOfURL:[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"readtext.php?fn=%@",g_singletons.styleName]] encoding:NSUTF8StringEncoding timeoutInterval:2 completion:^void(NSString *s,NSError *err) {
+            //prnt("\nshader req %p %s\n",s,err.description.UTF8String);
+            if (s) {
+                self.stylerString=s;
+                //NSLog(@"doc :\n%@\n",s);
+            }
+            @synchronized(self) {
+                inTick=NO;
+            }
+        }];
+        if (self) return;
+    }

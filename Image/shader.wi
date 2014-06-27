@@ -518,7 +518,7 @@ SHUniform <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:type],@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:(int)type],@"type",nil]);
         }
         -v{
             UniformType typ=type;
@@ -787,7 +787,7 @@ SHAttribute <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:type],@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:(int)type],@"type",nil]);
         }
         -v{
             UniformType typ=type;

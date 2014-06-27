@@ -1,3 +1,5 @@
+"../UI/StyleTicker.wi"
+
 
 UIImage
     -(bool)writeImageToFileWithPath:(NSString*)path {
