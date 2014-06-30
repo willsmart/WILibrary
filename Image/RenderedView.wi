@@ -268,7 +268,7 @@ ShaderTicker
 Singletons
     ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));}=nil (dealloc,ivar)
     NSString description={
-        [ret appendFormat:@"\nImageShaderRequestCaches %p has %d/%d in cache, %d/%d outstanding\n",self.imageShaderRequestCaches,self.imageShaderRequestCaches.imageShaderRequestCache.cache.count,self.imageShaderRequestCaches.shaderImageRequestCache.cache.count,self.imageShaderRequestCaches.imageShaderRequestCache.proxyList.count,self.imageShaderRequestCaches.shaderImageRequestCache.proxyList.count];
+        [ret appendFormat:@"\nImageShaderRequestCaches %p has %d/%d in cache, %d/%d outstanding\n",self.imageShaderRequestCaches,(int)self.imageShaderRequestCaches.imageShaderRequestCache.cache.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.cache.count,(int)self.imageShaderRequestCaches.imageShaderRequestCache.proxyList.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.proxyList.count];
     }
 
     
@@ -506,13 +506,13 @@ ImageRenderer <BaseObject> "fn:render"
 
         SHUniform *u=[shader.program uniformForKey:@"sizeInPixels"];
         float sz[2]={float(u.asVec2[0]),float(u.asVec2[1])};
-        int w=sz[0],h=sz[1];
+        NSInteger w=sz[0],h=sz[1];
         sz[0]=w;sz[1]=h;
 
         //const DWRD *meta=(const DWRD*)metaData.bytes;
-        //int w=meta[0]&0xffff,h=meta[0]>>16;
+        //NSInteger w=meta[0]&0xffff,h=meta[0]>>16;
         if ((w<=0)||(h<=0)||(w>texture.pixelWidth)||(h>texture.pixelHeight)) {
-            NSLog(@"Bad size in render : %d %d",w,h);
+            NSLog(@"Bad size in render : %d %d",(int)w,(int)h);
             [texture unbindFrameBuffer];
             return(nil);
         }
@@ -592,7 +592,7 @@ Singletons
 
     NSString description={
         [ret appendFormat:@"\nImageViewURLRegistry %@\n",self.imageViewURLRegistry.allKeys.description];
-        [ret appendFormat:@"\nURLImageViews x %d : %@\n",self.urlImageViews.urlImageViews.count,self.urlImageViews.urlImageViews.description];
+        [ret appendFormat:@"\nURLImageViews x %d : %@\n",(int)self.urlImageViews.urlImageViews.count,self.urlImageViews.urlImageViews.description];
     }
 
 

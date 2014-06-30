@@ -530,7 +530,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         if (!self.count) return(NO);
         NSArray *was=[__array copy];
         [self willRemoveObjectsWithCount:was.count];
-        for (int i=int(was.count)-1;i>=0;i--) {
+        for (NSInteger i=int(was.count)-1;i>=0;i--) {
             [self willRemoveObject:[was objectAtIndex:i] fromIndex:i];
         }
         [__mutableArray removeAllObjects];
@@ -539,7 +539,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     }
 
     /*-(void)removeObject:(id)object {
-        int i=0,oi=NSNotFound;
+        NSInteger i=0,oi=NSNotFound;
         NSMutableArray *toRemove=nil;
         for (id object2 in self) {
             if ([object2 isEqual:object]) {
@@ -559,7 +559,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         [self stateOK];
     }*/
     /*-(void)removeObject:(id)object inRange:(NSRange)r {
-        int i=0,oi=NSNotFound;
+        NSInteger i=0,oi=NSNotFound;
         NSMutableArray *toRemove=nil;
         for (id object2 in self) {
             if (i>=r.location) {
@@ -598,7 +598,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         return(indexes.count>0);
     }
     /*-(void)removeObjectIdenticalTo:(id)object {
-        int i=0,c=0,oi=NSNotFound;
+        NSInteger i=0,c=0,oi=NSNotFound;
         for (id object2 in __array) {
             if (object2==object) {
                 oi=i;
@@ -608,13 +608,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
             i++;
         }
         [__mutableArray removeObjectIdenticalTo:object];
-        for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
+        for (NSInteger cc=0;cc<c;cc++) [self didRemoveObject:object];
         if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
         else [self allObjectsMoved];
         [self stateOK];
     }*/
     /*-(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-        int i=0,c=0,oi=NSNotFound;
+        NSInteger i=0,c=0,oi=NSNotFound;
         for (id object2 in __array) {
             if (i>=r.location) {
                 if (i>=r.location+r.length) break;
@@ -627,7 +627,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
             i++;
         }
         [__mutableArray removeObjectIdenticalTo:object inRange:r];
-        for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
+        for (NSInteger cc=0;cc<c;cc++) [self didRemoveObject:object];
         if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
         else [self allObjectsMoved];
         [self stateOK];
@@ -636,7 +636,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         for (id object in array) [self removeObject:object];
     }*/
     /*-(void)removeObjectsInRange:(NSRange)r {
-        for (int i=((int)r.length)-1;i>=0;i--) {
+        for (NSInteger i=((int)r.length)-1;i>=0;i--) {
             id object=[__array objectAtIndex:r.location+i];
             [self willRemoveObject:object fromIndex:r.location+i];
             [__mutableArray removeObjectAtIndex:r.location+i];

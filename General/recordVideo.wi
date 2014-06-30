@@ -59,7 +59,7 @@ RecordVideo
        // AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];// output for 32BGRA pixel format, with me as the delegate and a suitable dispatch queue affixed.
         //[output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
         //output.videoSettings=     [NSDictionary dictionaryWithObjectsAndKeys:
-        //                           [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], 
+        //                           @(kCVPixelFormatType_32BGRA),
         //                           kCVPixelBufferPixelFormatTypeKey,
         //                           nil];
 
@@ -73,17 +73,17 @@ RecordVideo
         @100 
         
       //  NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           //    [NSNumber numberWithDouble:1024.0*1024.0], AVVideoAverageBitRateKey,
-    //                                           [NSNumber numberWithDouble:0.0],
+                                           //    @(1024.0*1024.0), AVVideoAverageBitRateKey,
+    //                                           @(0.0),
     //                                           AVVideoQualityKey,
-                                               //[NSNumber numberWithInt:100],
+                                               //@(100),
                                                //AVVideoMaxKeyFrameIntervalKey,
         //                                       nil ];
         
         NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                        AVVideoCodecH264, AVVideoCodecKey,
-                                       [NSNumber numberWithInt:size.width], AVVideoWidthKey,
-                                       [NSNumber numberWithInt:size.height], AVVideoHeightKey,
+                                       @(size.width), AVVideoWidthKey,
+                                       @(size.height), AVVideoHeightKey,
                                       // videoCompressionProps, AVVideoCompressionPropertiesKey,
                                        nil];
         
@@ -92,7 +92,7 @@ RecordVideo
         NSParameterAssert(assetWriterInput);
         assetWriterInput.expectsMediaDataInRealTime = YES;
         NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];
+                                          @(kCVPixelFormatType_32BGRA), kCVPixelBufferPixelFormatTypeKey, nil];
         
         pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterInput sourcePixelBufferAttributes:bufferAttributes];
         
@@ -114,8 +114,8 @@ RecordVideo
             NSDictionary *outputSettings =
             [NSDictionary dictionaryWithObjectsAndKeys:
              
-             [NSNumber numberWithInt:size.width], AVVideoWidthKey,
-             [NSNumber numberWithInt:size.height], AVVideoHeightKey,
+             @(size.width), AVVideoWidthKey,
+             @(size.height), AVVideoHeightKey,
              AVVideoCodecH264, AVVideoCodecKey,
              
              nil];
@@ -132,7 +132,7 @@ RecordVideo
          initWithAssetWriterInput:assetWriterInput 
          sourcePixelBufferAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], 
+          @(kCVPixelFormatType_32ARGB), 
           kCVPixelBufferPixelFormatTypeKey,
           nil]];
         
@@ -155,7 +155,7 @@ RecordVideo
         [assetWriter startWriting];
         [assetWriter startSessionAtSourceTime:CMTimeMakeWithSeconds(CACurrentMediaTime()/speedup, 25)];
             */
-        int w=size.width,h=size.height;
+        NSInteger w=size.width,h=size.height;
         if (self.pixelData.length<4*w*h) [self.pixelData setLength:4*w*h+4];
         if (self.pixelData2.length<4*w*h) [self.pixelData2 setLength:4*w*h+4];
         GLubyte *bytes=(GLubyte*)self.pixelData.mutableBytes;
@@ -168,7 +168,7 @@ RecordVideo
         glFramebufferTexture2DOES(￼, ￼, ￼, ￼, ￼)
         //    [assetWriter finishWriting];
         
-        int w=size.width,h=size.height;
+        NSInteger w=size.width,h=size.height;
         
         CVPixelBufferLockBaseAddress (pixBuf,0);
         GLubyte *base=CVPixelBufferGetBaseAddress(pixBuf);
@@ -176,14 +176,14 @@ RecordVideo
         //    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _storeRenderbuffer); 
         if (base) {
             glReadPixels(0, 0, w,h, GL_RGBA, GL_UNSIGNED_BYTE, base);
-            //        for (int r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
+            //        for (NSInteger r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
             // GLenum err=glGetError();
             
             //GLuint buf[1000];
             //memcpy(buf,base,1000);
             
             / *
-             float x,y;int ox,oy,i,oi;
+             float x,y;NSInteger ox,oy,i,oi;
              for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
              for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
              i=4*(((int)y*w)+(int)x);
@@ -194,7 +194,7 @@ RecordVideo
              }
              * /
             
-            static int frameNumber=0;
+            static NSInteger frameNumber=0;
             //CMTime tim=CMTimeMakeWithSeconds(CACurrentMediaTime(), 50);
             if(assetWriterInput.readyForMoreMediaData)
                 [pixelBufferAdaptor appendPixelBuffer:pixBuf
@@ -207,7 +207,7 @@ RecordVideo
 
 
     -(void)addFrameFromGLFrameBufferWithScale:(CGSize)scale {
-        int w=size.width,h=size.height;
+        NSInteger w=size.width,h=size.height;
 
        // if (self.pixelData.length<w*h*2) self.pixelData.length=w*h*2;
        // GLubyte *pixs=self.pixelData.mutableBytes;
@@ -224,7 +224,7 @@ RecordVideo
         {
             @synchronized (self) {
         
-                static int frame=0;frame++;
+                static NSInteger frame=0;frame++;
                 static float millisWas=0,avfps=0;
                 static double niceMillis=0;
                 float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
@@ -238,7 +238,7 @@ RecordVideo
 
                 CVPixelBufferRef pixelBuffer = NULL;
                 
-                int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
+                NSInteger status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
                 if(status != 0){
                     //could not get a buffer from the pool
                     NSLog(@"Error creating pixel buffer:  status=%d", status);
@@ -273,14 +273,14 @@ RecordVideo
                  glReadPixels(0, 0, w,h, GL_RGBA, GL_UNSIGNED_BYTE, base2);
                  *base=255;
                  memcpy(base+1,base2,4*w*h-1);
-                 //        for (int r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
+                 //        for (NSInteger r=w*4,y=1,y2=(h-1)*r;y<h*r;y+=r,y2-=r) memcpy(base+y,base2+y2,r);
                  GLenum err=glGetError();
                  
                  //GLuint buf[1000];
                  //memcpy(buf,base,1000);
                  
                  / *
-                 float x,y;int ox,oy,i,oi;
+                 float x,y;NSInteger ox,oy,i,oi;
                  for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
                  for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
                  i=4*(((int)y*w)+(int)x);
@@ -291,7 +291,7 @@ RecordVideo
                  }
                  * /
                  
-                 static int frameNumber=0;
+                 static NSInteger frameNumber=0;
                  //CMTime tim=CMTimeMakeWithSeconds(CACurrentMediaTime(), 50);
                  if(assetWriterInput.readyForMoreMediaData)
                  [pixelBufferAdaptor appendPixelBuffer:pixBuf
@@ -324,7 +324,7 @@ RecordVideo
             [assetWriterInput markAsFinished];
             
             // Wait for the video
-            int status = assetWriter.status;
+            NSInteger status = assetWriter.status;
             while (status == AVAssetWriterStatusUnknown) {
                 NSLog(@"Waiting...");
                 [NSThread sleepForTimeInterval:0.5f];
@@ -358,7 +358,7 @@ RecordVideo
     }
 
     +(NSURL*)nextRecordURL {
-        static int i=1;NSString *path;
+        static NSInteger i=1;NSString *path;
         NSDate *today = [NSDate date];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd--a-hh-mm"];

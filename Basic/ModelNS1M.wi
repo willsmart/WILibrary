@@ -8,7 +8,7 @@ WIMyClass
     NSSet keysInHisqname (dealloc,nodef,readonly,ivar=keysInHisqname)
     NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
 
-    -(int)commitProperties:(int)substageIndex {@-3 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=self.keysInHisname.copy;
         
@@ -61,7 +61,7 @@ JustMyClassOverride
         [self markDirty];
     }
     
-    -(int)commitProperties:(int)substageIndex {
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=nil;
     }

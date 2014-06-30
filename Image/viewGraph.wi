@@ -285,7 +285,7 @@ type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
     CGPoint calculatedValue={
         if (self.doneStage) return;
         self.doneStage=YES;
-        int N=0,N2=0,dN2=0;
+        NSInteger N=0,N2=0,dN2=0;
         NSObject<VGPoint> **ppt=g_VGPoints->a;
         ppt2[N2++]=self;
         while (N<N2) {
@@ -809,7 +809,7 @@ VGSumPointPart<VGPointPart>
     CGPoint _position>>position
     bool edgeMoved,positionMoved=nil
     bool movable=nil
-    int graphedIndex,graphedIndexVersion=nil
+    NSInteger graphedIndex,graphedIndexVersion=nil
     owner ~m< VGPoint binding
 
     -(NSObject<VGObject>*)objectForBinding:(NSString*)binding;
@@ -818,7 +818,7 @@ VGSumPointPart<VGPointPart>
         [self.bindings addDelegate:[[ViewGraphBindingDelegate alloc] initWithOwner:self]];
     }
 
-    -(int)commitProperties:(int)substageIndex {@-998 |1@2 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-998 |1@2 
         if ((!positionMoved)&&(previousPosition!=position)) {
             self.positionMoved=YES;
             if ((!edgeMoved)&&(self.graphedIndexVersion==self.graph.graphedIndexVersion)) {
@@ -891,9 +891,9 @@ ViewGraph<BaseObject> "fn:graph"
         [self.items addDelegate:[[ViewGraphItemDelegate alloc] initWithGraph:self]];
     }
 
-    -(void)itemMoved:(int)aindex {
+    -(void)itemMoved:(NSInteger)aindex {
         long foundAtIndex,insertAtIndex;
-        FindArrayElement(int,aindex,movedIndexes->a[index],0,numMovedIndexes-1,foundAtIndex,insertAtIndex,NO);
+        FindArrayElement(NSInteger,aindex,movedIndexes->a[index],0,numMovedIndexes-1,foundAtIndex,insertAtIndex,NO);
         if (foundAtIndex==-1) {
             if (insertAtIndex<numMovedIndexes) {
                 movedIndexes->move(insertAtIndex+1,insertAtIndex,numMovedIndexes-insertAtIndex);
@@ -904,7 +904,7 @@ ViewGraph<BaseObject> "fn:graph"
     }
 
     ArrayOfInts *movedIndexes=nil
-    int numMovedIndexes=nil
+    NSInteger numMovedIndexes=nil
     _VGObjects *vgs,*vgs2=nil
     -(init) {
         movedIndexes=NEW(ArrayOfInts);
@@ -917,10 +917,10 @@ ViewGraph<BaseObject> "fn:graph"
         DELETE(_VGObjects,vgs2);vgs2=nil;
     }
 
-    int graphedIndexVersion=nil
+    NSInteger graphedIndexVersion=nil
     VGObject graphOkForView=nil (readonly,ivar=graphOkForView)
 
-    -(int)commitProperties:(int)substageIndex {@-998 |2@10 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-998 |2@10 
         [self refreshIndexesWithFocus:self.focus];
         [self computePositions];
     }
@@ -932,7 +932,7 @@ ViewGraph<BaseObject> "fn:graph"
         
         vgs2->setUpperBound(self.items.count-1);
         
-        int i=0,en=0;
+        NSInteger i=0,en=0;
         {
             _VGObject vg={focus,focus.position};
             vgs2->a[en]=vg;
@@ -960,7 +960,7 @@ ViewGraph<BaseObject> "fn:graph"
                     minv.graphedIndex=en++;
                 }
             }
-            int chlevel=vgs->a[i].v.level+1;
+            NSInteger chlevel=vgs->a[i].v.level+1;
             for (NSObject<VGPoint> *b in vgs->a[i].v.bindings) {
                 NSObject<VGObject> *v=b.otherEnd;
                 if (v&&(v.graphedIndexVersion!=graphedIndexVersion)) {
@@ -982,7 +982,7 @@ ViewGraph<BaseObject> "fn:graph"
     double moveThreshold=0.1
 
     -(void)computePositions {
-        for (int i=0;i<vgs->num();i++) {
+        for (NSInteger i=0;i<vgs->num();i++) {
             _VGObject &v=vgs->a[i];
             if (v.v.movable&&v.v.positionMoved&&(sqrt((v.position.x-v.v.position.x)*(v.position.x-v.v.position.x)+(v.position.y-v.v.position.y)*(v.position.y-v.v.position.y)>moveThreshold))) {
                 v.position=v.v.position;
@@ -1023,7 +1023,7 @@ ViewGraph<BaseObject> "fn:graph"
     NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (ivar=bindings,readonly,dealloc)
     NSMutableSet bindingsThanChanged=[NSMutableSet set] (ivar=bindingsThanChanged,dealloc,readonly)
 
-    -(int)commitProperties:(int)substageIndex {@100 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@100 
         if (modelObjectChanged) {
             [bindings setObject:(prev?prev:[NSNull null]) forKey:@"Pprv"];
             [bindings setObject:(next?prev:[NSNull null]) forKey:@"Pnxt"];

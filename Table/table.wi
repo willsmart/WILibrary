@@ -30,7 +30,7 @@
     UIView header=nil,footer=nil (readonly)
     float headerHeight,footerHeight (readonly)
 
-    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[8]@80 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-998 |shiftOne[8]@80 
         if (modelObjectHasChanged) self._table.modelObjectHasChanged=YES;
     }
 
@@ -39,7 +39,7 @@
 <CellModel:Commitable>
     bool cellModelDirty=NO
 
-    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[8]@80 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-998 |shiftOne[8]@80 
         if (modelObjectHasChanged) self._section.modelObjectHasChanged=self._section._table.modelObjectHasChanged=YES;
     }
 
@@ -66,7 +66,7 @@
 
     bool canMove,canEdit (readonly)
     UITableViewCellEditingStyle editingStyle (readonly)
-    int indentationLevel=0
+    NSInteger indentationLevel=0
 
     -(bool)canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below;
 
@@ -143,7 +143,7 @@
 
 <CellModelFromNib:CellModel>
     NSString nibName (readonly)
-    int tag=0
+    NSInteger tag=0
     Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} (ivar=uiTVCellClass)
     NSString cellReuseIdentifier=
         {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (ivar=cellReuseIdentifier,readonly!)
@@ -158,7 +158,7 @@
 
 <SectionModelFromNib:SectionModel>
     NSString nibName (readonly)
-    int headerTag=1,footerTag=2
+    NSInteger headerTag=1,footerTag=2
     Class headerClass={return(headerClass?headerClass:[UIView class]);} (ivar=headerClass)
     Class footerClass={return(footerClass?footerClass:[UIView class]);} (ivar=footerClass)
     UIView header={@-999 
@@ -185,7 +185,7 @@
         [model markDirty];
     }
     
-    -(int)commitProperties:(int)substageIndex {@-998 |shiftOne[9]@90 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-998 |shiftOne[9]@90 
         if (model.modelObjectHasChanged) modelObjectHasChanged=YES;
     }
 
@@ -226,7 +226,7 @@
                     NSIndexSet *remCellis=[sec indexesOfCellsThatWereRemovedGivenContext:v_context];
                     if (remCellis) {
                         NSMutableArray *paths=[MutableArray array];
-                        for (int ind=remCellis.firstIndex;ind!=NSNotFound;ind=[remCellis indexGreaterThanIndex:ind]) {
+                        for (NSInteger ind=remCellis.firstIndex;ind!=NSNotFound;ind=[remCellis indexGreaterThanIndex:ind]) {
                             [paths addObject:[NSIndexPath indexPathForRow:ind inSection:si]];
                         }
                         [self.table deleteRowsAtIndexPaths:paths withRowAnimation:self.rowAnimation];
@@ -236,7 +236,7 @@
                     insCellis=[sec indexesOfCellsThatWereAddedGivenContext:v_context];
                     if (insCellis) {
                         NSMutableArray *paths=[MutableArray array];
-                        for (int ind=insCellis.firstIndex;ind!=NSNotFound;ind=[insCellis indexGreaterThanIndex:ind]) {
+                        for (NSInteger ind=insCellis.firstIndex;ind!=NSNotFound;ind=[insCellis indexGreaterThanIndex:ind]) {
                             [paths addObject:[NSIndexPath indexPathForRow:ind inSection:si]];
                         }
                         [self.table insertRowsAtIndexPaths:paths withRowAnimation:self.rowAnimation];
@@ -319,10 +319,10 @@
         }
     }
 
-    -(NSObject<SectionModel>*)sectionAtIndex:(int)index {
+    -(NSObject<SectionModel>*)sectionAtIndex:(NSInteger)index {
         return([model sectionAtIndex:index givenContext:v_context]);
     }
-    -(NSObject<CellModel>*)cellAtIndex:(int)rowIndex inSectionAtIndex:(int)sectionIndex {
+    -(NSObject<CellModel>*)cellAtIndex:(NSInteger)rowIndex inSectionAtIndex:(NSInteger)sectionIndex {
         return([[model sectionAtIndex:sectionIndex givenContext:v_context] cellAtIndex:rowIndex givenContext:v_context]);
     }
     -(NSObject<CellModel>*)cellAtIndexPath:(NSIndexPath*)indexPath {
@@ -337,18 +337,18 @@
 
 
     -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-    {@-999 int ret=0;
+    {@-999 NSInteger ret=0;
         @-10 ret=[model sectionsGivenContext:v_context].count;
         @999 return(ret);
     }
 
     -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-    {@-999 int ret=0;
+    {@-999 NSInteger ret=0;
         @-10 ret=[[self sectionAtIndex:section] cellsGivenContext:v_context].count;
         @999 return(ret);
     }
 
-    -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {@-999 int ret=0;
+    -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {@-999 NSInteger ret=0;
         @-10 ret=[self cellAtIndexPath:indexPath].indentationLevel;
         @999 return(ret);
     }
@@ -408,7 +408,7 @@
     }
 
 
-    -(void)addNewNodeUsingAdderRowInSection:(int)section row:(int)row {
+    -(void)addNewNodeUsingAdderRowInSection:(NSInteger)section row:(NSInteger)row {
     }
 
 
@@ -440,8 +440,8 @@
 
     -(NSIndexPath*)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {@-999 
     
-        int s0=proposedDestinationIndexPath.section,sp=s0,sm=sp;
-        int r0=proposedDestinationIndexPath.row,rp=r0+((s0==sourceIndexPath.section)&&(r0>sourceIndexPath.row)?1:0),rm=rp;
+        NSInteger s0=proposedDestinationIndexPath.section,sp=s0,sm=sp;
+        NSInteger r0=proposedDestinationIndexPath.row,rp=r0+((s0==sourceIndexPath.section)&&(r0>sourceIndexPath.row)?1:0),rm=rp;
         
         NSObject<CellModel> *cell=[self cellAtIndexPath:sourceIndexPath];
 
@@ -526,7 +526,7 @@
         [self resizedHeaderOrRow_rescroll:((NSNumber*)tim.userInfo).boolValue];
     }
     -(void)resizedHeaderOrRowWithDelay:(float)delay rescroll:(bool)rescroll {
-        if (delay>0) [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(resizedHeaderOrRowWithTimer:) userInfo:[NSNumber numberWithBool:rescroll] repeats:NO];
+        if (delay>0) [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(resizedHeaderOrRowWithTimer:) userInfo:@(rescroll) repeats:NO];
         else [self resizedHeaderOrRow_rescroll:rescroll];
     }
 
@@ -565,7 +565,7 @@
         double preHeader=14,postHeader=14,preFooter=0,postFooter=0,preRow=0,postRow=0;
         double y=0,h=1;
         BOOL foundNode=NO;
-        int mi=0;
+        NSInteger mi=0;
         for (NSObject<TableSectionProtocol> *model in self.sectionModels) {
             if ([self.shownModelIndexes containsIndex:mi]) {
                 y+=preHeader+postHeader;
@@ -610,13 +610,13 @@
 
 
 <EndlessCellModel:CellModel>
-    int logicalRowOffset=nil
+    NSInteger logicalRowOffset=nil
     double logicalOffset=nil
 
 <EndlessTableController:TableController>
-    int logicalRowOffset=nil
+    NSInteger logicalRowOffset=nil
     double logicalOffset=nil
-    int endlessRowMultiple=1
+    NSInteger endlessRowMultiple=1
 
     -(void)scrollViewDidScroll:(UIScrollView*)scrollView {
         //[self protectScrollBounds];
@@ -638,16 +638,16 @@
         if (!cells.count) return;
         NSArray *vis=self.table.indexPathsForVisibleRows;
         if (!(vis&&vis.count)) return;
-        int midvis=[(NSIndexPath*)[vis objectAtIndex:(vis.count-1)/2] row];
-        int target=(cells.count-1)/2;
+        NSInteger midvis=[(NSIndexPath*)[vis objectAtIndex:(vis.count-1)/2] row];
+        NSInteger target=(cells.count-1)/2;
         if (target>midvis) target=midvis+floor((target-midvis)/endlessRowMultiple+0.5)*endlessRowMultiple;
         if (target<midvis) target=midvis-floor((midvis-target)/endlessRowMultiple+0.5)*endlessRowMultiple;
         if (midvis==target) return;
         float dif=0;
-        for (int i=target;i<midvis;i++) {
+        for (NSInteger i=target;i<midvis;i++) {
             dif+=[(NSObject<CellModel>*)[cells objectAtIndex:i] cellHeight];
         }
-        for (int i=midvis;i<target;i++) {
+        for (NSInteger i=midvis;i<target;i++) {
             dif-=[(NSObject<CellModel>*)[cells objectAtIndex:i] cellHeight];
         }
         self.logicalRowOffset+=midvis-target;

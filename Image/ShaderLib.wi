@@ -136,12 +136,12 @@ ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
 Singletons
     ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}=nil (dealloc,ivar)
     NSString description={
-        [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,self.shaderURLConversionCache.count];
+        [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,(int)self.shaderURLConversionCache.count];
     }
 
 ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
     float maxSize=100000
-    int maxCount=10000
+    NSInteger maxCount=10000
     -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {
         if ([key isKindOfClass:[NSURL class]]) {
             return([[ShaderURLConversion alloc] initWithURL:(NSURL*)key]);

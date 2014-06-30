@@ -201,7 +201,7 @@ UnionDictionariesMutableArrayDelegate<MutableArrayDelegate,BaseObject>
 
 UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
     dictionaryDelegate >s~ <UnionDictionary> owner
-    int depth;
+    NSInteger depth;
 
     -(init[super init])initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary {
         [adictionary addDelegate:self];
@@ -309,7 +309,7 @@ UnionDictionary<UnionDictionary>
                 __changed=YES;
                 
                 id newObject=nil;
-                for (int d=del.depth+1;d<self.dictionaries.count;d++) {
+                for (NSInteger d=del.depth+1;d<self.dictionaries.count;d++) {
                     newObject=[(NSDictionary*)[self.dictionaries objectAtIndex:d] objectForKey:key];
                     if (newObject&&[self shouldAddObject:newObject forKey:key]) {n.intValue=d;break;}
                 }
@@ -353,7 +353,7 @@ UnionDictionary<UnionDictionary>
         }
         for (id<NSCopying> key in keys) {
             id object=nil;
-            int d=0;
+            NSInteger d=0;
             for (NSDictionary *dict in self.dictionaries) {
                 object=[dict objectForKey:key];
                 if (object&&[self shouldAddObject:object forKey:key]) break;
@@ -437,13 +437,13 @@ UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
 
 
 UnionArrayDelegateCount "-Object"
-    int willCount,didCount=nil
+    NSInteger willCount,didCount=nil
 
 
 UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     arrayDelegate >a~ <UnionArray> owner
 
-    int addIndex,willSkipped,didSkipped=nil
+    NSInteger addIndex,willSkipped,didSkipped=nil
     NSMutableIndexSet unionHasIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionHasIndexes)
     NSMutableIndexSet unionWillHaveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillHaveIndexes)
     NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillRemoveIndexes)
@@ -602,7 +602,7 @@ UnionArray<UnionArray>
         [tmpis removeAllIndexes];
         [tmpa removeAllObjects];
         
-        int numAdded=0;
+        NSInteger numAdded=0;
         for (NSArray *a in self.arrays) {
             UnionArrayDelegate *del=nil;
             for (UnionArrayDelegate *del2 in self.arrayDelegates) if (del2.delegateForArray==a) {del=del2;break;}
@@ -636,7 +636,7 @@ UnionArray<UnionArray>
     -(void)doRemoveObjects {
         [tmpis removeAllIndexes];
         
-        for (int ai=self.arrays.count-1;ai>=0;ai--) {
+        for (NSInteger ai=self.arrays.count-1;ai>=0;ai--) {
             NSArray *a=[self.arrays objectAtIndex:ai];
 
             UnionArrayDelegate *del=nil;
@@ -698,7 +698,7 @@ UnionArray<UnionArray>
 
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@500 
         bool removed=NO;
-        for (int i=self.arrayDelegates.count-1;i>=0;i--) {
+        for (NSInteger i=self.arrayDelegates.count-1;i>=0;i--) {
             UnionArrayDelegate *del=[self.arrayDelegates objectAtIndex:i];
             if ((del.addIndex<=index)&&(del.addIndex+del.unionHasIndexes.count>index)) {
                 NSUInteger delIndex=del.unionHasIndexes.firstIndex;
@@ -749,7 +749,7 @@ UnionArray<UnionArray>
 
         [__unionArray _removeAllObjects];
         
-        int ai=0;
+        NSInteger ai=0;
         for (NSArray *a in self.arrays) {
             UnionArrayDelegate *del=[self arrayDelegateAtIndex:ai++];
             [del.unionHasIndexes removeAllIndexes];

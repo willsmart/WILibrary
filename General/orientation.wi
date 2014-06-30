@@ -14,7 +14,7 @@ Orientation<BaseObject>
     bool useReferenceFrame=nil
 
     float zoomScale=0.1
-    int zoomLevels=10
+    NSInteger zoomLevels=10
     float currentZoom=1,currentRotateDegrees=0
     CGPoint currentPan=nil
     float rotateMin=2 (readonly,ivar)

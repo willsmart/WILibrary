@@ -184,8 +184,8 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         else return(NO);
     }
 
-    -(int)goForSeconds:(float)sec {
-        int ret=0;
+    -(NSInteger)goForSeconds:(float)sec {
+        NSInteger ret=0;
         NSDate *start = [NSDate date];
         do {
             if (![self goNext]) break;
@@ -223,17 +223,17 @@ LRUCacheItem<LRUCacheItem> "fn:util"
 
 LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     float maxSize=100000000
-    int maxCount=1000000
+    NSInteger maxCount=1000000
 
 <LRUCache:List,MinimalMutableDictionary,Codable>
     -(void)clear {@100 
         [self removeAllObjects];
         totalSize=0;
     }
-    int imi=1;
+    NSInteger imi=1;
     -(NSString*)nextPath {
         NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        return([dir stringByAppendingFormat:@"/render_%04d.png",imi++]);
+        return([dir stringByAppendingFormat:@"/render_%04d.png",(int)imi++]);
     }
     NSDictionary asDictionary=
         {
@@ -243,9 +243,9 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                 if ([item.object isKindOfClass:[UIImage class]]) {
                     //[(UIImage*)item.object writeImageToFileWithPath:[self nextPath]];
                     [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:item.size],@"size",
-                        [NSNumber numberWithFloat:item.age],@"age",
-                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        @(item.size),@"size",
+                        @(item.age),@"age",
+                        @(item.initialSize),@"initialSize",
                         UIImagePNGRepresentation((UIImage*)item.object),@"objectImage",
                         nil] forKey:item._cacheKey];
                     [list addObject:item._cacheKey];
@@ -259,9 +259,9 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                     [image unlockFocus];
                     NSData *data=[bitmapRep representationUsingType:NSPNGFileType properties:nil];
                     [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:item.size],@"size",
-                        [NSNumber numberWithFloat:item.age],@"age",
-                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        @(item.size),@"size",
+                        @(item.age),@"age",
+                        @(item.initialSize),@"initialSize",
                         data,@"objectImage",
                         nil] forKey:item._cacheKey];
                     [list addObject:item._cacheKey];
@@ -269,9 +269,9 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
                 else )
                 if ([item.object conformsToProtocol:@protocol(NSCoding)]) {
                     [ret setObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithFloat:item.size],@"size",
-                        [NSNumber numberWithFloat:item.age],@"age",
-                        [NSNumber numberWithFloat:item.initialSize],@"initialSize",
+                        @(item.size),@"size",
+                        @(item.age),@"age",
+                        @(item.initialSize),@"initialSize",
                         item.object,@"object",
                         nil] forKey:item._cacheKey];
                     [list addObject:item._cacheKey];
@@ -354,7 +354,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     }
     
     float totalSize=0,maxSize
-    int maxCount
+    NSInteger maxCount
     
     -(id)objectForKey:(id<NSCopying>)key {@-100 
         NSObject<LRUCacheItem> *item=[__dictionary objectForKey:key];

@@ -13,7 +13,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
 
 
 <RefCountedObject>
-    int totalRetainCount=1,modelRetaincount=0 (readonly)
+    NSInteger totalRetainCount=1,modelRetaincount=0 (readonly)
     bool noMOForNextRetain=NO
 
     -(void)dealloc {
@@ -23,7 +23,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
     }
     -(void)w_release {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
@@ -33,21 +33,21 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
         totalRetainCount++;
         if (noMOForNextRetain) noMOForNextRetain=NO;
         else if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
         }
     }
     -(void)modeladd {
         if ((++modelRetaincount)&&(totalRetainCount==modelRetaincount)) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
     }
     -(void)modelsub {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount)) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
         }
@@ -59,12 +59,12 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
     -(void)modelautorelease {
         modelRetaincount--;
         if (!modelRetaincount) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
             modelRetaincount=c;
         }
         else if (totalRetainCount==modelRetaincount) {
-            int c=modelRetaincount;modelRetaincount=0;
+            NSInteger c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
@@ -94,11 +94,11 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
 
     sourceCommitter >s< <Commitable> sinkCommitter
 
-    -(int)commitProperties:(int)substageIndex {@-999 int implementedStages=1@-990 ;
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-999 NSInteger implementedStages=1@-990 ;
         @-5 switch(substageIndex) {case 0:
             modelObjectHasChanged=alwaysChangedIfSourceChanged;{
         @5 }break;case 1:{@15 }break;case 2:{@25 }break;case 3:{@35 }break;case 4:{@45 }break;case 5:{@55 }break;case 6:{@65 }break;case 7:{@75 }break;case 8:{@85 }break;case 9:{@95 }break;case 10:{@105 }default:break;}
-        @900 int ret;for (ret=substageIndex+1;(ret<=10)&&!(implementedStages&shiftOne[ret]);ret++);
+        @900 NSInteger ret;for (ret=substageIndex+1;(ret<=10)&&!(implementedStages&shiftOne[ret]);ret++);
         if (ret>10) {
             ret=-1;
         @910 if (modelObjectHasChanged) version++;
@@ -327,10 +327,10 @@ Model<Model,Ticker,Waiter> "fn:model"
             @0 
             commitStage=stage_commitProperties;
             NSMutableSet *changed=[[MutableSet alloc] initWithCapacity:_dirties.count];
-            for (int nxt=1,now=0;nxt>=0;now=nxt) {
+            for (NSInteger nxt=1,now=0;nxt>=0;now=nxt) {
                 nxt=-1;
                 for (NSObject<Commitable>* o in _dirties) if (!o.doneStage) {
-                    int i=[o commitProperties:now];
+                    NSInteger i=[o commitProperties:now];
                     if (i>now) {
                         if ((nxt==-1)||(nxt>i)) nxt=i;
                     }

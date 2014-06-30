@@ -61,7 +61,7 @@ MetaRenderer <BaseObject> "fn:meta"
 Singletons
     MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}=nil (dealloc,ivar)
     NSString description={
-        [ret appendFormat:@"\nMetaRequestCache %p has %d in cache\n",self.metaRequestCache,self.metaRequestCache.cache.count];
+        [ret appendFormat:@"\nMetaRequestCache %p has %d in cache\n",self.metaRequestCache,(int)self.metaRequestCache.cache.count];
     }
 
     NSRegularExpression MetaEnabled_szregex=nil (readonly,dealloc)
@@ -101,7 +101,7 @@ Singletons
 
     NSString description={
         [ret appendFormat:@"\nMetaEnabledRegistry %@\n",self.metaEnabledURLRegistry.allKeys.description];
-        [ret appendFormat:@"\nURLMetaEnableds x %d : %@\n",self.urlMetaEnableds.urlMetaEnableds.count,self.urlMetaEnableds.urlMetaEnableds.description];
+        [ret appendFormat:@"\nURLMetaEnableds x %d : %@\n",(int)self.urlMetaEnableds.urlMetaEnableds.count,self.urlMetaEnableds.urlMetaEnableds.description];
     }
 
 
@@ -303,7 +303,7 @@ JSMetaProperty<NamedDataListener>
                     else if ([key hasPrefix:@"js~"]) {
                         if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
-                        int i=0;for (NSString *s in ss) if (i++) {
+                        NSInteger i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
                                 [self.propertyInStates setObject:ps forKey:s];
                             }
@@ -323,7 +323,7 @@ JSMetaProperty<NamedDataListener>
                     else if ([key hasPrefix:@"prop~"]) {
                         if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
-                        int i=0;for (NSString *s in ss) if (i++) {
+                        NSInteger i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
                                 [self.propertyInStates setObject:ps forKey:s];
                             }
@@ -335,7 +335,7 @@ JSMetaProperty<NamedDataListener>
                 JSMetaPropertyInState *ps=[[JSMetaPropertyInState alloc] initWithJs:nil value:[d objectForKey:key] var:nil];
                 if (!statev) statev=@"app::state";
                 NSArray *ss=[key componentsSeparatedByString:@"~"];
-                int i=0;for (NSString *s in ss) if (i++) {
+                NSInteger i=0;for (NSString *s in ss) if (i++) {
                     if (![self propertyInStateForKey:s]) {
                         [self.propertyInStates setObject:ps forKey:s];
                     }
@@ -365,17 +365,17 @@ JSMetaProperty<NamedDataListener>
         if (self.propertyInStates.count) {
             NSMutableArray *a=[[NSMutableArray alloc] init];
             for (NSString *stateName in self.propertyInStates) if ([stateName isKindOfClass:[NSString class]]) {
-                int dots=0,chars=0,stars=0;
-                for (int i=0;i<stateName.length;i++) {
+                NSInteger dots=0,chars=0,stars=0;
+                for (NSInteger i=0;i<stateName.length;i++) {
                     unichar c=[stateName characterAtIndex:i];
                     if (c=='*') stars++;
                     else if (c=='.') dots++;
                     else chars++;
                 }
-                int i=0;
+                NSInteger i=0;
                 for (NSString *s in a) {
-                    int dots2=0,chars2=0,stars2=0;
-                    for (int i=0;i<s.length;i++) {
+                    NSInteger dots2=0,chars2=0,stars2=0;
+                    for (NSInteger i=0;i<s.length;i++) {
                         unichar c=[s characterAtIndex:i];
                         if (c=='*') stars2++;
                         else if (c=='.') dots2++;
@@ -931,7 +931,7 @@ MetaEnabled
                     break;
                 }
                 if (allNum) {
-                    int i=0;
+                    NSInteger i=0;
                     for (NSObject *oo in (NSArray*)o) {
                         ((CGFloat*)&t.m11)[i++]=((NSNumber*)oo).floatValue;
                     }
@@ -1057,7 +1057,7 @@ MetaEnabled
             NSString *font=[self._metaProperties objectForKey:@"font"];
             if (![font isKindOfClass:[NSString class]]) font=@"Helvetica neue";
             NSNumber *sz=[self._metaProperties objectForKey:@"fontsize"];
-            if (!([sz isKindOfClass:[NSNumber class]]&&(sz.floatValue>0))) sz=[NSNumber numberWithFloat:16];
+            if (!([sz isKindOfClass:[NSNumber class]]&&(sz.floatValue>0))) sz=@(16);
             self.font=[UIFont fontWithName:[g_singletons.fontList fontNameMatchingPattern:font] size:sz.floatValue];
         }
         if ([keyStr isEqualToString:@"fontcol"]) {

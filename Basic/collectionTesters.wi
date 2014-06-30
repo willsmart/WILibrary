@@ -589,28 +589,28 @@
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
@@ -887,28 +887,28 @@ MutableSet : NSMutableSet
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
@@ -1036,7 +1036,7 @@ MutableArray : NSMutableArray
         for (id object in array) [self removeObject:object];
     }
     –(void)removeObjectsInRange:(NSRange)range {
-        for (int i=0;i<range.length;i++) [self removeObjectAtIndex:range.location];
+        for (NSInteger i=0;i<range.length;i++) [self removeObjectAtIndex:range.location];
     }
     –(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)object {
         [self removeObjectAtIndex:index];
@@ -1307,28 +1307,28 @@ MutableArray : NSMutableArray
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        int ret=0;
+        NSInteger ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        int ret=0;
+        NSInteger ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }

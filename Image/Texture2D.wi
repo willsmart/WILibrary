@@ -64,7 +64,7 @@ Texture2D <BaseObject> "fn:render"
         [EAGLContext setCurrentContext:self.context];
         if ((self.context)&&(self.frameBuffer!=GL_INVALID_VALUE)) {
             glBindFramebufferOES(GL_FRAMEBUFFER_OES, frameBuffer);
-            glViewport(0, 0, pixelWidth, pixelHeight);
+            glViewport(0, 0, (int)pixelWidth, (int)pixelHeight);
             return(YES);
         }
         else return(NO);
@@ -99,7 +99,7 @@ Texture2D <BaseObject> "fn:render"
 
 
     NSString description={
-      return([NSString stringWithFormat:@"<%@ = %p | Name = %i | Dimensions = %ix%i | Coordinates = (%.2f, %.2f)>", [self class], self, glname, pixelWidth, pixelHeight, maxS, maxT]);
+      return([NSString stringWithFormat:@"<%@ = %p | Name = %i | Dimensions = %ix%i | Coordinates = (%.2f, %.2f)>", [self class], self, glname, (int)pixelWidth, (int)pixelHeight, maxS, maxT]);
     }
 
     -(init) {
@@ -132,7 +132,7 @@ Texture2D <BaseObject> "fn:render"
         maxT = size.height / (float)height;
         
         if (!data) {
-            int Bpp;
+            NSInteger Bpp;
             switch(pixelFormat) {                    
                 case kTexture2DPixelFormat_RGBA8888:Bpp=4;break;
                 case kTexture2DPixelFormat_RGB565:Bpp=2;break;
@@ -151,13 +151,13 @@ Texture2D <BaseObject> "fn:render"
         switch(pixelFormat) {
                     
           case kTexture2DPixelFormat_RGBA8888:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)width, (int)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             break;
           case kTexture2DPixelFormat_RGB565:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)width, (int) height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data);
             break;
           case kTexture2DPixelFormat_A8:
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int)width, (int) height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
             break;
           default:
             [NSException raise:NSInternalInconsistencyException format:@""];
@@ -173,7 +173,7 @@ Texture2D <BaseObject> "fn:render"
 
 
 
-    -(DWRD*)pixelsWithWidth:(int)w height:(int)h {
+    -(DWRD*)pixelsWithWidth:(NSInteger)w height:(NSInteger)h {
         if (self.frameBuffer==GL_INVALID_VALUE) return(nil);
         GLint fmt,fmt2;
         NSUInteger fmtSize;
@@ -189,12 +189,12 @@ Texture2D <BaseObject> "fn:render"
         if (!self.pixelsData) self.pixelsData=[NSMutableData dataWithLength:len];
         else if (self.pixelsData.length!=len) self.pixelsData.length=len;
 
-        glReadPixels(0,0,w,h,fmt,fmt2,self.pixelsData.mutableBytes);
+        glReadPixels(0,0,(GLint)w,(GLint)h,fmt,fmt2,self.pixelsData.mutableBytes);
         
         if (pixelFormat==kTexture2DPixelFormat_RGB565) {
             WRD *from=((WRD*)self.pixelsData.mutableBytes)+w*h;
             DWRD *to=((DWRD*)self.pixelsData.mutableBytes)+w*h;
-            for (int i=0;i<w*h;i++) {
+            for (NSInteger i=0;i<w*h;i++) {
                 from--;to--;
                 DWRD dw=*from;
                 *to=((dw&0x1f)<<11)|((dw&0x7e0)<<13)|((dw&0xf800)<<16)|0xff;
@@ -205,11 +205,11 @@ Texture2D <BaseObject> "fn:render"
     }
 
 
-    -(UIImage*)uiImageWithWidth:(int)w height:(int)h {
+    -(UIImage*)uiImageWithWidth:(NSInteger)w height:(NSInteger)h {
         return([__Class__ uiImageWithWidth:w height:h data:[self pixelsWithWidth:w height:h] pixelFormat:pixelFormat]);
     }
 
-    +(UIImage*)uiImageWithWidth:(int)w height:(int)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
+    +(UIImage*)uiImageWithWidth:(NSInteger)w height:(NSInteger)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
         NSUInteger fmtSize;
         CGColorSpaceRef colorSpaceRef;
         CGBitmapInfo bitmapInfo;
@@ -257,7 +257,7 @@ Texture2D <BaseObject> "fn:render"
     UIImage uiImage=
         {
             if (!v__uiImage) {
-                self.uiImage=[self uiImageWithWidth:pixelWidth height:pixelHeight];
+                self.uiImage=[self uiImageWithWidth:(NSInteger)pixelWidth height:(NSInteger)pixelHeight];
             }
             return(v__uiImage);
         }
@@ -415,10 +415,10 @@ Texture2D <BaseObject> "fn:render"
         GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
         GLfloat width = pixelWidth*maxS,height=pixelHeight* maxT;
         GLfloat vertices[]={
-            -width/2+point.x,-height/2+point.y,0.0,
-            width/2+point.x,-height/2+point.y,0.0,
-            -width/2+point.x,height/2+point.y,0.0,
-            width/2+point.x,height/2+point.y,0.0};
+            GLfloat(-width/2+point.x),GLfloat(-height/2+point.y),0.0,
+            GLfloat(width/2+point.x),GLfloat(-height/2+point.y),0.0,
+            GLfloat(-width/2+point.x),GLfloat(height/2+point.y),0.0,
+            GLfloat(width/2+point.x),GLfloat(height/2+point.y),0.0};
 
         glBindTexture(GL_TEXTURE_2D, glname);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
@@ -430,10 +430,10 @@ Texture2D <BaseObject> "fn:render"
     - (void) drawInRect:(CGRect)rect {
         GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
         GLfloat  vertices[] = {
-            rect.origin.x,rect.origin.y,0.0,
-            rect.origin.x+rect.size.width,rect.origin.y,0.0,
-            rect.origin.x,rect.origin.y+rect.size.height,0.0,
-            rect.origin.x+rect.size.width,rect.origin.y+rect.size.height,0.0};
+            (GLfloat)rect.origin.x,(GLfloat)rect.origin.y,0.0,
+            (GLfloat)rect.origin.x+(GLfloat)rect.size.width,(GLfloat)rect.origin.y,0.0,
+            (GLfloat)rect.origin.x,(GLfloat)rect.origin.y+(GLfloat)rect.size.height,0.0,
+            (GLfloat)rect.origin.x+(GLfloat)rect.size.width,(GLfloat)rect.origin.y+(GLfloat)rect.size.height,0.0};
 
         glBindTexture(GL_TEXTURE_2D, glname);
         glVertexPointer(3, GL_FLOAT, 0, vertices);

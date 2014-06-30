@@ -354,7 +354,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         }
     }
     -(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
-        for (int i=0;i<MIN(r.length,arrayRange.length);i++) {
+        for (NSInteger i=0;i<MIN(r.length,arrayRange.length);i++) {
             [self replaceObjectAtIndex:i+r.location withObject:[array objectAtIndex:i+arrayRange.location]];
         }
         for (NSUInteger i=arrayRange.length;i<r.length;i++) [self removeObjectAtIndex:i+r.location];

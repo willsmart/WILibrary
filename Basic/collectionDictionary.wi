@@ -584,7 +584,7 @@ MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
 keyPrefix=v;
             [self refreshFollowerDictionary];
         }=nil (dealloc,ivar=keyPrefix)
-    int keepKeyPrefixSuffixLength=
+    NSInteger keepKeyPrefixSuffixLength=
         {return(keepKeyPrefixSuffixLength);}
         -v{
             keepKeyPrefixSuffixLength=v;

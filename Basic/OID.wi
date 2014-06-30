@@ -21,12 +21,12 @@
         pthread_key_t ThreadKey_key_keyName=nil;
         valueType getThreadValueNamedKeyName() {
             if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
-            return((valueType)pthread_getspecific(ThreadKey_key_keyName));
+            return((valueType)(ULL)pthread_getspecific(ThreadKey_key_keyName));
         }
         valueType setThreadValueNamedKeyName(valueType v) {
             if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
-            valueType ret=(valueType)pthread_getspecific(ThreadKey_key_keyName);
-            pthread_setspecific(ThreadKey_key_keyName,(const void*)v);
+            valueType ret=(valueType)(ULL)pthread_getspecific(ThreadKey_key_keyName);
+            pthread_setspecific(ThreadKey_key_keyName,(const void*)(ULL)v);
             return(ret);
         }
     }
@@ -38,10 +38,10 @@
 #define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
 */
 
-ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
+ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
     -decl:{
-        extern int g_prevThreadId;
-        int getThreadId();
+        extern NSInteger g_prevThreadId;
+        NSInteger getThreadId();
         ULL getThreadMask();
 
         bool authorized_thread(ULL&mask);
@@ -50,14 +50,14 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
     }
     -decl:impl:{
-        int g_prevThreadId=0;
+        NSInteger g_prevThreadId=0;
         ULL getThreadMask() {
-            int ret=getThreadValueNamedId();
+            NSInteger ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(1LL<<(ret-1));
         }
-        int getThreadId() {
-            int ret=getThreadValueNamedId();
+        NSInteger getThreadId() {
+            NSInteger ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(ret);
         }
@@ -156,7 +156,7 @@ Singletons<Ticker> "-Object" "fn:object"
         g_classCountht=classCountht=NEWCONSb(QuickHashTableOfClassCounts,(ci,nil,2048));
         g_classCountArray=classCountArray=NEWCONSb(ArrayOfClassCounts,(256));
         @0
-        for (int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
+        for (NSInteger i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
     }
 
     NSString description={@-999
@@ -192,7 +192,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
         IterateArray(ClassCount*__unsafe_unretained,cc,*g_classCountArray,
             NSString *key=cc.name;
-            [d setObject:[NSNumber numberWithInt:(int)cc.count] forKey:key];
+            [d setObject:@(cc.count) forKey:key];
         );
         [self.typeCountHistory insertObject:d atIndex:0];
     }
@@ -201,11 +201,11 @@ Singletons<Ticker> "-Object" "fn:object"
 
 /*interfaces:
  
-    extern void retainFn(NSObject *me,int &rc,int &arc);
-    extern void releaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
-    extern void autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease);
-    extern void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
-    extern void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci);
+    extern void retainFn(NSObject *me,NSInteger &rc,NSInteger &arc);
+    extern void releaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease);
+    extern void autoreleaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease);
+    extern void objInitFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci);
+    extern void deallocFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci);
     extern NSString *g_objectName(id object);
     extern const char *g_cobjectName(id object);
     
@@ -214,12 +214,12 @@ Singletons<Ticker> "-Object" "fn:object"
 
 
  
-    void retainFn(NSObject *me,int &rc,int &arc) {
+    void retainFn(NSObject *me,NSInteger &rc,NSInteger &arc) {
         rc++;
         objectRetained(me);
     }
     
-    void releaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease) {
+    void releaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease) {
         rc--;
         bool isAutorelease=NO;
         if (debugAutorelease) {
@@ -244,14 +244,14 @@ Singletons<Ticker> "-Object" "fn:object"
         else objectReleased(me);
      }
     
-    void autoreleaseFn(NSObject *me,int &rc,int &arc,bool debugAutorelease) {
+    void autoreleaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease) {
         if (debugAutorelease) {
             arc++;
             objectAutoreleasePending(me);
         }
     }
 
-    void objInitFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci) {
+    void objInitFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci) {
         rc=1;arc=0;
         ClassCount *c=g_classCountForClass([me class]);
         c.count++;
@@ -261,7 +261,7 @@ Singletons<Ticker> "-Object" "fn:object"
         objectAllocated(me);
     }
  
-    void deallocFn(NSObject *me,int &rc,int &arc,LL &mei,LL &meci) {
+    void deallocFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci) {
         if (mei==0) {
             ERR("!!!! error with object %p of type %s, the object was never inited",me,class_getName([me class]));
             return;
@@ -301,7 +301,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
     bool debugAutorelease=nil
 
-    int ___rc=nil,___arc=nil
+    NSInteger ___rc=nil,___arc=nil
 
     LL __owner_context=nil (ivar=__owner_context)
 
@@ -351,9 +351,9 @@ Singletons
     #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((__bridge const void*)self)!=(__bridge const void*)g_trace)&&(((__bridge const void*)self)!=(__bridge const void*)[g_trace class]),__trcfnnm);
     
     
-    void addTrace(NSString *trace,int depth);
-    void addTraceCString(const char *trace,int depth);
-    void finishDepth(int depth);
+    void addTrace(NSString *trace,NSInteger depth);
+    void addTraceCString(const char *trace,NSInteger depth);
+    void finishDepth(NSInteger depth);
     void ADDOWNER(id object,id owner);
     void REMOVEOWNER(id object,id owner);
     void objectRetained(id object);
@@ -366,26 +366,26 @@ Singletons
     
     class TraceFunctionTracker {
         public:
-            int depth;
+            LL depth;
             static pthread_key_t key;
             TraceFunctionTracker(bool en,const char *fnName) {
                 if (!en) depth=-1;
                 else {
                     if (!key) pthread_key_create(&key,nil);
-                    depth=((int)(ULL)pthread_getspecific(key))+1;
+                    depth=((LL)pthread_getspecific(key))+1;
                     if (depth<0) depth=0;
                     pthread_setspecific(key,(const void*)depth);
-                    addTraceCString(fnName,depth);
+                    addTraceCString(fnName,(int)depth);
                 }
             }
             ~TraceFunctionTracker() {
                 if (depth>=0) {
-                    finishDepth(depth);
-                    pthread_setspecific(key,(const void*)(ULL)(depth-1));
+                    finishDepth((int)depth);
+                    pthread_setspecific(key,(const void*)(LL)(depth-1));
                 }
             }
     };
-    extern int g_numNamedThreads;
+    extern NSInteger g_numNamedThreads;
     
 */
 /*interfaces:impl:
@@ -393,24 +393,24 @@ Singletons
     Trace *g_trace=nil;
     NSMutableString *g_newTraces=nil;
     pthread_key_t TraceFunctionTracker::key=nil;
-    int g_numNamedThreads=0;
+    NSInteger g_numNamedThreads=0;
     
     
     
-    void addTrace(NSString *trace,int depth) {
-        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+    void addTrace(NSString *trace,NSInteger depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON],
             trace.JSONString];
     }
     
-    void addTraceCString(const char *trace,int depth) {
-        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+    void addTraceCString(const char *trace,NSInteger depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON],
-            [NSString JSONunicharsStringForCString:trace withLength:(int)strlen(trace) useTmpDataObject:nil retLength:nil]];
+            [NSString JSONunicharsStringForCString:trace withLength:(NSInteger)strlen(trace) useTmpDataObject:nil retLength:nil]];
     }
     
-    void finishDepth(int depth) {
-        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",depth,g_sequence++,CACurrentMediaTime(),
+    void finishDepth(NSInteger depth) {
+        [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON]];
     }
 
@@ -450,11 +450,11 @@ Singletons
  
 */
 Trace<Ticker,BaseObject>
-    +(NSString*)callStackStringFromDepth:(int)fromDepth toDepth:(int)toDepth {
+    +(NSString*)callStackStringFromDepth:(NSInteger)fromDepth toDepth:(NSInteger)toDepth {
         NSMutableString *ret=[NSMutableString string];
         NSArray *__a=[NSThread callStackSymbols];
         //NSLog(__a.description);
-        for (int d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
+        for (NSInteger d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
             NSString *s=[__a objectAtIndex:d];
             NSUInteger st=[s rangeOfString:@"["].location;
             NSUInteger en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
@@ -501,7 +501,7 @@ Trace<Ticker,BaseObject>
     +(NSString*)threadNameJSON {
         NSString *nm=(NSString*)[[NSThread currentThread].threadDictionary objectForKey:@"jsonname"];
         if (!nm) {
-            [[NSThread currentThread].threadDictionary setObject:nm=[[NSString stringWithFormat:@"%d%@",++g_numNamedThreads,[NSThread currentThread].name] JSONString] forKey:@"jsonname"];
+            [[NSThread currentThread].threadDictionary setObject:nm=[[NSString stringWithFormat:@"%d%@",(int)++g_numNamedThreads,[NSThread currentThread].name] JSONString] forKey:@"jsonname"];
         }
         return(nm);
     }
@@ -562,8 +562,8 @@ ObjectGraph<Ticker,BaseObject>
     
     bool savingGraph={return(v_tim!=nil);}
 
-    -(void)object:(LL)owner ownsObject:(LL)object count:(int)count {
-        [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,count];
+    -(void)object:(LL)owner ownsObject:(LL)object count:(NSInteger)count {
+        [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,(int)count];
     }
 
     bool not_first=nil

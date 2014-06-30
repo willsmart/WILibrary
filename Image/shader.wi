@@ -44,7 +44,7 @@ ShaderData <BaseObject> {}
 Parse <BaseObject> {}
 
 Shader
-    int numberOfVertices=
+    GLint numberOfVertices=
         {return(self.program.vertexCount);}
         -v{self.program.vertexCount=v;}
     NSString expressionRaw=nil,expression=nil,compileErrors=nil
@@ -264,7 +264,7 @@ type Union128byte "typedef:
     union {
         char c[128];
         float f[32];
-        int i[32];
+        GLint i[32];
     }
 "
 
@@ -295,7 +295,7 @@ SHUniform <BaseObject> "fn:shader"
     -(void)copyFrom:(SHUniform*)copy {
         self.type=copy.type;
         enabled=copy.enabled;
-        int len=0;
+        NSInteger len=0;
         switch (type) {
             case un_bool:len=sizeof(bool)*1;break;
             case un_bvec2:len=sizeof(bool)*2;break;
@@ -405,7 +405,7 @@ SHUniform <BaseObject> "fn:shader"
         }
 
     ULL ullHash={
-        int len=0;
+        NSInteger len=0;
         switch (type) {
             case un_bvec2:len=sizeof(bool)*2;break;
             case un_bvec3:len=sizeof(bool)*3;break;
@@ -425,19 +425,19 @@ SHUniform <BaseObject> "fn:shader"
     }
         
     bool transpose=NO
-    int glname=INVALIDSHADER
+    GLint glname=INVALIDSHADER
 
     -(init) {
         enabled=YES;
         type=un_none;
     }
-    int asSampler2D=
-        {self.type=un_sampler2D;return(*(int*)_buf.c);}
-        -v{self.type=un_sampler2D;(*(int*)_buf.c)=v;}
+    GLint asSampler2D=
+        {self.type=un_sampler2D;return(*(GLint*)_buf.c);}
+        -v{self.type=un_sampler2D;(*(GLint*)_buf.c)=v;}
         
-    int asSamplerCube=
-        {self.type=un_samplerCube;return(*(int*)_buf.c);}
-        -v{self.type=un_samplerCube;(*(int*)_buf.c)=v;}
+    GLint asSamplerCube=
+        {self.type=un_samplerCube;return(*(GLint*)_buf.c);}
+        -v{self.type=un_samplerCube;(*(GLint*)_buf.c)=v;}
 
     bool asBool=
         {self.type=un_bool;return(*(bool*)_buf.c);}
@@ -452,17 +452,17 @@ SHUniform <BaseObject> "fn:shader"
         {self.type=un_bvec4;return((bool*)_buf.c);}
         -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4);}
 
-    int asInt=
-        {self.type=un_int;return(*(int*)_buf.c);}
-        -v{self.type=un_int;(*(int*)_buf.c)=v;}
-    int *asIVec2=
-        {self.type=un_ivec2;return((int*)_buf.c);}
+    GLint asInt=
+        {self.type=un_int;return(*(GLint*)_buf.c);}
+        -v{self.type=un_int;(*(GLint*)_buf.c)=v;}
+    GLint *asIVec2=
+        {self.type=un_ivec2;return((GLint*)_buf.c);}
         -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2);}
-    int *asIVec3=
-        {self.type=un_ivec3;return((int*)_buf.c);}
+    GLint *asIVec3=
+        {self.type=un_ivec3;return((GLint*)_buf.c);}
         -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3);}
-    int *asIVec4=
-        {self.type=un_ivec4;return((int*)_buf.c);}
+    GLint *asIVec4=
+        {self.type=un_ivec4;return((GLint*)_buf.c);}
         -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4);}
 
     float asFloat=
@@ -493,12 +493,12 @@ SHUniform <BaseObject> "fn:shader"
             NSObject *value;
             switch (type) {
                 case un_none:case un_any:case un_noValue:value=[NSNull null];break;
-                case un_sampler2D:case un_samplerCube:case un_int:value=[NSNumber numberWithInt:*(int*)_buf.c];break;
-                case un_bool:value=[NSNumber numberWithBool:*(bool*)_buf.c];break;
-                case un_float:value=[NSNumber numberWithFloat:*(float*)_buf.c];break;
+                case un_sampler2D:case un_samplerCube:case un_int:value=@(*(int*)_buf.c);break;
+                case un_bool:value=@(*(bool*)_buf.c);break;
+                case un_float:value=@(*(float*)_buf.c);break;
                 default:
                     {
-                        int len=0;
+                        NSInteger len=0;
                         switch (type) {
                             case un_bvec2:len=sizeof(bool)*2;break;
                             case un_bvec3:len=sizeof(bool)*3;break;
@@ -518,7 +518,7 @@ SHUniform <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:(int)type],@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((NSInteger)type),@"type",nil]);
         }
         -v{
             UniformType typ=type;
@@ -535,17 +535,17 @@ SHUniform <BaseObject> "fn:shader"
                 case un_none:case un_any:case un_noValue:type=typ;break;
                 case un_sampler2D:case un_samplerCube:case un_int:
                     if ([v isKindOfClass:[NSNumber class]]) {
-                        *(int*)_buf.c=((NSNumber*)v).intValue;
+                        *(GLint*)_buf.c=((NSNumber*)v).intValue;
                         type=typ;
                     }
                     break;
-                case un_bool:v=[NSNumber numberWithBool:self.asBool];
+                case un_bool:v=@(self.asBool);
                     if ([v isKindOfClass:[NSNumber class]]) {
                         *(bool*)_buf.c=((NSNumber*)v).boolValue;
                         type=typ;
                     }
                     break;
-                case un_float:v=[NSNumber numberWithFloat:self.asFloat];
+                case un_float:v=@(self.asFloat);
                     if ([v isKindOfClass:[NSNumber class]]) {
                         *(float*)_buf.c=((NSNumber*)v).floatValue;
                         type=typ;
@@ -553,7 +553,7 @@ SHUniform <BaseObject> "fn:shader"
                     break;
                 default:
                     {
-                        int len=0,N=0;
+                        NSInteger len=0,N=0;
                         switch (typ) {
                             case un_bvec2:len=sizeof(bool)*(N=2);break;
                             case un_bvec3:len=sizeof(bool)*(N=3);break;
@@ -577,13 +577,13 @@ SHUniform <BaseObject> "fn:shader"
                             NSArray *a=(NSArray*)v;
                             for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
                             type=typ;
-                            int i=0;
+                            NSInteger i=0;
                             switch (typ) {
                                 case un_bvec2:case un_bvec3:case un_bvec4:
                                     for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
                                     break;
                                 case un_ivec2:case un_ivec3:case un_ivec4:
-                                    for (NSNumber *n in a) ((int*)_buf.c)[i++]=n.intValue;
+                                    for (NSNumber *n in a) ((GLint*)_buf.c)[i++]=n.intValue;
                                     break;
                                 default:
                                     for (NSNumber *n in a) ((float*)_buf.c)[i++]=n.floatValue;
@@ -600,25 +600,25 @@ SHUniform <BaseObject> "fn:shader"
         if (glname==INVALIDSHADER) return;
         switch (type) {
             default:case un_none:break;
-            case un_sampler2D:glUniform1i(glname, *(int*)_buf.c);break;
-            case un_samplerCube:glUniform1i(glname, *(int*)_buf.c);break;
+            case un_sampler2D:glUniform1i(glname, *(GLint*)_buf.c);break;
+            case un_samplerCube:glUniform1i(glname, *(GLint*)_buf.c);break;
             case un_bool:glUniform1i(glname,*(bool*)_buf.c);break;
             case un_bvec2:{
-                int is[2]={((bool*)_buf.c)[0],((bool*)_buf.c)[1]};
+                GLint is[2]={((bool*)_buf.c)[0],((bool*)_buf.c)[1]};
                 glUniform2iv(glname,1,is);
                 }break;
             case un_bvec3:{
-                int is[3]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2]};
+                GLint is[3]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2]};
                 glUniform3iv(glname,1,is);
                 }break;
             case un_bvec4:{
-                int is[4]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2],((bool*)_buf.c)[3]};
+                GLint is[4]={((bool*)_buf.c)[0],((bool*)_buf.c)[1],((bool*)_buf.c)[2],((bool*)_buf.c)[3]};
                 glUniform4iv(glname,1,is);
                 }break;
-            case un_int:glUniform1i(glname,*(int*)_buf.c);break;
-            case un_ivec2:glUniform2iv(glname,1,(int*)_buf.c);break;
-            case un_ivec3:glUniform3iv(glname,1,(int*)_buf.c);break;
-            case un_ivec4:glUniform4iv(glname,1,(int*)_buf.c);break;
+            case un_int:glUniform1i(glname,*(GLint*)_buf.c);break;
+            case un_ivec2:glUniform2iv(glname,1,(GLint*)_buf.c);break;
+            case un_ivec3:glUniform3iv(glname,1,(GLint*)_buf.c);break;
+            case un_ivec4:glUniform4iv(glname,1,(GLint*)_buf.c);break;
             case un_float:glUniform1f(glname,*(float*)_buf.c);break;
             case un_vec2:glUniform2fv(glname,1,(float*)_buf.c);break;
             case un_vec3:glUniform3fv(glname,1,(float*)_buf.c);break;
@@ -660,7 +660,7 @@ type Union1024byte "typedef:
     union {
         char c[1024];
         float f[256];
-        int i[256];
+        GLint i[256];
     }
 "
 
@@ -688,7 +688,7 @@ SHAttribute <BaseObject> "fn:shader"
             }
         }=nil (ivar=enabled)
     bool transpose=NO
-    int glname=INVALIDSHADER
+    GLint glname=INVALIDSHADER
 
     -(void)copyFrom:(SHAttribute*)copy {
         self.type=copy.type;
@@ -700,12 +700,12 @@ SHAttribute <BaseObject> "fn:shader"
         enabled=YES;
         type=un_none;
     }
-    int *asSampler2D=
-        {self.type=un_sampler2D;return((int*)_buf.c);}
+    GLint *asSampler2D=
+        {self.type=un_sampler2D;return((GLint*)_buf.c);}
         -v{self.type=un_sampler2D;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
         
-    int *asSamplerCube=
-        {self.type=un_samplerCube;return((int*)_buf.c);}
+    GLint *asSamplerCube=
+        {self.type=un_samplerCube;return((GLint*)_buf.c);}
         -v{self.type=un_samplerCube;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
 
     bool *asBool=
@@ -721,17 +721,17 @@ SHAttribute <BaseObject> "fn:shader"
         {self.type=un_bvec4;return((bool*)_buf.c);}
         -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4*self.program.vertexCount);}
 
-    int *asInt=
-        {self.type=un_int;return((int*)_buf.c);}
+    GLint *asInt=
+        {self.type=un_int;return((GLint*)_buf.c);}
         -v{self.type=un_int;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
-    int *asIVec2=
-        {self.type=un_ivec2;return((int*)_buf.c);}
+    GLint *asIVec2=
+        {self.type=un_ivec2;return((GLint*)_buf.c);}
         -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2*self.program.vertexCount);}
-    int *asIVec3=
-        {self.type=un_ivec3;return((int*)_buf.c);}
+    GLint *asIVec3=
+        {self.type=un_ivec3;return((GLint*)_buf.c);}
         -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3*self.program.vertexCount);}
-    int *asIVec4=
-        {self.type=un_ivec4;return((int*)_buf.c);}
+    GLint *asIVec4=
+        {self.type=un_ivec4;return((GLint*)_buf.c);}
         -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4*self.program.vertexCount);}
 
     float *asFloat=
@@ -764,7 +764,7 @@ SHAttribute <BaseObject> "fn:shader"
                 case un_none:case un_any:case un_noValue:value=[NSNull null];break;
                 default:
                     {
-                        int len=0;
+                        NSInteger len=0;
                         switch (type) {
                             case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);break;
                             case un_bool:len=sizeof(bool);break;
@@ -787,7 +787,7 @@ SHAttribute <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",[NSNumber numberWithInt:(int)type],@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((NSInteger)type),@"type",nil]);
         }
         -v{
             UniformType typ=type;
@@ -804,7 +804,7 @@ SHAttribute <BaseObject> "fn:shader"
                 case un_none:case un_any:case un_noValue:type=typ;break;
                 default:
                     {
-                        int len=0,N=0,Nv=self.program.shader.numberOfVertices;
+                        NSInteger len=0,N=0,Nv=self.program.shader.numberOfVertices;
                         switch (typ) {
                             case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);N=1;break;
                             case un_bool:len=sizeof(bool);N=1;break;
@@ -831,13 +831,13 @@ SHAttribute <BaseObject> "fn:shader"
                             NSArray *a=(NSArray*)v;
                             for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
                             type=typ;
-                            int i=0;
+                            NSInteger i=0;
                             switch (typ) {
                                 case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
                                     for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
                                     break;
                                 case un_sampler2D:case un_samplerCube:case un_int:case un_ivec2:case un_ivec3:case un_ivec4:
-                                    for (NSNumber *n in a) ((int*)_buf.c)[i++]=n.intValue;
+                                    for (NSNumber *n in a) ((GLint*)_buf.c)[i++]=n.intValue;
                                     break;
                                 default:
                                     for (NSNumber *n in a) ((float*)_buf.c)[i++]=n.floatValue;
@@ -853,7 +853,7 @@ SHAttribute <BaseObject> "fn:shader"
     -(void)set {
         if (!enabled) return;
         if (glname==INVALIDSHADER) return;
-        int number;
+        GLint number;
         GLenum gltype;
         switch (type) {
             default:case un_none:case un_sampler2D:case un_samplerCube:
@@ -950,7 +950,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     bool _changed=YES,changed={return(_changed);}
     bool valid={return(_glname!=INVALIDSHADER);}
 
-    int vertexCount=4
+    GLint vertexCount=4
 
     ULL uniformHash={
         ULL ret=734897389745LL;
@@ -1178,10 +1178,10 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
             
             // Bind attribute locations.
             // This needs to be done prior to linking.
-            int i=0;
+            GLint i=0;
             for (NSString *key in self.attributes) {
                 SHAttribute *attribute=[self.attributes objectForKey:key];
-                glBindAttribLocation(_glname, attribute.glname=(i++), [[NSString stringWithFormat:@"__input_%@",attribute.name] UTF8String]);
+                glBindAttribLocation(_glname, attribute.glname=i++, [[NSString stringWithFormat:@"__input_%@",attribute.name] UTF8String]);
             }
             
             // Link program.
@@ -1328,8 +1328,8 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                 if ((!wasw)&&[t.str isEqualToString:@"("]) {
                     memset(tokens,0,sizeof(tokens[0][0])*4*16);
                     bool ismat=NO,insub=NO;
-                    int x=0,y=0,depth=1,maxx=0,maxy=0;
-                    int posWas=r.pos;
+                    NSInteger x=0,y=0,depth=1,maxx=0,maxy=0;
+                    NSInteger posWas=r.pos;
 
                     WReaderToken *t2;
                     while (depth&&(t2=r.nextToken)) {
@@ -1376,16 +1376,16 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                     }
                     if (t2&&maxy) {
                         UniformType utype;
-                        int N;
+                        NSInteger N;
                         if (maxy>=9) {utype=un_mat4;N=16;}
                         else if (maxy>=4) {utype=un_mat3;N=9;}
                         else if (ismat) {
-                            int w;
+                            NSInteger w;
                             if ((maxx>=3)||(maxy>=3)) {utype=un_mat4;N=16;w=4;}
                             else if ((maxx>=2)||(maxy>=2)) {utype=un_mat3;N=9;w=3;}
                             else {utype=un_mat2;N=4;w=2;}
-                            for (int y=1,i=w;y<w;y++) {
-                                for (int x=0;x<w;x++,i++) {
+                            for (NSInteger y=1,i=w;y<w;y++) {
+                                for (NSInteger x=0;x<w;x++,i++) {
                                     tokens[0][i]=tokens[x][y];
                                     tokens[x][y]=nil;
                                 }
@@ -1400,7 +1400,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         [newTokens addObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o']];
-                        for (int i=0;i<N;i++) {
+                        for (NSInteger i=0;i<N;i++) {
                             if (i) [newTokens addObject:[[WReaderToken alloc] initWithString:@"," bracketCount:t.bracketCount type:'o']];
                             if (tokens[0][i]) [newTokens addObjectsFromArray:tokens[0][i]];
                             else [newTokens addObject:[[WReaderToken alloc] initWithString:@"0.0" bracketCount:t.bracketCount type:'n']];
@@ -1409,7 +1409,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         changed=YES;
                         r.pos+=3;
                     }
-                    for (int y=0;y<16;y++) for (int x=0;x<4;x++) {
+                    for (NSInteger y=0;y<16;y++) for (NSInteger x=0;x<4;x++) {
                         if (tokens[x][y]) {
                             tokens[x][y]=nil;
                         }
@@ -1529,9 +1529,9 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
 
     }
     +(void)printLogForShader:(GLuint)obj {
-        int infologLength = 0;
+        GLint infologLength = 0;
         
-        int charsWritten  = 0;
+        GLint charsWritten  = 0;
         char *infoLog;
         
         glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
@@ -1550,9 +1550,9 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     +(NSString*)logForShader:(GLuint)obj {
         NSMutableString *ret=[NSMutableString string];
         
-        int infologLength = 0;
+        GLint infologLength = 0;
         
-        int charsWritten  = 0;
+        GLint charsWritten  = 0;
         char *infoLog;
         
         glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);

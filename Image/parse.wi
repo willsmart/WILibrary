@@ -21,7 +21,7 @@
     union {
         char c[128];
         float f[64];
-        int i[64];
+        NSInteger i[64];
     } _buf;
     enum UniformType _type;
     bool _enabled;
@@ -37,12 +37,12 @@
 @property (readonly) void *buf;
 @property bool asBool;
 @property bool *asBVec2,*asBVec3,*asBVec4;
-@property int asInt;
-@property int *asIVec2,*asIVec3,*asIVec4;
+@property NSInteger asInt;
+@property NSInteger *asIVec2,*asIVec3,*asIVec4;
 @property float asFloat;
 @property float *asVec2,*asVec3,*asVec4;
 @property float *asMat2,*asMat3,*asMat4;
-@property int asSampler2D,asSamplerCube;
+@property NSInteger asSampler2D,asSamplerCube;
 
 -(void)set;
 
@@ -54,7 +54,7 @@
     union {
         char c[1024];
         float f[256];
-        int i[256];
+        NSInteger i[256];
     } _buf;
     enum UniformType _type;
     bool _enabled;
@@ -69,8 +69,8 @@
 @property (readonly) void *buf;
 @property bool *asBool;
 @property bool *asBVec2,*asBVec3,*asBVec4;
-@property int *asInt;
-@property int *asIVec2,*asIVec3,*asIVec4;
+@property NSInteger *asInt;
+@property NSInteger *asIVec2,*asIVec3,*asIVec4;
 @property float *asFloat;
 @property float *asVec2,*asVec3,*asVec4;
 @property float *asMat2,*asMat3,*asMat4;
@@ -87,7 +87,7 @@
     bool _changed;
 }
 
-@property int vertexCount;
+@property NSInteger vertexCount;
 
 @property (nonatomic,readonly) GLuint baseShaderProgram;
 @property (nonatomic,retain) NSMutableDictionary *uniforms;
@@ -148,7 +148,7 @@ enum UniformType {
 (type==un_noValue?@"!!novalue!!":@"!!??!!"))))))))))))))))))
 
 #define UNCODETYPENAME(type) (type==un_float?@"highp float": \
-(type==un_int?@"highp int": \
+(type==un_int?@"highp NSInteger": \
 (type==un_bool?@"bool": \
 (type==un_vec2?@"highp vec2": \
 (type==un_ivec2?@"highp ivec2": \

@@ -11,7 +11,7 @@
 
 <CommitableCollection:Commitable>
     -(void)stateOK {@100 [self markDirty];}
-    -(int)commitProperties:(int)substageIndex {modelObjectHasChanged=YES;}
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {modelObjectHasChanged=YES;}
 
 
 

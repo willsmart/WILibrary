@@ -2068,7 +2068,7 @@ Dictionary
                     WordProbTrie *chwp=((WordProbTrie*)trie.mutableBytes)+chtriei;
                     wp->subtreeHash+=obfuscateULL((1LL<<l)*chwp->subtreeHash);
                     
-                    [seen setObject:[NSNumber numberWithInt:*triei] forKey:n];
+                    [seen setObject:@(*triei) forKey:n];
                     if (numLetters<2) {
                         for (int i=0;i<=numLetters;i++) printf(" %c",letters[i]);printf(" : tot:%d=%lu  subtree:%d=%lu\n",*ptot,seen.count,*triei,seenSubtree.count);
                     }
@@ -2084,7 +2084,7 @@ Dictionary
                         *triei=chtriei;
                         *ptot=chtot;
                     }
-                    else [seenSubtree setObject:[NSNumber numberWithInt:chtriei] forKey:nst];
+                    else [seenSubtree setObject:@(chtriei) forKey:nst];
                 }
             }
         }

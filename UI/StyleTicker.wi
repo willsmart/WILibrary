@@ -92,7 +92,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
                     }
                     if (prop) {
                         if ([s hasPrefix:@"#"]) {
-                            value=[NSNumber numberWithDouble:[s substringFromIndex:1].doubleValue];
+                            value=@([s substringFromIndex:1].doubleValue);
                         }
                         else if ([s hasPrefix:@"="]) {
                             value=[s substringFromIndex:1];

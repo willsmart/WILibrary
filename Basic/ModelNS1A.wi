@@ -8,7 +8,7 @@ WIMyClass
     NSIndexSet indexesInHisqname (dealloc,nodef,readonly,ivar=indexesInHisqname)
     NSUInteger indexInHisqname={return(self.indexesInHisqname.firstIndex);}
 
-    -(int)commitProperties:(int)substageIndex {@-3 
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 
         previousIndexesInHisqname=indexesInHisqname;
         indexesInHisqname=self.indexesInHisname.copy;
         
@@ -61,7 +61,7 @@ JustMyClassOverride
         [self markDirty];
     }
     
-    -(int)commitProperties:(int)substageIndex {
+    -(NSInteger)commitProperties:(NSInteger)substageIndex {
         previousIndexesInHisqname=indexesInHisqname;
         indexesInHisqname=nil;
     }

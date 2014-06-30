@@ -1,9 +1,9 @@
 /*
 #define BP(type) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d",@#type,++__bpCount##type);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
 #define BPLOG(type,format,...) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d : " format,@#type,++__bpCount##type,__VA_ARGS__);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
-#define GLOB_BPFN(type,num) bool __bpEn##type=YES;int __bpCount##type=0,__bpTgt##type=(num);void __bpFn##type()
-#define EXTERN_BPFN(type) extern bool __bpEn##type;extern int __bpCount##type;extern int __bpTgt##type;void __bpFn##type()
-#define STAT_BPFN(type,num) static bool __bpEn##type=YES;static int __bpCount##type=0,__bpTgt##type=(num);static void __bpFn##type()
+#define GLOB_BPFN(type,num) bool __bpEn##type=YES;NSInteger __bpCount##type=0,__bpTgt##type=(num);void __bpFn##type()
+#define EXTERN_BPFN(type) extern bool __bpEn##type;extern NSInteger __bpCount##type;extern NSInteger __bpTgt##type;void __bpFn##type()
+#define STAT_BPFN(type,num) static bool __bpEn##type=YES;static NSInteger __bpCount##type=0,__bpTgt##type=(num);static void __bpFn##type()
 #define BPTGT(type,num) do {__bpTgt##type=(num);}while (false)
 #define BPENABLE(type) do {__bpEn##type=YES;}while (false)
 #define BPDISABLE(type) do {__bpEn##type=NO;}while (false)
@@ -118,14 +118,14 @@ NSString "fn:sys"
     }
 
 
-    +(NSString*)JSONStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData*)d {
-        int toLength;
+    +(NSString*)JSONStringForCString:(const char *)from withLength:(NSInteger)N useTmpDataObject:(NSMutableData*)d {
+        NSInteger toLength;
         const unichar *to=[__Class__ JSONunicharsStringForCString:from withLength:N useTmpDataObject:&d retLength:&toLength];
         return([NSString stringWithCharacters:to length:toLength]);
     }
 
-    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(int*)retLength {
-        if (N<0) N=(int)strlen(from);
+    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(NSInteger)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(NSInteger*)retLength {
+        if ((N<0)||(N==NSNotFound)) N=strlen(from);
         NSMutableData *d=(pd?*pd:nil);
         if (!d) {
             d=[[NSThread currentThread].threadDictionary objectForKey:@"JSONTmpData"];
@@ -153,7 +153,7 @@ NSString "fn:sys"
             }
         }
         *to=0;
-        if (retLength) *retLength=(int)(to-toWas);
+        if (retLength) *retLength=(NSInteger)(to-toWas);
         return(toWas);
     }
 
@@ -308,35 +308,35 @@ Util "fn:util"
         bool ret=NO;
         if (from==nil) {
             if (to) {
-                int i=0;
-                while (i<to.count) [inss addObject:[NSNumber numberWithInt:i++]];
+                NSInteger i=0;
+                while (i<to.count) [inss addObject:@(i++)];
                 ret=(i>0);
             }
         }
         else if (to==nil) {
-            int i=0;
-            while (i<from.count) [dels addObject:[NSNumber numberWithInt:i++]];
+            NSInteger i=0;
+            while (i<from.count) [dels addObject:@(i++)];
             ret=(i>0);
         }
         else {
-            int toi=0,fromi=0;
+            NSInteger toi=0,fromi=0;
             while ((toi<[to count])||(fromi<[from count])) {
                 char op=0;
                 if (fromi>=[from count]) op='i';
                 else if (toi>=[to count]) op='d';
                 else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi]]) op=0;
-                else for (int j=1;;j++) {
+                else for (NSInteger j=1;;j++) {
                     if (toi+j>=[to count]) {op='d';break;}
                     else if (fromi+j>=[from count]) {op='i';break;}
                     else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi+j]]) {op='i';break;}
                     else if ([Util objectOrString:[from objectAtIndex:fromi+j] equals:[to objectAtIndex:toi]]) {op='d';break;}
                 }
                 if (op=='d') {
-                    [dels insertObject:[NSNumber numberWithInt:fromi] atIndex:0];
+                    [dels insertObject:@(fromi) atIndex:0];
                     fromi++;
                 }
                 else if (op=='i') {
-                    [inss addObject:[NSNumber numberWithInt:toi]];
+                    [inss addObject:@(toi)];
                     toi++;
                 }
                 else {fromi++;toi++;}
@@ -362,7 +362,7 @@ Util "fn:util"
         return(YES);
     }
 
-    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
+    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(NSInteger)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
         NSMutableArray *dels=[MutableArray array];
         NSMutableArray *inss=[MutableArray array];
@@ -490,14 +490,14 @@ Util "fn:util"
 
 
 IntCarrier "fn:util"
-    int intValue=nil
-    +(IntCarrier*)carrierWithInt:(int)v {
+    NSInteger intValue=nil
+    +(IntCarrier*)carrierWithInt:(NSInteger)v {
         return([[IntCarrier alloc] initWithInt:v]);
     }
-    -(init[super init])initWithInt:(int)v {
+    -(init[super init])initWithInt:(NSInteger)v {
         intValue=v;
     }
-    NSString description={return([NSString stringWithFormat:@"%d",intValue]);}
+    NSString description={return([NSString stringWithFormat:@"%d",(int)intValue]);}
 
 
 ULLCarrier "fn:util"
@@ -781,7 +781,7 @@ URLHandlerRegistry "fn:util"
         @100 else return(nil);
     }
     +(NSObject*)objectFromString:(NSString*)s {@-100 
-        if ([s hasPrefix:@"N"]) return([NSNumber numberWithDouble:[Styler doubleFromString:[s substringFromIndex:1]]]);
+        if ([s hasPrefix:@"N"]) return(@([Styler doubleFromString:[s substringFromIndex:1]]));
         else if ([s hasPrefix:@"S"]) return([s substringFromIndex:1]);
         else if ([s hasPrefix:@"C"]) return([Styler colorFromString:[s substringFromIndex:1]]);
         @100 else return(nil);

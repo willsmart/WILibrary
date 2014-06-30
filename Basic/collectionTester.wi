@@ -26,7 +26,7 @@ extern NSString *testKey;
 NSString *testKey=nil;
 */
 CollectionTestObject
-    int intValue=nil (readonly)
+    NSInteger intValue=nil (readonly)
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
     <Tester> tester=nil (assign)
 
@@ -37,12 +37,12 @@ CollectionTestObject
     }
 
     NSString description={
-        NSMutableString *s=[NSMutableString stringWithFormat:@"(o%d",intValue];
+        NSMutableString *s=[NSMutableString stringWithFormat:@"(o%d",(int)intValue];
         for (NSString *key in subObjects) [s appendFormat:@" %@:%@",key,((CollectionTestSubObject*)[subObjects objectForKey:key]).description];
         [s appendFormat:@")"];
         return(s);
     }
-    -(init[super init])initWithInt:(int)v tester:(NSObject<Tester>*)atester {
+    -(init[super init])initWithInt:(NSInteger)v tester:(NSObject<Tester>*)atester {
         intValue=v;
         self.tester=atester;
     }
@@ -93,12 +93,12 @@ CollectionTestObject
     }
 
 CollectionTestSubObject
-    int willAddCount=0,willRemoveCount=0;
-    int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
-    int rcInner=0
+    NSInteger willAddCount=0,willRemoveCount=0;
+    NSInteger __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
+    NSInteger rcInner=0
     CollectionTestObject *testObject=nil (assign,ivar=testObject)
 
-    NSString description={return([NSString stringWithFormat:@"%d->%d  ",self.rcIs,self.rcWillBe]);}
+    NSString description={return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
 
     -(init[super init])initWithTestObject:(CollectionTestObject*)atestObject {
         self.testObject=atestObject;
@@ -150,7 +150,7 @@ CollectionTestSubObject
             __VA_ARGS__ \
             for (CollectionTestObject *o in self._allObjects) { \
                 CollectionTestSubObject *so=[o.subObjects objectForKey:_key]; \
-                int opN=0; \
+                NSInteger opN=0; \
                 if ([ret isKindOfClass:[NSSet class]]) { \
                     if ([(NSSet*)ret containsObject:o]) opN=1; \
                 } \
@@ -206,14 +206,14 @@ CollectionTestSubObject
     }
 
 
-    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {
+    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {
         if ([set isEqualToString:@"weak"]) return(0);
         return(N);
     }
 
     -(void)verifyRC {
         for (CollectionTestObject *o in self._allObjects) {
-            int N=0;
+            NSInteger N=0;
             if ([a isKindOfClass:[NSSet class]]) {
                 if ([(NSSet*)a containsObject:o]) N=1;
             }
@@ -225,7 +225,7 @@ CollectionTestSubObject
             }
             for (NSString *k in o.subObjects) {
                 CollectionTestSubObject *so=[o.subObjects objectForKey:k];
-                int expRefCnt=[self expectNForSet:k givenBaseN:N];
+                NSInteger expRefCnt=[self expectNForSet:k givenBaseN:N];
                 if ((expRefCnt>=0)&&(expRefCnt!=so.rcWillBe)) {
                     [self passFail:NO format:@"Outer: Object %@ key %@ should have rc of %d",o.description,k,expRefCnt];
                 }                
@@ -240,10 +240,10 @@ CollectionTestSubObject
         _range=NSMakeRange(NSNotFound,0);
         NSMutableArray *array=[NSMutableArray arrayWithCapacity:100];
         NSMutableArray *arrayk=[NSMutableArray arrayWithCapacity:100];
-        for (int i=0;i<100;i++) {
+        for (NSInteger i=0;i<100;i++) {
             CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
             [array addObject:o];
-            [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
+            [arrayk addObject:[NSString stringWithFormat:@"k%d",(int)i]];
             printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
         }
         self._allObjects=array;
@@ -251,7 +251,7 @@ CollectionTestSubObject
         [self verifyWillOpCounts];
     }
 
-    -(NSString*)steps:(int)N {
+    -(NSString*)steps:(NSInteger)N {
         srand(1);
         while (N-->0) {
             [self nextTest];
@@ -277,28 +277,28 @@ CollectionTestSubObject
         {
             NSMutableDictionary *d=[NSMutableDictionary dictionary];
             NSUInteger count=rand()%10;
-            for (int i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
+            for (NSInteger i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
             return(d);
         }
     NSMutableSet randSet=
         {
             NSMutableSet *objects=[MutableSet set];
             NSUInteger count=rand()%10;
-            for (int i=0;i<count;i++) [objects addObject:self.randObject];
+            for (NSInteger i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
     NSMutableArray randArray=
         {
             NSMutableArray *objects=[NSMutableArray array];
             NSUInteger count=rand()%10;
-            for (int i=0;i<count;i++) [objects addObject:self.randObject];
+            for (NSInteger i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
     NSMutableArray randKeyArray=
         {
             NSMutableArray *keys=[NSMutableArray array];
             NSUInteger count=rand()%10;
-            for (int i=0;i<count;i++) [keys addObject:self.randKey];
+            for (NSInteger i=0;i<count;i++) [keys addObject:self.randKey];
             return(keys);
         }
     -(NSMutableIndexSet*)randIndexSetWithCount:(NSUInteger)count max:(NSUInteger)max {
@@ -336,14 +336,14 @@ CollectionTestSubObject
 
 
 <TesterCounter>
-    -(void)add:(int)c toWillAddCountForObject:(id)object {
+    -(void)add:(NSInteger)c toWillAddCountForObject:(id)object {
         if ([object isKindOfClass:[CollectionTestObject class]]) {
             CollectionTestObject *o=(CollectionTestObject*)object;
             if (c==-1) [o didAdd];
             else if (c==1) [o willAdd];
         }
     }
-    -(void)add:(int)c toWillRemoveCountForObject:(id)object {
+    -(void)add:(NSInteger)c toWillRemoveCountForObject:(id)object {
         if ([object isKindOfClass:[CollectionTestObject class]]) {
             CollectionTestObject *o=(CollectionTestObject*)object;
             if (c==-1) [o didRemove];
@@ -387,7 +387,7 @@ CollectionTestSubObject
 
 <MutableSetMirrorTester:MutableSet,BasicTester,TesterCounter>
     NSMutableSet __mirrorSet=[MutableSet set] (ivar=__mirrorSet)
-    int __addingToMirrorSet=0,__removingFromMirrorSet=0
+    NSInteger __addingToMirrorSet=0,__removingFromMirrorSet=0
     
     -(void)willAddObject:(id)object {@900 
         if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st will add while removing\n"];
@@ -436,7 +436,7 @@ SetTester <Tester>
     MutableSetMirrorTesterImpl b=[MutableSetMirrorTesterImpl set] (ivar=b)
     WeakMutableSetMirrorTesterImpl c=[WeakMutableSetMirrorTesterImpl set] (ivar=c)
 
-    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
         if ([set isEqualToString:@"weak"]) return(N);
         if ([set isEqualToString:@"strong"]) return(2*N);
         return(-1);
@@ -592,7 +592,7 @@ SetTester <Tester>
 
 
 <MutableDictionaryMirrorTester:MutableDictionaryKeyFollower,MutableDictionary,TesterCounter>
-    int __addingToMirrorDictionary=0,__removingFromMirrorDictionary=0
+    NSInteger __addingToMirrorDictionary=0,__removingFromMirrorDictionary=0
     
 
 
@@ -630,7 +630,7 @@ SetTester <Tester>
 
     
     -(void)verifyMirrorDictionary {
-        int c=0;
+        NSInteger c=0;
         for (id<NSCopying> key in __dictionaryObjectKeys) c+=((NSSet*)[__dictionaryObjectKeys objectForKey:key]).count;
         if (c!=__dictionary.count) [self passFail:NO format:@"!!!dkt count mismatch\n"];
         else {
@@ -663,7 +663,7 @@ DictionaryTester <Tester>
     WeakMutableDictionaryMirrorTesterImpl c=[WeakMutableDictionaryMirrorTesterImpl dictionary] (ivar=c)
 
 
-    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
         if ([set isEqualToString:@"weak"]) return(0);
         if ([set isEqualToString:@"strong"]) return(N);
         return(-1);
@@ -836,7 +836,7 @@ DictionaryTester <Tester>
 
 
 <MutableArrayMirrorTester:MutableArrayIndexFollower,MutableArray,TesterCounter>
-    int __addingToMirrorArray=0,__removingFromMirrorArray=0
+    NSInteger __addingToMirrorArray=0,__removingFromMirrorArray=0
 
     -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@100 
         __addingToMirrorArray++;
@@ -864,7 +864,7 @@ DictionaryTester <Tester>
     }
     
     -(void)verifyMirrorArray {
-        int c=0;
+        NSInteger c=0;
         for (PointerKey *key in __arrayObjectIndexes) c+=((NSIndexSet*)[__arrayObjectIndexes objectForKey:key]).count;
         if (c!=__array.count) [self passFail:NO format:@"!!!ait count mismatch\n"];
         else {
@@ -904,7 +904,7 @@ ArrayTester <Tester>
     WeakMutableArrayMirrorTesterImpl c=[WeakMutableArrayMirrorTesterImpl array] (ivar=c)
 
 
-    -(int)expectNForSet:(NSString*)set givenBaseN:(int)N {@!0 
+    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
         if ([set isEqualToString:@"weak"]) return(0);
         if ([set isEqualToString:@"strong"]) return(N);
         return(-1);
