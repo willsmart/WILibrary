@@ -6,9 +6,9 @@
 WIMyClass
     NSSet previousKeysInHisqname (dealloc,nodef,readonly,ivar=previousKeysInHisqname)
     NSSet keysInHisqname (dealloc,nodef,readonly,ivar=keysInHisqname)
-    NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
+    UInt keyInHisqname={return(self.keysInHisqname.anyObject);}
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 
+    -(Int)commitProperties:(Int)substageIndex {@-3 
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=self.keysInHisname.copy;
         
@@ -50,7 +50,7 @@ JustMyClassOverride
     NSSet previousKeysInHisqname (dealloc,nodef,readonly,ivar=previousKeysInHisqname)
     NSSet keysInHisqname=
         {return(useMyHisqname&&keysInHisqname?keysInHisqname:self.baseWithHisqname.keysInHisqname);} (dealloc,ivar=keysInHisqname)
-    NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
+    UInt keyInHisqname={return(self.keysInHisqname.anyObject);}
 
     -(void)setHisqname:(NSHisClass)v {@-1000 ERR("__Class__ Please set keys");}
 
@@ -61,7 +61,7 @@ JustMyClassOverride
         [self markDirty];
     }
     
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousKeysInHisqname=keysInHisqname;
         keysInHisqname=nil;
     }

@@ -237,10 +237,10 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
 
 
-    -(NSUInteger)bestTrackerInsertIndexForObject:(id)object index:(NSUInteger)index {
+    -(UInt)bestTrackerInsertIndexForObject:(id)object index:(UInt)index {
         if ([trackerArray containsObject:object]) return(NSNotFound);
-        NSInteger i;
-        NSUInteger ti=NSNotFound;
+        Int i;
+        UInt ti=NSNotFound;
         for (i=index-1;i>=0;i--) {
             id was=[__array objectAtIndex:i];
             ti=[trackerArray indexOfObject:was];
@@ -265,24 +265,24 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
             if (trackerArray.version!=version) [self markDirty];
         }
     }
-    -(void)insertObject:(id)object atIndex:(NSUInteger)index {
-        NSUInteger ti=[self bestTrackerInsertIndexForObject:object index:index];
+    -(void)insertObject:(id)object atIndex:(UInt)index {
+        UInt ti=[self bestTrackerInsertIndexForObject:object index:index];
         if (ti!=NSNotFound) {
             [trackerArray insertObject:object atIndex:ti];
             if (trackerArray.version!=version) [self markDirty];
         }
     }
-    -(void)removeObjectAtIndex:(NSUInteger)index {
+    -(void)removeObjectAtIndex:(UInt)index {
         [self removeObject:[__array objectAtIndex:index]];
     }
     -(void)removeLastObject {
         if (self.count) [self removeObjectAtIndex:self.count-1];
     }
-    -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)object {
+    -(void)replaceObjectAtIndex:(UInt)index withObject:(id)object {
         if (![trackerArray containsObject:object]) {
             id object2=[__array objectAtIndex:index];
             if ([object2 isEqual:object]) return;
-            NSUInteger ti=[trackerArray indexOfObject:object2];
+            UInt ti=[trackerArray indexOfObject:object2];
             if (ti!=NSNotFound) {
                 [trackerArray replaceObjectAtIndex:ti withObject:object];
                 if (trackerArray.version!=version) [self markDirty];
@@ -295,7 +295,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
 
     -(void)insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
-        NSUInteger index=[indexes firstIndex];
+        UInt index=[indexes firstIndex];
         for (id object in objects) {
             [self insertObject:object atIndex:index];
             index=[indexes indexGreaterThanIndex:index];
@@ -308,30 +308,30 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         for (id object in __array) [self removeObject:object];
     }
     -(void)removeObject:(id)object {
-        NSUInteger ti=[trackerArray indexOfObject:object];
+        UInt ti=[trackerArray indexOfObject:object];
         if (ti!=NSNotFound) {
             [trackerArray removeObjectAtIndex:ti];
             if (trackerArray.version!=version) [self markDirty];
         }
     }
     -(void)removeObject:(id)object inRange:(NSRange)r {
-        for (NSUInteger index=[self indexOfObject:object inRange:r];index!=NSNotFound;index=[self indexOfObject:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
+        for (UInt index=[self indexOfObject:object inRange:r];index!=NSNotFound;index=[self indexOfObject:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
             [self removeObjectAtIndex:index];
         }
     }
 
     -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
-        for (NSUInteger index=[indexes firstIndex];index!=NSNotFound;index=[indexes indexGreaterThanIndex:index]) {
+        for (UInt index=[indexes firstIndex];index!=NSNotFound;index=[indexes indexGreaterThanIndex:index]) {
             [self removeObjectAtIndex:index];
         }
     }
     -(void)removeObjectIdenticalTo:(id)object {
-        for (NSUInteger index=[self indexOfObjectIdenticalTo:object];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,self.count-(index+1))]) {
+        for (UInt index=[self indexOfObjectIdenticalTo:object];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,self.count-(index+1))]) {
             [self removeObjectAtIndex:index];
         }
     }
     -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-        for (NSUInteger index=[self indexOfObjectIdenticalTo:object inRange:r];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
+        for (UInt index=[self indexOfObjectIdenticalTo:object inRange:r];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
             [self removeObjectAtIndex:index];
         }
     }
@@ -339,7 +339,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         for (id object in array) [self removeObject:object];
     }
     -(void)removeObjectsInRange:(NSRange)r {
-        for (NSUInteger i=r.location;i<r.location+r.length;i++) {
+        for (UInt i=r.location;i<r.location+r.length;i++) {
             [self removeObjectAtIndex:i];
         }
     }
@@ -347,18 +347,18 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     //Replacing Objects
     -(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
-        NSUInteger index=[indexes firstIndex];
+        UInt index=[indexes firstIndex];
         for (id object in array) {
             [self replaceObjectAtIndex:index withObject:object];
             index=[indexes indexGreaterThanIndex:index];
         }
     }
     -(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
-        for (NSInteger i=0;i<MIN(r.length,arrayRange.length);i++) {
+        for (Int i=0;i<MIN(r.length,arrayRange.length);i++) {
             [self replaceObjectAtIndex:i+r.location withObject:[array objectAtIndex:i+arrayRange.location]];
         }
-        for (NSUInteger i=arrayRange.length;i<r.length;i++) [self removeObjectAtIndex:i+r.location];
-        for (NSUInteger i=arrayRange.length-1;i>=r.length;i--) [self insertObject:[array objectAtIndex:i] atIndex:r.location+r.length+1];
+        for (UInt i=arrayRange.length;i<r.length;i++) [self removeObjectAtIndex:i+r.location];
+        for (UInt i=arrayRange.length-1;i>=r.length;i--) [self insertObject:[array objectAtIndex:i] atIndex:r.location+r.length+1];
     }
     -(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
         [self replaceObjectsInRange:r withObjectsFromArray:array range:NSMakeRange(0,array.count)];
@@ -372,7 +372,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     //Filtering Content
     -(void)filterUsingPredicate:(NSPredicate *)predicate {
         NSMutableIndexSet *toRemove=nil;
-        NSUInteger index=0;
+        UInt index=0;
         for (id object in __array) {
             if (![predicate evaluateWithObject:object]) {
                 if (!toRemove) toRemove=[[NSMutableIndexSet alloc] init];
@@ -387,10 +387,10 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     
     //Rearranging Content
-    -(void)exchangeObjectAtIndex:(NSUInteger)fromi withObjectAtIndex:(NSUInteger)toi {
+    -(void)exchangeObjectAtIndex:(UInt)fromi withObjectAtIndex:(UInt)toi {
         if (fromi!=toi) {
-            NSUInteger fromai=[trackerArray indexOfObject:[__array objectAtIndex:fromi]];
-            NSUInteger toai=[trackerArray indexOfObject:[__array objectAtIndex:toi]];
+            UInt fromai=[trackerArray indexOfObject:[__array objectAtIndex:fromi]];
+            UInt toai=[trackerArray indexOfObject:[__array objectAtIndex:toi]];
             if ((fromai!=NSNotFound)&&(toai!=NSNotFound)) {
                 [trackerArray exchangeObjectAtIndex:fromai withObjectAtIndex:toai];
                 if (trackerArray.version!=version) [self markDirty];
@@ -409,7 +409,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         [trackerArray sortWithOptions:opts usingComparator:cmptr];
         if (trackerArray.version!=version) [self markDirty];
     }
-    -(void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context {
+    -(void)sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
         [trackerArray sortUsingFunction:compare context:context];
         if (trackerArray.version!=version) [self markDirty];
     }

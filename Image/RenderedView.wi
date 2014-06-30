@@ -506,11 +506,11 @@ ImageRenderer <BaseObject> "fn:render"
 
         SHUniform *u=[shader.program uniformForKey:@"sizeInPixels"];
         float sz[2]={float(u.asVec2[0]),float(u.asVec2[1])};
-        NSInteger w=sz[0],h=sz[1];
+        Int w=sz[0],h=sz[1];
         sz[0]=w;sz[1]=h;
 
         //const DWRD *meta=(const DWRD*)metaData.bytes;
-        //NSInteger w=meta[0]&0xffff,h=meta[0]>>16;
+        //Int w=meta[0]&0xffff,h=meta[0]>>16;
         if ((w<=0)||(h<=0)||(w>texture.pixelWidth)||(h>texture.pixelHeight)) {
             NSLog(@"Bad size in render : %d %d",(int)w,(int)h);
             [texture unbindFrameBuffer];

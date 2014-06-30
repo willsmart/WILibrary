@@ -25,7 +25,7 @@ WIMyClass
  unsigned int count=0,slen=strlen("___die_"); 
  Method * mlist = class_copyMethodList(object_getClass(self), &count); 
  NSMutableArray *ret=[NSMutableArray array]; 
- for (NSInteger i=0;i<count;i++) { 
+ for (Int i=0;i<count;i++) { 
  SEL sel=method_getName(mlist[i]); 
  const char *nm=sel_getName(sel); 
  if ((strlen(nm)>=slen)&&!memcmp(nm,"___die_",sizeof(char)*slen)) { 
@@ -41,7 +41,7 @@ WIMyClass
  unsigned int count=0,slen=strlen("___init_"); 
  Method * mlist = class_copyMethodList(object_getClass(self), &count); 
  NSMutableArray *ret=[NSMutableArray array]; 
- for (NSInteger i=0;i<count;i++) { 
+ for (Int i=0;i<count;i++) { 
  SEL sel=method_getName(mlist[i]); 
  const char *nm=sel_getName(sel); 
  if ((strlen(nm)>=slen)&&!memcmp(nm,"___init_",sizeof(char)*slen)) { 

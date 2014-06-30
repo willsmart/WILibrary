@@ -18,12 +18,12 @@ unsigned long long waveBitMasks[4][16]={
 
 
 BinTracker<BaseObject>
-    NSInteger samplesPerCycle,wavesPerCycle,cyclesPerBuffer,roughSamplesPerWave,ci=nil
+    Int samplesPerCycle,wavesPerCycle,cyclesPerBuffer,roughSamplesPerWave,ci=nil
     ArrayOfDoubles *sampBuffer,*edges,*edges1=nil
     double samplesPerWave=nil
     longdouble sumsine=0,sumcos=0
 
-    -(init[super init])initWithCI:(NSInteger)aci samplesPerCycle:(NSInteger)asamplesPerCycle wavesPerCycle:(NSInteger)awavesPerCycle cyclesPerBuffer:(NSInteger)acyclesPerBuffer {
+    -(init[super init])initWithCI:(Int)aci samplesPerCycle:(Int)asamplesPerCycle wavesPerCycle:(Int)awavesPerCycle cyclesPerBuffer:(Int)acyclesPerBuffer {
         ci=aci;
         samplesPerCycle=asamplesPerCycle;
         wavesPerCycle=awavesPerCycle;
@@ -45,22 +45,22 @@ BinTracker<BaseObject>
         DELETE(ArrayOfDoubles,edges1);
     }
 
-    NSInteger bufferi=0,wavei=0,samplesSinceWave=0
+    Int bufferi=0,wavei=0,samplesSinceWave=0
     double cycleLen=0,waveAt=0
-    NSInteger q=0,goods=0,reqGoods=0,wavesPerEdge=1
+    Int q=0,goods=0,reqGoods=0,wavesPerEdge=1
 
     bool isGood=nil
     double nphase,cycleLen,_cycleLen,phase,drphase=nil
-    NSInteger bestwi=0,samplei=0,samplesSinceWave=0,phasewavei=0
+    Int bestwi=0,samplei=0,samplesSinceWave=0,phasewavei=0
     double bestwiAboveFactor=0,bestwiAboveAvgFactor=0
-    NSInteger pi=0;
-    NSInteger sign=1,signmul=1
+    Int pi=0;
+    Int sign=1,signmul=1
 
 
-    -(void)processSamples:(NSInteger*)samples shift:(NSInteger)sampleShift withCount:(NSInteger)numSamples {
+    -(void)processSamples:(Int*)samples shift:(Int)sampleShift withCount:(Int)numSamples {
         bool debug=(ci==-1);
         double ph=2*PI*bufferi/samplesPerWave,dph=2*PI/samplesPerWave;
-        for (NSInteger si=0;si<numSamples;si++) {
+        for (Int si=0;si<numSamples;si++) {
             double samp=(short)((samples[si]>>sampleShift)&0xffff);
             dprnt("  --  [%.2f]%d:",bufferi/samplesPerWave,(short)((samples[si]>>sampleShift)&0xffff));
             
@@ -84,16 +84,16 @@ BinTracker<BaseObject>
             dprnt("w:%.3f : ",wph);
             
             //prnt("[%.2f:%d:%.2f]:%.3f -- ",wph,bufferi,nphase,samp);
-            NSInteger q2=floor(wph*4);
+            Int q2=floor(wph*4);
             dprnt("q%d : ",q2);
             if ((q<=1)&&(q2==2)) {
                 dprnt("[");
                 double downi=bufferi-wph*samplesPerWave+samplesPerCycle*cyclesPerBuffer/2,sumsine2=0,sumcos2=0,from=downi-wavesPerEdge*samplesPerWave*0.5,to=downi+wavesPerEdge*samplesPerWave*0.5;
                 dprnt("down:%.2f(%.2f-%.2f) : ",downi/samplesPerWave,from/samplesPerWave,to/samplesPerWave);
                 double ph2=ph+(floor(from)-bufferi)*dph;
-                for (NSInteger bufferi2=floor(from);bufferi2<=ceil(to);bufferi2++) {
+                for (Int bufferi2=floor(from);bufferi2<=ceil(to);bufferi2++) {
                     double mul=(bufferi2<from?1+bufferi2-from:(bufferi2>to?1-bufferi2+to:1));
-                    NSInteger bi2=(bufferi2+samplesPerCycle*cyclesPerBuffer)%(samplesPerCycle*cyclesPerBuffer);
+                    Int bi2=(bufferi2+samplesPerCycle*cyclesPerBuffer)%(samplesPerCycle*cyclesPerBuffer);
                     sumsine2+=sin(ph2)*sampBuffer->a[bi2]*mul;
                     sumcos2+=cos(ph2)*sampBuffer->a[bi2]*mul;
                     dprnt("[%.2f]%.2f-%.2f x %.2f ~ ",(bufferi2-downi)/samplesPerWave,sin(ph2),sampBuffer->a[bi2],mul);
@@ -143,7 +143,7 @@ BinTracker<BaseObject>
                             else dprnt("0");
                         );
                         dprnt("\n");
-                        for (NSInteger eIndex=0,N=(int)edges1->num();eIndex<N;eIndex++) {
+                        for (Int eIndex=0,N=(int)edges1->num();eIndex<N;eIndex++) {
                             if (culls[eIndex/64]&shiftOneULL[eIndex%64]) {
                                 dprnt("*");
                             }
@@ -153,8 +153,8 @@ BinTracker<BaseObject>
                         
                         bestwi=-1;
                         double bestwindif=wavesPerCycle+1,nextbestwindif=wavesPerCycle+1;
-                        NSInteger sum=0,nextbestwi=-1;
-                        for (NSInteger wi=0;wi<wavesPerCycle;wi++) {
+                        Int sum=0,nextbestwi=-1;
+                        for (Int wi=0;wi<wavesPerCycle;wi++) {
                             //prnt("\n[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&msk[0])[1],((DWRD*)&msk[0])[0],((DWRD*)&msk[1])[1],((DWRD*)&msk[1])[0],((DWRD*)&msk[2])[1],((DWRD*)&msk[2])[0]);
                             dprnt("\n[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&ulls[0])[1],((DWRD*)&ulls[0])[0],((DWRD*)&ulls[1])[1],((DWRD*)&ulls[1])[0],((DWRD*)&ulls[2])[1],((DWRD*)&ulls[2])[0]);
                             dprnt("[0]%08x%08x %08x%08x %08x%08x\n",((DWRD*)&culls[0])[1],((DWRD*)&culls[0])[0],((DWRD*)&culls[1])[1],((DWRD*)&culls[1])[0],((DWRD*)&culls[2])[1],((DWRD*)&culls[2])[0]);
@@ -195,7 +195,7 @@ BinTracker<BaseObject>
                                 nextbestwindif=ndif;
                             }
 
-                            NSInteger chi;
+                            Int chi;
                             ULL cull0=culls[0];
                             for (chi=0;(chi<(wavesPerCycle-1)/64);chi++) {
                                 culls[chi]=(culls[chi]>>1)|(culls[chi+1]<<63);
@@ -228,15 +228,15 @@ BinTracker<BaseObject>
 
 
 SonicBinPlay<PlaybackAudioUnit,BaseObject>
-    NSInteger PLAYBACK_SAMPLE_RATE=48000;
+    Int PLAYBACK_SAMPLE_RATE=48000;
 
     -(init) {
         @-6 numChannels=4;
         @0 
     }
 
-    +(NSInteger)cycleSamples {return(1000);}
-    +(NSInteger)cycleWaves:(NSInteger)ci {
+    +(Int)cycleSamples {return(1000);}
+    +(Int)cycleWaves:(Int)ci {
         switch (ci) {
             case 0:default:return(160);
             case 1:return(180);
@@ -244,19 +244,19 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
             case 3:return(470);
         }
     }
-    +(NSInteger)bufferCycles {return(8);}
+    +(Int)bufferCycles {return(8);}
     +(double)fmoffset {return(0.2);}
-    +(NSInteger)signmul:(NSInteger)ci {
+    +(Int)signmul:(Int)ci {
         return(ci&1?1:-1);
     }
-    +(short)valForSample:(double)si ci:(NSInteger)ci {
+    +(short)valForSample:(double)si ci:(Int)ci {
         double cycleSamples=[__Class__ cycleSamples];
-        NSInteger cycleWaves=[__Class__ cycleWaves:ci];
+        Int cycleWaves=[__Class__ cycleWaves:ci];
         double wi=(si/cycleSamples-floor(si/cycleSamples))*cycleWaves;
         double wif=wi-floor(wi);
-        NSInteger wii=floor(wi);
-        NSInteger wiibl=(waveBitMasks[ci][wii/64]>>(wii%64))&1;
-        NSInteger wiibh=(waveBitMasks[ci][((wii+1)%cycleWaves)/64]>>(((wii+1)%cycleWaves)%64))&1;
+        Int wii=floor(wi);
+        Int wiibl=(waveBitMasks[ci][wii/64]>>(wii%64))&1;
+        Int wiibh=(waveBitMasks[ci][((wii+1)%cycleWaves)/64]>>(((wii+1)%cycleWaves)%64))&1;
         double v=((1-wif)*wiibl+wif*wiibh)-0.5;
         if ((int(si)/int(cycleSamples))&1) v*=[self signmul:ci];
         
@@ -264,8 +264,8 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
         return(4000*sin(ph));
     }
 
-    -(void)prepareSamples:(PLAYFRAME*)to withCount:(NSInteger)toCount {
-        for (NSInteger i=0,si=playbackSamplei;i<toCount;i++,si++) {
+    -(void)prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
+        for (Int i=0,si=playbackSamplei;i<toCount;i++,si++) {
             short s1=[__Class__ valForSample:si*2 ci:0];
             short s2=0;//[__Class__ valForSample:si*2 ci:1];
             //short s3=[__Class__ valForSample:si*2 ci:2];
@@ -281,8 +281,8 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
 
     +(void)displayWaveBitMasks {
         prnt("/*top:\nextern unsigned long long waveBitMasks[4][16];\n*/\n/*top:impl:\nunsigned long long waveBitMasks[4][16]={\n");
-        for (NSInteger ci=0;ci<4;ci++) {
-            NSInteger Nb=[SonicBinPlay cycleWaves:ci];
+        for (Int ci=0;ci<4;ci++) {
+            Int Nb=[SonicBinPlay cycleWaves:ci];
             while (YES) {
                 ULL ulls[16]={
                     RandULL()&rightOnes[Nb<64?Nb:64],
@@ -302,7 +302,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
                     RandULL()&rightOnes[Nb<64*14?0:(Nb<15*64?Nb-64*14:64)],
                     RandULL()&rightOnes[Nb<64*15?0:(Nb<16*64?Nb-64*15:64)]
                 };
-                NSInteger nb2=
+                Int nb2=
                     numOnes64(ulls[0])+numOnes64(ulls[1])+numOnes64(ulls[2])+numOnes64(ulls[3])+
                     numOnes64(ulls[4])+numOnes64(ulls[5])+numOnes64(ulls[6])+numOnes64(ulls[7])+
                     numOnes64(ulls[8])+numOnes64(ulls[9])+numOnes64(ulls[10])+numOnes64(ulls[11])+
@@ -310,7 +310,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
                 if (nb2==Nb/2) {
                     if (ci) prnt(",\n");
                     prnt("  { ");
-                    for (NSInteger i=0;i<16;i++) {
+                    for (Int i=0;i<16;i++) {
                         if (i) prnt(", ");
                         prnt("0x%08x%08xLL",((DWRD*)&ulls[i])[1],((DWRD*)&ulls[i])[0]);
                     }
@@ -325,7 +325,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
 
 SonicBinRec<RecordingAudioUnit,BaseObject>
     bool simulate=NO
-    NSInteger RECORDING_SAMPLE_RATE=96000;
+    Int RECORDING_SAMPLE_RATE=96000;
 
     
     -(init) {
@@ -349,12 +349,12 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
     BinTracker t3=[[BinTracker alloc] initWithCI:2 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:2] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t3,dealloc)
     BinTracker t4=[[BinTracker alloc] initWithCI:3 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:3] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t4,dealloc)
 
-    NSInteger recsiwas=0
+    Int recsiwas=0
 
     double simlphase=0
 
-    -(void)processSamplesWithCount:(NSInteger)numSamples {
-        if (simulate) for (NSInteger N=[SonicBinPlay cycleSamples]*2,si=recordingSamplei%N,i=0;i<numSamples;i++,si=(si+1)%N) {
+    -(void)processSamplesWithCount:(Int)numSamples {
+        if (simulate) for (Int N=[SonicBinPlay cycleSamples]*2,si=recordingSamplei%N,i=0;i<numSamples;i++,si=(si+1)%N) {
             samples[i]=[self simulatedSample:si+simlphase*[SonicBinPlay cycleSamples]/t1.wavesPerCycle];
             //prnt("%d ",samples[i]);
         }
@@ -370,25 +370,25 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
             prnt("[2] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d->%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t2.nphase,t2.drphase,t2.phase,t2.isGood,t2.bestwi,t2.phasewavei,t2.bestwiAboveFactor,t2.bestwiAboveAvgFactor,t2.cycleLen);
             //prnt("[3] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t3.nphase,t3.drphase,t3.phase,t3.isGood,t3.bestwi,t3.bestwiAboveFactor,t3.bestwiAboveAvgFactor,t3.cycleLen);
             //prnt("[4] nphase:%.4f drphase:%.4f phase:%.4f isGood:%d bestwi:%d (factors %.4f(next) %.4f(avg)) cycleLen:%.3f\n",t4.nphase,t4.drphase,t4.phase,t4.isGood,t4.bestwi,t4.bestwiAboveFactor,t4.bestwiAboveAvgFactor,t4.cycleLen);
-            for (NSInteger i=0;i<50;i++) prnt("%c",t1.nphase*50<i?'-':'N');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t2.nphase*50<i?'-':'N');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t3.nphase*50<i?'-':'N');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t4.nphase*50<i?'-':'N');
+            for (Int i=0;i<50;i++) prnt("%c",t1.nphase*50<i?'-':'N');
+            for (Int i=0;i<50;i++) prnt("%c",t2.nphase*50<i?'-':'N');
+            for (Int i=0;i<50;i++) prnt("%c",t3.nphase*50<i?'-':'N');
+            for (Int i=0;i<50;i++) prnt("%c",t4.nphase*50<i?'-':'N');
             prnt("\n");
-            for (NSInteger i=0;i<50;i++) prnt("%c",t1.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t2.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t3.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t4.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (Int i=0;i<50;i++) prnt("%c",t1.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (Int i=0;i<50;i++) prnt("%c",t2.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (Int i=0;i<50;i++) prnt("%c",t3.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
+            for (Int i=0;i<50;i++) prnt("%c",t4.bestwi*50.0/t1.wavesPerCycle<i?'-':'D');
             prnt("\n");
-            for (NSInteger i=0;i<50;i++) prnt("%c",t1.drphase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t2.drphase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t3.drphase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t4.drphase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t1.drphase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t2.drphase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t3.drphase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t4.drphase*50<i?'-':'*');
             prnt("\n");
-            for (NSInteger i=0;i<50;i++) prnt("%c",t1.phase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t2.phase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t3.phase*50<i?'-':'*');
-            for (NSInteger i=0;i<50;i++) prnt("%c",t4.phase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t1.phase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t2.phase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t3.phase*50<i?'-':'*');
+            for (Int i=0;i<50;i++) prnt("%c",t4.phase*50<i?'-':'*');
             prnt("\n");
             @200 
             recsiwas=recordingSamplei;

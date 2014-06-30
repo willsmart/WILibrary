@@ -51,7 +51,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
     NSString filterKeyPrefix=
         {return(filterDel.filterKeyPrefix);}
         -v{filterDel.filterKeyPrefix=v;}
-    NSInteger keepKeyPrefixSuffixLength=
+    Int keepKeyPrefixSuffixLength=
         {return(filterDel.keepKeyPrefixSuffixLength);}
         -v{filterDel.keepKeyPrefixSuffixLength=v;}
 
@@ -145,7 +145,7 @@ App<HasProperties,BaseObject>
     NSString filterKeyPrefix=
         {}
         -v{appFilterDel.filterKeyPrefix=v;}
-    NSInteger keepKeyPrefixSuffixLength=
+    Int keepKeyPrefixSuffixLength=
         {}
         -v{appFilterDel.keepKeyPrefixSuffixLength=v;}
 

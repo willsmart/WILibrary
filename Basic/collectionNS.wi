@@ -11,7 +11,7 @@ PointerKey <NSCopying> "-Object"
         }
         else {
             v_o=ao=self;
-            hash=(NSUInteger)obfuscateULL((ULL)v_o);
+            hash=(UInt)obfuscateULL((ULL)v_o);
         }
         return(self);
     }
@@ -30,7 +30,7 @@ PointerKey <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    NSUInteger hash=nil (readonly)
+    UInt hash=nil (readonly)
 
 
 
@@ -63,7 +63,7 @@ WeakObject <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    NSUInteger hash=nil (readonly)
+    UInt hash=nil (readonly)
 
 
 
@@ -123,26 +123,26 @@ NSMutableArray
         [self addObject:v];
     }
 
-    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(NSUInteger)index {
+    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(UInt)index {
         if (weakObject) [self insertWeakObject:anObject atIndex:index];
         else [self insertObject:anObject atIndex:index];
     }
-    -(void)insertWeakObject:(id)anObject atIndex:(NSUInteger)index {
+    -(void)insertWeakObject:(id)anObject atIndex:(UInt)index {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self insertObject:v atIndex:index];
     }
 
-    -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject weak:(bool)weakObject {
+    -(void)replaceObjectAtIndex:(UInt)index withObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
         else [self replaceObjectAtIndex:index withObject:(id)anObject];
     }
-    -(void)replaceObjectAtIndex:(NSUInteger)index withWeakObject:(id)anObject {
+    -(void)replaceObjectAtIndex:(UInt)index withWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self replaceObjectAtIndex:index withObject:v];
     }
 
 NSArray
-    -(id)derefedObjectAtIndex:(NSUInteger)index {
+    -(id)derefedObjectAtIndex:(UInt)index {
         return([WeakObject deref:[self objectAtIndex:index]]);
     }
 

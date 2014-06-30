@@ -2,6 +2,8 @@
 
 
 /*top:
+    typedef NSInteger Int;
+    typedef NSUInteger UInt;
     extern NSInteger __bpc,__breakAtBP;
     void BPoint();
     void ERR(const char *format,...);
@@ -29,7 +31,7 @@
 
 
 <DebugRetain>
-    NSInteger __rc=1,__arc=0;
+    Int __rc=1,__arc=0;
 
     //NSString __description={return([self respondsToSelector:@selector(description)]?self.description:[NSString stringWithFormat:@"Obj:%p",self]);}
 
@@ -65,7 +67,7 @@
 <BaseObject>
     //NSDictionary *__dictionaryForInit=nil (publicreadonly,ivar=__dictionaryForInit)
     
-    //NSInteger __rc=1,__arc=0;
+    //Int __rc=1,__arc=0;
     -(init)init {}
     /*-(init[super init])initWithDictionary:(NSDictionary*)d {/ *-950* /__dictionaryForInit=d;
         / *950* /__dictionaryForInit=nil;

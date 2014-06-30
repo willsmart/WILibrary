@@ -167,7 +167,7 @@ Styler <BaseObject>
         -value{
             if ([value hasPrefix:@"bbookmarks://style?"]) {
                 @synchronized (self) {
-                    NSInteger st=@"bbookmarks://style?".length;
+                    Int st=@"bbookmarks://style?".length;
                     for (NSRange en=[value rangeOfString:@"&" options:0 range:NSMakeRange(st, value.length-st)];en.location!=NSNotFound;st=en.location+en.length,en=[value rangeOfString:@"&" options:0 range:NSMakeRange(st, value.length-st)]) {
                         NSString *s=[value substringWithRange:NSMakeRange(st, en.location-st)];
                         NSRange eqr=[s rangeOfString:@"="];
@@ -189,7 +189,7 @@ Styler <BaseObject>
             }
         }
 
-    +(NSInteger)hexFromChar:(char)c {
+    +(Int)hexFromChar:(char)c {
         switch (c) {
             case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':return(c-'0');
             case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':return(c+10-'a');
@@ -197,19 +197,19 @@ Styler <BaseObject>
             default:return(-1);
         }
     }
-    +(NSInteger)byteInString:(NSString*)s atIndex:(NSInteger)i {
+    +(Int)byteInString:(NSString*)s atIndex:(Int)i {
         if ((!s)||(i<0)||(i+1>=s.length)) return(-1);
-        NSInteger h=[Styler hexFromChar:[s characterAtIndex:i]],l=[Styler hexFromChar:[s characterAtIndex:i+1]];
+        Int h=[Styler hexFromChar:[s characterAtIndex:i]],l=[Styler hexFromChar:[s characterAtIndex:i+1]];
         return((h==-1)||(l==-1)?-1:((h<<4)|l));
     }
-    +(NSInteger)hexInString:(NSString*)s atIndex:(NSInteger)i {
+    +(Int)hexInString:(NSString*)s atIndex:(Int)i {
         if ((!s)||(i<0)||(i>=s.length)) return(-1);
-        NSInteger l=[Styler hexFromChar:[s characterAtIndex:i]];
+        Int l=[Styler hexFromChar:[s characterAtIndex:i]];
         return(l==-1?-1:l);
     }
 
     +(UIColor*)colorFromString:(NSString*)s {
-        NSInteger r,g,b,a,i=0;
+        Int r,g,b,a,i=0;
         if (s) {
             if ((s.length==3)||(s.length==4)) {
                 if (((r=[Styler hexInString:s atIndex:i])>=0)&&
@@ -243,7 +243,7 @@ Styler <BaseObject>
     +(NSString*)stringFromDouble:(double)v {
         NSString *s=[NSString stringWithFormat:@"%.5f",v];
         if ([s rangeOfString:@"."].location!=NSNotFound) {
-            NSInteger zi=s.length-1;for (;[s characterAtIndex:zi]=='0';zi--);
+            Int zi=s.length-1;for (;[s characterAtIndex:zi]=='0';zi--);
             if ([s characterAtIndex:zi]=='.') zi--;
             if (zi<s.length-1) s=[s substringToIndex:zi+1];
         }
@@ -360,7 +360,7 @@ Styler <BaseObject>
             float fontSize=[self getDoubleForKeyPrefix:prefix keySuffix:@"FontSize" defaultValue:12 didChange:&changed];
             if (fontSize<4) {fontSize=4;changed=true;}
             UIFont *font=[UIFont fontWithName:fontName size:fontSize];
-            NSInteger numLines=[self getDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:1 didChange:&changed];
+            Int numLines=[self getDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:1 didChange:&changed];
             double hpad=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"HeightPadding" defaultValue:2 didChange:&changed];
             
             float pxHeight=[@"Hg" sizeWithFont:font].height;
@@ -394,7 +394,7 @@ Styler <BaseObject>
             if (changed) label.shadowOffset=CGSizeMake(sx,sy);
             
             changed=false;
-            NSInteger numLines=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:label.numberOfLines didChange:&changed];
+            Int numLines=[self getOrSetDoubleForKeyPrefix:prefix keySuffix:@"Lines" defaultValue:label.numberOfLines didChange:&changed];
             if (changed) label.numberOfLines=numLines;
             
             changed=false;

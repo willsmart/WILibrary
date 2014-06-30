@@ -1,9 +1,9 @@
 /*
 #define BP(type) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d",@#type,++__bpCount##type);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
 #define BPLOG(type,format,...) do {if (__bpEn##type) {NSLog(@"BP[%@]=%d : " format,@#type,++__bpCount##type,__VA_ARGS__);if (__bpCount##type==__bpTgt##type) __bpFn##type();}}while(false)
-#define GLOB_BPFN(type,num) bool __bpEn##type=YES;NSInteger __bpCount##type=0,__bpTgt##type=(num);void __bpFn##type()
-#define EXTERN_BPFN(type) extern bool __bpEn##type;extern NSInteger __bpCount##type;extern NSInteger __bpTgt##type;void __bpFn##type()
-#define STAT_BPFN(type,num) static bool __bpEn##type=YES;static NSInteger __bpCount##type=0,__bpTgt##type=(num);static void __bpFn##type()
+#define GLOB_BPFN(type,num) bool __bpEn##type=YES;Int __bpCount##type=0,__bpTgt##type=(num);void __bpFn##type()
+#define EXTERN_BPFN(type) extern bool __bpEn##type;extern Int __bpCount##type;extern Int __bpTgt##type;void __bpFn##type()
+#define STAT_BPFN(type,num) static bool __bpEn##type=YES;static Int __bpCount##type=0,__bpTgt##type=(num);static void __bpFn##type()
 #define BPTGT(type,num) do {__bpTgt##type=(num);}while (false)
 #define BPENABLE(type) do {__bpEn##type=YES;}while (false)
 #define BPDISABLE(type) do {__bpEn##type=NO;}while (false)
@@ -118,13 +118,13 @@ NSString "fn:sys"
     }
 
 
-    +(NSString*)JSONStringForCString:(const char *)from withLength:(NSInteger)N useTmpDataObject:(NSMutableData*)d {
-        NSInteger toLength;
+    +(NSString*)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*)d {
+        Int toLength;
         const unichar *to=[__Class__ JSONunicharsStringForCString:from withLength:N useTmpDataObject:&d retLength:&toLength];
         return([NSString stringWithCharacters:to length:toLength]);
     }
 
-    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(NSInteger)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(NSInteger*)retLength {
+    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(Int*)retLength {
         if ((N<0)||(N==NSNotFound)) N=strlen(from);
         NSMutableData *d=(pd?*pd:nil);
         if (!d) {
@@ -153,7 +153,7 @@ NSString "fn:sys"
             }
         }
         *to=0;
-        if (retLength) *retLength=(NSInteger)(to-toWas);
+        if (retLength) *retLength=(Int)(to-toWas);
         return(toWas);
     }
 
@@ -308,24 +308,24 @@ Util "fn:util"
         bool ret=NO;
         if (from==nil) {
             if (to) {
-                NSInteger i=0;
+                Int i=0;
                 while (i<to.count) [inss addObject:@(i++)];
                 ret=(i>0);
             }
         }
         else if (to==nil) {
-            NSInteger i=0;
+            Int i=0;
             while (i<from.count) [dels addObject:@(i++)];
             ret=(i>0);
         }
         else {
-            NSInteger toi=0,fromi=0;
+            Int toi=0,fromi=0;
             while ((toi<[to count])||(fromi<[from count])) {
                 char op=0;
                 if (fromi>=[from count]) op='i';
                 else if (toi>=[to count]) op='d';
                 else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi]]) op=0;
-                else for (NSInteger j=1;;j++) {
+                else for (Int j=1;;j++) {
                     if (toi+j>=[to count]) {op='d';break;}
                     else if (fromi+j>=[from count]) {op='i';break;}
                     else if ([Util objectOrString:[from objectAtIndex:fromi] equals:[to objectAtIndex:toi+j]]) {op='i';break;}
@@ -362,7 +362,7 @@ Util "fn:util"
         return(YES);
     }
 
-    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(NSInteger)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
+    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(Int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
         NSMutableArray *dels=[MutableArray array];
         NSMutableArray *inss=[MutableArray array];
@@ -490,11 +490,11 @@ Util "fn:util"
 
 
 IntCarrier "fn:util"
-    NSInteger intValue=nil
-    +(IntCarrier*)carrierWithInt:(NSInteger)v {
+    Int intValue=nil
+    +(IntCarrier*)carrierWithInt:(Int)v {
         return([[IntCarrier alloc] initWithInt:v]);
     }
-    -(init[super init])initWithInt:(NSInteger)v {
+    -(init[super init])initWithInt:(Int)v {
         intValue=v;
     }
     NSString description={return([NSString stringWithFormat:@"%d",(int)intValue]);}
@@ -795,8 +795,8 @@ URLHandlerRegistry "fn:util"
 <WeakList>
     listAsHead -- <WeakListItem> headItem
     listAsTail -- <WeakListItem> tailItem
-    NSUInteger _count=0
-    NSUInteger count={return(_count);}
+    UInt _count=0
+    UInt count={return(_count);}
 
     -(void)dealloc {@-500 self.headItem=self.tailItem=nil;}
     -(void)link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {

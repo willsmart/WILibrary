@@ -18,7 +18,7 @@ WIMyClass
     -(void)slylySetHisqname:(BaseHisClass)v {
         hisqname=v;
     }
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousNSHisqname=nshisqname;
         previousHisqname=hisqname;
         hisqname=self.hisname;
@@ -104,7 +104,7 @@ JustMyClassOverride<Commitable>
         {return(useMyHisqname?nshisqname:self.baseWithHisqname.nshisqname);}
         -v{nshisqname=v;hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousNSHisqname=nshisqname;
         previousHisqname=hisqname;
         nshisqname=nil;

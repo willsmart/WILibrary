@@ -236,7 +236,7 @@ type UniformType "typedef:enum {
 UniformTypeFunctions "fn:shader"
     +(UniformType)typeForString:(NSString*)s {
         NSArray *a=[NSArray arrayWithObjects:@"none",@"any",@"noValue",@"bool",@"float",@"int",@"sampler2D",@"samplerCube",@"vec2",@"vec3",@"vec4",@"ivec2",@"ivec3",@"ivec4",@"bvec2",@"bvec3",@"bvec4",@"mat2",@"mat3",@"mat4",nil];
-        NSUInteger v=[a indexOfObject:s];
+        UInt v=[a indexOfObject:s];
         return(v==NSNotFound?un_none:(UniformType)v);
     }
     +(NSString*)stringForType:(UniformType)type {
@@ -295,7 +295,7 @@ SHUniform <BaseObject> "fn:shader"
     -(void)copyFrom:(SHUniform*)copy {
         self.type=copy.type;
         enabled=copy.enabled;
-        NSInteger len=0;
+        Int len=0;
         switch (type) {
             case un_bool:len=sizeof(bool)*1;break;
             case un_bvec2:len=sizeof(bool)*2;break;
@@ -405,7 +405,7 @@ SHUniform <BaseObject> "fn:shader"
         }
 
     ULL ullHash={
-        NSInteger len=0;
+        Int len=0;
         switch (type) {
             case un_bvec2:len=sizeof(bool)*2;break;
             case un_bvec3:len=sizeof(bool)*3;break;
@@ -498,7 +498,7 @@ SHUniform <BaseObject> "fn:shader"
                 case un_float:value=@(*(float*)_buf.c);break;
                 default:
                     {
-                        NSInteger len=0;
+                        Int len=0;
                         switch (type) {
                             case un_bvec2:len=sizeof(bool)*2;break;
                             case un_bvec3:len=sizeof(bool)*3;break;
@@ -518,7 +518,7 @@ SHUniform <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((NSInteger)type),@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((Int)type),@"type",nil]);
         }
         -v{
             UniformType typ=type;
@@ -553,7 +553,7 @@ SHUniform <BaseObject> "fn:shader"
                     break;
                 default:
                     {
-                        NSInteger len=0,N=0;
+                        Int len=0,N=0;
                         switch (typ) {
                             case un_bvec2:len=sizeof(bool)*(N=2);break;
                             case un_bvec3:len=sizeof(bool)*(N=3);break;
@@ -577,7 +577,7 @@ SHUniform <BaseObject> "fn:shader"
                             NSArray *a=(NSArray*)v;
                             for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
                             type=typ;
-                            NSInteger i=0;
+                            Int i=0;
                             switch (typ) {
                                 case un_bvec2:case un_bvec3:case un_bvec4:
                                     for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
@@ -764,7 +764,7 @@ SHAttribute <BaseObject> "fn:shader"
                 case un_none:case un_any:case un_noValue:value=[NSNull null];break;
                 default:
                     {
-                        NSInteger len=0;
+                        Int len=0;
                         switch (type) {
                             case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);break;
                             case un_bool:len=sizeof(bool);break;
@@ -787,7 +787,7 @@ SHAttribute <BaseObject> "fn:shader"
                     }
                     break;
             }
-            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((NSInteger)type),@"type",nil]);
+            return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((Int)type),@"type",nil]);
         }
         -v{
             UniformType typ=type;
@@ -804,7 +804,7 @@ SHAttribute <BaseObject> "fn:shader"
                 case un_none:case un_any:case un_noValue:type=typ;break;
                 default:
                     {
-                        NSInteger len=0,N=0,Nv=self.program.shader.numberOfVertices;
+                        Int len=0,N=0,Nv=self.program.shader.numberOfVertices;
                         switch (typ) {
                             case un_sampler2D:case un_samplerCube:case un_int:len=sizeof(int);N=1;break;
                             case un_bool:len=sizeof(bool);N=1;break;
@@ -831,7 +831,7 @@ SHAttribute <BaseObject> "fn:shader"
                             NSArray *a=(NSArray*)v;
                             for (NSObject *o in a) if (![o isKindOfClass:[NSNumber class]]) return;
                             type=typ;
-                            NSInteger i=0;
+                            Int i=0;
                             switch (typ) {
                                 case un_bool:case un_bvec2:case un_bvec3:case un_bvec4:
                                     for (NSNumber *n in a) ((bool*)_buf.c)[i++]=n.boolValue;
@@ -1328,8 +1328,8 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                 if ((!wasw)&&[t.str isEqualToString:@"("]) {
                     memset(tokens,0,sizeof(tokens[0][0])*4*16);
                     bool ismat=NO,insub=NO;
-                    NSInteger x=0,y=0,depth=1,maxx=0,maxy=0;
-                    NSInteger posWas=r.pos;
+                    Int x=0,y=0,depth=1,maxx=0,maxy=0;
+                    Int posWas=r.pos;
 
                     WReaderToken *t2;
                     while (depth&&(t2=r.nextToken)) {
@@ -1376,16 +1376,16 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                     }
                     if (t2&&maxy) {
                         UniformType utype;
-                        NSInteger N;
+                        Int N;
                         if (maxy>=9) {utype=un_mat4;N=16;}
                         else if (maxy>=4) {utype=un_mat3;N=9;}
                         else if (ismat) {
-                            NSInteger w;
+                            Int w;
                             if ((maxx>=3)||(maxy>=3)) {utype=un_mat4;N=16;w=4;}
                             else if ((maxx>=2)||(maxy>=2)) {utype=un_mat3;N=9;w=3;}
                             else {utype=un_mat2;N=4;w=2;}
-                            for (NSInteger y=1,i=w;y<w;y++) {
-                                for (NSInteger x=0;x<w;x++,i++) {
+                            for (Int y=1,i=w;y<w;y++) {
+                                for (Int x=0;x<w;x++,i++) {
                                     tokens[0][i]=tokens[x][y];
                                     tokens[x][y]=nil;
                                 }
@@ -1400,7 +1400,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         [newTokens addObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o']];
-                        for (NSInteger i=0;i<N;i++) {
+                        for (Int i=0;i<N;i++) {
                             if (i) [newTokens addObject:[[WReaderToken alloc] initWithString:@"," bracketCount:t.bracketCount type:'o']];
                             if (tokens[0][i]) [newTokens addObjectsFromArray:tokens[0][i]];
                             else [newTokens addObject:[[WReaderToken alloc] initWithString:@"0.0" bracketCount:t.bracketCount type:'n']];
@@ -1409,7 +1409,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         changed=YES;
                         r.pos+=3;
                     }
-                    for (NSInteger y=0;y<16;y++) for (NSInteger x=0;x<4;x++) {
+                    for (Int y=0;y<16;y++) for (Int x=0;x<4;x++) {
                         if (tokens[x][y]) {
                             tokens[x][y]=nil;
                         }

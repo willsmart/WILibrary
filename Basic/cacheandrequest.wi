@@ -184,8 +184,8 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         else return(NO);
     }
 
-    -(NSInteger)goForSeconds:(float)sec {
-        NSInteger ret=0;
+    -(Int)goForSeconds:(float)sec {
+        Int ret=0;
         NSDate *start = [NSDate date];
         do {
             if (![self goNext]) break;
@@ -223,14 +223,14 @@ LRUCacheItem<LRUCacheItem> "fn:util"
 
 LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     float maxSize=100000000
-    NSInteger maxCount=1000000
+    Int maxCount=1000000
 
 <LRUCache:List,MinimalMutableDictionary,Codable>
     -(void)clear {@100 
         [self removeAllObjects];
         totalSize=0;
     }
-    NSInteger imi=1;
+    Int imi=1;
     -(NSString*)nextPath {
         NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         return([dir stringByAppendingFormat:@"/render_%04d.png",(int)imi++]);
@@ -354,7 +354,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     }
     
     float totalSize=0,maxSize
-    NSInteger maxCount
+    Int maxCount
     
     -(id)objectForKey:(id<NSCopying>)key {@-100 
         NSObject<LRUCacheItem> *item=[__dictionary objectForKey:key];

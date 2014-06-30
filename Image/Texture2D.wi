@@ -25,7 +25,7 @@ type Texture2DPixelFormat "typedef:enum {
 Texture2D <BaseObject> "fn:render"
     GLuint glname=0 (readonly)
     CGSize contentSize=nil
-    NSUInteger pixelWidth=100,pixelHeight=100 (readonly)
+    UInt pixelWidth=100,pixelHeight=100 (readonly)
     Texture2DPixelFormat pixelFormat=kTexture2DPixelFormat_RGBA8888 (readonly)
     GLfloat  maxS=1,maxT=1 (readonly)
     GLuint frameBuffer={
@@ -119,7 +119,7 @@ Texture2D <BaseObject> "fn:render"
         [self clear];
     }
 
-    - (void)loadWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat pixelsWide:(NSUInteger)width pixelsHigh:(NSUInteger)height contentSize:(CGSize)size {
+    - (void)loadWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat pixelsWide:(UInt)width pixelsHigh:(UInt)height contentSize:(CGSize)size {
         [self clear];
 
         GLint saveName;
@@ -132,7 +132,7 @@ Texture2D <BaseObject> "fn:render"
         maxT = size.height / (float)height;
         
         if (!data) {
-            NSInteger Bpp;
+            Int Bpp;
             switch(pixelFormat) {                    
                 case kTexture2DPixelFormat_RGBA8888:Bpp=4;break;
                 case kTexture2DPixelFormat_RGB565:Bpp=2;break;
@@ -173,10 +173,10 @@ Texture2D <BaseObject> "fn:render"
 
 
 
-    -(DWRD*)pixelsWithWidth:(NSInteger)w height:(NSInteger)h {
+    -(DWRD*)pixelsWithWidth:(Int)w height:(Int)h {
         if (self.frameBuffer==GL_INVALID_VALUE) return(nil);
         GLint fmt,fmt2;
-        NSUInteger fmtSize;
+        UInt fmtSize;
         switch(pixelFormat) {
           case kTexture2DPixelFormat_RGBA8888:default:
             fmt=GL_RGBA;fmt2=GL_UNSIGNED_BYTE;fmtSize=4;break;
@@ -185,7 +185,7 @@ Texture2D <BaseObject> "fn:render"
           case kTexture2DPixelFormat_A8:
             fmt=GL_ALPHA;fmt2=GL_UNSIGNED_BYTE;fmtSize=1;break;
         }
-        NSUInteger len=w*h*fmtSize;
+        UInt len=w*h*fmtSize;
         if (!self.pixelsData) self.pixelsData=[NSMutableData dataWithLength:len];
         else if (self.pixelsData.length!=len) self.pixelsData.length=len;
 
@@ -194,7 +194,7 @@ Texture2D <BaseObject> "fn:render"
         if (pixelFormat==kTexture2DPixelFormat_RGB565) {
             WRD *from=((WRD*)self.pixelsData.mutableBytes)+w*h;
             DWRD *to=((DWRD*)self.pixelsData.mutableBytes)+w*h;
-            for (NSInteger i=0;i<w*h;i++) {
+            for (Int i=0;i<w*h;i++) {
                 from--;to--;
                 DWRD dw=*from;
                 *to=((dw&0x1f)<<11)|((dw&0x7e0)<<13)|((dw&0xf800)<<16)|0xff;
@@ -205,12 +205,12 @@ Texture2D <BaseObject> "fn:render"
     }
 
 
-    -(UIImage*)uiImageWithWidth:(NSInteger)w height:(NSInteger)h {
+    -(UIImage*)uiImageWithWidth:(Int)w height:(Int)h {
         return([__Class__ uiImageWithWidth:w height:h data:[self pixelsWithWidth:w height:h] pixelFormat:pixelFormat]);
     }
 
-    +(UIImage*)uiImageWithWidth:(NSInteger)w height:(NSInteger)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
-        NSUInteger fmtSize;
+    +(UIImage*)uiImageWithWidth:(Int)w height:(Int)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
+        UInt fmtSize;
         CGColorSpaceRef colorSpaceRef;
         CGBitmapInfo bitmapInfo;
         
@@ -227,7 +227,7 @@ Texture2D <BaseObject> "fn:render"
             break;
         }
         
-        NSUInteger len=w*h*fmtSize;
+        UInt len=w*h*fmtSize;
         const BYT *datablock=NEWA(Makecc('i','m'),BYT,len);
         memcpy((void*)datablock,data,len);
         data=(const void*)datablock;
@@ -257,7 +257,7 @@ Texture2D <BaseObject> "fn:render"
     UIImage uiImage=
         {
             if (!v__uiImage) {
-                self.uiImage=[self uiImageWithWidth:(NSInteger)pixelWidth height:(NSInteger)pixelHeight];
+                self.uiImage=[self uiImageWithWidth:(Int)pixelWidth height:(Int)pixelHeight];
             }
             return(v__uiImage);
         }
@@ -269,7 +269,7 @@ Texture2D <BaseObject> "fn:render"
             self._uiImage=v;
             if (!v) return;
             
-            NSUInteger i;
+            UInt i;
             CGContextRef cgcontext = nil;
             void *data = nil;;
             CGColorSpaceRef colorSpace;
@@ -297,7 +297,7 @@ Texture2D <BaseObject> "fn:render"
             CGSize imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
             CGAffineTransform transform = CGAffineTransformIdentity;
 
-            NSUInteger width = imageSize.width,height = imageSize.height;
+            UInt width = imageSize.width,height = imageSize.height;
 
             if ((width != 1) && (width & (width - 1))) {
                 i = 1;
@@ -368,16 +368,16 @@ Texture2D <BaseObject> "fn:render"
         [self clear];
         
         
-        NSUInteger width = dimensions.width,height = dimensions.height;
+        UInt width = dimensions.width,height = dimensions.height;
 
         BOOL sizeToFit = NO;
         if ((width != 1) && (width & (width - 1))) {
-            NSUInteger i = 1;
+            UInt i = 1;
             while((sizeToFit ? 2 * i : i) < width) i *= 2;
             width = i;
         }
         if((height != 1) && (height & (height - 1))) {
-            NSUInteger i = 1;
+            UInt i = 1;
             while((sizeToFit ? 2 * i : i) < height) i *= 2;
             height = i;
         }

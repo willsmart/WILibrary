@@ -26,7 +26,7 @@ extern NSString *testKey;
 NSString *testKey=nil;
 */
 CollectionTestObject
-    NSInteger intValue=nil (readonly)
+    Int intValue=nil (readonly)
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
     <Tester> tester=nil (assign)
 
@@ -42,7 +42,7 @@ CollectionTestObject
         [s appendFormat:@")"];
         return(s);
     }
-    -(init[super init])initWithInt:(NSInteger)v tester:(NSObject<Tester>*)atester {
+    -(init[super init])initWithInt:(Int)v tester:(NSObject<Tester>*)atester {
         intValue=v;
         self.tester=atester;
     }
@@ -93,9 +93,9 @@ CollectionTestObject
     }
 
 CollectionTestSubObject
-    NSInteger willAddCount=0,willRemoveCount=0;
-    NSInteger __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
-    NSInteger rcInner=0
+    Int willAddCount=0,willRemoveCount=0;
+    Int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
+    Int rcInner=0
     CollectionTestObject *testObject=nil (assign,ivar=testObject)
 
     NSString description={return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
@@ -134,8 +134,8 @@ CollectionTestSubObject
     id object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
     NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
     NSRange _range=nil,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}=nil
-    NSUInteger _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
-    NSUInteger _index1=NSNotFound,index1={return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
+    UInt _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
+    UInt _index1=NSNotFound,index1={return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
 
     NSDictionary *collections=[NSDictionary dictionary]
 
@@ -150,7 +150,7 @@ CollectionTestSubObject
             __VA_ARGS__ \
             for (CollectionTestObject *o in self._allObjects) { \
                 CollectionTestSubObject *so=[o.subObjects objectForKey:_key]; \
-                NSInteger opN=0; \
+                Int opN=0; \
                 if ([ret isKindOfClass:[NSSet class]]) { \
                     if ([(NSSet*)ret containsObject:o]) opN=1; \
                 } \
@@ -206,14 +206,14 @@ CollectionTestSubObject
     }
 
 
-    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {
+    -(Int)expectNForSet:(NSString*)set givenBaseN:(Int)N {
         if ([set isEqualToString:@"weak"]) return(0);
         return(N);
     }
 
     -(void)verifyRC {
         for (CollectionTestObject *o in self._allObjects) {
-            NSInteger N=0;
+            Int N=0;
             if ([a isKindOfClass:[NSSet class]]) {
                 if ([(NSSet*)a containsObject:o]) N=1;
             }
@@ -225,7 +225,7 @@ CollectionTestSubObject
             }
             for (NSString *k in o.subObjects) {
                 CollectionTestSubObject *so=[o.subObjects objectForKey:k];
-                NSInteger expRefCnt=[self expectNForSet:k givenBaseN:N];
+                Int expRefCnt=[self expectNForSet:k givenBaseN:N];
                 if ((expRefCnt>=0)&&(expRefCnt!=so.rcWillBe)) {
                     [self passFail:NO format:@"Outer: Object %@ key %@ should have rc of %d",o.description,k,expRefCnt];
                 }                
@@ -240,7 +240,7 @@ CollectionTestSubObject
         _range=NSMakeRange(NSNotFound,0);
         NSMutableArray *array=[NSMutableArray arrayWithCapacity:100];
         NSMutableArray *arrayk=[NSMutableArray arrayWithCapacity:100];
-        for (NSInteger i=0;i<100;i++) {
+        for (Int i=0;i<100;i++) {
             CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
             [array addObject:o];
             [arrayk addObject:[NSString stringWithFormat:@"k%d",(int)i]];
@@ -251,7 +251,7 @@ CollectionTestSubObject
         [self verifyWillOpCounts];
     }
 
-    -(NSString*)steps:(NSInteger)N {
+    -(NSString*)steps:(Int)N {
         srand(1);
         while (N-->0) {
             [self nextTest];
@@ -276,36 +276,36 @@ CollectionTestSubObject
     NSMutableDictionary randDictionary=
         {
             NSMutableDictionary *d=[NSMutableDictionary dictionary];
-            NSUInteger count=rand()%10;
-            for (NSInteger i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
+            UInt count=rand()%10;
+            for (Int i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
             return(d);
         }
     NSMutableSet randSet=
         {
             NSMutableSet *objects=[MutableSet set];
-            NSUInteger count=rand()%10;
-            for (NSInteger i=0;i<count;i++) [objects addObject:self.randObject];
+            UInt count=rand()%10;
+            for (Int i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
     NSMutableArray randArray=
         {
             NSMutableArray *objects=[NSMutableArray array];
-            NSUInteger count=rand()%10;
-            for (NSInteger i=0;i<count;i++) [objects addObject:self.randObject];
+            UInt count=rand()%10;
+            for (Int i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
     NSMutableArray randKeyArray=
         {
             NSMutableArray *keys=[NSMutableArray array];
-            NSUInteger count=rand()%10;
-            for (NSInteger i=0;i<count;i++) [keys addObject:self.randKey];
+            UInt count=rand()%10;
+            for (Int i=0;i<count;i++) [keys addObject:self.randKey];
             return(keys);
         }
-    -(NSMutableIndexSet*)randIndexSetWithCount:(NSUInteger)count max:(NSUInteger)max {
+    -(NSMutableIndexSet*)randIndexSetWithCount:(UInt)count max:(UInt)max {
         NSMutableIndexSet *indexesv=[NSMutableIndexSet indexSet];
         if (count) {
-            for (NSUInteger i=0;i<count;i++) {
-                NSUInteger j,ii=(rand()%((max+1)-i));
+            for (UInt i=0;i<count;i++) {
+                UInt j,ii=(rand()%((max+1)-i));
                 for (j=0;[indexesv containsIndex:j]||(ii--);j++);
                 [indexesv addIndex:j];
             }
@@ -315,7 +315,7 @@ CollectionTestSubObject
     NSMutableIndexSet randInternalIndexSet={return([self randIndexSetWithCount:rand()%(a.count+1) max:a.count-1]);}
     NSRange randInternalRange=
         {
-            NSUInteger location=rand()%a.count,length=rand()%(a.count-location);
+            UInt location=rand()%a.count,length=rand()%(a.count-location);
             return(NSMakeRange(location,length));
         }
 
@@ -336,14 +336,14 @@ CollectionTestSubObject
 
 
 <TesterCounter>
-    -(void)add:(NSInteger)c toWillAddCountForObject:(id)object {
+    -(void)add:(Int)c toWillAddCountForObject:(id)object {
         if ([object isKindOfClass:[CollectionTestObject class]]) {
             CollectionTestObject *o=(CollectionTestObject*)object;
             if (c==-1) [o didAdd];
             else if (c==1) [o willAdd];
         }
     }
-    -(void)add:(NSInteger)c toWillRemoveCountForObject:(id)object {
+    -(void)add:(Int)c toWillRemoveCountForObject:(id)object {
         if ([object isKindOfClass:[CollectionTestObject class]]) {
             CollectionTestObject *o=(CollectionTestObject*)object;
             if (c==-1) [o didRemove];
@@ -387,7 +387,7 @@ CollectionTestSubObject
 
 <MutableSetMirrorTester:MutableSet,BasicTester,TesterCounter>
     NSMutableSet __mirrorSet=[MutableSet set] (ivar=__mirrorSet)
-    NSInteger __addingToMirrorSet=0,__removingFromMirrorSet=0
+    Int __addingToMirrorSet=0,__removingFromMirrorSet=0
     
     -(void)willAddObject:(id)object {@900 
         if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st will add while removing\n"];
@@ -436,7 +436,7 @@ SetTester <Tester>
     MutableSetMirrorTesterImpl b=[MutableSetMirrorTesterImpl set] (ivar=b)
     WeakMutableSetMirrorTesterImpl c=[WeakMutableSetMirrorTesterImpl set] (ivar=c)
 
-    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
+    -(Int)expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
         if ([set isEqualToString:@"weak"]) return(N);
         if ([set isEqualToString:@"strong"]) return(2*N);
         return(-1);
@@ -592,7 +592,7 @@ SetTester <Tester>
 
 
 <MutableDictionaryMirrorTester:MutableDictionaryKeyFollower,MutableDictionary,TesterCounter>
-    NSInteger __addingToMirrorDictionary=0,__removingFromMirrorDictionary=0
+    Int __addingToMirrorDictionary=0,__removingFromMirrorDictionary=0
     
 
 
@@ -630,7 +630,7 @@ SetTester <Tester>
 
     
     -(void)verifyMirrorDictionary {
-        NSInteger c=0;
+        Int c=0;
         for (id<NSCopying> key in __dictionaryObjectKeys) c+=((NSSet*)[__dictionaryObjectKeys objectForKey:key]).count;
         if (c!=__dictionary.count) [self passFail:NO format:@"!!!dkt count mismatch\n"];
         else {
@@ -663,7 +663,7 @@ DictionaryTester <Tester>
     WeakMutableDictionaryMirrorTesterImpl c=[WeakMutableDictionaryMirrorTesterImpl dictionary] (ivar=c)
 
 
-    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
+    -(Int)expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
         if ([set isEqualToString:@"weak"]) return(0);
         if ([set isEqualToString:@"strong"]) return(N);
         return(-1);
@@ -836,18 +836,18 @@ DictionaryTester <Tester>
 
 
 <MutableArrayMirrorTester:MutableArrayIndexFollower,MutableArray,TesterCounter>
-    NSInteger __addingToMirrorArray=0,__removingFromMirrorArray=0
+    Int __addingToMirrorArray=0,__removingFromMirrorArray=0
 
-    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@100 
+    -(void)willAddObject:(id)object withIndex:(UInt)index {@100 
         __addingToMirrorArray++;
         [self add:1 toWillAddCountForObject:object];
     }
-    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@100 
+    -(void)didAddObject:(id)object withIndex:(UInt)index {@100 
         if (!__addingToMirrorArray) [self passFail:NO format:@"!!!ait did add while not adding\n"];
         [self add:-1 toWillAddCountForObject:object];
         __addingToMirrorArray--;
     }
-    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@100 
+    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@100 
         [self add:1 toWillRemoveCountForObject:object];
         __removingFromMirrorArray++;
     }
@@ -864,11 +864,11 @@ DictionaryTester <Tester>
     }
     
     -(void)verifyMirrorArray {
-        NSInteger c=0;
+        Int c=0;
         for (PointerKey *key in __arrayObjectIndexes) c+=((NSIndexSet*)[__arrayObjectIndexes objectForKey:key]).count;
         if (c!=__array.count) [self passFail:NO format:@"!!!ait count mismatch\n"];
         else {
-            NSUInteger index=0;
+            UInt index=0;
             for (id object in __array) {
                 NSIndexSet *indexesv=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
                 if (!indexesv) [self passFail:NO format:@"!!!ait Object not known\n"];
@@ -904,7 +904,7 @@ ArrayTester <Tester>
     WeakMutableArrayMirrorTesterImpl c=[WeakMutableArrayMirrorTesterImpl array] (ivar=c)
 
 
-    -(NSInteger)expectNForSet:(NSString*)set givenBaseN:(NSInteger)N {@!0 
+    -(Int)expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
         if ([set isEqualToString:@"weak"]) return(0);
         if ([set isEqualToString:@"strong"]) return(N);
         return(-1);
@@ -1003,21 +1003,21 @@ ArrayTester <Tester>
         if (!a.count) return;
         [self passFail:[a indexOfObjectIdenticalTo:self.object inRange:self.range]==[b indexOfObjectIdenticalTo:self.object inRange:self.range] format:@"indexOfObjectIdenticalToInRange"];
     }
-    //-(void)indexOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
-    //-(void)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
-    //-(void)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
-    //-(void)indexesOfObjectsPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
-    //-(void)indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
-    //-(void)indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    //-(void)indexOfObjectPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
+    //-(void)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
+    //-(void)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
+    //-(void)indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
     //-(void)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
 
 
     //Sending Messages to Elements
     //-(void)makeObjectsPerformSelector:(SEL)selector {
     //-(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
-    //-(void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
-    //-(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
-    //-(void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    //-(void)enumerateObjectsUsingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
+    //-(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
+    //-(void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
 
 
     //Comparing Arrays
@@ -1051,8 +1051,8 @@ ArrayTester <Tester>
 
     //Sorting
     //-(NSData*)sortedArrayHint {
-    //-(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
-    //-(NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+    //-(NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context {
+    //-(NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
     //-(NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
     //-(void)sortedArrayUsingSelector:(SEL)selector {
     //-(NSArray *)sortedArrayUsingComparator:(NSComparator)cmptr {
@@ -1068,7 +1068,7 @@ ArrayTester <Tester>
     //Creating a Description
     //NSString description={return([__array description]);}
     //-(NSString *)descriptionWithLocale:(id)locale {
-    //-(NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+    //-(NSString *)descriptionWithLocale:(id)locale indent:(UInt)level {
     //-(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
     //-(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
 
@@ -1188,7 +1188,7 @@ ArrayTester <Tester>
     -(void)replaceObjectsInRangeWithObjectsFromArrayRange {
         if (!a.count) return;
         if (!self.objectArray.count) return;
-        NSUInteger i=rand()%(self.objectArray.count+1);
+        UInt i=rand()%(self.objectArray.count+1);
         NSRange r=NSMakeRange(rand()%(self.objectArray.count+1-i),i);
         [self objectArray];
         ITERATECOLLECTIONS(NSMutableArray*,v,[v replaceObjectsInRange:self.range withObjectsFromArray:self.objectArray range:r];)
@@ -1215,14 +1215,14 @@ ArrayTester <Tester>
     //Rearranging Content
     -(void)exchangeObjectAtIndexWithObjectAtIndex {
         if (!a.count) return;
-        NSUInteger i=rand()%a.count;
+        UInt i=rand()%a.count;
         ITERATECOLLECTIONS(NSMutableArray*,v,[v exchangeObjectAtIndex:i withObjectAtIndex:self.index];)
         [self passFailWithFormat:@"exchangeObjectAtIndexWithObjectAtIndex"];
     }
     //-(void)sortUsingDescriptors:(NSArray*)sortDescriptors {
     //-(void)sortUsingComparator:(NSComparator)cmptr {
     //-(void)sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
-    //-(void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context {
+    //-(void)sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
     //-(void)sortUsingSelector:(SEL)selector {
 
 

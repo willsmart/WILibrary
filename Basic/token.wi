@@ -33,7 +33,7 @@ WReader <BaseObject> "fn:token"
 
 
     NSArray lines=[[NSArray alloc] init] (readonly,dealloc,ivar=lines)
-    NSInteger pos=nil
+    Int pos=nil
     -(init) {
         pos=-1;
     }
@@ -59,7 +59,7 @@ WReader <BaseObject> "fn:token"
 
     -(NSString*)stringWithTokensInRange:(NSRange)r {
         NSMutableString *s=[NSMutableString string];
-        for (NSInteger i=MAX(0,(int)r.location);i<MIN(tokenizer.tokens.count,r.location+r.length);i++) {
+        for (Int i=MAX(0,(int)r.location);i<MIN(tokenizer.tokens.count,r.location+r.length);i++) {
             [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];
         }
         return(s);
@@ -67,8 +67,8 @@ WReader <BaseObject> "fn:token"
 
     NSString localString={
         NSMutableString *s=[NSMutableString string];
-        NSInteger range=30;
-        for (NSInteger i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
+        Int range=30;
+        for (Int i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
             if (i==pos) [s appendString:@">here>"];
     //        [s appendFormat:@"(%c)%@",((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).type,((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
             [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];
@@ -86,11 +86,11 @@ WReader <BaseObject> "fn:token"
 
 WReaderToken "fn:token"
     NSString str=nil
-    NSInteger bracketCount=nil
+    Int bracketCount=nil
     char type=nil
 
 
-    -(init[super init])initWithString:(NSString*)astr bracketCount:(NSInteger)bc type:(char)atype {
+    -(init[super init])initWithString:(NSString*)astr bracketCount:(Int)bc type:(char)atype {
         self.str=astr.copy;
         bracketCount=bc;
         type=atype;
@@ -137,12 +137,12 @@ WReaderTokenizer <BaseObject> "fn:token"
                 "B bc bc bc bc bc bc bc Bc zc bc bc bc bc bc",
                 "l lc rr lc lc lc lc lc lc lc lc lc lc lc lc"
             };
-            NSInteger cols=14;
-            NSInteger rows=17;
+            Int cols=14;
+            Int rows=17;
 
-            NSInteger colForC[256];
-            for (NSInteger _c=0;_c<256;_c++) {
-                NSInteger c=(((_c>='a')&&(_c<='z'))||((_c>='A')&&(_c<='Z'))?'w':
+            Int colForC[256];
+            for (Int _c=0;_c<256;_c++) {
+                Int c=(((_c>='a')&&(_c<='z'))||((_c>='A')&&(_c<='Z'))?'w':
                        ((_c>='0')&&(_c<='9')?'n':
                         (_c=='\"'?'Q':
                             (_c=='\''?'q':
@@ -150,8 +150,8 @@ WReaderTokenizer <BaseObject> "fn:token"
                 for (colForC[_c]=0;(colForC[_c]<cols-1)&&(mat[0][2+3*colForC[_c]]!=c);colForC[_c]++);
             }
             
-            NSInteger rowForC[256];
-            for (NSInteger _c=0;_c<256;_c++) {
+            Int rowForC[256];
+            for (Int _c=0;_c<256;_c++) {
                 for (rowForC[_c]=0;(rowForC[_c]<rows-1)&&(mat[rowForC[_c]+1][0]!=_c);rowForC[_c]++);
                 if (rowForC[_c]==rows) rowForC[_c]=-1;
             }
@@ -163,10 +163,10 @@ WReaderTokenizer <BaseObject> "fn:token"
             NSMutableData *d=[NSMutableData dataWithLength:v.length];
             char *types=(char*)[d mutableBytes];
             
-            NSInteger ci=0;
+            Int ci=0;
             while (ci<csd.length) {
-                NSInteger col=colForC[cs[ci]];
-                NSInteger row=rowForC[state];
+                Int col=colForC[cs[ci]];
+                Int row=rowForC[state];
                 if (row<0) {NSLog(@"Unknown state %c",state);break;}
                 types[ci]=mat[row+1][3+3*col];
                 state=mat[row+1][2+3*col];
@@ -177,7 +177,7 @@ WReaderTokenizer <BaseObject> "fn:token"
             }
             
 
-            NSInteger typeWas=0,bc=0,indent=0,_indent=0;
+            Int typeWas=0,bc=0,indent=0,_indent=0;
             [self.tokens removeAllObjects];
             NSMutableString *s=[NSMutableString string];
             for (ci=0;ci<v.length;ci++) {
@@ -239,13 +239,13 @@ JsonParser
               )) continue;
             [a addObject:t];
         }
-        NSUInteger used=0;
+        UInt used=0;
         NSObject *ret=a.count?[__Class__ _unpack:a from:0 to:a.count-1 used:&used]:nil;
         if (used!=a.count) ret=nil;
         return(ret);
     }
 
-    +(NSObject*)_unpack:(NSArray*)tokens from:(NSUInteger)from to:(NSUInteger)to used:(NSUInteger*)pused {
+    +(NSObject*)_unpack:(NSArray*)tokens from:(UInt)from to:(UInt)to used:(UInt*)pused {
         if (to<from) {*pused=0;return([NSNull null]);}
         WReaderToken *t0=[tokens objectAtIndex:from];
         if (t0.type=='n') {*pused=1;return(@(t0.str.doubleValue));}
@@ -267,14 +267,14 @@ JsonParser
             }
             if ([t0.str isEqualToString:@"{"]) {
                 NSMutableDictionary *ret=[[NSMutableDictionary alloc] init];
-                NSUInteger fromWas=from;
+                UInt fromWas=from;
                 from++;
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"}"]) {
                     *pused=from+1-fromWas;
                     return(ret);
                 }
-                NSUInteger used;
+                UInt used;
                 while (from<=to) {
                     NSObject *k=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!(k&&[k conformsToProtocol:@protocol(NSCopying)])) {
@@ -312,14 +312,14 @@ JsonParser
             }
             if ([t0.str isEqualToString:@"["]) {
                 NSMutableArray *ret=[[NSMutableArray alloc] init];
-                NSUInteger fromWas=from;
+                UInt fromWas=from;
                 from++;
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"]"]) {
                     *pused=from+1-fromWas;
                     return(ret);
                 }
-                NSUInteger used;
+                UInt used;
                 while (from<=to) {
                     NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!v) {

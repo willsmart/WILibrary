@@ -141,7 +141,7 @@ Singletons
 
 ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
     float maxSize=100000
-    NSInteger maxCount=10000
+    Int maxCount=10000
     -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {
         if ([key isKindOfClass:[NSURL class]]) {
             return([[ShaderURLConversion alloc] initWithURL:(NSURL*)key]);
@@ -175,7 +175,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
             }
         }=nil (ivar)
 
-    NSInteger animationFrameInterval=
+    Int animationFrameInterval=
         {return animationFrameInterval;}
         -v{
             if (v >= 1) {

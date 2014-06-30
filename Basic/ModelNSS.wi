@@ -12,7 +12,7 @@ WIMyClass
         hisqname_commitFrame=commitFrame;
     }
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 [self _commitHisqnameProperties];}
+    -(Int)commitProperties:(Int)substageIndex {@-3 [self _commitHisqnameProperties];}
 
 
     long previousHisqnamesVersion=
@@ -193,7 +193,7 @@ JustMyClassOverride<+Commitable>
     }
 
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousHisqnames=hisqnames.copyAndClear;
         hisqnames=nil;
         

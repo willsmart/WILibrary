@@ -16,7 +16,7 @@ WIMyClass
             }
         } (modeldealloc,ivar=hisqname)
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 
+    -(Int)commitProperties:(Int)substageIndex {@-3 
         previousHisqname=hisqname;
         [hisqname modelsub];
         hisqname=[self.hisname modelretain];
@@ -74,7 +74,7 @@ JustMyClassOverride<+Commitable>
         {return(useMyHisqname&&hisqname?hisqname:self.baseWithHisqname.hisqname);}
         -v{hisqname=v;useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousHisqname=hisqname;
         hisqname=nil;
         useMyHisqname=NO;

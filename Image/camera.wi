@@ -26,17 +26,17 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
     NSMutableData texdB=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdB)
     char lockedA=nil,lockedB=nil
     CGSize szA=nil,szB=nil
-    NSInteger last=nil (readonly,ivar)
+    Int last=nil (readonly,ivar)
     
     char direction=nil
     AVCaptureSession sess=nil (readonly,ivar=sess,dealloc)
 
 
-    -(Texture2D*)tex:(NSInteger)i {return(i==0?texA:texB);}
-    -(NSMutableData*)texd:(NSInteger)i {return(i==0?texdA:texdB);}
-    -(char)locked:(NSInteger)i {return(i==0?lockedA:lockedB);}
-    -(CGSize)sz:(NSInteger)i {return(i==0?szA:szB);}
-    -(void)setLocked:(NSInteger)i to:(bool)v {*(i==0?&lockedA:&lockedB)=v;}
+    -(Texture2D*)tex:(Int)i {return(i==0?texA:texB);}
+    -(NSMutableData*)texd:(Int)i {return(i==0?texdA:texdB);}
+    -(char)locked:(Int)i {return(i==0?lockedA:lockedB);}
+    -(CGSize)sz:(Int)i {return(i==0?szA:szB);}
+    -(void)setLocked:(Int)i to:(bool)v {*(i==0?&lockedA:&lockedB)=v;}
 
     -(void)dealloc {@-100 
         [self stop];
@@ -64,7 +64,7 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
 
     Texture2D lockTexture={
         Texture2D *tex;
-        NSInteger texi;
+        Int texi;
         @synchronized (self) {
             if (last==-1) return(nil);
             else if (![self locked:last]) {[self setLocked:last to:'u'];return([self tex:last]);}
@@ -79,7 +79,7 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
 
     -(void)unlockTexture:(Texture2D*)texture {
         @synchronized (self) {
-            for (NSInteger i=0;i<2;i++) if (([self tex:i]==texture)&&([self locked:i]=='u')) [self setLocked:i to:0];
+            for (Int i=0;i<2;i++) if (([self tex:i]==texture)&&([self locked:i]=='u')) [self setLocked:i to:0];
         }
     }
 
@@ -192,9 +192,9 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
     -(void)captureOutput:(AVCaptureOutput*)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection*)connection {
         
         Texture2D *tex=nil;
-        NSInteger texi=0;
+        Int texi=0;
         @synchronized (self) {
-            for (NSInteger i=0;i<2;i++) if ((i!=last)&&((![self locked:i])||([self locked:i]=='x'))) {
+            for (Int i=0;i<2;i++) if ((i!=last)&&((![self locked:i])||([self locked:i]=='x'))) {
                 texi=i;
                 tex=[self tex:i];
                 [self setLocked:i to:'s'];
@@ -228,7 +228,7 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
             if (height>texsz) height=texsz;
             
             GLubyte *bs=(GLubyte*)[texd mutableBytes];
-            for (NSInteger y=0;y<height;y++) {
+            for (Int y=0;y<height;y++) {
                 memcpy(bs, base, (texsz<width?texsz:width)*4);
                 bs+=texsz*4;
                 base+=bytesPerRow;

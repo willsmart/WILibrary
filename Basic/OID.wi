@@ -38,10 +38,10 @@
 #define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
 */
 
-ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
+ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
     -decl:{
-        extern NSInteger g_prevThreadId;
-        NSInteger getThreadId();
+        extern Int g_prevThreadId;
+        Int getThreadId();
         ULL getThreadMask();
 
         bool authorized_thread(ULL&mask);
@@ -50,14 +50,14 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
     }
     -decl:impl:{
-        NSInteger g_prevThreadId=0;
+        Int g_prevThreadId=0;
         ULL getThreadMask() {
-            NSInteger ret=getThreadValueNamedId();
+            Int ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(1LL<<(ret-1));
         }
-        NSInteger getThreadId() {
-            NSInteger ret=getThreadValueNamedId();
+        Int getThreadId() {
+            Int ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(ret);
         }
@@ -156,7 +156,7 @@ Singletons<Ticker> "-Object" "fn:object"
         g_classCountht=classCountht=NEWCONSb(QuickHashTableOfClassCounts,(ci,nil,2048));
         g_classCountArray=classCountArray=NEWCONSb(ArrayOfClassCounts,(256));
         @0
-        for (NSInteger i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
+        for (Int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
     }
 
     NSString description={@-999
@@ -201,11 +201,11 @@ Singletons<Ticker> "-Object" "fn:object"
 
 /*interfaces:
  
-    extern void retainFn(NSObject *me,NSInteger &rc,NSInteger &arc);
-    extern void releaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease);
-    extern void autoreleaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease);
-    extern void objInitFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci);
-    extern void deallocFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci);
+    extern void retainFn(NSObject *me,Int &rc,Int &arc);
+    extern void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
+    extern void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
+    extern void objInitFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci);
+    extern void deallocFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci);
     extern NSString *g_objectName(id object);
     extern const char *g_cobjectName(id object);
     
@@ -214,12 +214,12 @@ Singletons<Ticker> "-Object" "fn:object"
 
 
  
-    void retainFn(NSObject *me,NSInteger &rc,NSInteger &arc) {
+    void retainFn(NSObject *me,Int &rc,Int &arc) {
         rc++;
         objectRetained(me);
     }
     
-    void releaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease) {
+    void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
         rc--;
         bool isAutorelease=NO;
         if (debugAutorelease) {
@@ -244,14 +244,14 @@ Singletons<Ticker> "-Object" "fn:object"
         else objectReleased(me);
      }
     
-    void autoreleaseFn(NSObject *me,NSInteger &rc,NSInteger &arc,bool debugAutorelease) {
+    void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
         if (debugAutorelease) {
             arc++;
             objectAutoreleasePending(me);
         }
     }
 
-    void objInitFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci) {
+    void objInitFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci) {
         rc=1;arc=0;
         ClassCount *c=g_classCountForClass([me class]);
         c.count++;
@@ -261,7 +261,7 @@ Singletons<Ticker> "-Object" "fn:object"
         objectAllocated(me);
     }
  
-    void deallocFn(NSObject *me,NSInteger &rc,NSInteger &arc,LL &mei,LL &meci) {
+    void deallocFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci) {
         if (mei==0) {
             ERR("!!!! error with object %p of type %s, the object was never inited",me,class_getName([me class]));
             return;
@@ -301,7 +301,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
     bool debugAutorelease=nil
 
-    NSInteger ___rc=nil,___arc=nil
+    Int ___rc=nil,___arc=nil
 
     LL __owner_context=nil (ivar=__owner_context)
 
@@ -351,9 +351,9 @@ Singletons
     #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((__bridge const void*)self)!=(__bridge const void*)g_trace)&&(((__bridge const void*)self)!=(__bridge const void*)[g_trace class]),__trcfnnm);
     
     
-    void addTrace(NSString *trace,NSInteger depth);
-    void addTraceCString(const char *trace,NSInteger depth);
-    void finishDepth(NSInteger depth);
+    void addTrace(NSString *trace,Int depth);
+    void addTraceCString(const char *trace,Int depth);
+    void finishDepth(Int depth);
     void ADDOWNER(id object,id owner);
     void REMOVEOWNER(id object,id owner);
     void objectRetained(id object);
@@ -385,7 +385,7 @@ Singletons
                 }
             }
     };
-    extern NSInteger g_numNamedThreads;
+    extern Int g_numNamedThreads;
     
 */
 /*interfaces:impl:
@@ -393,23 +393,23 @@ Singletons
     Trace *g_trace=nil;
     NSMutableString *g_newTraces=nil;
     pthread_key_t TraceFunctionTracker::key=nil;
-    NSInteger g_numNamedThreads=0;
+    Int g_numNamedThreads=0;
     
     
     
-    void addTrace(NSString *trace,NSInteger depth) {
+    void addTrace(NSString *trace,Int depth) {
         [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON],
             trace.JSONString];
     }
     
-    void addTraceCString(const char *trace,NSInteger depth) {
+    void addTraceCString(const char *trace,Int depth) {
         [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON],
-            [NSString JSONunicharsStringForCString:trace withLength:(NSInteger)strlen(trace) useTmpDataObject:nil retLength:nil]];
+            [NSString JSONunicharsStringForCString:trace withLength:(Int)strlen(trace) useTmpDataObject:nil retLength:nil]];
     }
     
-    void finishDepth(NSInteger depth) {
+    void finishDepth(Int depth) {
         [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
             [Trace threadNameJSON]];
     }
@@ -450,14 +450,14 @@ Singletons
  
 */
 Trace<Ticker,BaseObject>
-    +(NSString*)callStackStringFromDepth:(NSInteger)fromDepth toDepth:(NSInteger)toDepth {
+    +(NSString*)callStackStringFromDepth:(Int)fromDepth toDepth:(Int)toDepth {
         NSMutableString *ret=[NSMutableString string];
         NSArray *__a=[NSThread callStackSymbols];
         //NSLog(__a.description);
-        for (NSInteger d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
+        for (Int d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
             NSString *s=[__a objectAtIndex:d];
-            NSUInteger st=[s rangeOfString:@"["].location;
-            NSUInteger en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
+            UInt st=[s rangeOfString:@"["].location;
+            UInt en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
             if ((st!=NSNotFound)&&(en!=NSNotFound)&&(en>st)) {
                 s=[s substringWithRange:NSMakeRange(st-1,en+1-(st-1))];
                 if ([s isEqualToString:@"-[EndpointS didAddObject:]"]) [ret appendFormat:@" ES+ "];
@@ -562,7 +562,7 @@ ObjectGraph<Ticker,BaseObject>
     
     bool savingGraph={return(v_tim!=nil);}
 
-    -(void)object:(LL)owner ownsObject:(LL)object count:(NSInteger)count {
+    -(void)object:(LL)owner ownsObject:(LL)object count:(Int)count {
         [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,(int)count];
     }
 
@@ -612,7 +612,7 @@ ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
                     (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
         @999 return(ret);
     }
-    -(NSUInteger)hash {return((NSUInteger)obfuscateULL(objectIDInTotal));}
+    -(UInt)hash {return((UInt)obfuscateULL(objectIDInTotal));}
 
 <ObjectEquateAndCopy:NSCopying,ObjectEquate>
     -(id)copyWithZone:(NSZone*)zone {

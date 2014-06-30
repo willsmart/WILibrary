@@ -75,10 +75,10 @@ FontList <BaseObject>
     -(bool)fontName:(NSString*)name matchesPattern:(NSString*)pattern {
         NSData *nd=[name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
         if (!nd) return(NO);
-        NSUInteger nlen=nd.length;
+        UInt nlen=nd.length;
         const char *ncs=(const char*)nd.bytes;
         
-        for (NSInteger pi=0,ni=0;pi<pattern.length;pi++) {
+        for (Int pi=0,ni=0;pi<pattern.length;pi++) {
             char pc=[pattern characterAtIndex:pi];
             if ((pc>='a')&&(pc<='z')) pc-='a'-'A';
             while ((ni<nlen)&&(ncs[ni]-((ncs[ni]>='a')&&(ncs[ni]<='z')?'a'-'A':0)!=pc)) ni++;
@@ -90,7 +90,7 @@ FontList <BaseObject>
 
 
 <ViewUtilities>
-    +(id)loadViewOfClass:(Class)clas withTag:(NSInteger)tag fromNibWithName:(NSString*)nibName {@-999 
+    +(id)loadViewOfClass:(Class)clas withTag:(Int)tag fromNibWithName:(NSString*)nibName {@-999 
         id ret=nil;
         if (nibName) {
             NSArray *topLevelObjects=[[NSBundle mainBundle] loadNibNamed:nibName owner:nil options:nil];

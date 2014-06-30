@@ -303,7 +303,7 @@ JSMetaProperty<NamedDataListener>
                     else if ([key hasPrefix:@"js~"]) {
                         if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
-                        NSInteger i=0;for (NSString *s in ss) if (i++) {
+                        Int i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
                                 [self.propertyInStates setObject:ps forKey:s];
                             }
@@ -323,7 +323,7 @@ JSMetaProperty<NamedDataListener>
                     else if ([key hasPrefix:@"prop~"]) {
                         if (!statev) statev=@"app::state";
                         NSArray *ss=[key componentsSeparatedByString:@"~"];
-                        NSInteger i=0;for (NSString *s in ss) if (i++) {
+                        Int i=0;for (NSString *s in ss) if (i++) {
                             if (![self propertyInStateForKey:s]) {
                                 [self.propertyInStates setObject:ps forKey:s];
                             }
@@ -335,7 +335,7 @@ JSMetaProperty<NamedDataListener>
                 JSMetaPropertyInState *ps=[[JSMetaPropertyInState alloc] initWithJs:nil value:[d objectForKey:key] var:nil];
                 if (!statev) statev=@"app::state";
                 NSArray *ss=[key componentsSeparatedByString:@"~"];
-                NSInteger i=0;for (NSString *s in ss) if (i++) {
+                Int i=0;for (NSString *s in ss) if (i++) {
                     if (![self propertyInStateForKey:s]) {
                         [self.propertyInStates setObject:ps forKey:s];
                     }
@@ -365,17 +365,17 @@ JSMetaProperty<NamedDataListener>
         if (self.propertyInStates.count) {
             NSMutableArray *a=[[NSMutableArray alloc] init];
             for (NSString *stateName in self.propertyInStates) if ([stateName isKindOfClass:[NSString class]]) {
-                NSInteger dots=0,chars=0,stars=0;
-                for (NSInteger i=0;i<stateName.length;i++) {
+                Int dots=0,chars=0,stars=0;
+                for (Int i=0;i<stateName.length;i++) {
                     unichar c=[stateName characterAtIndex:i];
                     if (c=='*') stars++;
                     else if (c=='.') dots++;
                     else chars++;
                 }
-                NSInteger i=0;
+                Int i=0;
                 for (NSString *s in a) {
-                    NSInteger dots2=0,chars2=0,stars2=0;
-                    for (NSInteger i=0;i<s.length;i++) {
+                    Int dots2=0,chars2=0,stars2=0;
+                    for (Int i=0;i<s.length;i++) {
                         unichar c=[s characterAtIndex:i];
                         if (c=='*') stars2++;
                         else if (c=='.') dots2++;
@@ -828,7 +828,7 @@ MetaEnabled
     +(void)addSubview:(id)childView withName:(NSString*)name parentView:(UIView*)parentView {
         if ([childView isKindOfClass:[UIView class]]) {
             NSArray *chs=parentView.subviews;
-            NSUInteger insertAt=0;
+            UInt insertAt=0;
             for (UIView *v in chs) {
                 if ([v conformsToProtocol:@protocol(MetaEnabled)]) {
                     NSString *vName=(NSString*)((id<MetaEnabled>)v).keyInParentMeta;
@@ -931,7 +931,7 @@ MetaEnabled
                     break;
                 }
                 if (allNum) {
-                    NSInteger i=0;
+                    Int i=0;
                     for (NSObject *oo in (NSArray*)o) {
                         ((CGFloat*)&t.m11)[i++]=((NSNumber*)oo).floatValue;
                     }

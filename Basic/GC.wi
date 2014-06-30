@@ -1,5 +1,5 @@
 /*<GCObject>
-    NSInteger __gcDistToModel=-1,__gcConnections=0 (readonly)
+    Int __gcDistToModel=-1,__gcConnections=0 (readonly)
     NSSet __gcVars (readonly)
     NSSet ___gcVars (vars_gc)
 

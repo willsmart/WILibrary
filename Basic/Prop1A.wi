@@ -7,11 +7,11 @@ WIMyClass
     -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
     -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(myname_endpoint)]);}
 
-    -(NSHisClass)hisnameAtIndex:(NSInteger)index {return([v_hisnames objectAtIndex:index]);}
+    -(NSHisClass)hisnameAtIndex:(Int)index {return([v_hisnames objectAtIndex:index]);}
     -(void)addHisname:(NSHisClass)v {[v_hisnames addObject:v];}
-    -(void)insertHisname:(NSHisClass)v atIndex:(NSInteger)index {[v_hisnames insertObject:v atIndex:index];}
+    -(void)insertHisname:(NSHisClass)v atIndex:(Int)index {[v_hisnames insertObject:v atIndex:index];}
     -(void)removeHisname:(NSHisClass)v {[v_hisnames removeObject:v];}
-    -(void)removeHisnameAtIndex:(NSInteger)index {[v_hisnames removeObjectAtIndex:index];}
+    -(void)removeHisnameAtIndex:(Int)index {[v_hisnames removeObjectAtIndex:index];}
     -(void)removeAllHisnames {[v_hisnames removeAllObjects];}
 
     -(void)retract {[self.hisnames removeAllObjects];}

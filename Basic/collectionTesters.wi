@@ -27,7 +27,7 @@
         @0 [self initObj];
         @999 return(self);
     }
-    -(id)initWithObjects:(id*)objects count:(NSUInteger)count {@-999 
+    -(id)initWithObjects:(id*)objects count:(UInt)count {@-999 
         if (!(self=[super init])) return(nil);
         @-100 __set=[[NSSet alloc] initWithObjects:objects count:count];
         @0 [self initObj];
@@ -55,7 +55,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
         return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -66,17 +66,17 @@
     + (__WI_CLASS__*)setWithArray:(NSArray*)array {return([[__WI_CLASS__ alloc] initWithArray:array]);}
     + (__WI_CLASS__*)setWithObject:(id)object {return([[__WI_CLASS__ alloc] initWithObjects:&object count:1]);}
     //+ (__WI_CLASS__*)setWithObjects:( {return([[__WI_CLASS__ alloc] init]);}
-    + (__WI_CLASS__*)setWithObjects:(id*)objects count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
+    + (__WI_CLASS__*)setWithObjects:(id*)objects count:(UInt)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
     + (__WI_CLASS__*)setWithSet:(NSSet*)set {return([[__WI_CLASS__ alloc] initWithSet:set]);}
     -(NSSet*)setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
     //-(NSSet*)setByAddingObjects: {return([__set setByAddingObject:object]);}
-    -(NSSet*)setByAddingObjects:(id*)objects count:(NSUInteger)count {return([__set setByAddingObjects:objects count:count]);}
+    -(NSSet*)setByAddingObjects:(id*)objects count:(UInt)count {return([__set setByAddingObjects:objects count:count]);}
     -(NSSet*)setByAddingObjectsFromSet:(NSSet*)set {return([__set setByAddingObjectsFromSet:set]);}
     -(NSSet*)setByAddingObjectsFromArray:(NSArray*)array {return([__set setByAddingObjectsFromArray:array]);}
 
 
     // Counting Entries
-    NSUInteger count={return([__set count]);}
+    UInt count={return([__set count]);}
 
 
     // Accessing Set Members
@@ -177,7 +177,7 @@
         @0 [self initObj];
         @999 return(self);
     }
-    -(id)initWithObjects:(id*)objects count:(NSUInteger)count {@-999 
+    -(id)initWithObjects:(id*)objects count:(UInt)count {@-999 
         if (!(self=[super init])) return(nil);
         @-100 __array=[[NSArray alloc] initWithObjects:objects count:count];
         @0 [self initObj];
@@ -193,7 +193,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
         return([__array countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -206,7 +206,7 @@
     + (__WI_CLASS__*)arrayWithContentsOfURL:(NSURL*)url {return([[__WI_CLASS__ alloc] initWithContentsOfURL:url]);}
     + (__WI_CLASS__*)arrayWithObject:(id)object {return([[__WI_CLASS__ alloc] initWithObjects:&object count:1]);}
     //+ (__WI_CLASS__*)arrayWithObjects:( {return([[__WI_CLASS__ alloc] init]);}
-    + (__WI_CLASS__*)arrayWithObjects:(id*)objects count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
+    + (__WI_CLASS__*)arrayWithObjects:(id*)objects count:(UInt)count {return([[__WI_CLASS__ alloc] initWithObjects:objects count:count]);}
 
 
 
@@ -215,47 +215,47 @@
 
     //Querying an Array
     –(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
-    NSUInteger count={return([__array count]);}
+    UInt count={return([__array count]);}
     -(void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {[__array getObjects:aBuffer range:aRange];}
     id lastObject={return([__array lastObject]);}
-    –(id)objectAtIndex:(NSUInteger)index {return([__array objectAtIndex:index]);}
+    –(id)objectAtIndex:(UInt)index {return([__array objectAtIndex:index]);}
     –(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {return([__array objectsAtIndexes:indexes]);}
     NSEnumerator objectEnumerator={return([__array objectEnumerator]);}
     NSEnumerator reverseObjectEnumerator={return([__array reverseObjectEnumerator]);}
 
 
     //Finding Objects in an Array
-    –(NSUInteger)indexOfObject:(id)object {
+    –(UInt)indexOfObject:(id)object {
         return([__array indexOfObject:object]);
     }
-    –(NSUInteger)indexOfObject:(id)object inRange:(NSRange)range {
+    –(UInt)indexOfObject:(id)object inRange:(NSRange)range {
         return([__array indexOfObject:object inRange:range]);
     }
-    –(NSUInteger)indexOfObjectIdenticalTo:(id)object {
+    –(UInt)indexOfObjectIdenticalTo:(id)object {
         return([__array indexOfObjectIdenticalTo:object]);
     }
-    –(NSUInteger)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
+    –(UInt)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
         return([__array indexOfObjectIdenticalTo:object inRange:range]);
     }
-    - (NSUInteger)indexOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexOfObjectPassingTest:predicate]);
     }
-    - (NSUInteger)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexOfObjectWithOptions:opts passingTest:predicate]);
     }
-    - (NSUInteger)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexesOfObjectPassingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexesOfObjectWithOptions:opts passingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__array indexesOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    - (NSUInteger)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
+    - (UInt)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
         return([__array indexOfObject:obj inSortedRange:r options:opts usingComparator:cmp]);
     }
 
@@ -267,13 +267,13 @@
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
         [__array makeObjectsPerformSelector:selector withObject:object];
     }
-    - (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsUsingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__array enumerateObjectsUsingBlock:block];
     }
-    - (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__array enumerateObjectsWithOptions:opts usingBlock:block];
     }
-    - (void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__array enumerateObjectsAtIndexes:indexSet options:opts usingBlock:block];
     }
 
@@ -306,10 +306,10 @@
     –(NSData*)sortedArrayHint {
         return([__array sortedArrayHint]);
     }
-    - (NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
+    - (NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context {
         return([__array sortedArrayUsingFunction:comparator context:context]);
     }
-    - (NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+    - (NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
         return([__array sortedArrayUsingFunction:comparator context:context hint:hint]);
     }
     - (NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
@@ -337,7 +337,7 @@
     - (NSString *)descriptionWithLocale:(id)locale {
         return([__array descriptionWithLocale:locale]);
     }
-    - (NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+    - (NSString *)descriptionWithLocale:(id)locale indent:(UInt)level {
         return([__array descriptionWithLocale:locale indent:level]);
     }
     - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
@@ -437,7 +437,7 @@
         @0 [self initObj];
         @999 return(self);
     }
-    -(id)initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(NSUInteger)count {@-999 
+    -(id)initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(UInt)count {@-999 
         if (!(self=[super init])) return(nil);
         @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects keys:keys count:count];
         @0 [self initObj];
@@ -453,7 +453,7 @@
         return([[__WI_CLASS__ allocWithZone:zone] init]);
     }
 
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
         return([__dictionary countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -465,13 +465,13 @@
     + (__WI_CLASS__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WI_CLASS__ alloc] initWithContentsOfURL:url]);}
     + (__WI_CLASS__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WI_CLASS__ alloc] initWithDictionary:dictionary]);}
     + (__WI_CLASS__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WI_CLASS__ alloc] initWithObject:object forKey:key])
-    + (__WI_CLASS__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(NSUInteger)count {return([[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count])
+    + (__WI_CLASS__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(UInt)count {return([[__WI_CLASS__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count])
 
 
 
 
     //Counting Entries
-    NSUInteger count={return([__dictionary count]);}
+    UInt count={return([__dictionary count]);}
     
     
     //Comparing Dictionaries
@@ -545,9 +545,9 @@
     NSDate fileModificationDate={return([__dictionary fileModificationDate]);}
     NSNumber fileOwnerAccountID={return([__dictionary fileOwnerAccountID]);}
     NSString fileOwnerAccountName={return([__dictionary fileOwnerAccountName]);}
-    NSUInteger filePosixPermissions={return([__dictionary filePosixPermissions]);}
+    UInt filePosixPermissions={return([__dictionary filePosixPermissions]);}
     ULL fileSize={return([__dictionary fileSize]);}
-    NSUInteger fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
+    UInt fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
     NSIndexSet fileSystemNumber={return([__dictionary fileSystemNumber]);}
     NSString fileType={return([__dictionary fileType]);}
     
@@ -558,7 +558,7 @@
     - (NSString *)descriptionWithLocale:(id)locale {
         return([__dictionary descriptionWithLocale:locale]);
     }
-    - (NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+    - (NSString *)descriptionWithLocale:(id)locale indent:(UInt)level {
         return([__dictionary descriptionWithLocale:locale indent:level]);
     }
 
@@ -589,43 +589,43 @@
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
-        NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
-        for (NSUInteger i=0;i<ret;i++) {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
+        UInt ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
+        for (UInt i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];
         }
         return(ret);
     }
     +(MutableSet*)set {return([[MutableSet alloc] init]);}
-    –(NSUInteger)count {return(__base.count);}
+    –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
         for (id object in self) [ret addObject:object];
@@ -705,7 +705,7 @@ PointerKey <NSCopying>
               ||[super isEqual:object]);
         return(ret);
     }
-    NSUInteger hash={return((NSUInteger)o);}
+    UInt hash={return((UInt)o);}
 
 
 
@@ -737,7 +737,7 @@ WeakObject <NSCopying>
               ||[super isEqual:object]);
         return(ret);
     }
-    NSUInteger hash={return((NSUInteger)o);}
+    UInt hash={return((UInt)o);}
 
 
 
@@ -796,26 +796,26 @@ NSMutableArray
         [self addObject:v];
     }
 
-    - (void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(NSUInteger)index {
+    - (void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(UInt)index {
         if (weakObject) [self insertWeakObject:anObject atIndex:index];
         else [self insertObject:anObject atIndex:index];
     }
-    - (void)insertWeakObject:(id)anObject atIndex:(NSUInteger)index {
+    - (void)insertWeakObject:(id)anObject atIndex:(UInt)index {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self insertObject:v atIndex:index];
     }
 
-    - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject weak:(bool)weakObject {
+    - (void)replaceObjectAtIndex:(UInt)index withObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
         else [self replaceObjectAtIndex:index withObject:(id)anObject];
     }
-    - (void)replaceObjectAtIndex:(NSUInteger)index withWeakObject:(id)anObject {
+    - (void)replaceObjectAtIndex:(UInt)index withWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self replaceObjectAtIndex:index withObject:v];
     }
 
 NSArray
-    -(id)derefedObjectAtIndex:(NSUInteger)index {
+    -(id)derefedObjectAtIndex:(UInt)index {
         return([WeakObject deref:[self objectAtIndex:index]]);
     }
 
@@ -887,43 +887,43 @@ MutableSet : NSMutableSet
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
-        NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
-        for (NSUInteger i=0;i<ret;i++) {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
+        UInt ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
+        for (UInt i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];
         }
         return(ret);
     }
     +(MutableSet*)set {return([[MutableSet alloc] init]);}
-    –(NSUInteger)count {return(__base.count);}
+    –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
         for (id object in self) [ret addObject:object];
@@ -987,14 +987,14 @@ MutableArray : NSMutableArray
     –(void)addObjectsFromArray:(NSArray*)array {
         for (id object in array) [self addObject:object];
     }
-    –(void)insertObject:(id)object atIndex:(NSUInteger)index {
+    –(void)insertObject:(id)object atIndex:(UInt)index {
         if ([self willAddObject:object atIndex:index]) {
             [__base insertObject:object atIndex:index];
             [self didAddObject:object atIndex:index];
         }
     }
     –(void)insertObjects:(NSArray*)array atIndexes:(NSIndexSet*)indexes {
-        NSUInteger index=[indexes firstIndex];
+        UInt index=[indexes firstIndex];
         for (id object in array) {
             [self insertObject:object atIndex:index];
             index=[indexes indexGreaterThanIndex:index];
@@ -1021,14 +1021,14 @@ MutableArray : NSMutableArray
             [self didRemoveObject:object];
         }
     }
-    –(void)removeObjectAtIndex:(NSUInteger)index {
+    –(void)removeObjectAtIndex:(UInt)index {
         id object=[self objectAtIndex:index];
         [self willRemoveObject:object];
         [__base removeObjectAtIndex:index];
         [self didRemoveObject:object];
     }
     –(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
-        for (NSUInteger index=indexes.lastIndex;index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
+        for (UInt index=indexes.lastIndex;index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
             [self removeObjectAtIndex:index];
         }
     }
@@ -1036,14 +1036,14 @@ MutableArray : NSMutableArray
         for (id object in array) [self removeObject:object];
     }
     –(void)removeObjectsInRange:(NSRange)range {
-        for (NSInteger i=0;i<range.length;i++) [self removeObjectAtIndex:range.location];
+        for (Int i=0;i<range.length;i++) [self removeObjectAtIndex:range.location];
     }
-    –(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)object {
+    –(void)replaceObjectAtIndex:(UInt)index withObject:(id)object {
         [self removeObjectAtIndex:index];
         [self insertObject:object atIndex:index];
     }
     –(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)objects {
-        NSUInteger index=[indexes firstIndex];
+        UInt index=[indexes firstIndex];
         for (id object in array) {
             [self replaceObjectAtIndex:index withObject:object];
             index=[indexes indexGreaterThanIndex:index];
@@ -1053,7 +1053,7 @@ MutableArray : NSMutableArray
         [self removeAllObjects];
         [self addObjectsFromArray:array];
     }
-    –(void)exchangeObjectAtIndex:(NSUInteger)indexa withObjectAtIndex:(NSUInteger)indexb {
+    –(void)exchangeObjectAtIndex:(UInt)indexa withObjectAtIndex:(UInt)indexb {
     }
     - (void)sortUsingDescriptors:(NSArray *)sortDescriptors {
         [__base sortUsingDescriptors:sortDescriptors];
@@ -1064,7 +1064,7 @@ MutableArray : NSMutableArray
     - (void)sortUsingComparator:(NSComparator)cmptr {
         [__base sortUsingComparator:cmptr];
     }
-    - (void)sortUsingFunction:(NSInteger (*)(id, id, void *))compare context:(void *)context {
+    - (void)sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
         [__base sortUsingFunction:compare context:context];
     }
     - (void)sortUsingSelector:(SEL)comparator {
@@ -1093,7 +1093,7 @@ MutableArray : NSMutableArray
     - (id)mutableCopyWithZone:(NSZone*)zone {
         return(self.copy);
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
         return([__base countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
     +(MutableArray*)array {
@@ -1102,14 +1102,14 @@ MutableArray : NSMutableArray
     –(BOOL)containsObject:(id)object {
         return([__base containsObject:object]);
     }
-    –(NSUInteger)count {return([__base count]);}
+    –(UInt)count {return([__base count]);}
     - (void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
         [__base getObjects:aBuffer range:aRange];
     }
     –(void)lastObject {
         return([__base lastObject]);
     }
-    –(id)objectAtIndex:(NSUInteger)index {
+    –(id)objectAtIndex:(UInt)index {
         return([__base objectAtIndex:index]);
     }
     –(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {
@@ -1121,37 +1121,37 @@ MutableArray : NSMutableArray
     –(NSEnumerator*)reverseObjectEnumerator {
         return([__base reverseObjectEnumerator]);
     }
-    –(NSUInteger)indexOfObject:(id)object {
+    –(UInt)indexOfObject:(id)object {
         return([__base indexOfObject:object]);
     }
-    –(NSUInteger)indexOfObject:(id)object inRange:(NSRange)range {
+    –(UInt)indexOfObject:(id)object inRange:(NSRange)range {
         return([__base indexOfObject:object inRange:range]);
     }
-    –(NSUInteger)indexOfObjectIdenticalTo:(id)object {
+    –(UInt)indexOfObjectIdenticalTo:(id)object {
         return([__base indexOfObjectIdenticalTo:object]);
     }
-    –(NSUInteger)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
+    –(UInt)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
         return([__base indexOfObjectIdenticalTo:object inRange:range]);
     }
-    - (NSUInteger)indexOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexOfObjectPassingTest:predicate]);
     }
-    - (NSUInteger)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexOfObjectWithOptions:opts passingTest:predicate]);
     }
-    - (NSUInteger)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (UInt)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectPassingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectPassingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexesOfObjectPassingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexesOfObjectWithOptions:opts passingTest:predicate]);
     }
-    - (NSIndexSet*)indexesOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))predicate {
+    - (NSIndexSet*)indexesOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, UInt idx, BOOL *stop))predicate {
         return([__base indexesOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    - (NSUInteger)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
+    - (UInt)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
         return([__base indexOfObject:obj inSortedRange:r options:opts usingComparator:cmp]);
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
@@ -1160,13 +1160,13 @@ MutableArray : NSMutableArray
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
         [__base makeObjectsPerformSelector:selector withObject:object];
     }
-    - (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsUsingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__base enumerateObjectsUsingBlock:block];
     }
-    - (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__base enumerateObjectsWithOptions:opts usingBlock:block];
     }
-    - (void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block {
+    - (void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, UInt idx, BOOL *stop))block {
         [__base enumerateObjectsAtIndexes:indexSet options:opts usingBlock:block];
     }
     –(id)firstObjectCommonWithArray:(NSArray*)array {
@@ -1190,10 +1190,10 @@ MutableArray : NSMutableArray
     –(NSData*)sortedArrayHint {
         return([__base sortedArrayHint]);
     }
-    - (NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context {
+    - (NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context {
         return([__base sortedArrayUsingFunction:comparator context:context]);
     }
-    - (NSArray *)sortedArrayUsingFunction:(NSInteger (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+    - (NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
         return([__base sortedArrayUsingFunction:comparator context:context hint:hint]);
     }
     - (NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
@@ -1217,7 +1217,7 @@ MutableArray : NSMutableArray
     - (NSString *)descriptionWithLocale:(id)locale {
         return([__base descriptionWithLocale:locale]);
     }
-    - (NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
+    - (NSString *)descriptionWithLocale:(id)locale indent:(UInt)level {
         return([__base descriptionWithLocale:locale indent:level]);
     }
     - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
@@ -1307,43 +1307,43 @@ MutableArray : NSMutableArray
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
-        NSInteger ret=0;
+        Int ret=0;
         for (id object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
         [__base encodeWithCoder:code];
     }
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(NSUInteger)len {
-        NSUInteger ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
-        for (NSUInteger i=0;i<ret;i++) {
+    - (UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
+        UInt ret=[__base countByEnumeratingWithState:state objects:stackbuf count:len];
+        for (UInt i=0;i<ret;i++) {
             stackbuf[i]=[WeakObject deref:stackbuf[i]];
         }
         return(ret);
     }
     +(MutableArray*)set {return([[MutableArray alloc] init]);}
-    –(NSUInteger)count {return(__base.count);}
+    –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
         for (id object in self) [ret addObject:object];

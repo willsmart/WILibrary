@@ -19,7 +19,7 @@ WIMyClass
             NSMutableArray<ArrayLinkEndpoint> *hisname_ep=(NSMutableArray<ArrayLinkEndpoint>*)[self hisnameToEndpoint:v_hisname_endpoint.value];
             NSIndexSet *hisname_indexes_were=self.indexesInHisname.copy;
             v=v.copy;
-            NSUInteger hisname_vi=v.firstIndex,hisname_wi=hisname_indexes_were.firstIndex;
+            UInt hisname_vi=v.firstIndex,hisname_wi=hisname_indexes_were.firstIndex;
             while ((hisname_vi!=NSNotFound)&&(hisname_wi!=NSNotFound)) {
                 if (hisname_vi==hisname_wi) {
                     hisname_vi=[v indexGreaterThanIndex:hisname_vi];
@@ -43,7 +43,7 @@ WIMyClass
                 hisname_wi=[hisname_indexes_were indexGreaterThanIndex:hisname_wi];
             }
         }
-    NSUInteger indexInHisname=
+    UInt indexInHisname=
         {
             return(self.indexesInHisname.firstIndex);
         }

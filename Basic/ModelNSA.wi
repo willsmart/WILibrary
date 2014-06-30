@@ -12,7 +12,7 @@ WIMyClass
         hisqname_commitFrame=commitFrame;
     }
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {@-3 [self _commitHisqnameProperties];}
+    -(Int)commitProperties:(Int)substageIndex {@-3 [self _commitHisqnameProperties];}
 
 
     long previousHisqnamesVersion=
@@ -111,7 +111,7 @@ previousHisqnames=nil;
         indexesOfHisqnamesThatWereRemoved=nil;
     }
 
-    -(NSHisClass)hisqnameAtIndex:(NSInteger)index {return([hisqnames objectAtIndex:index]);}
+    -(NSHisClass)hisqnameAtIndex:(Int)index {return([hisqnames objectAtIndex:index]);}
 
 
 
@@ -143,7 +143,7 @@ previousHisqnames=nil;
         return(o?o.previousHisqnames:previousHisqnames);
     }
 
-    -(NSHisClass)hisqnameAtIndex:(NSInteger)index givenContext:(id<NSCopying>)__acontext {
+    -(NSHisClass)hisqnameAtIndex:(Int)index givenContext:(id<NSCopying>)__acontext {
         return([[self hisqnamesGivenContext:__acontext] objectAtIndex:index]);
     }
 
@@ -186,7 +186,7 @@ JustMyClassOverride<+Commitable>
     }
 
 
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {
+    -(Int)commitProperties:(Int)substageIndex {
         previousHisqnames=hisqnames.copyAndClear;
         hisqnames=nil;
         

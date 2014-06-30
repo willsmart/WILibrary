@@ -42,7 +42,7 @@ RenderLoop <BaseObject>
         }=nil (ivar)
 
 /**! --    (wi!warnwarn) Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
-    NSInteger animationFrameInterval=
+    Int animationFrameInterval=
         {return animationFrameInterval;}
         -v{
             if (v >= 1) {

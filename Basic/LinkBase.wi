@@ -164,12 +164,12 @@
     -(bool)shouldAddObject:(id)object {
         if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
     }
-    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {@900 
+    -(void)didAddObject:(id)object withIndex:(UInt)index {@900 
         if (!__restrictRef) {
             [[self endpointForObject:object] _addReferrer:self];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
+    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@-900 
         if (!__restrictRef) {
             [[self endpointForObject:object] _removeReferrer:self];
         }

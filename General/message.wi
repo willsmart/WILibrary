@@ -123,32 +123,32 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
     //    return([self htmlForURLString:url.absoluteString title:[[WebPageTitleCache getDefault] getExistingTitleForURL:url]]);
     //}
 
-    - (void)startItemWithHTMLString:(NSMutableString*)s depth:(NSInteger)depth {
+    - (void)startItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
         if (depth>0) [s appendString:@"<li>"];    
     }
-    - (void)endItemWithHTMLString:(NSMutableString*)s depth:(NSInteger)depth {
+    - (void)endItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
         if (depth>0) [s appendString:@"</li>"];    
     }
-    - (void)incrementIndentDepth:(NSInteger*)pdepth htmlString:(NSMutableString*)s {
+    - (void)incrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
         (*pdepth)++;
         if (*pdepth>0) [s appendString:@"<ul>"];
     }
-    - (void)decrementIndentDepth:(NSInteger*)pdepth htmlString:(NSMutableString*)s {
+    - (void)decrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
         if (*pdepth>0) [s appendString:@"</ul>"];
         (*pdepth)--;
     }
-    - (void)appendIndentToString:(NSMutableString*)s depth:(NSInteger)depth plusString:(NSString*)add {
-        //for (NSInteger i=0;i<=depth;i++) [s appendString:@"-"];
+    - (void)appendIndentToString:(NSMutableString*)s depth:(Int)depth plusString:(NSString*)add {
+        //for (Int i=0;i<=depth;i++) [s appendString:@"-"];
         if (add) [s appendString:add];
     }
 
-    /*- (void)addURL:(NamedURL*)url toString:(NSMutableString*)s depth:(NSInteger)depth {
+    /*- (void)addURL:(NamedURL*)url toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         [self appendIndentToString:s depth:depth plusString:@" "];
         [s appendFormat:@"%@<br/>",[self htmlForURL:url.url]];    
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPattern:(NamedURLPattern*)pattern toString:(NSMutableString*)s depth:(NSInteger)depth {
+    - (void)addPattern:(NamedURLPattern*)pattern toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         [self appendIndentToString:s depth:depth plusString:@" "];
         NSString *patternNameStr=(pattern.patternName&&pattern.patternName.length?[[NSString stringWithFormat:@"%@: ",pattern.patternName] basicHTMLEncode]:@"");
@@ -183,7 +183,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPageList:(PageList*)pl toString:(NSMutableString*)s depth:(NSInteger)depth {
+    - (void)addPageList:(PageList*)pl toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         if (depth>=0) {
             [self appendIndentToString:s depth:depth plusString:@" "];
@@ -196,7 +196,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPLFolder:(PLFolder*)f toString:(NSMutableString*)s depth:(NSInteger)depth {
+    - (void)addPLFolder:(PLFolder*)f toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         if (depth>=0) {
             [self appendIndentToString:s depth:depth plusString:@" "];

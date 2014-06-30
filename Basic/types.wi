@@ -42,7 +42,7 @@ type unichar
 type CFStringRef
 type char
 type constchar "typedef:const char"
-type NSInteger
+type Int
 type long
 type float
 type double
@@ -61,10 +61,8 @@ type BOOL
 type SEL
 type id "retains"
 type Class
-type NSUInteger
-type NSInteger
-type Int "typedef:NSInteger"
-type UInt "typedef:NSUInteger"
+type UInt
+type Int
 type void
 type CGRect
 type CGPoint
@@ -102,13 +100,13 @@ sys UITextField
 sys <MFMailComposeViewControllerDelegate>
 sys <MFMessageComposeViewControllerDelegate>
 type ArrayOfShorts "typedef:Array<short>"
-type ArrayOfInts "typedef:Array<NSInteger>"
+type ArrayOfInts "typedef:Array<Int>"
 type ArrayOfFloats "typedef:Array<float>"
 type ArrayOfDoubles "typedef:Array<double>"
 type ArrayOfULLs "typedef:Array<unsigned long long>"
 type ArrayOfArraysOfDoubles "typedef:Array<Array<double>*>"
 type ArrayOfLongDoubles "typedef:Array<long double>"
-type QuickHashOfInts "typedef:QuickHashTable<NSInteger>"
+type QuickHashOfInts "typedef:QuickHashTable<Int>"
 type OSStatus
 type OSType
 sys CADisplayLink

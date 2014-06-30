@@ -28,8 +28,8 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 <RecordingAudioUnit:AudioUnit,Ticker>
-    NSInteger RECORDING_SAMPLE_RATE
-    -(void)processSamplesWithCount:(NSInteger)numSamples {@-100 NSInteger *samples=recordingSamples->a;
+    Int RECORDING_SAMPLE_RATE
+    -(void)processSamplesWithCount:(Int)numSamples {@-100 Int *samples=recordingSamples->a;
         @100 recordingSamplei+=numSamples;
     }
 
@@ -40,7 +40,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
     ArrayOfInts *recordingQueue,*recordingSamples=nil
-    NSInteger recordingQueueSize=1048576,recordingSamplesSize=262144,recordingQueueIn=0,recordingQueueOut=0
+    Int recordingQueueSize=1048576,recordingSamplesSize=262144,recordingQueueIn=0,recordingQueueOut=0
     -(init) {@10 
         recordingQueue=NEW(ArrayOfInts);
         recordingQueue->setUpperBound(recordingQueueSize-1);
@@ -52,9 +52,9 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         DELETE(ArrayOfInts,recordingSamples);
     }
 
-    NSInteger recordingQueueNum={return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
-    NSInteger _debrci=0;
-    -(void)addInts:(NSInteger*)arecordingSamples num:(NSInteger)Ns {
+    Int recordingQueueNum={return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
+    Int _debrci=0;
+    -(void)addInts:(Int*)arecordingSamples num:(Int)Ns {
         memcpy(recordingSamples->a,arecordingSamples,sizeof(int)*Ns);
         [self processSamplesWithCount:Ns];
         return;
@@ -62,18 +62,18 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         //if (_debrci++>25) {prnt("R");_debrci=0;}
         @synchronized(self) {
             if (recordingQueueOut-1>recordingQueueIn) {
-                NSInteger N=MIN(recordingQueueOut-1-recordingQueueIn,Ns);
+                Int N=MIN(recordingQueueOut-1-recordingQueueIn,Ns);
                 memcpy(recordingQueue->a+recordingQueueIn,arecordingSamples,sizeof(int)*N);
                 recordingQueueIn+=N;
             }
             else {
-                NSInteger N=MIN(recordingQueueSize-(recordingQueueOut?0:1)-recordingQueueIn,Ns);
+                Int N=MIN(recordingQueueSize-(recordingQueueOut?0:1)-recordingQueueIn,Ns);
                 memcpy(recordingQueue->a+recordingQueueIn,arecordingSamples,sizeof(int)*N);
                 recordingQueueIn+=N;
                 if (recordingQueueIn==recordingQueueSize) {
                     recordingQueueIn=0;
                     if ((recordingQueueOut>1)&&(N<Ns)) {
-                        NSInteger N2=MIN(recordingQueueOut-1,Ns-N);
+                        Int N2=MIN(recordingQueueOut-1,Ns-N);
                         memcpy(recordingQueue->a,arecordingSamples+N,sizeof(int)*N2);
                         recordingQueueIn+=N2;
                     }
@@ -88,17 +88,17 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
     }
     -(void)tickRecording {
         while (YES) {
-            NSInteger numSamples;
+            Int numSamples;
             @synchronized(self) {
                 numSamples=MIN(self.recordingQueueNum,recordingSamplesSize);
                 if (numSamples) {
-                    NSInteger N=MIN(numSamples,recordingQueueSize-recordingQueueOut);
+                    Int N=MIN(numSamples,recordingQueueSize-recordingQueueOut);
                     memcpy(recordingSamples->a,recordingQueue->a+recordingQueueOut,sizeof(int)*N);
                     recordingQueueOut+=N;
                     if (recordingQueueOut==recordingQueueSize) {
                         recordingQueueOut=0;
                         if (N<numSamples) {
-                            NSInteger N2=numSamples-N;
+                            Int N2=numSamples-N;
                             memcpy(recordingSamples->a+N,recordingQueue->a,sizeof(int)*N2);
                             recordingQueueOut+=N2;
                         }
@@ -110,7 +110,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         }
         //prnt(".");
     }
-    NSInteger recordingSamplei=0
+    Int recordingSamplei=0
 
 
 
@@ -148,8 +148,8 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         status = AudioUnitRender([(NSObject<RecordingAudioUnit>*)inRefCon audioUnit], ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames,     &bufferList);
      
         AudioBuffer sourceBuffer = bufferList.mBuffers[0];
-        NSInteger N=sourceBuffer.mDataByteSize/4;
-        if (N) [(NSObject<RecordingAudioUnit>*)inRefCon addInts:(NSInteger*)sourceBuffer.mData num:N];
+        Int N=sourceBuffer.mDataByteSize/4;
+        if (N) [(NSObject<RecordingAudioUnit>*)inRefCon addInts:(Int*)sourceBuffer.mData num:N];
 
         free(bufferList.mBuffers[0].mData);
      
@@ -223,15 +223,15 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 <PlaybackAudioUnit:AudioUnit,Ticker>
-    NSInteger PLAYBACK_SAMPLE_RATE
-    NSInteger numChannels=2
+    Int PLAYBACK_SAMPLE_RATE
+    Int numChannels=2
 
-    -(void)prepareSamples:(PLAYFRAME*)to withCount:(NSInteger)toCount {
+    -(void)prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
         @100 playbackSamplei+=toCount;
     }
 
     ArrayOfPLAYFRAMEs *playbackQueue,*playbackSamples=nil
-    NSInteger playbackQueueSize=1048576,playbackSamplesSize=262144,playbackQueueIn=0,playbackQueueOut=0,playbackQueueThreshold=900000
+    Int playbackQueueSize=1048576,playbackSamplesSize=262144,playbackQueueIn=0,playbackQueueOut=0,playbackQueueThreshold=900000
 
 
     -(init) {@10 
@@ -245,34 +245,34 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         DELETE(ArrayOfPLAYFRAMEs,playbackSamples);
     }
 
-    NSInteger playbackQueueNum={return((playbackQueueIn-playbackQueueOut+playbackQueueSize)%playbackQueueSize);}
+    Int playbackQueueNum={return((playbackQueueIn-playbackQueueOut+playbackQueueSize)%playbackQueueSize);}
 
 
 
-    NSInteger playbackSamplei=0
+    Int playbackSamplei=0
 
 
-    NSInteger _debpbi=0;
-    -(void)getInts:(PLAYFRAME*)to withCount:(NSInteger*)pNs {
+    Int _debpbi=0;
+    -(void)getInts:(PLAYFRAME*)to withCount:(Int*)pNs {
         [self prepareSamples:to withCount:*pNs];
         return;
         if (_debpbi++>25) {prnt("P");_debpbi=0;}
         @synchronized(self) {
-            NSInteger Ns=*pNs;
-            NSInteger numSamples=MIN(self.playbackQueueNum,Ns);
+            Int Ns=*pNs;
+            Int numSamples=MIN(self.playbackQueueNum,Ns);
             if (numSamples<Ns) {
                 [self tickPlayback];
                 numSamples=MIN(self.playbackQueueNum,Ns);
             }
             *pNs=Ns=numSamples;
             if (numSamples) {
-                NSInteger N=MIN(numSamples,playbackQueueSize-playbackQueueOut);
+                Int N=MIN(numSamples,playbackQueueSize-playbackQueueOut);
                 memcpy(to,playbackQueue->a+playbackQueueOut,sizeof(PLAYFRAME)*N);
                 playbackQueueOut+=N;
                 if (playbackQueueOut==playbackQueueSize) {
                     playbackQueueOut=0;
                     if (N<numSamples) {
-                        NSInteger N2=numSamples-N;
+                        Int N2=numSamples-N;
                         memcpy(to+N,playbackQueue->a,sizeof(PLAYFRAME)*N2);
                         playbackQueueOut+=N2;
                     }
@@ -286,22 +286,22 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
     }
 
     -(void)tickPlayback {
-        NSInteger Ns=MIN(playbackQueueSize-1,playbackQueueThreshold);
+        Int Ns=MIN(playbackQueueSize-1,playbackQueueThreshold);
         while (((playbackQueueIn-playbackQueueOut)+playbackQueueSize)%playbackQueueSize<Ns) {
             @synchronized(self) {
                 if (playbackQueueOut-1>playbackQueueIn) {
-                    NSInteger N=MIN(playbackQueueOut-1-playbackQueueIn,playbackQueueSize-1);
+                    Int N=MIN(playbackQueueOut-1-playbackQueueIn,playbackQueueSize-1);
                     [self prepareSamples:playbackQueue->a+playbackQueueIn withCount:N];
                     playbackQueueIn+=N;
                 }
                 else {
-                    NSInteger N=MIN(playbackQueueSize-(playbackQueueOut?0:1)-playbackQueueIn,Ns);
+                    Int N=MIN(playbackQueueSize-(playbackQueueOut?0:1)-playbackQueueIn,Ns);
                     [self prepareSamples:playbackQueue->a+playbackQueueIn withCount:N];
                     playbackQueueIn+=N;
                     if (playbackQueueIn==playbackQueueSize) {
                         playbackQueueIn=0;
                         if ((playbackQueueOut>1)&&(N<Ns)) {
-                            NSInteger N2=MIN(playbackQueueOut-1,Ns-N);
+                            Int N2=MIN(playbackQueueOut-1,Ns-N);
                             [self prepareSamples:playbackQueue->a withCount:N2];
                             playbackQueueIn+=N2;
                         }
@@ -315,7 +315,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
     /*interfaces:
-    extern NSInteger g_sampleIndex;
+    extern Int g_sampleIndex;
     OSStatus playbackCallback(void *inRefCon,
                                       AudioUnitRenderActionFlags *ioActionFlags,
                                       const AudioTimeStamp *inTimeStamp,
@@ -333,7 +333,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
     {prnt("p");
         for(UInt32 i = 0; i < ioData->mNumberBuffers; ++i)
         {
-            NSInteger numSamples = ioData->mBuffers[i].mDataByteSize / 8,N=numSamples;
+            Int numSamples = ioData->mBuffers[i].mDataByteSize / 8,N=numSamples;
             [(NSObject<PlaybackAudioUnit>*)inRefCon getInts:(PLAYFRAME*)ioData->mBuffers[i].mData withCount:&N];
             if (N<numSamples) {
                 memset(((PLAYFRAME*)ioData->mBuffers[i].mData)+N,0,(numSamples-N)*sizeof(PLAYFRAME));

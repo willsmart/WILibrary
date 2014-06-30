@@ -11,7 +11,7 @@
 
 <CommitableCollection:Commitable>
     -(void)stateOK {@100 [self markDirty];}
-    -(NSInteger)commitProperties:(NSInteger)substageIndex {modelObjectHasChanged=YES;}
+    -(Int)commitProperties:(Int)substageIndex {modelObjectHasChanged=YES;}
 
 
 
@@ -103,7 +103,7 @@ ModelArray<ModelArray>
 
 type id100 "typedef:struct{id ids[100];}"
 <DebugMutableArray>
-    NSUInteger array_count=0
+    UInt array_count=0
     id100 array_objects=nil
     -(void)stateOK {
         array_count=0;
@@ -116,7 +116,7 @@ type id100 "typedef:struct{id ids[100];}"
     }
 
 <DebugMutableSet>
-    NSUInteger set_count=0
+    UInt set_count=0
     id100 set_objects=nil
     -(void)stateOK {
         set_count=0;
@@ -131,7 +131,7 @@ type id100 "typedef:struct{id ids[100];}"
 type keyval "typedef:struct{id<NSCopying>key;id value;}"
 type keyval100 "typedef:struct{keyval keyvals[100];}"
 <DebugMutableDictionary>
-    NSUInteger dictionary_count=0
+    UInt dictionary_count=0
     keyval100 dictionary_objects=nil
     -(void)stateOK {
         dictionary_count=0;
@@ -380,25 +380,25 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
     -(bool)shouldAddObject:(id)object {@998 
         prnt("Array %s: should%s add %s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:object]);
     }
-    -(void)wontAddObject:(id)object withIndex:(NSUInteger)index {
+    -(void)wontAddObject:(id)object withIndex:(UInt)index {
         prnt("Array %s: wont add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {
+    -(void)willAddObject:(id)object withIndex:(UInt)index {
         prnt("Array %s: will add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+    -(void)didAddObject:(id)object withIndex:(UInt)index {
         prnt("Array %s: did add index %d, object %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {
+    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {
         prnt("Array %s: will remove index %d, object %s\n",v_name.UTF8String,index,[Util cnameFor:object]);
     }
     -(void)didRemoveObject:(id)object {
         prnt("Array %s: did remove object %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
         prnt("Array %s: objects at %d and %d swapped\n",v_name.UTF8String,fromIndex,toIndex);
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(NSUInteger)toLocation {
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
         prnt("Array %s: objects at [%d,%d) move to [%d,%d)\n",v_name.UTF8String,fromRange.location,fromRange.location+fromRange.length,toLocation,toLocation+fromRange.length);
     }
     -(void)allObjectsMoved {
@@ -437,20 +437,20 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
         if (followerArray) [self refreshFollowerArray];
     }
 
-    -(void)willAddObject:(id)object withIndex:(NSUInteger)index {@500 
+    -(void)willAddObject:(id)object withIndex:(UInt)index {@500 
         [followerArray insertObject:[self objectForObject:object] atIndex:index];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@500 
+    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@500 
         [followerArray removeObjectAtIndex:index];
     }
-    -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
+    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
         [followerArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
     }
     -(void)allObjectsMoved {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
         NSMutableIndexSet *is=[[NSMutableIndexSet alloc] init];
         for (id object in delegateForArray) {
-            NSUInteger index=[delegateForArray indexOfObject:object];
+            UInt index=[delegateForArray indexOfObject:object];
             while ((index!=NSNotFound)&&[is containsIndex:index]) {
                 index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.count-(index+1))]);
             }
@@ -476,7 +476,7 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
 
 
 /*<MinimalMutableArray>
-    -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
+    -(void)didAddObject:(id)object withIndex:(UInt)index {
         if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (array)\n",object);
     }
     -(void)didRemoveObject:(id)object {
