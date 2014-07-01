@@ -27,13 +27,14 @@
 <MutableValueDelegate>
     bool retainsAsValueDelegate=YES
     <MutableValueDelegate> parentValueDelegate=nil (ivar=parentValueDelegate,assign)
-    <MutableValueDelegate> valueDelegate=nil (ivar=valueDelegate,assign)
+    <MutableValueDelegate> valueDelegate=nil (ivar=valueDelegate,weakandstrong)
     -(void)addDelegate:(NSObject<MutableValueDelegate>*)v {
         if (v.valueDelegate) return;
         if (v==self) return;
         if (valueDelegate) [valueDelegate addDelegate:v];
         else {
             valueDelegate=v;
+            if (v.retainsAsValueDelegate) valueDelegate_strong=v;
             valueDelegate.parentValueDelegate=self;
         }
     }
@@ -53,6 +54,7 @@
                 
                 [v removedDelegate];
 
+                valueDelegate_strong=nil;
             }
             else [valueDelegate removeDelegate:v];
         }
