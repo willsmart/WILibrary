@@ -81,7 +81,7 @@ UnionSet<UnionSet>
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (!n) {
             [self willAddObject:object];
-            [__mutableSet addObject:object.strongSelf];
+            [__mutableSet addObject:[object strongSelf]];
             [__countsForKeys setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:object]];
             __changed=YES;
         }
@@ -122,7 +122,7 @@ UnionSet<UnionSet>
         [__countsForKeys removeAllObjects];
         NSMutableSet *newObjects=[[NSMutableSet alloc] init];
         for (NSSet *s in self.sets) {
-            for (id object in s) {
+            for (NSObject *object in s) {
                 IntCarrier *n=[__countsForKeys objectForKey:object];
                 if (n) n.intValue++;
                 else {
@@ -134,16 +134,16 @@ UnionSet<UnionSet>
         NSMutableSet *inss,*rems;
         if ([Util getInsertsAndDeletesForSetWhenChanging:__set to:newObjects inss:&inss dels:&rems]) {
             bool changed=(rems.count>0);
-            for (id object in rems) {
+            for (NSObject *object in rems) {
                 [self willRemoveObject:object];
                 [__mutableSet removeObject:object]
                 [self didRemoveObject:object];
             }
-            for (id object in inss) {
+            for (NSObject *object in inss) {
                 bool weak=NO;
                 if ([self shouldAddObject:object makeWeak:weak]) {
                     [self willAddObject:object];
-                    [__mutableSet addObject:object.strongSelf]
+                    [__mutableSet addObject:[object strongSelf]]
                     [self didAddObject:object];
                     changed=YES;
                 }
@@ -279,13 +279,13 @@ UnionDictionary<UnionDictionary>
             IntCarrier *n=[__depthsForKeys objectForKey:key];
             if (!n) {
                 [self willAddObject:toObject forKey:key];
-                [__mutableDictionary setObject:toObject.strongSelf forKey:key];
+                [__mutableDictionary setObject:[toObject strongSelf] forKey:key];
                 [__depthsForKeys setObject:[IntCarrier carrierWithInt:del.depth] forKey:key];
                 __changed=YES;
             }
             else if (del.depth<=n.intValue) {
                 [self willAddObject:toObject forKey:key];
-                [__mutableDictionary setObject:toObject.strongSelf forKey:key];
+                [__mutableDictionary setObject:[toObject strongSelf] forKey:key];
                 n.intValue=del.depth;
                 __changed=YES;
             }
@@ -318,7 +318,7 @@ UnionDictionary<UnionDictionary>
                 if (newObject) {
                     [self willAddObject:newObject forKey:key];
                     [__depthsForKeys setObject:n forKey:key];
-                    [__mutableDictionary setObject:newObject.strongSelf forKey:key];
+                    [__mutableDictionary setObject:[newObject strongSelf] forKey:key];
                     [self didAddObject:newObject forKey:key];
                 }
             }
@@ -354,7 +354,7 @@ UnionDictionary<UnionDictionary>
             [self didRemoveObject:was forKey:key];
         }
         for (id<NSCopying> key in keys) {
-            id object=nil;
+            NSObject *object=nil;
             Int d=0;
             for (NSDictionary *dict in self.dictionaries) {
                 object=[dict objectForKey:key];
@@ -365,7 +365,7 @@ UnionDictionary<UnionDictionary>
             if (object) {
                 [self willAddObject:object forKey:key];
                 [__depthsForKeys setObject:[IntCarrier carrierWithInt:d] forKey:key];
-                [__mutableDictionary setObject:object.strongSelf forKey:key];
+                [__mutableDictionary setObject:[object strongSelf] forKey:key];
                 [self didAddObject:object forKey:key];
             }
             else {

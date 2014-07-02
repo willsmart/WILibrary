@@ -280,7 +280,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
     -(void)replaceObjectAtIndex:(UInt)index withObject:(id)object {
         if (![trackerArray containsObject:object]) {
-            id object2=[__array objectAtIndex:index];
+            NSObject *object2=[__array objectAtIndex:index];
             if ([object2 isEqual:object]) return;
             UInt ti=[trackerArray indexOfObject:object2];
             if (ti!=NSNotFound) {
@@ -291,12 +291,12 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
 
     -(void)addObjectsFromArray:(NSArray*)array {
-        for (id object in array) [self addObject:object];
+        for (NSObject *object in array) [self addObject:object];
     }
 
     -(void)insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
         UInt index=[indexes firstIndex];
-        for (id object in objects) {
+        for (NSObject *object in objects) {
             [self insertObject:object atIndex:index];
             index=[indexes indexGreaterThanIndex:index];
         }
@@ -305,7 +305,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     //Removing Objects
     -(void)removeAllObjects {
-        for (id object in __array) [self removeObject:object];
+        for (NSObject *object in __array) [self removeObject:object];
     }
     -(void)removeObject:(id)object {
         UInt ti=[trackerArray indexOfObject:object];
@@ -336,7 +336,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         }
     }
     -(void)removeObjectsInArray:(NSArray*)array {
-        for (id object in array) [self removeObject:object];
+        for (NSObject *object in array) [self removeObject:object];
     }
     -(void)removeObjectsInRange:(NSRange)r {
         for (UInt i=r.location;i<r.location+r.length;i++) {
@@ -348,7 +348,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     //Replacing Objects
     -(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
         UInt index=[indexes firstIndex];
-        for (id object in array) {
+        for (NSObject *object in array) {
             [self replaceObjectAtIndex:index withObject:object];
             index=[indexes indexGreaterThanIndex:index];
         }
@@ -373,7 +373,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     -(void)filterUsingPredicate:(NSPredicate *)predicate {
         NSMutableIndexSet *toRemove=nil;
         UInt index=0;
-        for (id object in __array) {
+        for (NSObject *object in __array) {
             if (![predicate evaluateWithObject:object]) {
                 if (!toRemove) toRemove=[[NSMutableIndexSet alloc] init];
                 [toRemove addIndex:index];

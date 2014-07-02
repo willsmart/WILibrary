@@ -158,7 +158,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     }
     -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
         bool ret=YES;
-        @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object makeWeak:&weak];
+        @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object makeWeak:weak];
         @999 return(ret);
     }
     -(void)willAddObject:(id)object {
@@ -262,9 +262,9 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     //Adding and Removing Entries
     -(bool)_addObject:(id)object {
         bool weak=NO;
-        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
+        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [self willAddObject:object];
-            [__mutableSet addObject:(weak?object.weakSelf:object.strongSelf)];
+            [__mutableSet addObject:(weak?[object weakSelf]:[object strongSelf])];
             [self didAddObject:object];
             return(YES);
         }
@@ -273,7 +273,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(bool)_filterUsingPredicate:(NSPredicate *)predicate {
         bool ret=NO;
         NSMutableSet *toRemove=nil;
-        for (id object in __set) if (![predicate evaluateWithObject:object]) {
+        for (NSObject *object in __set) if (![predicate evaluateWithObject:object]) {
             if (!toRemove) toRemove=[[NSMutableSet alloc] initWithCapacity:__set.count];
             [toRemove addObject:object];
         }
@@ -294,30 +294,30 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(bool)_removeAllObjects {
         if (!self.count) return(NO);
         NSSet *was=[__set copy];
-        for (id object in was) [self willRemoveObject:object];
+        for (NSObject *object in was) [self willRemoveObject:object];
         [__mutableSet removeAllObjects];
-        for (id object in was) [self didRemoveObject:object];
+        for (NSObject *object in was) [self didRemoveObject:object];
         return(YES);
     }
     -(bool)_addObjectsFromArray:(NSArray*)array {
         bool ret=NO;
-        for (id object in array) if ([self _addObject:object]) ret=YES;
+        for (NSObject *object in array) if ([self _addObject:object]) ret=YES;
         return(ret);
     }
     -(bool)_unionSet:(NSSet*)set {
         bool ret=NO;
-        for (id object in set) if ([self _addObject:object]) ret=YES;
+        for (NSObject *object in set) if ([self _addObject:object]) ret=YES;
         return(ret);
     }
     -(bool)_minusSet:(NSSet*)set {
         bool ret=NO;
-        for (id object in set) if ([self _removeObject:object]) ret=YES;
+        for (NSObject *object in set) if ([self _removeObject:object]) ret=YES;
         return(ret);
     }
     -(bool)_intersectSet:(NSSet*)set {
         bool ret=NO;
         NSMutableSet *toRemove=nil;
-        for (id object in __set) if (![set containsObject:object]) {
+        for (NSObject *object in __set) if (![set containsObject:object]) {
             if (!toRemove) toRemove=[[NSMutableSet alloc] initWithCapacity:__set.count];
             [toRemove addObject:object];
         }
@@ -481,7 +481,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         [mapsets removeAllObjects];
         
         [followerSet _removeAllObjects];
-        for (id object in self.delegateForSet) [self followerWillAddObject:object];
+        for (NSObject *object in self.delegateForSet) [self followerWillAddObject:object];
     }
 
 
@@ -599,7 +599,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         [mapsets removeAllObjects];
         
         [unionSet _removeAllObjects];
-        for (id object in self.delegateForSet) [self unionWillAddObject:object];
+        for (NSObject *object in self.delegateForSet) [self unionWillAddObject:object];
     }
 
 

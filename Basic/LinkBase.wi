@@ -64,7 +64,7 @@
         [parentValueDelegate removeDelegate:self];
         if (valueDelegate) {
             valueDelegate.parentValueDelegate=nil;
-            valueDelegate_stong=valueDelegate=nil;
+            valueDelegate_strong=valueDelegate=nil;
         }
         if (parentValueDelegate) ERR("Bad");
         parentValueDelegate=nil;

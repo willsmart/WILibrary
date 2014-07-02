@@ -570,7 +570,7 @@
 
 
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }
@@ -585,33 +585,33 @@
         else return(NO);
     }
     –(void)removeAllObjects {
-        for (id object in self) [self willRemoveObject:object];
+        for (NSObject *object in self) [self willRemoveObject:object];
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
         Int ret=0;
-        for (id object in array) if ([self addObject:object]) ret++;
+        for (NSObject *object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self removeObject:object]) ret++;
+        for (NSObject *object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
         Int ret=0;
-        for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
+        for (NSObject *object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
@@ -628,7 +628,7 @@
     –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
-        for (id object in self) [ret addObject:object];
+        for (NSObject *object in self) [ret addObject:object];
         return(ret);
     }
     –(id)anyObject {
@@ -638,12 +638,12 @@
         return([__base containsObject:object]);
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector withObject:obj];
         }
     }
@@ -651,11 +651,11 @@
         return([__base member:object]);
     }
     –(BOOL)isSubsetOfSet:(NSSet*)set {
-        for (id object in self) if (![set containsObject:object]) return(NO);
+        for (NSObject *object in self) if (![set containsObject:object]) return(NO);
         return(YES);
     }
     –(BOOL)intersectsSet:(NSSet*)set {
-        for (id object in self) if ([set containsObject:object]) return(YES);
+        for (NSObject *object in self) if ([set containsObject:object]) return(YES);
         return(NO);
     }
     –(BOOL)isEqualToSet:(NSSet*)set {
@@ -868,7 +868,7 @@ MutableSet : NSMutableSet
 
     +(MutableSet*)setWithCapacity {return([[MutableSet alloc] init]);}
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }
@@ -883,33 +883,33 @@ MutableSet : NSMutableSet
         else return(NO);
     }
     –(void)removeAllObjects {
-        for (id object in self) [self willRemoveObject:object];
+        for (NSObject *object in self) [self willRemoveObject:object];
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
         Int ret=0;
-        for (id object in array) if ([self addObject:object]) ret++;
+        for (NSObject *object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self removeObject:object]) ret++;
+        for (NSObject *object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
         Int ret=0;
-        for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
+        for (NSObject *object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
@@ -926,7 +926,7 @@ MutableSet : NSMutableSet
     –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
-        for (id object in self) [ret addObject:object];
+        for (NSObject *object in self) [ret addObject:object];
         return(ret);
     }
     –(id)anyObject {
@@ -936,12 +936,12 @@ MutableSet : NSMutableSet
         return([__base containsObject:object]);
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector withObject:obj];
         }
     }
@@ -949,11 +949,11 @@ MutableSet : NSMutableSet
         return([__base member:object]);
     }
     –(BOOL)isSubsetOfSet:(NSSet*)set {
-        for (id object in self) if (![set containsObject:object]) return(NO);
+        for (NSObject *object in self) if (![set containsObject:object]) return(NO);
         return(YES);
     }
     –(BOOL)intersectsSet:(NSSet*)set {
-        for (id object in self) if ([set containsObject:object]) return(YES);
+        for (NSObject *object in self) if ([set containsObject:object]) return(YES);
         return(NO);
     }
     –(BOOL)isEqualToSet:(NSSet*)set {
@@ -985,7 +985,7 @@ MutableArray : NSMutableArray
         }
     }
     –(void)addObjectsFromArray:(NSArray*)array {
-        for (id object in array) [self addObject:object];
+        for (NSObject *object in array) [self addObject:object];
     }
     –(void)insertObject:(id)object atIndex:(UInt)index {
         if ([self willAddObject:object atIndex:index]) {
@@ -995,19 +995,19 @@ MutableArray : NSMutableArray
     }
     –(void)insertObjects:(NSArray*)array atIndexes:(NSIndexSet*)indexes {
         UInt index=[indexes firstIndex];
-        for (id object in array) {
+        for (NSObject *object in array) {
             [self insertObject:object atIndex:index];
             index=[indexes indexGreaterThanIndex:index];
         }
     }
     –(void)removeAllObjects {
         NSArray *was=self.copy;
-        for (id object in was) [self willRemoveObject:object];
+        for (NSObject *object in was) [self willRemoveObject:object];
         [__base removeAllObjects];
-        for (id object in was) [self didRemoveObject:object];
+        for (NSObject *object in was) [self didRemoveObject:object];
     }
     –(void)removeLastObject {
-        id object=self.lastObject;
+        NSObject *object=self.lastObject;
         if (object) {
             [self willRemoveObject:object];
             [__base removeLastObject];
@@ -1022,7 +1022,7 @@ MutableArray : NSMutableArray
         }
     }
     –(void)removeObjectAtIndex:(UInt)index {
-        id object=[self objectAtIndex:index];
+        NSObject *object=[self objectAtIndex:index];
         [self willRemoveObject:object];
         [__base removeObjectAtIndex:index];
         [self didRemoveObject:object];
@@ -1033,7 +1033,7 @@ MutableArray : NSMutableArray
         }
     }
     –(void)removeObjectsInArray:(NSArray*)array {
-        for (id object in array) [self removeObject:object];
+        for (NSObject *object in array) [self removeObject:object];
     }
     –(void)removeObjectsInRange:(NSRange)range {
         for (Int i=0;i<range.length;i++) [self removeObjectAtIndex:range.location];
@@ -1044,7 +1044,7 @@ MutableArray : NSMutableArray
     }
     –(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)objects {
         UInt index=[indexes firstIndex];
-        for (id object in array) {
+        for (NSObject *object in array) {
             [self replaceObjectAtIndex:index withObject:object];
             index=[indexes indexGreaterThanIndex:index];
         }
@@ -1288,7 +1288,7 @@ MutableArray : NSMutableArray
     }
 
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }
@@ -1303,33 +1303,33 @@ MutableArray : NSMutableArray
         else return(NO);
     }
     –(void)removeAllObjects {
-        for (id object in self) [self willRemoveObject:object];
+        for (NSObject *object in self) [self willRemoveObject:object];
         [__base removeAllObjects];
     }
     –(int)addObjectsFromArray:(NSArray*)array {
         Int ret=0;
-        for (id object in array) if ([self addObject:object]) ret++;
+        for (NSObject *object in array) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)unionSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     –(int)minusSet:(NSSet*)set {
         Int ret=0;
-        for (id object in set) if ([self removeObject:object]) ret++;
+        for (NSObject *object in set) if ([self removeObject:object]) ret++;
         return(ret);
     }
     –(int)intersectSet:(NSSet*)set {
         Int ret=0;
-        for (id object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
+        for (NSObject *object in self) if ((![set containsObject:object])&&[self removeObject:object]) ret++;
         return(ret);
     }
     – setSet:(NSSet*)set {
         [self removeAllObjects];
         Int ret=0;
-        for (id object in set) if ([self addObject:object]) ret++;
+        for (NSObject *object in set) if ([self addObject:object]) ret++;
         return(ret);
     }
     -(void)encodeWithCoder:(NSCoder*)coder {
@@ -1346,7 +1346,7 @@ MutableArray : NSMutableArray
     –(UInt)count {return(__base.count);}
     –(NSArray*)allObjects {
         NSMutableArray *ret=[NSMutableArray arrayWithCapacity:__base.count];
-        for (id object in self) [ret addObject:object];
+        for (NSObject *object in self) [ret addObject:object];
         return(ret);
     }
     –(id)anyObject {
@@ -1356,12 +1356,12 @@ MutableArray : NSMutableArray
         return([__base containsObject:object]);
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
-        for (id object in self) if ([object respondsToSelector:selector]) {
+        for (NSObject *object in self) if ([object respondsToSelector:selector]) {
             [object performUnknownSelector:selector withObject:obj];
         }
     }
@@ -1369,11 +1369,11 @@ MutableArray : NSMutableArray
         return([__base member:object]);
     }
     –(BOOL)isSubsetOfSet:(NSSet*)array {
-        for (id object in self) if (![array containsObject:object]) return(NO);
+        for (NSObject *object in self) if (![array containsObject:object]) return(NO);
         return(YES);
     }
     –(BOOL)intersectsSet:(NSSet*)array {
-        for (id object in self) if ([array containsObject:object]) return(YES);
+        for (NSObject *object in self) if ([array containsObject:object]) return(YES);
         return(NO);
     }
     –(BOOL)isEqualToSet:(NSSet*)array {

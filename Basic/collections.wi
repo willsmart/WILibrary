@@ -28,12 +28,12 @@
 
 <ModelSet:Set>
     -(void)makeModel {
-        for (id object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+        for (NSObject *object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modeladd];
         }
     }
     -(void)makeNonModel {
-        for (id object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+        for (NSObject *object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
@@ -81,12 +81,12 @@
 
 <ModelArray:Array>
     -(void)makeModel {
-        for (id object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+        for (NSObject *object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modeladd];
         }
     }
     -(void)makeNonModel {
-        for (id object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
+        for (NSObject *object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
@@ -449,7 +449,7 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
     -(void)allObjectsMoved {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
         NSMutableIndexSet *is=[[NSMutableIndexSet alloc] init];
-        for (id object in delegateForArray) {
+        for (NSObject *object in delegateForArray) {
             UInt index=[delegateForArray indexOfObject:object];
             while ((index!=NSNotFound)&&[is containsIndex:index]) {
                 index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.count-(index+1))]);
@@ -464,7 +464,7 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
     }
     -(void)refreshFollowerArray {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
-        for (id object in delegateForArray) {
+        for (NSObject *object in delegateForArray) {
             [a addObject:[self objectForObject:object]];
         }
         [followerArray setArray:a];

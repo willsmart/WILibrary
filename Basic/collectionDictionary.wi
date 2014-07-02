@@ -315,7 +315,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     }
     -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {@-999
         bool ret=YES;
-        @100 if (ret&&dictionaryDelegate) ret=[dictionaryDelegate shouldAddObject:object forKey:key makeWeak:&weak];
+        @100 if (ret&&dictionaryDelegate) ret=[dictionaryDelegate shouldAddObject:object forKey:key makeWeak:weak];
         @999 return(ret);
     }
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
@@ -387,22 +387,22 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         id was=[__dictionary objectForKey:key];
         if (was==object) return(NO);
         bool weak=NO;
-        if (![self shouldAddObject:object forKey:key makeWeak:&weak]) return(NO);
+        if (![self shouldAddObject:object forKey:key makeWeak:weak]) return(NO);
         if (was) {
             [self willReplaceObject:was withObject:object forKey:key];
-            [__mutableDictionary setObject:(weak?object.weakSelf:object.strongSelf) forKey:key];
+            [__mutableDictionary setObject:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
             [self didReplaceObject:was withObject:object forKey:key];
         }
         else {
             [self willReplaceObject:nil withObject:object forKey:key];
-            [__mutableDictionary setObject:(weak?object.weakSelf:object.strongSelf) forKey:key];
+            [__mutableDictionary setObject:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
             [self didReplaceObject:nil withObject:object forKey:key];
         }
         return(YES);
     }
 
     -(bool)_removeObjectForKey:(id<NSCopying>)key {
-        id object=[__dictionary objectForKey:key];
+        NSObject *object=[__dictionary objectForKey:key];
         if (!object) return(NO);
         [self willReplaceObject:object withObject:nil forKey:key];
         [__mutableDictionary removeObjectForKey:key];
@@ -431,17 +431,17 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
     -(bool)_setValue:(id)object forKey:(NSString*)key {
         bool weak=NO;
-        if (![self shouldAddObject:object forKey:key makeWeak:&weak]) return(NO);
+        if (![self shouldAddObject:object forKey:key makeWeak:weak]) return(NO);
         id was=[__dictionary valueForKey:key];
         if (was==object) return(NO);
         if (was) {
             [self willReplaceObject:was withObject:object forKey:key];
-            [__mutableDictionary setValue:(weak?object.weakSelf:object.strongSelf) forKey:key];
+            [__mutableDictionary setValue:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
             [self didReplaceObject:was withObject:object forKey:key];
         }
         else {
             [self willReplaceObject:nil withObject:object forKey:key];
-            [__mutableDictionary setValue:(weak?object.weakSelf:object.strongSelf) forKey:key];
+            [__mutableDictionary setValue:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
             [self didReplaceObject:nil withObject:object forKey:key];
         }
         return(YES);
@@ -826,7 +826,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         
         [unionDictionary _removeAllObjects];
         UInt index=0;
-        for (id object in self.delegateForArray) [self unionWillAddObject:object withIndex:index++];
+        for (NSObject *object in self.delegateForArray) [self unionWillAddObject:object withIndex:index++];
     }
 
 

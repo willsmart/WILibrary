@@ -118,3 +118,25 @@
     //} (noivar)
 
 
+NSObject
+    -(WeakSelf*)weakSelf {
+        void *key=@selector(weakSelf);
+        WeakSelf *weakSelf=objc_getAssociatedObject(self,key);
+        if (!weakSelf) {
+            objc_setAssociatedObject(self, key, weakSelf=[WeakSelf weakSelfFromObject:self], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        return(weakSelf);
+    }
+    -(bool)isWeakSelf {return(NO);}
+    -(id)strongSelf {return(self);}
+
+
+WeakSelf
+    id strongSelf=nil (readonly,weak,nonatomic)
+    +(WeakSelf*)weakSelfFromObject:(id)strongSelf {
+        WeakSelf *ret=[WeakSelf new];
+        ret->v_strongSelf=strongSelf;
+        return(ret);
+    }
+    -(WeakSelf*)weakSelf {return(self);}
+    -(bool)isWeakSelf {return(NO);}

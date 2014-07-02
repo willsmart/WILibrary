@@ -129,9 +129,9 @@ CollectionTestSubObject
     NSMutableSet _objectSet=nil,objectSet={if (!v__objectSet) self._objectSet=self.randSet;return(v__objectSet);}
     NSMutableIndexSet _indexes=nil,indexes={if (!v__indexes) self._indexes=self.randInternalIndexSet;return(v__indexes);}
     id _object=nil (assign,ivar=v__object)
-    id object={if (!v__object) self._object=self.randObject;return(v__object);}
+    NSObject *object={if (!v__object) self._object=self.randObject;return(v__object);}
     id _object2=nil (assign,ivar=v__object2)
-    id object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
+    NSObject *object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
     NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
     NSRange _range=nil,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}=nil
     UInt _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
@@ -635,7 +635,7 @@ SetTester <Tester>
         if (c!=__dictionary.count) [self passFail:NO format:@"!!!dkt count mismatch\n"];
         else {
             for (id<NSCopying> key in __dictionary) {
-                id object=[__dictionary objectForKey:key];
+                NSObject *object=[__dictionary objectForKey:key];
                 NSSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
                 if (!keys) [self passFail:NO format:@"!!!dkt Object not known\n"];
                 if (![keys containsObject:key]) [self passFail:NO format:@"!!!dkt Key doesn't exist\n"];
@@ -869,7 +869,7 @@ DictionaryTester <Tester>
         if (c!=__array.count) [self passFail:NO format:@"!!!ait count mismatch\n"];
         else {
             UInt index=0;
-            for (id object in __array) {
+            for (NSObject *object in __array) {
                 NSIndexSet *indexesv=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
                 if (!indexesv) [self passFail:NO format:@"!!!ait Object not known\n"];
                 if (![indexesv containsIndex:index]) [self passFail:NO format:@"!!!ait Index doesn't exist\n"];
