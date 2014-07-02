@@ -316,7 +316,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
             }
         }
 
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         {
             if (![object conformsToProtocol:@protocol(LRUCacheItem)]) ret=NO;
             NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)object;

@@ -570,7 +570,8 @@
 
 
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object]) {
+        bool weak=NO;
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }
@@ -714,7 +715,8 @@ MutableSet : NSMutableSet
 
     +(MutableSet*)setWithCapacity {return([[MutableSet alloc] init]);}
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object]) {
+        bool weak=NO;
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }
@@ -1134,7 +1136,8 @@ MutableArray : NSMutableArray
     }
 
     –(bool)addObject:(id)object {
-        if ((![self containsObject:object])&&[self shouldAddObject:object]) {
+        bool weak=NO;
+        if ((![self containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
             [__base addObject:object weak:weakObjects];
             return(YES);
         }

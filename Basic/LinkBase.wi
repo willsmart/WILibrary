@@ -64,7 +64,7 @@
         [parentValueDelegate removeDelegate:self];
         if (valueDelegate) {
             valueDelegate.parentValueDelegate=nil;
-            valueDelegate=nil;
+            valueDelegate_stong=valueDelegate=nil;
         }
         if (parentValueDelegate) ERR("Bad");
         parentValueDelegate=nil;
@@ -91,8 +91,9 @@
                     v_value=nil;
                 }
             }
+            v_value_strong=(retains?v_value:nil);
             [self didSetValueTo:v];
-        }=nil (assign,ivar=v_value)
+        }=nil (weakandstrong,ivar=v_value)
     -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);
@@ -101,8 +102,8 @@
         if (v_value) {
             [[self endpointForObject:v_value] _removeReferrer:self];
         }
-        if ((v_value=v)) {
-        }
+        v_value=v;
+        v_value_strong=(retains?v_value:nil);
         [self didSetValueTo:v];
         return(YES);
     }
@@ -110,7 +111,7 @@
         id v=ep.owner;
         if (v&&(v==v_value)) {
             [self willChangeValueFrom:v_value to:nil];
-            v_value=nil;
+            v_value_strong=v_value=nil;
             [self didSetValueTo:nil];
         }
     }
@@ -125,7 +126,7 @@
         @-900 
         __set=__mutableSet=[[MutableSet alloc] init];
     }
-    -(bool)shouldAddObject:(id)object {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if ((!__restrictRef)&&([self containsObject:object]||[self unacceptable:object])) ret=NO;
     }
     -(void)didAddObject:(id)object {@900 
@@ -163,7 +164,7 @@
         @-900 
         __array=__mutableArray=[[MutableArray alloc] init];
     }
-    -(bool)shouldAddObject:(id)object {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
     }
     -(void)didAddObject:(id)object withIndex:(UInt)index {@900 
@@ -171,7 +172,7 @@
             [[self endpointForObject:object] _addReferrer:self];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@-900 
+    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@-900
         if (!__restrictRef) {
             [[self endpointForObject:object] _removeReferrer:self];
         }
@@ -205,7 +206,7 @@
         @-900 
         __dictionary=__mutableDictionary=[[MutableDictionary alloc] init];
     }
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
     }
     -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900

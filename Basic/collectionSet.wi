@@ -156,9 +156,9 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
             else [setDelegate removeDelegate:v];
         }
     }
-    -(bool)shouldAddObject:(id)object {@-999 
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
         bool ret=YES;
-        @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object];
+        @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object makeWeak:&weak];
         @999 return(ret);
     }
     -(void)willAddObject:(id)object {
@@ -261,9 +261,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     
     //Adding and Removing Entries
     -(bool)_addObject:(id)object {
-        if ((![__set containsObject:object])&&[self shouldAddObject:object]) {
+        bool weak=NO;
+        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:&weak]) {
             [self willAddObject:object];
-            [__mutableSet addObject:object];
+            [__mutableSet addObject:(weak?object.weakSelf:object.strongSelf)];
             [self didAddObject:object];
             return(YES);
         }
@@ -343,7 +344,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     }
 
 <ModelMutableSet>
-    -(bool)shouldAddObject:(id)object {@-200 
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-200
         if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
     }
     -(void)didAddObject:(id)object {

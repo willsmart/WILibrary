@@ -284,8 +284,8 @@ MutableSetDebuggerDelegate<MutableSetDelegate,MutableObjectDebuggerDelegate>
         }
     }
 
-    -(bool)shouldAddObject:(id)object {@998 
-        prnt("Set %s: should%s add %s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:object]);
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@998
+        prnt("Set %s: should%s add %s%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:object]);
     }
     -(void)willAddObject:(id)object {
         prnt("Set %s: will add %s\n",v_name.UTF8String,[Util cnameFor:object]);
@@ -326,8 +326,8 @@ MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebugge
     }
 
 
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {@998 
-        prnt("Dictionary %s: should%s add %s=>%s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:key],[Util cnameFor:object]);
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {@998
+        prnt("Dictionary %s: should%s add %s%s=>%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:key],[Util cnameFor:object]);
     }
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (!toObject) {
@@ -377,8 +377,8 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
         }
     }
 
-    -(bool)shouldAddObject:(id)object {@998 
-        prnt("Array %s: should%s add %s\n",v_name.UTF8String,ret?"":"n't",[Util cnameFor:object]);
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@998
+        prnt("Array %s: should%s add %s%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:object]);
     }
     -(void)wontAddObject:(id)object withIndex:(UInt)index {
         prnt("Array %s: wont add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);

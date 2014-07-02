@@ -1,6 +1,6 @@
 UnionSetsMutableSetDelegate<MutableSetDelegate,BaseObject>
     setsDelegate -~ <UnionArray> owner
-    -(bool)shouldAddObject:(id)object {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableSet class]]&&[object conformsToProtocol:@protocol(MutableSetDelegate)];
     }
     
@@ -27,8 +27,8 @@ UnionSetDelegate<MutableSetDelegate,BaseObject>
 
     NSMutableSet shouldAddObjects=[[NSMutableSet alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
     
-    -(bool)shouldAddObject:(id)object {
-        if (ret&&[self.owner shouldAddObject:object fromDelegate:self]) {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+        if (ret&&[self.owner shouldAddObject:object makeWeak:weak fromDelegate:self]) {
             [shouldAddObjects addObject:[PointerKey keyWithObject:object]];
         }
     }
@@ -71,17 +71,17 @@ UnionSet<UnionSet>
 
     bool __changed=NO;
 
-    -(void)shouldAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    -(void)shouldAddObject:(id)object makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (n) return(YES);
-        else return([self shouldAddObject:object]);
+        else return([self shouldAddObject:object makeWeak:weak]);
     }
 
     -(void)willAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (!n) {
             [self willAddObject:object];
-            [__mutableSet addObject:object];
+            [__mutableSet addObject:object.strongSelf];
             [__countsForKeys setObject:[IntCarrier carrierWithInt:1] forKey:[PointerKey keyWithObject:object]];
             __changed=YES;
         }
@@ -140,9 +140,10 @@ UnionSet<UnionSet>
                 [self didRemoveObject:object];
             }
             for (id object in inss) {
-                if ([self shouldAddObject:object]) {
+                bool weak=NO;
+                if ([self shouldAddObject:object makeWeak:weak]) {
                     [self willAddObject:object];
-                    [__mutableSet addObject:object]
+                    [__mutableSet addObject:object.strongSelf]
                     [self didAddObject:object];
                     changed=YES;
                 }
@@ -182,7 +183,7 @@ UnionSet<UnionSet>
 
 UnionDictionariesMutableArrayDelegate<MutableArrayDelegate,BaseObject>
     dictionariesDelegate -~ <UnionDictionary> owner
-    -(bool)shouldAddObject:(id)object {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableDictionary class]]&&[object conformsToProtocol:@protocol(MutableDictionaryDelegate)];
     }
     
@@ -209,8 +210,8 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
 
     NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
     
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key {
-        if (ret&&[self.owner shouldAddObject:object forKey:key fromDelegate:self]) {
+    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
+        if (ret&&[self.owner shouldAddObject:object forKey:key makeWeak:weak fromDelegate:self]) {
             [shouldAddObjects setObject:object forKey:key];
         }
     }
@@ -262,8 +263,8 @@ UnionDictionary<UnionDictionary>
 
     bool __changed=NO;
 
-    -(void)shouldAddObject:(id)object forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
-        return([self shouldAddObject:object forKey:key]);
+    -(void)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
+        return([self shouldAddObject:object forKey:key makeWeak:weak]);
     }
 
     -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
@@ -278,13 +279,13 @@ UnionDictionary<UnionDictionary>
             IntCarrier *n=[__depthsForKeys objectForKey:key];
             if (!n) {
                 [self willAddObject:toObject forKey:key];
-                [__mutableDictionary setObject:toObject forKey:key];
+                [__mutableDictionary setObject:toObject.strongSelf forKey:key];
                 [__depthsForKeys setObject:[IntCarrier carrierWithInt:del.depth] forKey:key];
                 __changed=YES;
             }
             else if (del.depth<=n.intValue) {
                 [self willAddObject:toObject forKey:key];
-                [__mutableDictionary setObject:toObject forKey:key];
+                [__mutableDictionary setObject:toObject.strongSelf forKey:key];
                 n.intValue=del.depth;
                 __changed=YES;
             }
@@ -311,12 +312,13 @@ UnionDictionary<UnionDictionary>
                 id newObject=nil;
                 for (Int d=del.depth+1;d<self.dictionaries.count;d++) {
                     newObject=[(NSDictionary*)[self.dictionaries objectAtIndex:d] objectForKey:key];
-                    if (newObject&&[self shouldAddObject:newObject forKey:key]) {n.intValue=d;break;}
+                    bool weak=NO;
+                    if (newObject&&[self shouldAddObject:newObject forKey:key makeWeak:weak]) {n.intValue=d;break;}
                 }
                 if (newObject) {
                     [self willAddObject:newObject forKey:key];
                     [__depthsForKeys setObject:n forKey:key];
-                    [__mutableDictionary setObject:newObject forKey:key];
+                    [__mutableDictionary setObject:newObject.strongSelf forKey:key];
                     [self didAddObject:newObject forKey:key];
                 }
             }
@@ -356,13 +358,14 @@ UnionDictionary<UnionDictionary>
             Int d=0;
             for (NSDictionary *dict in self.dictionaries) {
                 object=[dict objectForKey:key];
-                if (object&&[self shouldAddObject:object forKey:key]) break;
+                bool weak=NO;
+                if (object&&[self shouldAddObject:object forKey:key makeWeak:weak]) break;
                 d++;
             }
             if (object) {
                 [self willAddObject:object forKey:key];
                 [__depthsForKeys setObject:[IntCarrier carrierWithInt:d] forKey:key];
-                [__mutableDictionary setObject:object forKey:key];
+                [__mutableDictionary setObject:object.strongSelf forKey:key];
                 [self didAddObject:object forKey:key];
             }
             else {
@@ -421,7 +424,7 @@ UnionDictionary<UnionDictionary>
 
 UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
     arraysDelegate -~ <UnionArray> owner
-    -(bool)shouldAddObject:(id)object {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableArray class]]&&[object conformsToProtocol:@protocol(MutableArrayDelegate)];
     }
 
@@ -463,8 +466,8 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
         [self.owner willRemoveObjectsWithCount:count fromDelegate:self];
     }
 
-    -(bool)shouldAddObject:(id)object {
-        if ([self.owner shouldAddObject:object forKey:key fromDelegate:self]&&ret) {
+    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+        if ([self.owner shouldAddObject:object forKey:key makeWeak:weak fromDelegate:self]&&ret) {
             UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
             if (!c) {
                 [shouldAddObjects setObject:c=[[UnionArrayDelegateCount alloc] init] forKey:[PointerKey keyWithObject:object]];
