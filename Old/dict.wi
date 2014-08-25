@@ -2036,7 +2036,7 @@ Dictionary
         if (numLetters<maxNumLetters) for (int l=0;l<NUMLETTERS;l++) {
             [chwis removeAllIndexes];
             ULL hash=0;
-            for (UInt wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi]) {
+            for (Unsigned wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi]) {
                 unsigned short *ps=wordAddrs[wi];
                 unpackWordLetters(&ps,&wd);
                 if (lis[wi]<wd.numLetters) {
@@ -2168,7 +2168,7 @@ ProMPWords
         return(NO);
     }
 
-    -(bool)haveSeenMax_addIfNot:(const char*)max explore:(bool)explore wisCount:(UInt)wisCount {
+    -(bool)haveSeenMax_addIfNot:(const char*)max explore:(bool)explore wisCount:(Unsigned)wisCount {
         ULL hash=[self strHash_pc:max];
         char c=(*ctxt.seenMaxHT)[hash];
         if ((c==YES)||((c=='?')&&!explore)) return(YES);
@@ -2303,7 +2303,7 @@ ProMPWords
     -(void)oprntWisWords:(NSIndexSet*)wis {
         Wd *wds=self.words;
         oprnt("Wordsx%d:",wis.count);
-        for (UInt wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
+        for (Unsigned wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
             oprnt(" %s",wds[wi].word);
         }
         oprnt("\n");
@@ -2359,7 +2359,7 @@ ProMPWords
         int commonLetterCount[NUMLETTERS];
         Wd *wds=self.words;
         memset(commonLetterCount,0,sizeof(int)*NUMLETTERS);
-        int wii;UInt wi;
+        int wii;Unsigned wi;
         for (wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
             memset(countedCommonLetter,0,sizeof(bool)*NUMLETTERS);
             for (char *pc=wds[wi].word+(parInds[wii]+1);*pc;pc++) if (!countedCommonLetter[(*pc)-'a']) {
@@ -2415,15 +2415,15 @@ ProMPWords
 
 
     
-    -(UInt)incedWordIndexesForWordIndexes:(NSIndexSet*)wis withMaximal:(const char*)maxWd ret:(NSMutableArray*)ret {
+    -(Unsigned)incedWordIndexesForWordIndexes:(NSIndexSet*)wis withMaximal:(const char*)maxWd ret:(NSMutableArray*)ret {
         //fprintf(stderr,"i");
 
-        UInt retN=0;
+        Unsigned retN=0;
         
         int N=(int)strlen(maxWd);
         
         Wd *wds=self.words;
-        int wii;UInt wi;
+        int wii;Unsigned wi;
 
         if (N) {
             int *inds=[self getMaxPattIndsForDepth:0 num:(int)wis.count];
@@ -2565,7 +2565,7 @@ ProMPWords
 
 
 
-    -(UInt)countMaximalSubpatterns {
+    -(Unsigned)countMaximalSubpatterns {
         
         NSMutableArray *indsArray=[[NSMutableArray alloc] init];
         NSMutableIndexSet *wisIS=[[NSMutableIndexSet alloc] init];
@@ -2608,12 +2608,12 @@ ProMPWords
     }
 
 
-    UInt prvRetCount=0;
+    Unsigned prvRetCount=0;
 
 
     -(void)goFromPattern:(const char*)s tmpArray:(NSMutableArray*)indsArray {
         NSIndexSet *wis=[self wordIndexesMatchingPattern:s];
-        UInt indN=[self incedWordIndexesForWordIndexes:wis withMaximal:s ret:indsArray];
+        Unsigned indN=[self incedWordIndexesForWordIndexes:wis withMaximal:s ret:indsArray];
         for (NSIndexSet *chwis in indsArray) {
             if (!(indN--)) break;
             [self goFromWordSet:chwis];

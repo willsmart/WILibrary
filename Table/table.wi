@@ -217,7 +217,7 @@
 
         NSMutableArray *dirtyIndexes=[MutableArray array];
 
-        UInt si=0;
+        Unsigned si=0;
         for (NSObject<SectionModel> *sec in secs) {
             if (![insSecis containsIndex:si]) {
                 NSArray *cells=[sec cellsGivenContext:v_context];
@@ -242,7 +242,7 @@
                         [self.table insertRowsAtIndexPaths:paths withRowAnimation:self.rowAnimation];
                     }
                 }
-                UInt ci=0;
+                Unsigned ci=0;
                 for (NSObject<CellModel> *cell in cells) {
                     if ((![insCellis containsIndex:ci])&&cell.cellModelDirty) {
                         cell.cellModelDirty=NO;

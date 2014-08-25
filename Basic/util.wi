@@ -795,8 +795,8 @@ URLHandlerRegistry "fn:util"
 <WeakList>
     listAsHead -- <WeakListItem> headItem
     listAsTail -- <WeakListItem> tailItem
-    UInt _count=0
-    UInt count={return(_count);}
+    Unsigned _count=0
+    Unsigned count={return(_count);}
 
     -(void)dealloc {@-500 self.headItem=self.tailItem=nil;}
     -(void)link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {

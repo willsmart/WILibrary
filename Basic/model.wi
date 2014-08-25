@@ -171,7 +171,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;
     }
-    -(void)willAddObject:(id)object withIndex:(UInt)index {
+    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -187,10 +187,10 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         [self.owner markDirty];
     }
     -(void)allObjectsMoved {
@@ -204,7 +204,7 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     -(init[super init])initWithOwner:(NSObject<Commitable>*)aowner {
         owner=aowner;
     }
-    -(void)willAddObject:(id)object withIndex:(UInt)index {
+    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -220,10 +220,10 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         [self.owner markDirty];
     }
     -(void)allObjectsMoved {
@@ -232,22 +232,22 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
 
             
 DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject> "fn:model"
-    -(void)didAddObject:(id)object withIndex:(UInt)index {
-        UInt i=0;
+    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+        Unsigned i=0;
         for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {
-        UInt i=0;
+    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+        Unsigned i=0;
         for (id o in delegateForArray) if ((i++>index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         id o=[delegateForArray objectAtIndex:fromIndex];
         if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
         o=[delegateForArray objectAtIndex:toIndex];
         if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
-        UInt i=0,index=(toLocation<fromRange.location?toLocation:fromRange.location);
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+        Unsigned i=0,index=(toLocation<fromRange.location?toLocation:fromRange.location);
         for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
     -(void)allObjectsMoved {

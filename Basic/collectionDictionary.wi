@@ -37,7 +37,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
         @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary copyItems:copy];
     }
-    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(UInt)count {
+    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count {
         @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
     }
 
@@ -53,8 +53,8 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         return([[MutableDictionary allocWithZone:zone] initWithDictionary:__dictionary]);
     }
 
-    -(UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
-        UInt ret=[__dictionary countByEnumeratingWithState:state objects:stackbuf count:len];
+    -(Unsigned)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
+        Unsigned ret=[__dictionary countByEnumeratingWithState:state objects:stackbuf count:len];
         return(ret);
     }
 
@@ -66,13 +66,13 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
     +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WIClass__ alloc] initWithDictionary:dictionary]);}
     +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1]);}
-    +(__WIClass__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(UInt)count {return([[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count]);}
+    +(__WIClass__*)dictionaryWithObjects:(__unsafe_unretained id[])objects forKeys:(__strong id<NSCopying>[])keys count:(Unsigned)count {return([[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count]);}
 
 
 
 
     //Counting Entries
-    UInt count={return([__dictionary count]);}
+    Unsigned count={return([__dictionary count]);}
     
     
     //Comparing Dictionaries
@@ -149,9 +149,9 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     NSDate fileModificationDate={return([__dictionary fileModificationDate]);}
     NSNumber fileOwnerAccountID={return([__dictionary fileOwnerAccountID]);}
     NSString fileOwnerAccountName={return([__dictionary fileOwnerAccountName]);}
-    UInt filePosixPermissions={return([__dictionary filePosixPermissions]);}
+    Unsigned filePosixPermissions={return([__dictionary filePosixPermissions]);}
     ULL fileSize={return([__dictionary fileSize]);}
-    UInt fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
+    Unsigned fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
     Int fileSystemNumber={return([__dictionary fileSystemNumber]);}
     NSString fileType={return([__dictionary fileType]);}
     
@@ -162,7 +162,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     -(NSString *)descriptionWithLocale:(id)locale {
         return([__dictionary descriptionWithLocale:locale]);
     }
-    -(NSString *)descriptionWithLocale:(id)locale indent:(UInt)level {
+    -(NSString *)descriptionWithLocale:(id)locale indent:(Unsigned)level {
         return([__dictionary descriptionWithLocale:locale indent:level]);
     }
 
@@ -345,7 +345,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     -(void)dealloc {@-100 [self removeAllObjects];}
 
     //Creating a Mutable Dictionary
-    +(id)dictionaryWithCapacity:(UInt)numItems {
+    +(id)dictionaryWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     -(init)init {
@@ -366,10 +366,10 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:copy];
     }
-    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(UInt)count {
+    -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
     }
-    -(init[super init])initWithCapacity:(UInt)numItems {
+    -(init[super init])initWithCapacity:(Unsigned)numItems {
         @-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCapacity:numItems];
     }
 
@@ -692,9 +692,9 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
 
 MutableDictionaryUnionDelegate1<MutableDictionaryDelegate>
     MutableDictionaryUnionDelegate owner=nil (publicreadonly,ivar=owner)
-    UInt depth=nil
+    Unsigned depth=nil
 
-    -(init[super init])initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(UInt)adepth {
+    -(init[super init])initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(Unsigned)adepth {
         owner=aowner;depth=adepth;
     }
 
@@ -724,12 +724,12 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
     //    if (unionDictionary) [self refreshUnionDictionary];
     //}
 
-    -(void)willAddObject:(id)object withIndex:(UInt)index {@500
+    -(void)willAddObject:(id)object withIndex:(Unsigned)index {@500
         if (object) {
             [self unionWillAddObject:object withIndex:index];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {@500
+    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@500
         if (object) {
             MutableDictionary *d=[mapdicts objectAtIndex:index];
             if (d) {
@@ -746,7 +746,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
             }
         }
     }
-    -(void)unionWillAddObject:(id)object withIndex:(UInt)index {
+    -(void)unionWillAddObject:(id)object withIndex:(Unsigned)index {
         NSObject<MutableDictionary>* d=[self dictionaryForObject:object];
         if (d) {
             [d addDelegate:[[MutableDictionaryUnionDelegate1 alloc] initWithOwner:self depth:index]];
@@ -756,9 +756,9 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
             }
         }
     }
-    -(void)unionWillReplaceObject1:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key depth:(UInt)index {
+    -(void)unionWillReplaceObject1:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key depth:(Unsigned)index {
         if (fromObject) {
-            UInt i=0;
+            Unsigned i=0;
             id newo=nil;
             for (MutableDictionary *d in mapdicts) {
                 if ((i<index)&&[d objectForKey:key]) {fromObject=nil;break;}
@@ -770,7 +770,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
             }
         }
         if (toObject) {
-            UInt i=0;
+            Unsigned i=0;
             for (MutableDictionary *d in mapdicts) {
                 if (i++==index) {
                     [unionDictionary _setObject:toObject forKey:key];
@@ -781,7 +781,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         }
     }
 
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         if (fromIndex!=toIndex) {
             MutableDictionary *fromd=[mapdicts objectAtIndex:fromIndex];
             MutableDictionary *tod=[mapdicts objectAtIndex:toIndex];
@@ -796,7 +796,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         }
     }
 
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
     }
     -(void)allObjectsMoved {
         [self _refreshUnionDictionary];
@@ -825,7 +825,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         [mapdicts removeAllObjects];
         
         [unionDictionary _removeAllObjects];
-        UInt index=0;
+        Unsigned index=0;
         for (NSObject *object in self.delegateForArray) [self unionWillAddObject:object withIndex:index++];
     }
 

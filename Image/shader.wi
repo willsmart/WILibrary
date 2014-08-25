@@ -236,7 +236,7 @@ type UniformType "typedef:enum {
 UniformTypeFunctions "fn:shader"
     +(UniformType)typeForString:(NSString*)s {
         NSArray *a=[NSArray arrayWithObjects:@"none",@"any",@"noValue",@"bool",@"float",@"int",@"sampler2D",@"samplerCube",@"vec2",@"vec3",@"vec4",@"ivec2",@"ivec3",@"ivec4",@"bvec2",@"bvec3",@"bvec4",@"mat2",@"mat3",@"mat4",nil];
-        UInt v=[a indexOfObject:s];
+        Unsigned v=[a indexOfObject:s];
         return(v==NSNotFound?un_none:(UniformType)v);
     }
     +(NSString*)stringForType:(UniformType)type {

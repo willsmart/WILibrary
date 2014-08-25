@@ -1,3 +1,17 @@
+
+"<AppKit/AppKit.h>"
+"<Foundation/Foundation.h>"
+"<objc/runtime.h>"
+Globals
+    -{
+        #define UIColor NSColor
+        #define UIImage NSImage
+        #define UIFont NSFont
+        #define UIBezierPath NSBezierPath
+        "../BasicClassesCPP/Headers.h"
+    }
+
+
 "Basic/types.wi"
 "Basic/collections.wi"
 "Basic/linkBase.wi"

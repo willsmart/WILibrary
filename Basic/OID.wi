@@ -456,8 +456,8 @@ Trace<Ticker,BaseObject>
         //NSLog(__a.description);
         for (Int d=1,dd=0;(d<__a.count)&&(dd<=toDepth);d++) {
             NSString *s=[__a objectAtIndex:d];
-            UInt st=[s rangeOfString:@"["].location;
-            UInt en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
+            Unsigned st=[s rangeOfString:@"["].location;
+            Unsigned en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
             if ((st!=NSNotFound)&&(en!=NSNotFound)&&(en>st)) {
                 s=[s substringWithRange:NSMakeRange(st-1,en+1-(st-1))];
                 if ([s isEqualToString:@"-[EndpointS didAddObject:]"]) [ret appendFormat:@" ES+ "];
@@ -612,7 +612,7 @@ ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
                     (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
         @999 return(ret);
     }
-    -(UInt)hash {return((UInt)obfuscateULL(objectIDInTotal));}
+    -(Unsigned)hash {return((Unsigned)obfuscateULL(objectIDInTotal));}
 
 <ObjectEquateAndCopy:NSCopying,ObjectEquate>
     -(id)copyWithZone:(NSZone*)zone {

@@ -511,7 +511,7 @@ VGPointsSetDelegate
 
 
 VGPointPartFollowerArrayDelegate
-    -(void)didAddObject:(id)object withIndex:(UInt)index {
+    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
         NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
         for (NSObject<VGPoint> *point in self.pattern.points) {
             NSObject<VGPointPart> *part=partPattern.makePart;
@@ -525,7 +525,7 @@ VGPointPartFollowerArrayDelegate
             [point.parts addObject:part];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {
+    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             [point.parts removeObjectAtIndex:index];
         }
@@ -533,7 +533,7 @@ VGPointPartFollowerArrayDelegate
     -(void)willRemoveObject:(id)object {
         NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
         for (NSObject<VGPoint> *point in self.pattern.points) {
-            UInt index=0;
+            Unsigned index=0;
             for (NSObject<VGPointPart> *part in point.parts) {
                 if (part.pattern==partPattern) break;
                 else index++;
@@ -541,12 +541,12 @@ VGPointPartFollowerArrayDelegate
             if (index<point.parts.count) [point.parts removeObjectAtIndex:index];
         }
     }
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             [point.parts exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
         }
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(UInt)toLocation {
+    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             NSArray *parts=[point.parts objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
             [point.parts removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
@@ -558,8 +558,8 @@ VGPointPartFollowerArrayDelegate
             [point.parts sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 NSObject<VGPointPart> *part1=(NSObject<VGPointPart>*)obj1;
                 NSObject<VGPointPart> *part2=(NSObject<VGPointPart>*)obj2;
-                UInt i1=part1.pattern.indexInPointPattern;
-                UInt i2=part2.pattern.indexInPointPattern;
+                Unsigned i1=part1.pattern.indexInPointPattern;
+                Unsigned i2=part2.pattern.indexInPointPattern;
                 return(i1<i2?NSOrderedAscending:(i1>i2?NSOrderedDescending:NSOrderedSame));
             }];
         }
@@ -642,10 +642,10 @@ VGScalerPointPart<VGPointPart>
 
 
 VGSwizzlePointPartPattern<VGPointPartPattern>
-    -(BYT)sourceAtIndex:(UInt)index {
+    -(BYT)sourceAtIndex:(Unsigned)index {
         return((indexMask>>(index<<2))&0xff);
     }
-    -(void)setSource:(BYT)v atIndex:(UInt)index {
+    -(void)setSource:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self sourceAtIndex:index]!=v)) {
             indexMask&=0xf<<(index<<2);
             indexMask|=v<<(index<<2);
@@ -689,10 +689,10 @@ VGSwizzlePointPart<VGPointPart>
 
 
 VGAddSubPointPartPattern<VGPointPartPattern>
-    -(BYT)addMulTimes4AtIndex:(UInt)index {
+    -(BYT)addMulTimes4AtIndex:(Unsigned)index {
         return((addMulMask>>(index<<2))&0xff);
     }
-    -(void)setAddMulTimes4:(BYT)v atIndex:(UInt)index {
+    -(void)setAddMulTimes4:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self addMulTimes4AtIndex:index]!=v)) {
             addMulMask&=0xf<<(index<<2);
             addMulMask|=v<<(index<<2);
@@ -707,10 +707,10 @@ VGAddSubPointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         } (ivar)
-    -(BYT)subMulTimes4AtIndex:(UInt)index {
+    -(BYT)subMulTimes4AtIndex:(Unsigned)index {
         return((subMulMask>>(index<<2))&0xff);
     }
-    -(void)setSubMulTimes4:(BYT)v atIndex:(UInt)index {
+    -(void)setSubMulTimes4:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self subMulTimes4AtIndex:index]!=v)) {
             subMulMask&=0xf<<(index<<2);
             subMulMask|=v<<(index<<2);

@@ -25,7 +25,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(init[super init])initWithArray:(NSArray*)array {
         @-100 __set=[[NSSet alloc] initWithArray:array];
     }
-    -(init[super init])initWithObjects:(id*)objects count:(UInt)count {
+    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
         @-100 __set=[[NSSet alloc] initWithObjects:objects count:count];
     }
     -(init[super init])initWithSet:(NSSet*)set {
@@ -47,7 +47,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         return([[MutableSet allocWithZone:zone] initWithSet:__set]);
     }
 
-    -(UInt)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(UInt)len {
+    -(Unsigned)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
         return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -66,7 +66,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
     // Counting Entries
-    UInt count={return([__set count]);}
+    Unsigned count={return([__set count]);}
 
 
     // Accessing Set Members
@@ -192,7 +192,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
     //Creating a Mutable Set
-    +(id)setWithCapacity:(UInt)numItems {
+    +(id)setWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     -(init)init {
@@ -204,7 +204,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(init[super init])initWithArray:(NSArray*)array {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithArray:array];
     }
-    -(init[super init])initWithObjects:(id*)objects count:(UInt)count {
+    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithObjects:objects count:count];
     }
     -(init[super init])initWithSet:(NSSet*)set {
@@ -213,7 +213,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set copyItems:copy];
     }
-    -(init[super init])initWithCapacity:(UInt)numItems {
+    -(init[super init])initWithCapacity:(Unsigned)numItems {
         @-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCapacity:numItems];
     }
         

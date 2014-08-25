@@ -3,7 +3,7 @@
 
 /*top:
     typedef NSInteger Int;
-    typedef NSUInteger UInt;
+    typedef NSUInteger U;
     extern NSInteger __bpc,__breakAtBP;
     void BPoint();
     void ERR(const char *format,...);

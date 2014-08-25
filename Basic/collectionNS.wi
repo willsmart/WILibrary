@@ -11,7 +11,7 @@ PointerKey <NSCopying> "-Object"
         }
         else {
             v_o=ao=self;
-            hash=(UInt)obfuscateULL((ULL)v_o);
+            hash=(Unsigned)obfuscateULL((ULL)v_o);
         }
         return(self);
     }
@@ -30,7 +30,7 @@ PointerKey <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    UInt hash=nil (readonly)
+    Unsigned hash=nil (readonly)
 
 
 
@@ -63,7 +63,7 @@ WeakObject <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    UInt hash=nil (readonly)
+    Unsigned hash=nil (readonly)
 
 
 
@@ -123,26 +123,26 @@ NSMutableArray
         [self addObject:v];
     }
 
-    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(UInt)index {
+    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(Unsigned)index {
         if (weakObject) [self insertWeakObject:anObject atIndex:index];
         else [self insertObject:anObject atIndex:index];
     }
-    -(void)insertWeakObject:(id)anObject atIndex:(UInt)index {
+    -(void)insertWeakObject:(id)anObject atIndex:(Unsigned)index {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self insertObject:v atIndex:index];
     }
 
-    -(void)replaceObjectAtIndex:(UInt)index withObject:(id)anObject weak:(bool)weakObject {
+    -(void)replaceObjectAtIndex:(Unsigned)index withObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
         else [self replaceObjectAtIndex:index withObject:(id)anObject];
     }
-    -(void)replaceObjectAtIndex:(UInt)index withWeakObject:(id)anObject {
+    -(void)replaceObjectAtIndex:(Unsigned)index withWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self replaceObjectAtIndex:index withObject:v];
     }
 
 NSArray
-    -(id)derefedObjectAtIndex:(UInt)index {
+    -(id)derefedObjectAtIndex:(Unsigned)index {
         return([WeakObject deref:[self objectAtIndex:index]]);
     }
 

@@ -98,13 +98,13 @@ PropertyData
     <__Property__s__model> owner=nil (ivar=owner,assign)
     -(init[super init])initWithOwner:(NSObject<__Property__s__model>*)aowner {owner=aowner;}
 
-    -(void)didAddObject:(id)object withIndex:(UInt)index {
+    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:index];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(UInt)index {
+    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
         [self.owner willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:index];
     }
-    -(void)objectsSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner __property__sSwappedWithIndex:fromIndex andIndex:toIndex];
     }
     -(void)allObjectsMoved {
@@ -133,7 +133,7 @@ PropertyData
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
                 [vw.__property__s removeAllObjects];
-                UInt index=0;
+                Unsigned index=0;
                 for (NSObject<__Property____modelObject> *object in self.__property__s) {
                     NSObject<__Property____viewedObject> *vd=[vw make__Property__ViewedObjectForModelObject:object];
                     if (vd) {
@@ -151,7 +151,7 @@ PropertyData
             }
         }
     }
-    -(void)didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:(UInt)index {@-100 
+    -(void)didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:(Unsigned)index {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -162,7 +162,7 @@ PropertyData
             }
         }
     }
-    -(void)willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:(UInt)index {@-100 
+    -(void)willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:(Unsigned)index {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -170,7 +170,7 @@ PropertyData
             }
         }
     }
-    -(void)__property__sSwappedWithIndex:(UInt)fromIndex andIndex:(UInt)toIndex {
+    -(void)__property__sSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -183,7 +183,7 @@ PropertyData
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
                 [vw.__property__s removeAllObjects];
-                UInt index=0;
+                Unsigned index=0;
                 for (NSObject<__Property____modelObject> *object in self.__property__s) {
                     NSObject<__Property____viewedObject> *vd=[vw make__Property__ViewedObjectForModelObject:object];
                     if (vd) {

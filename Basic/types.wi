@@ -61,7 +61,7 @@ type BOOL
 type SEL
 type id "retains"
 type Class
-type UInt
+type Unsigned
 type Int
 type void
 type CGRect

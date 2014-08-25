@@ -75,7 +75,7 @@ FontList <BaseObject>
     -(bool)fontName:(NSString*)name matchesPattern:(NSString*)pattern {
         NSData *nd=[name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
         if (!nd) return(NO);
-        UInt nlen=nd.length;
+        Unsigned nlen=nd.length;
         const char *ncs=(const char*)nd.bytes;
         
         for (Int pi=0,ni=0;pi<pattern.length;pi++) {

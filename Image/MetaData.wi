@@ -828,7 +828,7 @@ MetaEnabled
     +(void)addSubview:(id)childView withName:(NSString*)name parentView:(UIView*)parentView {
         if ([childView isKindOfClass:[UIView class]]) {
             NSArray *chs=parentView.subviews;
-            UInt insertAt=0;
+            Unsigned insertAt=0;
             for (UIView *v in chs) {
                 if ([v conformsToProtocol:@protocol(MetaEnabled)]) {
                     NSString *vName=(NSString*)((id<MetaEnabled>)v).keyInParentMeta;

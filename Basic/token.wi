@@ -239,13 +239,13 @@ JsonParser
               )) continue;
             [a addObject:t];
         }
-        UInt used=0;
+        Unsigned used=0;
         NSObject *ret=a.count?[__Class__ _unpack:a from:0 to:a.count-1 used:&used]:nil;
         if (used!=a.count) ret=nil;
         return(ret);
     }
 
-    +(NSObject*)_unpack:(NSArray*)tokens from:(UInt)from to:(UInt)to used:(UInt*)pused {
+    +(NSObject*)_unpack:(NSArray*)tokens from:(Unsigned)from to:(Unsigned)to used:(Unsigned*)pused {
         if (to<from) {*pused=0;return([NSNull null]);}
         WReaderToken *t0=[tokens objectAtIndex:from];
         if (t0.type=='n') {*pused=1;return(@(t0.str.doubleValue));}
@@ -267,14 +267,14 @@ JsonParser
             }
             if ([t0.str isEqualToString:@"{"]) {
                 NSMutableDictionary *ret=[[NSMutableDictionary alloc] init];
-                UInt fromWas=from;
+                Unsigned fromWas=from;
                 from++;
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"}"]) {
                     *pused=from+1-fromWas;
                     return(ret);
                 }
-                UInt used;
+                Unsigned used;
                 while (from<=to) {
                     NSObject *k=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!(k&&[k conformsToProtocol:@protocol(NSCopying)])) {
@@ -312,14 +312,14 @@ JsonParser
             }
             if ([t0.str isEqualToString:@"["]) {
                 NSMutableArray *ret=[[NSMutableArray alloc] init];
-                UInt fromWas=from;
+                Unsigned fromWas=from;
                 from++;
                 WReaderToken *t=[tokens objectAtIndex:from];
                 if ([t.str isEqualToString:@"]"]) {
                     *pused=from+1-fromWas;
                     return(ret);
                 }
-                UInt used;
+                Unsigned used;
                 while (from<=to) {
                     NSObject *v=[__Class__ _unpack:tokens from:from to:to used:&used];
                     if (!v) {
