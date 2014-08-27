@@ -438,7 +438,7 @@ Singletons
     }
  
 */
-Trace<Ticker,BaseObject>
+Trace<Ticker,BaseObject> "notrace"
     +(NSString*)callStackStringFromDepth:(Int)fromDepth toDepth:(Int)toDepth {
         NSMutableString *ret=[NSMutableString string];
         NSArray *__a=[NSThread callStackSymbols];

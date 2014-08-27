@@ -4,7 +4,7 @@
 "<objc/runtime.h>"
 "<iostream>"
 "<sys/mman.h>"
-"include:../../../BasicClassesCPP/Headers.h"
+"include:{WIBASE}/BasicClassesCPP/Headers.h"
 
 "Basic/types.wi"
 "Basic/collections.wi"
