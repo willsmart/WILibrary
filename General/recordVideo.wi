@@ -26,11 +26,11 @@ sys AVAssetWriterInput
 sys AVAssetWriter
 type CVPixelBufferRef
 
-/*interfaces:impl:
+/*interfaces:impl
     void MyPixelBufferReleaseBytesCallback(void *releaseRefCon, const void *baseAddress) {
     }
 */
-/*interfaces:
+/*interfaces
     void MyPixelBufferReleaseBytesCallback(void *releaseRefCon, const void *baseAddress);
 */
 

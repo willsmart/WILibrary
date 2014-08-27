@@ -1,8 +1,48 @@
 
+NSArray
+    -(CollectionWeakness)weakness
+        CollectionWeakness __block ret=CollectionIsEmpty;
+        [self enumerateObjectsWithOptions:0 usingBlock:^(id object,NSUInteger index,BOOL *stop) {
+            if (((ret=(CollectionWeakness)(ret|([object isWeakSelf]?CollectionIsWeak:CollectionIsStrong))))==CollectionIsWeakAndStrong) *stop=YES;
+        }];
+        return ret;
+
+    -(NSArray*)asWeak
+        CollectionWeakness weakness=self.weakness;
+        if (weakness&CollectionIsStrong) {
+            NSMutableArray __block *ret=[NSMutableArray arrayWithCapacity:self.count];
+            [self enumerateObjectsWithOptions:0 usingBlock:^(id object,NSUInteger index,BOOL *stop) {
+                [ret addObject:([object isWeakSelf]?object:[object weakSelf])];
+            }];
+            return(ret);
+        }
+        else return(self);
+
+    -(NSArray*)asStrong
+        CollectionWeakness weakness=self.weakness;
+        if (weakness&CollectionIsWeak) {
+            NSMutableArray __block *ret=[NSMutableArray arrayWithCapacity:self.count];
+            [self enumerateObjectsWithOptions:0 usingBlock:^(id object,NSUInteger index,BOOL *stop) {
+                id addObject=([object isWeakSelf]?[object strongSelf]:object);
+                [ret addObject:addObject?addObject:NSNull.null];
+            }];
+            return(ret);
+        }
+        else return(self);
+
+
+
+
 
 
 MutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester> {}
+
+
+
 WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMutableArray> {}
+
+
+
 
 
 

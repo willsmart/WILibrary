@@ -5,7 +5,7 @@
 "<OpenGLES/ES2/gl.h>"
 "<OpenGLES/ES2/glext.h>"
 
-/*top:
+/*top
 #define INVALIDSHADER (0xffff)
 #define SHADERDEBUG
 */
@@ -41,7 +41,13 @@ Shader <BaseObject> "fn:shader"
 
 
 ShaderData <BaseObject> {}
+
+
+
 Parse <BaseObject> {}
+
+
+
 
 Shader
     GLint numberOfVertices=

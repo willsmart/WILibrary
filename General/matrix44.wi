@@ -9,10 +9,10 @@
 type Mat44 "typedef:struct Mat44"
 type Vec4 "typedef:struct Vec4"
 
-/*interfaces:impl:
+/*interfaces:impl
 #define ThreeDCFILE
 */
-/*interfaces:
+/*interfaces
     #define _MatMPtr(c,r) (m->m[((r)<<2)+(c)])
     #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)+(c)])
     #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)

@@ -70,10 +70,10 @@ Styler
     }
 
 
-/*interfaces:
+/*interfaces
 extern Styler *_Styler_default;
 */
-/*interfaces:impl:
+/*interfaces:impl
 Styler *_Styler_default=nil;
 */
 

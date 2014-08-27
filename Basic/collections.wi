@@ -8,6 +8,8 @@
 "collectionTester.wi"
 //"collectionUnions.wi"
 
+Globals -
+    enum CollectionWeakness {CollectionIsEmpty=0,CollectionIsWeak=1,CollectionIsStrong=2,CollectionIsWeakAndStrong=3};
 
 <CommitableCollection:Commitable>
     -(void)stateOK {@100 [self markDirty];}
@@ -178,7 +180,13 @@ MutableArray:NSMutableArray<MutableArray> {}
 
 
 
+
+
+
 WeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary> {}
+
+
+
 MutableDictionary:NSMutableDictionary<MutableDictionary> {}
 //ModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary> {}
 
@@ -187,6 +195,9 @@ MutableDictionary:NSMutableDictionary<MutableDictionary> {}
 //NotifyingModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,NotifyingMutableDictionary> {}
 
 //CommitableWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,CommitableCollection> {}
+
+
+
 CommitableMutableDictionary:NSMutableDictionary<MutableDictionary,CommitableCollection> {}
 //CommitableModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,CommitableCollection> {}
 
@@ -203,6 +214,9 @@ CommitableMutableDictionary:NSMutableDictionary<MutableDictionary,CommitableColl
 
     
 //WeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet> {}
+
+
+
 MutableSet:NSMutableSet<MutableSet> {}
 //ModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet> {}
 
@@ -217,6 +231,9 @@ MutableSet:NSMutableSet<MutableSet> {}
 //RefCountedWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,RefCountedObject> {}
 //RefCountedMutableSet:NSMutableSet<MutableSet,RefCountedObject> {}
 //RefCountedModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,RefCountedObject> {}
+
+
+
 
 
 

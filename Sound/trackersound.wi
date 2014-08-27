@@ -1,10 +1,10 @@
 
 
-/*top:
+/*top
 extern unsigned long long waveBitMasks[4][16];
 */
 
-/*top:impl:
+/*top:impl
 unsigned long long waveBitMasks[4][16]={
   { 0x7b8b4567127b23c6LL, 0x943c9869a6334873LL, 0x0000000089495cffLL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL },
   { 0x7c56f860d4d17722LL, 0x3924ca0a6cfd4ea7LL, 0x000fcf4d9ea21031LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL, 0x0000000000000000LL },
@@ -280,7 +280,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
     }
 
     +(void)displayWaveBitMasks {
-        prnt("/*top:\nextern unsigned long long waveBitMasks[4][16];\n*/\n/*top:impl:\nunsigned long long waveBitMasks[4][16]={\n");
+        prnt("/*top\nextern unsigned long long waveBitMasks[4][16];\n*/\n/*top:impl\nunsigned long long waveBitMasks[4][16]={\n");
         for (Int ci=0;ci<4;ci++) {
             Int Nb=[SonicBinPlay cycleWaves:ci];
             while (YES) {

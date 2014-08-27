@@ -83,7 +83,7 @@ JustMyClassOverride<+Commitable>
     }
     
     -(void)cleanupCommit {
-previousHisqname=nil;
+        previousHisqname=nil;
         useMyHisqname=NO;
         [self removeAllSinkCommitters];
         self.baseWithHisqname=nil;

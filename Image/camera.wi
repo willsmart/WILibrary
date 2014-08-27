@@ -13,7 +13,7 @@ sys AVCaptureConnection
 sys AVCaptureDevice
 sys AVCaptureSession
 
-/*interfaces:
+/*interfaces
 #define CAMTEXSZ 256
 */
 

@@ -265,7 +265,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
 
 
 
-/*interfaces:
+/*interfaces
 extern Singletons *g_singletons;
 #ifndef UIONLY
 #define UIONLY(...)
@@ -274,7 +274,7 @@ extern Singletons *g_singletons;
 #define NOTUI(...) __VA_ARGS__
 #endif
 */
-/*interfaces:impl:
+/*interfaces:impl
 Singletons *g_singletons=nil;
 */
 
@@ -412,10 +412,10 @@ Util "fn:util"
     }
 
 
-    /*decl:
+    /*decl
         extern Util* _Util_default;
     */
-    /*decl:impl:
+    /*decl:impl
         Util* _Util_default=nil;
     */
     +(Util*)getDefault {
@@ -554,10 +554,10 @@ MemMonitor "fn:util"
     }
 
 
-/*interfaces:
+/*interfaces
 extern URLHandlerRegistry *_URLHandlerRegistry_default;
 */
-/*interfaces:impl:
+/*interfaces:impl
 URLHandlerRegistry *_URLHandlerRegistry_default=nil;
 */
 

@@ -27,7 +27,7 @@ ImageFromCGImage:UIImage
     }
 
 
-/*interfaces:
+/*interfaces
 #undef UIONLY
 #define UIONLY(...) __VA_ARGS__
 #undef NOTUI

@@ -48,10 +48,10 @@ RenderUIView : UIView<BaseObject>
 
 RenderUIViews <BaseObject>
 
-    /*decl:
+    /*decl
     extern RenderUIViews *_RenderUIViews_default;
     */
-    /*decl:impl:
+    /*decl:impl
     RenderUIViews *_RenderUIViews_default=nil;
     */
     +(RenderUIViews*)getDefault {

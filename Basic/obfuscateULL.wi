@@ -1,7 +1,7 @@
-/*decl:
+/*decl
 ULL obfuscateULL(ULL ull);
 */
-/*bottom:impl:
+/*bottom:impl
 ULL obfuscateULL(ULL ull) {
     return(charHashCodes[0][ull&0xff]+charHashCodes[1][(ull>>8)&0xff]+
             charHashCodes[2][(ull>>16)&0xff]+charHashCodes[3][(ull>>24)&0xff]+

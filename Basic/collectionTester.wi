@@ -19,10 +19,10 @@
 
 
 
-/*top:
+/*top
 extern NSString *testKey;
 */
-/*top:impl:
+/*top:impl
 NSString *testKey=nil;
 */
 CollectionTestObject
@@ -45,27 +45,6 @@ CollectionTestObject
     -(init[super init])initWithInt:(Int)v tester:(NSObject<Tester>*)atester {
         intValue=v;
         self.tester=atester;
-    }
-    -(id)w_retain {
-        if (testKey) {
-            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
-            if (so) [so _retain];
-        }
-        //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
-    }
-    -(void)w_release {
-        if (testKey) {
-            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
-            if (so) [so _release];
-        }
-        //printf("release %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
-    }
-    -(id)w_autorelease {
-        if (testKey) {
-            CollectionTestSubObject *so=[subObjects objectForKey:testKey];
-            if (so) [so _autorelease];
-        }
-        //printf("autorelease %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
     }
     -(void)willAdd {
         if (testKey) {
@@ -139,7 +118,7 @@ CollectionTestSubObject
 
     NSDictionary *collections=[NSDictionary dictionary]
 
-    /*top:
+    /*top
     #define ITERATECOLLECTIONS(typ,v,...) \
     for (NSString *_key in self.collections) { \
         @autoreleasepool {} \

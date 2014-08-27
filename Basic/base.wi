@@ -1,14 +1,14 @@
 "<objc/runtime.h>"
 
 
-/*top:
+/*top
     typedef NSInteger Int;
-    typedef NSUInteger U;
+    typedef NSUInteger Unsigned;
     extern NSInteger __bpc,__breakAtBP;
     void BPoint();
     void ERR(const char *format,...);
 */
-/*top:impl:
+/*top:impl
     NSInteger __bpc=0,__breakAtBP=0;
     void BPoint() {
         if (__breakAtBP==++__bpc) {
@@ -23,34 +23,13 @@
         printf("\n");
     }
 */
-/*protocols:
+/*protocols
 #define CHECKZOMBIE(fn) {if ([self respondsToSelector:@selector(isZombie)]&&[(id<Object>)self isZombie]) ERR("Zombie call to %p: " #fn,self);}
 */
 
 
 
 
-<DebugRetain>
-    Int __rc=1,__arc=0;
-
-    //NSString __description={return([self respondsToSelector:@selector(description)]?self.description:[NSString stringWithFormat:@"Obj:%p",self]);}
-
-    -(id)w_retain {
-        __rc++;
-        DEB(printf("%d -> %d retain %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
-    }
-    -(void)dealloc {@-999 
-        DEB(printf("%d -> %d dealloc %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
-    }
-    -(void)w_release {
-        __rc--;
-        if (__arc>__rc) __arc--;
-        DEB(printf("%d -> %d release %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
-    }
-    -(id)w_autorelease {
-        __arc++;
-        DEB(printf("%d -> %d autorelease %s\n",__rc,__rc-__arc,[self.__description cStringUsingEncoding:NSASCIIStringEncoding]);)
-    }
 
 <BaseClass>
     +(id)get;
@@ -119,24 +98,57 @@
 
 
 NSObject
-    -(WeakSelf*)weakSelf {
+    -(WeakSelf*)weakSelf
         void *key=@selector(weakSelf);
         WeakSelf *weakSelf=objc_getAssociatedObject(self,key);
         if (!weakSelf) {
             objc_setAssociatedObject(self, key, weakSelf=[WeakSelf weakSelfFromObject:self], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
         return(weakSelf);
-    }
-    -(bool)isWeakSelf {return(NO);}
-    -(id)strongSelf {return(self);}
 
+    -(bool)isWeakSelf
+        return(NO);
+
+    -(id)strongSelf
+        return(self);
+
+    -(id)selfWithWeakness:(bool)weak
+        return(weak?self.weakSelf:self);
 
 WeakSelf
+    Unsigned index=0,hash=0 (readonly,nonatomic)
     id strongSelf=nil (readonly,weak,nonatomic)
-    +(WeakSelf*)weakSelfFromObject:(id)strongSelf {
-        WeakSelf *ret=[WeakSelf new];
-        ret->v_strongSelf=strongSelf;
-        return(ret);
-    }
-    -(WeakSelf*)weakSelf {return(self);}
-    -(bool)isWeakSelf {return(NO);}
+
+    -(instancetype)initWithStrongSelf:(id)strongSelf
+        static Int s_index=0;
+        if ((self=[super init])) {
+            index=++s_index;
+            hash=[((v_strongSelf=strongSelf)) hash];
+        }
+        return(self);
+
+    -(instancetype)initCopyFrom:(WeakSelf*)copy
+        if ((self=[super init])) {
+            index=copy->index;
+            hash=copy->hash;
+            v_strongSelf=copy->v_strongSelf;
+        }
+        return(self);
+
+    +(WeakSelf*)weakSelfFromObject:(id)strongSelf
+        return [[WeakSelf alloc] initWithStrongSelf:strongSelf];
+
+    -(WeakSelf*)weakSelf
+        return(self);
+
+    -(id)selfWithWeakness:(bool)weak
+        return(weak?self:v_strongSelf);
+
+    -(bool)isWeakSelf
+        return(YES);
+
+    -(instancetype)copyWithZone:(NSZone *)zone
+        return [[WeakSelf allocWithZone:zone] initCopyFrom:self];
+
+    -(BOOL)isEqual:(id)object
+        return(object&&((object==self)||(object==v_strongSelf)||([object isKindOfClass:WeakSelf.class]&&(((WeakSelf*)object))->index==index)));

@@ -1,16 +1,10 @@
 
-"<AppKit/AppKit.h>"
+
 "<Foundation/Foundation.h>"
 "<objc/runtime.h>"
-Globals
-    -{
-        #define UIColor NSColor
-        #define UIImage NSImage
-        #define UIFont NSFont
-        #define UIBezierPath NSBezierPath
-        "../BasicClassesCPP/Headers.h"
-    }
-
+"<iostream>"
+"<sys/mman.h>"
+"include:../../../BasicClassesCPP/Headers.h"
 
 "Basic/types.wi"
 "Basic/collections.wi"
@@ -22,3 +16,21 @@ Globals
 "Basic/obfuscateULL.wi"
 "Basic/token.wi"
 "Basic/cacheandrequest.wi"
+
+
+Globals
+    -top {
+        #ifdef TARGET_OS_IPHONE
+            #import <UIKit/UIKit.h>
+        #else
+            #define UIColor NSColor
+            #define UIImage NSImage
+            #define UIFont NSFont
+            #define UIBezierPath NSBezierPath
+            #define TARGET_OS_OSX 1
+            #import <AppKit/AppKit.h>
+        #endif
+    }
+    -top:impl
+        #define MAINCPPFILE
+        #define CPPTYPE(...) __VA_ARGS__

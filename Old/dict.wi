@@ -10,7 +10,7 @@
 type UnpackedWord "typedef:struct {unsigned short blockLength;unsigned short *addr;char letters[MAXWORDLEN],word[MAXWORDLEN];int numLetters,wordLen;double freq;}"
 
 
-/*top:iface:
+/*top:iface
 #define NUMLETTERS 26
 #define LASTLETTER (NUMLETTERS-1)
 #define NUMLENGTHS 25
@@ -26,7 +26,7 @@ type UnpackedWord "typedef:struct {unsigned short blockLength;unsigned short *ad
 
 
 
-/*interfaces:
+/*interfaces
 
 //#define DEBUGCT
 
@@ -905,7 +905,7 @@ DictionaryWord
 
 
 
-/*interfaces:
+/*interfaces
 static Dictionary *_Dictionary_default=nil;
 */
 
@@ -1201,7 +1201,7 @@ Dictionary
 
 
 
-    /*interfaces:
+    /*interfaces
     static bool inVer=NO;
     */
 
@@ -1236,7 +1236,7 @@ Dictionary
     }
 
 
-    /*interfaces:
+    /*interfaces
     int wordLenIndex(NSString* str) {
         int len,i;for (len=i=0;i<str.length;i++) if (isLetterChar([str characterAtIndex:i])) len++;
         if (len==0) return(-1);	
@@ -1551,7 +1551,7 @@ Dictionary
 
 
 
-    /*interfaces:
+    /*interfaces
     #define MAXPOTS (1000)
     static unsigned short *pot_best[MAXPOTS];
     static float pot_bestp[MAXPOTS];
@@ -2104,7 +2104,7 @@ Dictionary
 
 
 
-/*top:
+/*top
 #include <iostream>
 #define MAINCPPFILE
 #define CPPTYPE(...) __VA_ARGS__

@@ -1,10 +1,49 @@
 
 
 
+NSSet
+    -(CollectionWeakness)weakness
+        CollectionWeakness __block ret=CollectionIsEmpty;
+        [self enumerateObjectsWithOptions:0 usingBlock:^(id object,BOOL *stop) {
+            if (((ret=(CollectionWeakness)(ret|([object isWeakSelf]?CollectionIsWeak:CollectionIsStrong))))==CollectionIsWeakAndStrong) *stop=YES;
+        }];
+        return ret;
+
+    -(NSSet*)asWeak
+        CollectionWeakness weakness=self.weakness;
+        if (weakness&CollectionIsStrong) {
+            NSMutableSet __block *ret=[NSMutableSet setWithCapacity:self.count];
+            [self enumerateObjectsWithOptions:0 usingBlock:^(id object,BOOL *stop) {
+                [ret addObject:([object isWeakSelf]?object:[object weakSelf])];
+            }];
+            return(ret);
+        }
+        else return(self);
+
+    -(NSSet*)asStrong
+        CollectionWeakness weakness=self.weakness;
+        if (weakness&CollectionIsWeak) {
+            NSMutableSet __block *ret=[NSMutableSet setWithCapacity:self.count];
+            [self enumerateObjectsWithOptions:0 usingBlock:^(id object,BOOL *stop) {
+                id addObject=([object isWeakSelf]?[object strongSelf]:object);
+                if (addObject) {
+                    [ret addObject:addObject];
+                }
+            }];
+            return(ret);
+        }
+        else return(self);
 
 
-MutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester> ()
-WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableSet> ()
+
+
+
+
+MutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester>
+
+
+
+WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableSet>
 
 
 
@@ -12,6 +51,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <Set>
+    bool retrievesWeakValues=0
     NSSet __set=nil (readonly,dealloc,ivar=__set)
 
     // initializing a set
@@ -71,7 +111,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
     // Accessing Set Members
     NSArray allObjects={return([__set allObjects]);}
-    id anyObject={return([__set anyObject]);}
+    id anyObject={return([[__set anyObject] selfWithWeakness:retrievesWeakValues]);}
     -(BOOL)containsObject:(id)object {return([__set containsObject:object]);}
     -(NSSet*)filteredSetUsingPredicate:(NSPredicate *)predicate {return([__set filteredSetUsingPredicate:predicate]);}
     -(void)makeObjectsPerformSelector:(SEL)selector {[__set makeObjectsPerformSelector:selector];}
@@ -177,6 +217,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
+    bool weak=0 (ivar=v_weak)
 
     NSMutableSet __mutableSet=nil (readonly,ivar=__mutableSet)
 
@@ -261,10 +302,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     
     //Adding and Removing Entries
     -(bool)_addObject:(id)object {
-        bool weak=NO;
-        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
+        bool isWeak=v_weak;
+        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:isWeak]) {
             [self willAddObject:object];
-            [__mutableSet addObject:(weak?[object weakSelf]:[object strongSelf])];
+            [__mutableSet addObject:(isWeak?[object weakSelf]:[object strongSelf])];
             [self didAddObject:object];
             return(YES);
         }

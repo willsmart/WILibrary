@@ -252,10 +252,10 @@ VGPartsGreedilyReferencedPointFollowerSetDelegate
 
 type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
 
-/*top:
+/*top
     extern ArrayOfVGPoints *g_VGPoints;
 */
-/*top:impl:
+/*top:impl
     ArrayOfVGPoints *g_VGPoints=nil;
 */
 

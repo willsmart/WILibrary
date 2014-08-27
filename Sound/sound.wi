@@ -118,7 +118,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 
-    /*interfaces:
+    /*interfaces
     OSStatus recordingCallback(void *inRefCon,
     AudioUnitRenderActionFlags *ioActionFlags,
     const AudioTimeStamp *inTimeStamp,
@@ -126,7 +126,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
     UInt32 inNumberFrames,
     AudioBufferList *ioData);
     */
-    /*interfaces:impl:
+    /*interfaces:impl
     OSStatus recordingCallback(void *inRefCon,
     AudioUnitRenderActionFlags *ioActionFlags,
     const AudioTimeStamp *inTimeStamp,
@@ -314,7 +314,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 
-    /*interfaces:
+    /*interfaces
     extern Int g_sampleIndex;
     OSStatus playbackCallback(void *inRefCon,
                                       AudioUnitRenderActionFlags *ioActionFlags,
@@ -323,7 +323,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
                                       UInt32 inNumberFrames,
                                       AudioBufferList *ioData);
     */
-    /*interfaces:impl:
+    /*interfaces:impl
     OSStatus playbackCallback(void *inRefCon,
                                       AudioUnitRenderActionFlags *ioActionFlags,
                                       const AudioTimeStamp *inTimeStamp,

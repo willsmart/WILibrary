@@ -43,6 +43,7 @@ type CFStringRef
 type char
 type constchar "typedef:const char"
 type Int
+type Unsigned
 type long
 type float
 type double
@@ -119,18 +120,13 @@ type Vec4 "typedef:struct Vec4"
 type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_willCommit,stage_commit,stage_didCommit,stage_finishCommit,stage_cleanupCommit,stage_none}"
 
 
-<Retains>
-    -(id)w_retain;
-    -(void)w_release;
-    -(id)w_autorelease;
 
-
-/*decl:impl:
+/*decl:impl
 #define DEB(...) __VA_ARGS__
 NSMutableArray *singletons=nil;
 void clearSingletons() {singletons=nil;}
 */
-/*decl:
+/*decl
 extern NSMutableArray *singletons;
 #define ADDSINGLETON(o) [(!singletons?singletons=[NSMutableArray array]:singletons) addObject:o]
 void clearSingletons();

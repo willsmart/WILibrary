@@ -21,6 +21,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
         }
     }
+    /*
     -(void)w_release {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
             Int c=modelRetaincount;modelRetaincount=0;
@@ -38,6 +39,8 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
             modelRetaincount=c;
         }
     }
+    */
+    //! needs work
     -(void)modeladd {
         if ((++modelRetaincount)&&(totalRetainCount==modelRetaincount)) {
             Int c=modelRetaincount;modelRetaincount=0;
@@ -279,10 +282,10 @@ DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
     }
 
 
-/*interfaces:
+/*interfaces
 extern Model *_Model_default;
 */
-/*interfaces:impl:
+/*interfaces:impl
 Model *_Model_default=nil;
 */
 

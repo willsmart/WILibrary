@@ -1,6 +1,6 @@
 
 
-/*top:
+/*top
 #define OID_marker (0xbad0fad0dad0cad0LL)
 #define __Derived_CClass__ (class_getName([self class]))
 #define __Derived_Class__ [NSString stringWithFormat:@"%s",__Derived_CClass__]
@@ -31,7 +31,7 @@
         }
     }
 
-/*each:impl:
+/*each:impl
 #ifdef _PrivateAccessMask_
 #undef _PrivateAccessMask_
 #endif
@@ -109,14 +109,14 @@ type QuickHashTableOfClassCounts
 
 type QuickHashTableOfClassCounts "typedef:QuickHashTable<ClassCount*__unsafe_unretained>"
 type ArrayOfClassCounts "typedef:Array<ClassCount*__unsafe_unretained>"
-/*decl:
+/*decl
     extern QuickHashTableOfClassCounts *g_classCountht;
     extern ArrayOfClassCounts *g_classCountArray;
     extern NSMutableArray *g_classCounts;
     extern ClassCount *g_totalObjectCount;
     extern ClassCount *g_classCountForClass(Class clas);
 */
-/*decl:impl:
+/*decl:impl
     QuickHashTableOfClassCounts *g_classCountht=nil;
     ArrayOfClassCounts *g_classCountArray=nil;
     NSMutableArray *g_classCounts=nil;
@@ -199,60 +199,59 @@ Singletons<Ticker> "-Object" "fn:object"
     
 "<execinfo.h>"
 
-/*interfaces:
+/*interfaces
  
-    extern void retainFn(NSObject *me,Int &rc,Int &arc);
-    extern void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
-    extern void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
-    extern void objInitFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci);
-    extern void deallocFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci);
+    //extern void retainFn(NSObject *me,Int &rc,Int &arc);
+    //extern void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
+    //extern void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
+    extern void objInitFn(NSObject *me,LL &mei,LL &meci);
+    extern void deallocFn(NSObject *me,LL &mei,LL &meci);
     extern NSString *g_objectName(id object);
     extern const char *g_cobjectName(id object);
     
 */
-/*interfaces:impl:
+/*interfaces:impl
 
 
  
-    void retainFn(NSObject *me,Int &rc,Int &arc) {
-        rc++;
-        objectRetained(me);
-    }
+    //void retainFn(NSObject *me,Int &rc,Int &arc) {
+    //    rc++;
+    //    objectRetained(me);
+    //}
     
-    void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
-        rc--;
-        bool isAutorelease=NO;
-        if (debugAutorelease) {
-            void* callstack[8];
-            int i, frames = backtrace(callstack, 6);
-            char** strs = backtrace_symbols(callstack, frames);
-            //for (i = 0; i < frames; ++i) {
-            //    printf("%s\n", strs[i]);
-            //}
-            for (i = 2; i < frames; ++i) {
-                if (strstr(strs[i]," release]")) break;
-                else if (strstr(strs[i],"AutoreleasePoolP")) {isAutorelease=YES;arc--;break;}
-            }
-            //prnt("%s\n",isAutorelease?" -- autorelease\n":" -- standard release\n");
-            free(strs);
-            if (isAutorelease) {
-                objectAutoreleaseCollected(me);
-                arc--;
-            }
-            else objectReleased(me);
-        }
-        else objectReleased(me);
-     }
+    //void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
+    //    rc--;
+    //    bool isAutorelease=NO;
+    //    if (debugAutorelease) {
+    //        void* callstack[8];
+    //        int i, frames = backtrace(callstack, 6);
+    //        char** strs = backtrace_symbols(callstack, frames);
+    //        //for (i = 0; i < frames; ++i) {
+    //        //    printf("%s\n", strs[i]);
+    //        //}
+    //        for (i = 2; i < frames; ++i) {
+    //            if (strstr(strs[i]," release]")) break;
+    //            else if (strstr(strs[i],"AutoreleasePoolP")) {isAutorelease=YES;arc--;break;}
+    //        }
+    //        //prnt("%s\n",isAutorelease?" -- autorelease\n":" -- standard release\n");
+    //        free(strs);
+    //        if (isAutorelease) {
+    //            objectAutoreleaseCollected(me);
+    //            arc--;
+    //        }
+    //        else objectReleased(me);
+    //    }
+    //    else objectReleased(me);
+    // }
     
-    void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
-        if (debugAutorelease) {
-            arc++;
-            objectAutoreleasePending(me);
-        }
-    }
+    //void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease) {
+    //    if (debugAutorelease) {
+    //        arc++;
+    //        objectAutoreleasePending(me);
+    //    }
+    //}
 
-    void objInitFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci) {
-        rc=1;arc=0;
+    void objInitFn(NSObject *me,LL &mei,LL &meci) {
         ClassCount *c=g_classCountForClass([me class]);
         c.count++;
         meci=c.nextID++;
@@ -261,17 +260,13 @@ Singletons<Ticker> "-Object" "fn:object"
         objectAllocated(me);
     }
  
-    void deallocFn(NSObject *me,Int &rc,Int &arc,LL &mei,LL &meci) {
+    void deallocFn(NSObject *me,LL &mei,LL &meci) {
         if (mei==0) {
             ERR("!!!! error with object %p of type %s, the object was never inited",me,class_getName([me class]));
             return;
         }
         if (mei==-1) {
             ERR("!!!! error with object %p of type %s, the object seems to be being dealloced again",me,class_getName([me class]));
-            return;
-        }
-        if (rc||arc) {
-            ERR("!!!! error with object %p of type %s, the object has non-zero rc or arc at time of deallocation",me,class_getName([me class]));
             return;
         }
 
@@ -301,25 +296,19 @@ Singletons<Ticker> "-Object" "fn:object"
 
     bool debugAutorelease=nil
 
-    Int ___rc=nil,___arc=nil
-
     LL __owner_context=nil (ivar=__owner_context)
 
     -(init) {@-996 debugAutorelease=YES;}
-    -(init) {@-995 objInitFn(self,___rc,___arc,objectIDInTotal,objectIDInClass);
+    -(init) {@-995 objInitFn(self,objectIDInTotal,objectIDInClass);
     }
-    -(void)dealloc {@998 deallocFn(self,___rc,___arc,objectIDInTotal,objectIDInClass);
+    -(void)dealloc {@998 deallocFn(self,objectIDInTotal,objectIDInClass);
         isZombie=YES;
 #if defined(LONGLIVEZOMBIES) || defined(LONGLIVEZOMBIES___WI_CLASS__)
         if (YES) return;
 #endif
     }
 
-    -(id)w_retain {@-900 retainFn(self,___rc,___arc); @999 return(nil/*super*/);}
-    -(void)w_release {@-900 releaseFn(self,___rc,___arc,debugAutorelease); @990}
-    -(id)w_autorelease {@-900 autoreleaseFn(self,___rc,___arc,debugAutorelease); @990 return(nil/*super*/);}
-
-    NSString description={@-999 
+    NSString description={@-999
         NSMutableString *ret=self.objectName;
         @999 return(ret);
     }
@@ -344,7 +333,7 @@ Singletons
     Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil(publicreadonly,dealloc,ivar=trace)
     
 "<pthread.h>"
-/*interfaces:
+/*interfaces
     extern ULL g_sequence;
     extern Trace *g_trace;
     extern NSMutableString *g_newTraces;
@@ -388,7 +377,7 @@ Singletons
     extern Int g_numNamedThreads;
     
 */
-/*interfaces:impl:
+/*interfaces:impl
     ULL g_sequence=0;
     Trace *g_trace=nil;
     NSMutableString *g_newTraces=nil;
@@ -546,11 +535,11 @@ Singletons
     ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil(publicreadonly,dealloc,ivar=objectGraph)
     
 "<pthread.h>"
-/*interfaces:
+/*interfaces
     extern ObjectGraph *g_objectGraph;
     #define OBJOWN(__owner,__obj,__c) [g_objectGraph object:__owner ownsObject:__obj count:__c]
 */
-/*interfaces:impl:
+/*interfaces:impl
     ObjectGraph *g_objectGraph=nil;
 */
 ObjectGraph<Ticker,BaseObject>
@@ -592,11 +581,6 @@ ObjectGraph<Ticker,BaseObject>
 
 
     
-
-<DerivedObject> "-Object"
-    -(id)w_retain {@999 return(nil/*super*/);}
-    -(void)w_release {@999}
-    -(id)w_autorelease {@999 return(nil/*super*/);}
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     LL objectIDInTotal=nil (readonly)
