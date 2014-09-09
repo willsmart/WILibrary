@@ -10,14 +10,14 @@
 type UnpackedWord "typedef:struct {unsigned short blockLength;unsigned short *addr;char letters[MAXWORDLEN],word[MAXWORDLEN];int numLetters,wordLen;double freq;}"
 
 
-/*top:iface
-#define NUMLETTERS 26
-#define LASTLETTER (NUMLETTERS-1)
-#define NUMLENGTHS 25
-#define LASTLENGTH (NUMLENGTHS-1)
-#define MAXWORDLEN 128
-#define MAXSEARCHLETTERS 40
-*/
+Globals
+    -top:iface
+        #define NUMLETTERS 26
+        #define LASTLETTER (NUMLETTERS-1)
+        #define NUMLENGTHS 25
+        #define LASTLENGTH (NUMLENGTHS-1)
+        #define MAXWORDLEN 128
+        #define MAXSEARCHLETTERS 40
 
 
 
@@ -26,275 +26,236 @@ type UnpackedWord "typedef:struct {unsigned short blockLength;unsigned short *ad
 
 
 
-/*interfaces
+Globals
+    -interfaces {
 
-//#define DEBUGCT
-
-
-
-
-#define IP(__mi,__l,__r) ((IPVAR)<(IPARR(__mi))?(__l):(__r))
-#define IP1(__mi) IP(__mi,__mi,__mi+1)
-#define IP2(__mi) IP((__mi)+1,IP1(__mi),(__mi)+2)
-#define IP3(__mi) IP((__mi)+1,IP1(__mi),IP1((__mi)+2))
-#define IP4(__mi) IP((__mi)+2,IP2(__mi),IP1((__mi)+3))
-#define IP5(__mi) IP((__mi)+2,IP2(__mi),IP2((__mi)+3))
-#define IP6(__mi) IP((__mi)+3,IP3(__mi),IP2((__mi)+4))
-#define IP7(__mi) IP((__mi)+3,IP3(__mi),IP3((__mi)+4))
-#define IP8(__mi) IP((__mi)+4,IP4(__mi),IP3((__mi)+5))
-#define IP9(__mi) IP((__mi)+4,IP4(__mi),IP4((__mi)+5))
-#define IP10(__mi) IP((__mi)+5,IP5(__mi),IP4((__mi)+6))
-#define IP11(__mi) IP((__mi)+5,IP5(__mi),IP5((__mi)+6))
-#define IP12(__mi) IP((__mi)+6,IP6(__mi),IP5((__mi)+7))
-#define IP13(__mi) IP((__mi)+6,IP6(__mi),IP6((__mi)+7))
-#define IP14(__mi) IP((__mi)+7,IP7(__mi),IP6((__mi)+8))
-#define IP15(__mi) IP((__mi)+7,IP7(__mi),IP7((__mi)+8))
-#define IP16(__mi) IP((__mi)+8,IP8(__mi),IP7((__mi)+9))
-#define IP17(__mi) IP((__mi)+8,IP8(__mi),IP8((__mi)+9))
-#define IP18(__mi) IP((__mi)+9,IP9(__mi),IP8((__mi)+10))
-#define IP19(__mi) IP((__mi)+9,IP9(__mi),IP9((__mi)+10))
-#define IP20(__mi) IP((__mi)+10,IP10(__mi),IP9((__mi)+11))
-#define IP21(__mi) IP((__mi)+10,IP10(__mi),IP10((__mi)+11))
-#define IP22(__mi) IP((__mi)+11,IP11(__mi),IP10((__mi)+12))
-#define IP23(__mi) IP((__mi)+11,IP11(__mi),IP11((__mi)+12))
-#define IP24(__mi) IP((__mi)+12,IP12(__mi),IP11((__mi)+13))
-#define IP25(__mi) IP((__mi)+12,IP12(__mi),IP12((__mi)+13))
-#define IP26(__mi) IP((__mi)+13,IP13(__mi),IP12((__mi)+14))
-#define IP27(__mi) IP((__mi)+13,IP13(__mi),IP13((__mi)+14))
-#define IP28(__mi) IP((__mi)+14,IP14(__mi),IP13((__mi)+15))
-#define IP29(__mi) IP((__mi)+14,IP14(__mi),IP14((__mi)+15))
-#define IP30(__mi) IP((__mi)+15,IP15(__mi),IP14((__mi)+16))
-#define IP31(__mi) IP((__mi)+15,IP15(__mi),IP15((__mi)+16))
-
-#define INSERTPOS1 IP1(0)
-#define INSERTPOS2 IP2(0)
-#define INSERTPOS3 IP3(0)
-#define INSERTPOS4 IP4(0)
-#define INSERTPOS5 IP5(0)
-#define INSERTPOS6 IP6(0)
-#define INSERTPOS7 IP7(0)
-#define INSERTPOS8 IP8(0)
-#define INSERTPOS9 IP9(0)
-#define INSERTPOS10 IP10(0)
-#define INSERTPOS11 IP11(0)
-#define INSERTPOS12 IP12(0)
-#define INSERTPOS13 IP13(0)
-#define INSERTPOS14 IP14(0)
-#define INSERTPOS15 IP15(0)
-#define INSERTPOS16 IP16(0)
-#define INSERTPOS17 IP17(0)
-#define INSERTPOS18 IP18(0)
-#define INSERTPOS19 IP19(0)
-#define INSERTPOS20 IP20(0)
-#define INSERTPOS21 IP21(0)
-#define INSERTPOS22 IP22(0)
-#define INSERTPOS23 IP23(0)
-#define INSERTPOS24 IP24(0)
-#define INSERTPOS25 IP25(0)
-#define INSERTPOS26 IP26(0)
-#define INSERTPOS27 IP27(0)
-#define INSERTPOS28 IP28(0)
-#define INSERTPOS29 IP29(0)
-#define INSERTPOS30 IP30(0)
-#define INSERTPOS31 IP31(0)
-
-
-#define INSERTPOSn(__n,__to) { \
-int mn=-1,mx=(__n);while (mx>mn+1) { \
-(__to)=(mx+mn)>>1; \
-if ((IPVAR)<=(IPARR(__to))) mx=(__to); \
-else mn=(__to); \
-} \
-(__to)=mx; \
-}
-
-#define INSERTPOS(__n,__to) \
-switch (__n) { \
-case 0:__to=0;break; \
-case 1:__to=INSERTPOS1;break; \
-case 2:__to=INSERTPOS2;break; \
-case 3:__to=INSERTPOS3;break; \
-case 4:__to=INSERTPOS4;break; \
-case 5:__to=INSERTPOS5;break; \
-case 6:__to=INSERTPOS6;break; \
-case 7:__to=INSERTPOS7;break; \
-case 8:__to=INSERTPOS8;break; \
-case 9:__to=INSERTPOS9;break; \
-case 10:__to=INSERTPOS10;break; \
-case 11:__to=INSERTPOS11;break; \
-case 12:__to=INSERTPOS12;break; \
-case 13:__to=INSERTPOS13;break; \
-case 14:__to=INSERTPOS14;break; \
-case 15:__to=INSERTPOS15;break; \
-case 16:__to=INSERTPOS16;break; \
-case 17:__to=INSERTPOS17;break; \
-case 18:__to=INSERTPOS18;break; \
-case 19:__to=INSERTPOS19;break; \
-case 20:__to=INSERTPOS20;break; \
-case 21:__to=INSERTPOS21;break; \
-case 22:__to=INSERTPOS22;break; \
-case 23:__to=INSERTPOS23;break; \
-case 24:__to=INSERTPOS24;break; \
-case 25:__to=INSERTPOS25;break; \
-default:INSERTPOSn(__n,__to);break; \
-} \
+        //#define DEBUGCT
 
 
 
 
-#define nextWordAddress(__ps) ((__ps)+((*(__ps))&0x1f))
-#define wordAddressFirstLetter(__ps) (letter5[((*(__ps))>>(((*ps)&0x3e0)==0x20?10:5))&0x1f])
-#define wordAddressFreq(__ps,__ret) { \
-	(*(int*)&__ret)=(((int)(__ps)[((*(__ps))&0x1f)-2])<<16)|(__ps)[((*(__ps))&0x1f)-1]; \
-}
+        #define IP(__mi,__l,__r) ((IPVAR)<(IPARR(__mi))?(__l):(__r))
+        #define IP1(__mi) IP(__mi,__mi,__mi+1)
+        #define IP2(__mi) IP((__mi)+1,IP1(__mi),(__mi)+2)
+        #define IP3(__mi) IP((__mi)+1,IP1(__mi),IP1((__mi)+2))
+        #define IP4(__mi) IP((__mi)+2,IP2(__mi),IP1((__mi)+3))
+        #define IP5(__mi) IP((__mi)+2,IP2(__mi),IP2((__mi)+3))
+        #define IP6(__mi) IP((__mi)+3,IP3(__mi),IP2((__mi)+4))
+        #define IP7(__mi) IP((__mi)+3,IP3(__mi),IP3((__mi)+4))
+        #define IP8(__mi) IP((__mi)+4,IP4(__mi),IP3((__mi)+5))
+        #define IP9(__mi) IP((__mi)+4,IP4(__mi),IP4((__mi)+5))
+        #define IP10(__mi) IP((__mi)+5,IP5(__mi),IP4((__mi)+6))
+        #define IP11(__mi) IP((__mi)+5,IP5(__mi),IP5((__mi)+6))
+        #define IP12(__mi) IP((__mi)+6,IP6(__mi),IP5((__mi)+7))
+        #define IP13(__mi) IP((__mi)+6,IP6(__mi),IP6((__mi)+7))
+        #define IP14(__mi) IP((__mi)+7,IP7(__mi),IP6((__mi)+8))
+        #define IP15(__mi) IP((__mi)+7,IP7(__mi),IP7((__mi)+8))
+        #define IP16(__mi) IP((__mi)+8,IP8(__mi),IP7((__mi)+9))
+        #define IP17(__mi) IP((__mi)+8,IP8(__mi),IP8((__mi)+9))
+        #define IP18(__mi) IP((__mi)+9,IP9(__mi),IP8((__mi)+10))
+        #define IP19(__mi) IP((__mi)+9,IP9(__mi),IP9((__mi)+10))
+        #define IP20(__mi) IP((__mi)+10,IP10(__mi),IP9((__mi)+11))
+        #define IP21(__mi) IP((__mi)+10,IP10(__mi),IP10((__mi)+11))
+        #define IP22(__mi) IP((__mi)+11,IP11(__mi),IP10((__mi)+12))
+        #define IP23(__mi) IP((__mi)+11,IP11(__mi),IP11((__mi)+12))
+        #define IP24(__mi) IP((__mi)+12,IP12(__mi),IP11((__mi)+13))
+        #define IP25(__mi) IP((__mi)+12,IP12(__mi),IP12((__mi)+13))
+        #define IP26(__mi) IP((__mi)+13,IP13(__mi),IP12((__mi)+14))
+        #define IP27(__mi) IP((__mi)+13,IP13(__mi),IP13((__mi)+14))
+        #define IP28(__mi) IP((__mi)+14,IP14(__mi),IP13((__mi)+15))
+        #define IP29(__mi) IP((__mi)+14,IP14(__mi),IP14((__mi)+15))
+        #define IP30(__mi) IP((__mi)+15,IP15(__mi),IP14((__mi)+16))
+        #define IP31(__mi) IP((__mi)+15,IP15(__mi),IP15((__mi)+16))
 
-extern const char char5[32];
-extern const char letter5[32];
+        #define INSERTPOS1 IP1(0)
+        #define INSERTPOS2 IP2(0)
+        #define INSERTPOS3 IP3(0)
+        #define INSERTPOS4 IP4(0)
+        #define INSERTPOS5 IP5(0)
+        #define INSERTPOS6 IP6(0)
+        #define INSERTPOS7 IP7(0)
+        #define INSERTPOS8 IP8(0)
+        #define INSERTPOS9 IP9(0)
+        #define INSERTPOS10 IP10(0)
+        #define INSERTPOS11 IP11(0)
+        #define INSERTPOS12 IP12(0)
+        #define INSERTPOS13 IP13(0)
+        #define INSERTPOS14 IP14(0)
+        #define INSERTPOS15 IP15(0)
+        #define INSERTPOS16 IP16(0)
+        #define INSERTPOS17 IP17(0)
+        #define INSERTPOS18 IP18(0)
+        #define INSERTPOS19 IP19(0)
+        #define INSERTPOS20 IP20(0)
+        #define INSERTPOS21 IP21(0)
+        #define INSERTPOS22 IP22(0)
+        #define INSERTPOS23 IP23(0)
+        #define INSERTPOS24 IP24(0)
+        #define INSERTPOS25 IP25(0)
+        #define INSERTPOS26 IP26(0)
+        #define INSERTPOS27 IP27(0)
+        #define INSERTPOS28 IP28(0)
+        #define INSERTPOS29 IP29(0)
+        #define INSERTPOS30 IP30(0)
+        #define INSERTPOS31 IP31(0)
 
-extern char g_usToLetter[3][0x10000];
-extern char g_addps[3][0x10000];
-extern char g_nxtshft[3][0x10000];
 
-
-
-#define NEXTLETTER(__letter,__ps,__shft,__tmpc) { \
-	while ((__letter=g_usToLetter[__shft][*__ps])==30) {__ps++;__shft=0;} \
-	__tmpc=g_nxtshft[__shft][*__ps]; \
-	__ps+=g_addps[__shft][*__ps]; \
-	__shft=__tmpc; \
-}
-
-const char char5[32]={0,1,'-','\'',-1,-1,'a','b','c','d','e','f','g','h','i','j'
-    ,'k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-const char letter5[32]={-1,-2,-3,-4,-10,-10,0,1,2,3,4,5,6,7,8,9,
-    10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
-
-char g_usToLetter[3][0x10000],g_addps[3][0x10000],g_nxtshft[3][0x10000];
-
-
-    void setUpWords() {
-        for (char shft=0;shft<3;shft++) {
-            for (int ss=0;ss<0x10000;ss++) {
-                int s=(shft==0?ss:(shft==1?(ss>>5)|0x0400:((ss>>10)|0x0420)));
-                char letter,addps=0,nxtshft;
-                if ((ss&0x8000)==0) {letter=31,addps=0,nxtshft=0;}
-                else if (!(s&0x1f)) {letter=31,addps=0,nxtshft=0;}
-                else if (letter5[s&0x1f]>=0) {
-                    letter=letter5[s&0x1f];
-                    if (letter5[(s>>5)&0x1f]>=0) nxtshft=1+shft;
-                    else if (letter5[(s>>10)&0x1f]>=0) nxtshft=2+shft;
-                    else {addps=1;nxtshft=0;}
-                }
-                else if (!((s>>5)&0x1f)) {letter=31,addps=0,nxtshft=0;}
-                else if (letter5[(s>>5)&0x1f]>=0) {
-                    letter=letter5[(s>>5)&0x1f];
-                    if (letter5[(s>>10)&0x1f]>=0) nxtshft=2+shft;
-                    else {addps=1;nxtshft=0;}
-                }
-                else if (!(s&0x1f)) {letter=31,addps=0,nxtshft=0;}
-                else if (letter5[(s>>10)&0x1f]>=0) {
-                    letter=letter5[(s>>10)&0x1f];
-                    addps=1;nxtshft=0;
-                }
-                else {
-                    letter=30;
-                    addps=1;nxtshft=0;
-                }
-                g_usToLetter[shft][ss]=letter;
-                g_addps[shft][ss]=addps;
-                g_nxtshft[shft][ss]=nxtshft;
-            }
+        #define INSERTPOSn(__n,__to) { \
+        int mn=-1,mx=(__n);while (mx>mn+1) { \
+        (__to)=(mx+mn)>>1; \
+        if ((IPVAR)<=(IPARR(__to))) mx=(__to); \
+        else mn=(__to); \
+        } \
+        (__to)=mx; \
         }
-    }
+
+        #define INSERTPOS(__n,__to) \
+        switch (__n) { \
+        case 0:__to=0;break; \
+        case 1:__to=INSERTPOS1;break; \
+        case 2:__to=INSERTPOS2;break; \
+        case 3:__to=INSERTPOS3;break; \
+        case 4:__to=INSERTPOS4;break; \
+        case 5:__to=INSERTPOS5;break; \
+        case 6:__to=INSERTPOS6;break; \
+        case 7:__to=INSERTPOS7;break; \
+        case 8:__to=INSERTPOS8;break; \
+        case 9:__to=INSERTPOS9;break; \
+        case 10:__to=INSERTPOS10;break; \
+        case 11:__to=INSERTPOS11;break; \
+        case 12:__to=INSERTPOS12;break; \
+        case 13:__to=INSERTPOS13;break; \
+        case 14:__to=INSERTPOS14;break; \
+        case 15:__to=INSERTPOS15;break; \
+        case 16:__to=INSERTPOS16;break; \
+        case 17:__to=INSERTPOS17;break; \
+        case 18:__to=INSERTPOS18;break; \
+        case 19:__to=INSERTPOS19;break; \
+        case 20:__to=INSERTPOS20;break; \
+        case 21:__to=INSERTPOS21;break; \
+        case 22:__to=INSERTPOS22;break; \
+        case 23:__to=INSERTPOS23;break; \
+        case 24:__to=INSERTPOS24;break; \
+        case 25:__to=INSERTPOS25;break; \
+        default:INSERTPOSn(__n,__to);break; \
+        } \
 
 
 
-    NSString *verifyWord(unsigned short *ps) {
-        unsigned short *nxt=nextWordAddress(ps);
-        char letter=wordAddressFirstLetter(ps);
-        if (letter<0) return(@"Bad first letter");
-        
-        float f;wordAddressFreq(ps,f);
-        if (f<=0) return(@"Freq not pve");
-        
-        unsigned char shift=5;
-        do {
-            if (!(*ps&0x8000)) return(@"expected top bit");
-            letter=letter5[((*ps)>>shift)&0x1f];
-            if (letter==-1) {ps++;break;}
-            else if (letter==-10) return(@"bad letter");
-            if ((shift+=5)==15) {shift=0;ps++;}
-        } while ((*ps&0x8000)&&(letter!=-1));
-        if (*ps&0x8000) return(@"expected no top bit");
-        ps+=2;
-        if (ps!=nxt) return(@"Next not same");
-        return(nil);
-    }
 
-
-    void verifyWords(unsigned short *ps,unsigned short *eps) {
-        int wi=0,nerr=0;
-        while (ps<eps) {
-            wi++;
-            NSString *err=verifyWord(ps);
-            if (err) {
-                NSLog(@"Error in verify word #%d : %@\n",wi,err);nerr++;if (nerr>=100) break;
-            }
-            ps=nextWordAddress(ps);
+        #define nextWordAddress(__ps) ((__ps)+((*(__ps))&0x1f))
+        #define wordAddressFirstLetter(__ps) (letter5[((*(__ps))>>(((*ps)&0x3e0)==0x20?10:5))&0x1f])
+        #define wordAddressFreq(__ps,__ret) { \
+            (*(int*)&__ret)=(((int)(__ps)[((*(__ps))&0x1f)-2])<<16)|(__ps)[((*(__ps))&0x1f)-1]; \
         }
-        if ((nerr<100)&&(ps!=eps)) {NSLog(@"Error in verify : wrong end\n");nerr++;}
-        if (nerr) {
-            [NSException raise:@"Word list verify failed" format:@"See log (%d errors)",nerr];
+
+        extern const char char5[32];
+        extern const char letter5[32];
+
+        extern char g_usToLetter[3][0x10000];
+        extern char g_addps[3][0x10000];
+        extern char g_nxtshft[3][0x10000];
+
+
+
+        #define NEXTLETTER(__letter,__ps,__shft,__tmpc) { \
+            while ((__letter=g_usToLetter[__shft][*__ps])==30) {__ps++;__shft=0;} \
+            __tmpc=g_nxtshft[__shft][*__ps]; \
+            __ps+=g_addps[__shft][*__ps]; \
+            __shft=__tmpc; \
         }
-    }
+
+        const char char5[32]={0,1,'-','\'',-1,-1,'a','b','c','d','e','f','g','h','i','j'
+            ,'k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+        const char letter5[32]={-1,-2,-3,-4,-10,-10,0,1,2,3,4,5,6,7,8,9,
+            10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
+
+        char g_usToLetter[3][0x10000],g_addps[3][0x10000],g_nxtshft[3][0x10000];
 
 
-
-    #define NXTSHIFT {ps+=shift/10;shift=(shift+5)%15;}
-
-
-
-    #define ADDERFORUNLIKELIES 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    bool wordMatchProbabilityIsNonZero(unsigned short *ps,int numTaps,float **probByTapByLetter) {
-        if (numTaps==0) return(NO);
-        unsigned char shift=(((*ps)&0x3e0)==0x20?10:5);
-        
-        if (probByTapByLetter[letter5[((*ps)>>shift)&0x1f]][0]<1.e-10f) return(NO);
-        if (numTaps==1) return(YES);
-        
-        if ((shift+=5)==15) {shift=0;ps++;}
-
-        char letter;
-        unsigned char tapi=1;
-        
-        do {
-            if ((letter=letter5[((*ps)>>shift)&0x1f])>=0) {
-                if ((probByTapByLetter[letter][tapi]>=1.e-10f)&&((++tapi)==numTaps)) return(YES);
+            void setUpWords() {
+                for (char shft=0;shft<3;shft++) {
+                    for (int ss=0;ss<0x10000;ss++) {
+                        int s=(shft==0?ss:(shft==1?(ss>>5)|0x0400:((ss>>10)|0x0420)));
+                        char letter,addps=0,nxtshft;
+                        if ((ss&0x8000)==0) {letter=31,addps=0,nxtshft=0;}
+                        else if (!(s&0x1f)) {letter=31,addps=0,nxtshft=0;}
+                        else if (letter5[s&0x1f]>=0) {
+                            letter=letter5[s&0x1f];
+                            if (letter5[(s>>5)&0x1f]>=0) nxtshft=1+shft;
+                            else if (letter5[(s>>10)&0x1f]>=0) nxtshft=2+shft;
+                            else {addps=1;nxtshft=0;}
+                        }
+                        else if (!((s>>5)&0x1f)) {letter=31,addps=0,nxtshft=0;}
+                        else if (letter5[(s>>5)&0x1f]>=0) {
+                            letter=letter5[(s>>5)&0x1f];
+                            if (letter5[(s>>10)&0x1f]>=0) nxtshft=2+shft;
+                            else {addps=1;nxtshft=0;}
+                        }
+                        else if (!(s&0x1f)) {letter=31,addps=0,nxtshft=0;}
+                        else if (letter5[(s>>10)&0x1f]>=0) {
+                            letter=letter5[(s>>10)&0x1f];
+                            addps=1;nxtshft=0;
+                        }
+                        else {
+                            letter=30;
+                            addps=1;nxtshft=0;
+                        }
+                        g_usToLetter[shft][ss]=letter;
+                        g_addps[shft][ss]=addps;
+                        g_nxtshft[shft][ss]=nxtshft;
+                    }
+                }
             }
-            if ((shift+=5)==15) {shift=0;ps++;}
-        } while ((*ps&0x8000)&&(letter!=-1));
-        return(NO);
-    }
+
+
+
+            NSString *verifyWord(unsigned short *ps) {
+                unsigned short *nxt=nextWordAddress(ps);
+                char letter=wordAddressFirstLetter(ps);
+                if (letter<0) return(@"Bad first letter");
+                
+                float f;wordAddressFreq(ps,f);
+                if (f<=0) return(@"Freq not pve");
+                
+                unsigned char shift=5;
+                do {
+                    if (!(*ps&0x8000)) return(@"expected top bit");
+                    letter=letter5[((*ps)>>shift)&0x1f];
+                    if (letter==-1) {ps++;break;}
+                    else if (letter==-10) return(@"bad letter");
+                    if ((shift+=5)==15) {shift=0;ps++;}
+                } while ((*ps&0x8000)&&(letter!=-1));
+                if (*ps&0x8000) return(@"expected no top bit");
+                ps+=2;
+                if (ps!=nxt) return(@"Next not same");
+                return(nil);
+            }
+
+
+            void verifyWords(unsigned short *ps,unsigned short *eps) {
+                int wi=0,nerr=0;
+                while (ps<eps) {
+                    wi++;
+                    NSString *err=verifyWord(ps);
+                    if (err) {
+                        NSLog(@"Error in verify word #%d : %@\n",wi,err);nerr++;if (nerr>=100) break;
+                    }
+                    ps=nextWordAddress(ps);
+                }
+                if ((nerr<100)&&(ps!=eps)) {NSLog(@"Error in verify : wrong end\n");nerr++;}
+                if (nerr) {
+                    [NSException raise:@"Word list verify failed" format:@"See log (%d errors)",nerr];
+                }
+            }
+
+
+
+            #define NXTSHIFT {ps+=shift/10;shift=(shift+5)%15;}
+
+
+
+            #define ADDERFORUNLIKELIES 0
 
 
 
@@ -303,548 +264,587 @@ char g_usToLetter[3][0x10000],g_addps[3][0x10000],g_nxtshft[3][0x10000];
 
 
 
-    UnpackedWord *unpackWordLetters(unsigned short **pps,UnpackedWord *ret) {
-        *ret->word=0;
-        ret->wordLen=0;
 
-        char *lets=ret->letters;
-        unsigned short *ps=ret->addr=*pps;
-        unsigned short shft=5;
-        do {
-            switch ((*lets)=letter5[((*ps)>>shft)&0x1f]) {
-                case -1:case -2:case -3:case -4:break;
-                case -10:[NSException raise:@"Invalid dictionary" format:@"Bad char"];
+
+
+
+
+
+
+
+
+
+
+
+            bool wordMatchProbabilityIsNonZero(unsigned short *ps,int numTaps,float **probByTapByLetter) {
+                if (numTaps==0) return(NO);
+                unsigned char shift=(((*ps)&0x3e0)==0x20?10:5);
+                
+                if (probByTapByLetter[letter5[((*ps)>>shift)&0x1f]][0]<1.e-10f) return(NO);
+                if (numTaps==1) return(YES);
+                
+                if ((shift+=5)==15) {shift=0;ps++;}
+
+                char letter;
+                unsigned char tapi=1;
+                
+                do {
+                    if ((letter=letter5[((*ps)>>shift)&0x1f])>=0) {
+                        if ((probByTapByLetter[letter][tapi]>=1.e-10f)&&((++tapi)==numTaps)) return(YES);
+                    }
+                    if ((shift+=5)==15) {shift=0;ps++;}
+                } while ((*ps&0x8000)&&(letter!=-1));
+                return(NO);
+            }
+
+
+
+
+
+
+
+
+            UnpackedWord *unpackWordLetters(unsigned short **pps,UnpackedWord *ret) {
+                *ret->word=0;
+                ret->wordLen=0;
+
+                char *lets=ret->letters;
+                unsigned short *ps=ret->addr=*pps;
+                unsigned short shft=5;
+                do {
+                    switch ((*lets)=letter5[((*ps)>>shft)&0x1f]) {
+                        case -1:case -2:case -3:case -4:break;
+                        case -10:[NSException raise:@"Invalid dictionary" format:@"Bad char"];
+                        default:
+                            if (lets<ret->letters+MAXWORDLEN-1) *(++lets)=0;
+                            break;
+                    }
+                    if ((shft+=5)==15) {shft=0;ps++;}
+                } while ((*lets!=-1)&&((*ps)&0x8000));
+                ret->numLetters=(int)(lets-ret->letters);
+                if (shft) ps++;
+                
+                int fi=((*ps)<<16)|*(++ps);
+                ret->freq=ADDERFORUNLIKELIES+*(float*)&fi;// fraction of words in sentences in the library that are this word (plus a bit)
+
+                *pps=++ps;
+                if (ps!=nextWordAddress(ret->addr)) {
+                    [NSException raise:@"Invalid dictionary" format:@"Wrong word length"];
+                }
+                return(ret);
+            }
+
+
+            UnpackedWord *unpackWord(unsigned short **pps,UnpackedWord *ret) {
+                char *wd=ret->word,*lets=ret->letters;
+                unsigned short *ps=ret->addr=*pps;
+                unsigned short shft=5,v;
+                char addLetter=0;
+                do {
+                    switch ((*lets)=letter5[v=((*ps)>>shft)&0x1f]) {
+                        case -1:break;
+                        case -2:addLetter='A'-'a';break;
+                        case -10:[NSException raise:@"Invalid dictionary" format:@"Bad char"];
+                        case -3:case -4:
+                            if (wd<ret->word+MAXWORDLEN-1) *(wd++)=char5[v];
+                            break;
+                        default:
+                            if (lets<ret->letters+MAXWORDLEN-1) *(++lets)=0;
+                            if (wd<ret->word+MAXWORDLEN-1) {*(wd++)=char5[v]+addLetter;addLetter=0;}
+                            break;
+                    }
+                    if ((shft+=5)==15) {shft=0;ps++;}
+                } while ((*lets!=-1)&&((*ps)&0x8000));
+                *wd=0;
+                ret->numLetters=(int)(lets-ret->letters);
+                ret->wordLen=(int)(wd-ret->word);
+                if (shft) ps++;
+                
+                int fi=((*ps)<<16)|*(++ps);
+                ret->freq=ADDERFORUNLIKELIES+*(float*)&fi;// fraction of words in sentences in the library that are this word (plus a bit)
+                
+                *pps=++ps;
+                if (ps!=nextWordAddress(ret->addr)) {
+                    [NSException raise:@"Invalid dictionary" format:@"Wrong word length"];
+                }
+                return(ret);
+            }
+
+
+
+
+            bool fillLettersFromWord(UnpackedWord *wd) {
+                char *wpc=wd->word,*lpc=wd->letters;
+                wd->numLetters=0;
+                while (*wpc) {
+                    if (*wpc=='-') {
+                        if (wpc==wd->word) return(NO);
+            //			*lpc=2;
+                    }
+                    else if (*wpc=='\'') {
+                        if (wpc==wd->word) return(NO);
+            //			*lpc=3;
+                    }
+                    else if ((*wpc>='a')&&(*wpc<='z')) {
+                        *(lpc++)=(*wpc)-'a';
+                        wd->numLetters++;
+                    }
+                    else if ((*wpc>='A')&&(*wpc<='Z')) {
+            //			*(lpc++)=1;
+                        *(lpc++)=(*wpc)-'A';
+                        wd->numLetters++;
+                    }
+                    else return(NO);
+                    wpc++;
+                }
+                return(YES);
+            }
+
+
+            int makeUnpackedWordForFile(UnpackedWord *wd,unsigned short *buf) {
+                unsigned short *ps=buf;*ps=0x8000;
+                char *wpc=wd->word;
+                unsigned char shift=5;
+                while (*wpc) {
+                    if (*wpc=='-') {
+                        if (wpc==wd->word) return(0);
+                        *ps|=(2<<shift);
+                    }
+                    else if (*wpc=='\'') {
+                        if (wpc==wd->word) return(0);
+                        *ps|=(3<<shift);
+                    }
+                    else if ((*wpc>='a')&&(*wpc<='z')) {
+                        *ps|=(((*wpc)+6-'a')<<shift);
+                    }
+                    else if ((*wpc>='A')&&(*wpc<='Z')) {
+                        *ps|=(1<<shift);
+                        if ((shift+=5)==15) {*(++ps)=0x8000;shift=0;}
+                        *ps|=(((*wpc)+6-'A')<<shift);
+                    }
+                    else return(0);
+                    if ((shift+=5)==15) {*(++ps)=0x8000;shift=0;}
+                    if (ps>buf+0x20) return(0);
+                    wpc++;
+                }
+                if (shift) ps++;
+                float f=wd->freq;
+                *(ps++)=((unsigned short*)&f)[1];
+                *(ps++)=((unsigned short*)&f)[0];
+                int len=(int)(ps-buf);
+                if (len>=0x1f) return(0);
+                (*buf)|=len;
+                return(len);
+            }
+
+
+
+            bool isLetterChar(unichar c) {return(((c>='a')&&(c<='z'))||((c>='A')&&(c<='Z')));}
+            bool isWordChar(unichar c) {return(((c>='a')&&(c<='z'))||((c>='A')&&(c<='Z'))||(c=='\'')||(c=='-'));}
+            bool isSpaceChar(unichar c) {return((c==' ')||(c=='\t'));}
+            bool isSpaceOrNLChar(unichar c) {return((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
+            bool isEOSentenceChar(unichar c) {return((c=='.')||(c=='!')||(c=='?'));}
+
+
+        #define GOJ0 *outa=PBYTAPBYJ(i,0)* *outb
+        #define GOJ(___j) outa[___j]=fmax(PBYTAPBYJ(i,___j)*outb[___j],
+
+        #define GOJE )
+
+        #define GOJS0 GOJ0
+        #define GOJS1 GOJ(1) GOJS0 GOJE
+        #define GOJS2 GOJ(2) GOJS1 GOJE
+        #define GOJS3 GOJ(3) GOJS2 GOJE
+        #define GOJS4 GOJ(4) GOJS3 GOJE
+        #define GOJS5 GOJ(5) GOJS4 GOJE
+        #define GOJS6 GOJ(6) GOJS5 GOJE
+        #define GOJS7 GOJ(7) GOJS6 GOJE
+        #define GOJS8 GOJ(8) GOJS7 GOJE
+        #define GOJS9 GOJ(9) GOJS8 GOJE
+        #define GOJS10 GOJ(10) GOJS9 GOJE
+        #define GOJS11 GOJ(11) GOJS10 GOJE
+        #define GOJS12 GOJ(12) GOJS11 GOJE
+        #define GOJS13 GOJ(13) GOJS12 GOJE
+        #define GOJS14 GOJ(14) GOJS13 GOJE
+        #define GOJS15 GOJ(15) GOJS14 GOJE
+        #define GOJS16 GOJ(16) GOJS15 GOJE
+        #define GOJS17 GOJ(17) GOJS16 GOJE
+        #define GOJS18 GOJ(18) GOJS17 GOJE
+        #define GOJS19 GOJ(19) GOJS18 GOJE
+        #define GOJS20 GOJ(20) GOJS19 GOJE
+        #define GOJS21 GOJ(21) GOJS20 GOJE
+        #define GOJS22 GOJ(22) GOJS21 GOJE
+        #define GOJS23 GOJ(23) GOJS22 GOJE
+        #define GOJS24 GOJ(24) GOJS23 GOJE
+        #define GOJS25 GOJ(25) GOJS24 GOJE
+        #define GOJS26 GOJ(26) GOJS25 GOJE
+        #define GOJS27 GOJ(27) GOJS26 GOJE
+        #define GOJS28 GOJ(28) GOJS27 GOJE
+        #define GOJS29 GOJ(29) GOJS28 GOJE
+        #define GOJS30 GOJ(30) GOJS29 GOJE
+        #define GOJS(D) GOJ0;for (unsigned short __j=1;__j<=D;__j++) GOJ(__j) outa[__j-1] GOJE;
+
+
+        #define GOJZ0 *outa=PBYTAPBYJ(1,0)*z
+        #define GOJZ(___j) outa[___j]=fmax(PBYTAPBYJ(1,___j)*z,
+
+        #define GOJZS0 GOJZ0
+        #define GOJZS1 GOJZ(1) GOJZS0 GOJE
+        #define GOJZS2 GOJZ(2) GOJZS1 GOJE
+        #define GOJZS3 GOJZ(3) GOJZS2 GOJE
+        #define GOJZS4 GOJZ(4) GOJZS3 GOJE
+        #define GOJZS5 GOJZ(5) GOJZS4 GOJE
+        #define GOJZS6 GOJZ(6) GOJZS5 GOJE
+        #define GOJZS7 GOJZ(7) GOJZS6 GOJE
+        #define GOJZS8 GOJZ(8) GOJZS7 GOJE
+        #define GOJZS9 GOJZ(9) GOJZS8 GOJE
+        #define GOJZS10 GOJZ(10) GOJZS9 GOJE
+        #define GOJZS11 GOJZ(11) GOJZS10 GOJE
+        #define GOJZS12 GOJZ(12) GOJZS11 GOJE
+        #define GOJZS13 GOJZ(13) GOJZS12 GOJE
+        #define GOJZS14 GOJZ(14) GOJZS13 GOJE
+        #define GOJZS15 GOJZ(15) GOJZS14 GOJE
+        #define GOJZS16 GOJZ(16) GOJZS15 GOJE
+        #define GOJZS17 GOJZ(17) GOJZS16 GOJE
+        #define GOJZS18 GOJZ(18) GOJZS17 GOJE
+        #define GOJZS19 GOJZ(19) GOJZS18 GOJE
+        #define GOJZS20 GOJZ(20) GOJZS19 GOJE
+        #define GOJZS21 GOJZ(21) GOJZS20 GOJE
+        #define GOJZS22 GOJZ(22) GOJZS21 GOJE
+        #define GOJZS23 GOJZ(23) GOJZS22 GOJE
+        #define GOJZS24 GOJZ(24) GOJZS23 GOJE
+        #define GOJZS25 GOJZ(25) GOJZS24 GOJE
+        #define GOJZS26 GOJZ(26) GOJZS25 GOJE
+        #define GOJZS27 GOJZ(27) GOJZS26 GOJE
+        #define GOJZS28 GOJZ(28) GOJZS27 GOJE
+        #define GOJZS29 GOJZ(29) GOJZS28 GOJE
+        #define GOJZS30 GOJZ(30) GOJZS29 GOJE
+        #define GOJZS(__D) GOJZ0;for (unsigned short __j=1;__j<=__D;__j++) GOJZ(__j) outa[__j-1] GOJE;
+
+
+        #define GOI \
+        GOJZd;\
+        for (unsigned short i=1;(i<numTaps)&&(outa[D]>bestProb);i++) { \
+        tmpout=outa;outa=outb;outb=tmpout; \
+        GOJd; \
+        }
+        #define GOID(_D) \
+        GOJZS(_D);\
+        for (unsigned short i=1;(i<numTaps)&&(outa[D]>bestProb);i++) { \
+        tmpout=outa;outa=outb;outb=tmpout; \
+        GOJS(_D); \
+        }
+
+
+        #define MAXTAPS 1000
+        static float *letterPs[MAXTAPS];
+        static float souta[2][MAXTAPS],*outa,*outb,*tmpout;
+        #define PBYTAPBYJ(_tapi,_jj) (letterPs[_jj+_tapi][_tapi])
+
+        static inline float goi(unsigned short D,unsigned short numTaps,float z,float bestProb) {
+            outa=souta[0];
+            outb=souta[1];
+            switch (D) {
+                case 0:
+        #define GOJZd GOJZS0
+        #define GOJd GOJS0
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 1:
+        #define GOJZd GOJZS1
+        #define GOJd GOJS1
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 2:
+        #define GOJZd GOJZS2
+        #define GOJd GOJS2
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 3:
+        #define GOJZd GOJZS3
+        #define GOJd GOJS3
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 4:
+        #define GOJZd GOJZS4
+        #define GOJd GOJS4
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 5:
+        #define GOJZd GOJZS5
+        #define GOJd GOJS5
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 6:
+        #define GOJZd GOJZS6
+        #define GOJd GOJS6
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 7:
+        #define GOJZd GOJZS7
+        #define GOJd GOJS7
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 8:
+        #define GOJZd GOJZS8
+        #define GOJd GOJS8
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 9:
+        #define GOJZd GOJZS9
+        #define GOJd GOJS9
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                    
+                    
+                    
+                    
+                    
+                case 10:
+        #define GOJZd GOJZS10
+        #define GOJd GOJS10
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 11:
+        #define GOJZd GOJZS11
+        #define GOJd GOJS11
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 12:
+        #define GOJZd GOJZS12
+        #define GOJd GOJS12
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 13:
+        #define GOJZd GOJZS13
+        #define GOJd GOJS13
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 14:
+        #define GOJZd GOJZS14
+        #define GOJd GOJS14
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 15:
+        #define GOJZd GOJZS15
+        #define GOJd GOJS15
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 16:
+        #define GOJZd GOJZS16
+        #define GOJd GOJS16
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 17:
+        #define GOJZd GOJZS17
+        #define GOJd GOJS17
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 18:
+        #define GOJZd GOJZS18
+        #define GOJd GOJS18
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 19:
+        #define GOJZd GOJZS19
+        #define GOJd GOJS19
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                    
+                    
+                    
+                    
+                    
+                case 20:
+        #define GOJZd GOJZS20
+        #define GOJd GOJS20
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 21:
+        #define GOJZd GOJZS21
+        #define GOJd GOJS21
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 22:
+        #define GOJZd GOJZS22
+        #define GOJd GOJS22
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 23:
+        #define GOJZd GOJZS23
+        #define GOJd GOJS23
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 24:
+        #define GOJZd GOJZS24
+        #define GOJd GOJS24
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 25:
+        #define GOJZd GOJZS25
+        #define GOJd GOJS25
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 26:
+        #define GOJZd GOJZS26
+        #define GOJd GOJS26
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 27:
+        #define GOJZd GOJZS27
+        #define GOJd GOJS27
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 28:
+        #define GOJZd GOJZS28
+        #define GOJd GOJS28
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 29:
+        #define GOJZd GOJZS29
+        #define GOJd GOJS29
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                case 30:
+        #define GOJZd GOJZS30
+        #define GOJd GOJS30
+                    GOI
+                    return(outa[D]);
+        #undef GOJZd
+        #undef GOJd
+                    
                 default:
-                    if (lets<ret->letters+MAXWORDLEN-1) *(++lets)=0;
-                    break;
+                    GOID(D)
+                    return(outa[D]);
             }
-            if ((shft+=5)==15) {shft=0;ps++;}
-        } while ((*lets!=-1)&&((*ps)&0x8000));
-        ret->numLetters=(int)(lets-ret->letters);
-        if (shft) ps++;
-        
-        int fi=((*ps)<<16)|*(++ps);
-        ret->freq=ADDERFORUNLIKELIES+*(float*)&fi;// fraction of words in sentences in the library that are this word (plus a bit)
-
-        *pps=++ps;
-        if (ps!=nextWordAddress(ret->addr)) {
-            [NSException raise:@"Invalid dictionary" format:@"Wrong word length"];
         }
-        return(ret);
-    }
 
 
-    UnpackedWord *unpackWord(unsigned short **pps,UnpackedWord *ret) {
-        char *wd=ret->word,*lets=ret->letters;
-        unsigned short *ps=ret->addr=*pps;
-        unsigned short shft=5,v;
-        char addLetter=0;
-        do {
-            switch ((*lets)=letter5[v=((*ps)>>shft)&0x1f]) {
-                case -1:break;
-                case -2:addLetter='A'-'a';break;
-                case -10:[NSException raise:@"Invalid dictionary" format:@"Bad char"];
-                case -3:case -4:
-                    if (wd<ret->word+MAXWORDLEN-1) *(wd++)=char5[v];
-                    break;
-                default:
-                    if (lets<ret->letters+MAXWORDLEN-1) *(++lets)=0;
-                    if (wd<ret->word+MAXWORDLEN-1) {*(wd++)=char5[v]+addLetter;addLetter=0;}
-                    break;
+
+
+
+
+
+
+        //#define DEBTAPPROB
+
+
+        float wordMatchProbability(unsigned short *ps,int numTaps,float **probByTapByLetter,float z,float bestProb) {
+        #ifdef DEBTAPPROB
+            UnpackedWord wd;
+            unsigned short *ps2=ps;
+            unpackWord(&ps2, &wd);
+            if (!strcmp(wd.word,"text")) {
+                int k=0;
+                k=1;
             }
-            if ((shft+=5)==15) {shft=0;ps++;}
-        } while ((*lets!=-1)&&((*ps)&0x8000));
-        *wd=0;
-        ret->numLetters=(int)(lets-ret->letters);
-        ret->wordLen=(int)(wd-ret->word);
-        if (shft) ps++;
-        
-        int fi=((*ps)<<16)|*(++ps);
-        ret->freq=ADDERFORUNLIKELIES+*(float*)&fi;// fraction of words in sentences in the library that are this word (plus a bit)
-        
-        *pps=++ps;
-        if (ps!=nextWordAddress(ret->addr)) {
-            [NSException raise:@"Invalid dictionary" format:@"Wrong word length"];
+            if (!strcmp(wd.word,"txt")) {
+                int k=0;
+                k=1;
+            }
+            char word[1000];
+            memset(word,0,sizeof(word));
+        #endif
+            
+            //if ((numTaps<=0)||(z<=bestProb)) return(-1);
+            
+            unsigned char shft=1,letter,tmpc;
+
+            NEXTLETTER(letter,ps,shft,tmpc);
+            
+        #ifdef DEBTAPPROB
+            word[0]=letter+'a';
+        #endif
+            
+            if ((z*=probByTapByLetter[letter][0])<=bestProb) return(-1);
+            
+            if (numTaps==1) return(z);
+            
+            unsigned char numLetters=1,tapi=1;
+            do {
+                NEXTLETTER(letter,ps,shft,tmpc);
+                if (letter==31) return(-1);
+        #ifdef DEBTAPPROB
+                word[numLetters]=letter+'a';
+        #endif
+            } while (((letterPs[numLetters++]=probByTapByLetter[letter])[tapi]<1.e-10f)||((++tapi)<numTaps));
+            
+            while (true) {
+                NEXTLETTER(letter,ps,shft,tmpc);
+        #ifdef DEBTAPPROB
+                word[numLetters]=letter+'a';
+        #endif
+                if (letter==31) break;
+                else letterPs[numLetters++]=probByTapByLetter[letter];
+            }
+
+            float ret;
+            return((ret=goi(numLetters-numTaps,numTaps,z,bestProb))>bestProb?ret:-1);
         }
-        return(ret);
-    }
 
 
 
-
-    bool fillLettersFromWord(UnpackedWord *wd) {
-        char *wpc=wd->word,*lpc=wd->letters;
-        wd->numLetters=0;
-        while (*wpc) {
-            if (*wpc=='-') {
-                if (wpc==wd->word) return(NO);
-    //			*lpc=2;
-            }
-            else if (*wpc=='\'') {
-                if (wpc==wd->word) return(NO);
-    //			*lpc=3;
-            }
-            else if ((*wpc>='a')&&(*wpc<='z')) {
-                *(lpc++)=(*wpc)-'a';
-                wd->numLetters++;
-            }
-            else if ((*wpc>='A')&&(*wpc<='Z')) {
-    //			*(lpc++)=1;
-                *(lpc++)=(*wpc)-'A';
-                wd->numLetters++;
-            }
-            else return(NO);
-            wpc++;
-        }
-        return(YES);
-    }
-
-
-    int makeUnpackedWordForFile(UnpackedWord *wd,unsigned short *buf) {
-        unsigned short *ps=buf;*ps=0x8000;
-        char *wpc=wd->word;
-        unsigned char shift=5;
-        while (*wpc) {
-            if (*wpc=='-') {
-                if (wpc==wd->word) return(0);
-                *ps|=(2<<shift);
-            }
-            else if (*wpc=='\'') {
-                if (wpc==wd->word) return(0);
-                *ps|=(3<<shift);
-            }
-            else if ((*wpc>='a')&&(*wpc<='z')) {
-                *ps|=(((*wpc)+6-'a')<<shift);
-            }
-            else if ((*wpc>='A')&&(*wpc<='Z')) {
-                *ps|=(1<<shift);
-                if ((shift+=5)==15) {*(++ps)=0x8000;shift=0;}
-                *ps|=(((*wpc)+6-'A')<<shift);
-            }
-            else return(0);
-            if ((shift+=5)==15) {*(++ps)=0x8000;shift=0;}
-            if (ps>buf+0x20) return(0);
-            wpc++;
-        }
-        if (shift) ps++;
-        float f=wd->freq;
-        *(ps++)=((unsigned short*)&f)[1];
-        *(ps++)=((unsigned short*)&f)[0];
-        int len=(int)(ps-buf);
-        if (len>=0x1f) return(0);
-        (*buf)|=len;
-        return(len);
-    }
-
-
-
-    bool isLetterChar(unichar c) {return(((c>='a')&&(c<='z'))||((c>='A')&&(c<='Z')));}
-    bool isWordChar(unichar c) {return(((c>='a')&&(c<='z'))||((c>='A')&&(c<='Z'))||(c=='\'')||(c=='-'));}
-    bool isSpaceChar(unichar c) {return((c==' ')||(c=='\t'));}
-    bool isSpaceOrNLChar(unichar c) {return((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
-    bool isEOSentenceChar(unichar c) {return((c=='.')||(c=='!')||(c=='?'));}
-
-
-#define GOJ0 *outa=PBYTAPBYJ(i,0)* *outb
-#define GOJ(___j) outa[___j]=fmax(PBYTAPBYJ(i,___j)*outb[___j],
-
-#define GOJE )
-
-#define GOJS0 GOJ0
-#define GOJS1 GOJ(1) GOJS0 GOJE
-#define GOJS2 GOJ(2) GOJS1 GOJE
-#define GOJS3 GOJ(3) GOJS2 GOJE
-#define GOJS4 GOJ(4) GOJS3 GOJE
-#define GOJS5 GOJ(5) GOJS4 GOJE
-#define GOJS6 GOJ(6) GOJS5 GOJE
-#define GOJS7 GOJ(7) GOJS6 GOJE
-#define GOJS8 GOJ(8) GOJS7 GOJE
-#define GOJS9 GOJ(9) GOJS8 GOJE
-#define GOJS10 GOJ(10) GOJS9 GOJE
-#define GOJS11 GOJ(11) GOJS10 GOJE
-#define GOJS12 GOJ(12) GOJS11 GOJE
-#define GOJS13 GOJ(13) GOJS12 GOJE
-#define GOJS14 GOJ(14) GOJS13 GOJE
-#define GOJS15 GOJ(15) GOJS14 GOJE
-#define GOJS16 GOJ(16) GOJS15 GOJE
-#define GOJS17 GOJ(17) GOJS16 GOJE
-#define GOJS18 GOJ(18) GOJS17 GOJE
-#define GOJS19 GOJ(19) GOJS18 GOJE
-#define GOJS20 GOJ(20) GOJS19 GOJE
-#define GOJS21 GOJ(21) GOJS20 GOJE
-#define GOJS22 GOJ(22) GOJS21 GOJE
-#define GOJS23 GOJ(23) GOJS22 GOJE
-#define GOJS24 GOJ(24) GOJS23 GOJE
-#define GOJS25 GOJ(25) GOJS24 GOJE
-#define GOJS26 GOJ(26) GOJS25 GOJE
-#define GOJS27 GOJ(27) GOJS26 GOJE
-#define GOJS28 GOJ(28) GOJS27 GOJE
-#define GOJS29 GOJ(29) GOJS28 GOJE
-#define GOJS30 GOJ(30) GOJS29 GOJE
-#define GOJS(D) GOJ0;for (unsigned short __j=1;__j<=D;__j++) GOJ(__j) outa[__j-1] GOJE;
-
-
-#define GOJZ0 *outa=PBYTAPBYJ(1,0)*z
-#define GOJZ(___j) outa[___j]=fmax(PBYTAPBYJ(1,___j)*z,
-
-#define GOJZS0 GOJZ0
-#define GOJZS1 GOJZ(1) GOJZS0 GOJE
-#define GOJZS2 GOJZ(2) GOJZS1 GOJE
-#define GOJZS3 GOJZ(3) GOJZS2 GOJE
-#define GOJZS4 GOJZ(4) GOJZS3 GOJE
-#define GOJZS5 GOJZ(5) GOJZS4 GOJE
-#define GOJZS6 GOJZ(6) GOJZS5 GOJE
-#define GOJZS7 GOJZ(7) GOJZS6 GOJE
-#define GOJZS8 GOJZ(8) GOJZS7 GOJE
-#define GOJZS9 GOJZ(9) GOJZS8 GOJE
-#define GOJZS10 GOJZ(10) GOJZS9 GOJE
-#define GOJZS11 GOJZ(11) GOJZS10 GOJE
-#define GOJZS12 GOJZ(12) GOJZS11 GOJE
-#define GOJZS13 GOJZ(13) GOJZS12 GOJE
-#define GOJZS14 GOJZ(14) GOJZS13 GOJE
-#define GOJZS15 GOJZ(15) GOJZS14 GOJE
-#define GOJZS16 GOJZ(16) GOJZS15 GOJE
-#define GOJZS17 GOJZ(17) GOJZS16 GOJE
-#define GOJZS18 GOJZ(18) GOJZS17 GOJE
-#define GOJZS19 GOJZ(19) GOJZS18 GOJE
-#define GOJZS20 GOJZ(20) GOJZS19 GOJE
-#define GOJZS21 GOJZ(21) GOJZS20 GOJE
-#define GOJZS22 GOJZ(22) GOJZS21 GOJE
-#define GOJZS23 GOJZ(23) GOJZS22 GOJE
-#define GOJZS24 GOJZ(24) GOJZS23 GOJE
-#define GOJZS25 GOJZ(25) GOJZS24 GOJE
-#define GOJZS26 GOJZ(26) GOJZS25 GOJE
-#define GOJZS27 GOJZ(27) GOJZS26 GOJE
-#define GOJZS28 GOJZ(28) GOJZS27 GOJE
-#define GOJZS29 GOJZ(29) GOJZS28 GOJE
-#define GOJZS30 GOJZ(30) GOJZS29 GOJE
-#define GOJZS(__D) GOJZ0;for (unsigned short __j=1;__j<=__D;__j++) GOJZ(__j) outa[__j-1] GOJE;
-
-
-#define GOI \
-GOJZd;\
-for (unsigned short i=1;(i<numTaps)&&(outa[D]>bestProb);i++) { \
-tmpout=outa;outa=outb;outb=tmpout; \
-GOJd; \
-}
-#define GOID(_D) \
-GOJZS(_D);\
-for (unsigned short i=1;(i<numTaps)&&(outa[D]>bestProb);i++) { \
-tmpout=outa;outa=outb;outb=tmpout; \
-GOJS(_D); \
-}
-
-
-#define MAXTAPS 1000
-static float *letterPs[MAXTAPS];
-static float souta[2][MAXTAPS],*outa,*outb,*tmpout;
-#define PBYTAPBYJ(_tapi,_jj) (letterPs[_jj+_tapi][_tapi])
-
-static inline float goi(unsigned short D,unsigned short numTaps,float z,float bestProb) {
-	outa=souta[0];
-	outb=souta[1];
-	switch (D) {
-		case 0:
-#define GOJZd GOJZS0
-#define GOJd GOJS0
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 1:
-#define GOJZd GOJZS1
-#define GOJd GOJS1
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 2:
-#define GOJZd GOJZS2
-#define GOJd GOJS2
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 3:
-#define GOJZd GOJZS3
-#define GOJd GOJS3
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 4:
-#define GOJZd GOJZS4
-#define GOJd GOJS4
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 5:
-#define GOJZd GOJZS5
-#define GOJd GOJS5
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 6:
-#define GOJZd GOJZS6
-#define GOJd GOJS6
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 7:
-#define GOJZd GOJZS7
-#define GOJd GOJS7
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 8:
-#define GOJZd GOJZS8
-#define GOJd GOJS8
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 9:
-#define GOJZd GOJZS9
-#define GOJd GOJS9
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-			
-			
-			
-			
-			
-		case 10:
-#define GOJZd GOJZS10
-#define GOJd GOJS10
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 11:
-#define GOJZd GOJZS11
-#define GOJd GOJS11
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 12:
-#define GOJZd GOJZS12
-#define GOJd GOJS12
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 13:
-#define GOJZd GOJZS13
-#define GOJd GOJS13
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 14:
-#define GOJZd GOJZS14
-#define GOJd GOJS14
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 15:
-#define GOJZd GOJZS15
-#define GOJd GOJS15
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 16:
-#define GOJZd GOJZS16
-#define GOJd GOJS16
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 17:
-#define GOJZd GOJZS17
-#define GOJd GOJS17
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 18:
-#define GOJZd GOJZS18
-#define GOJd GOJS18
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 19:
-#define GOJZd GOJZS19
-#define GOJd GOJS19
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-			
-			
-			
-			
-			
-		case 20:
-#define GOJZd GOJZS20
-#define GOJd GOJS20
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 21:
-#define GOJZd GOJZS21
-#define GOJd GOJS21
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 22:
-#define GOJZd GOJZS22
-#define GOJd GOJS22
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 23:
-#define GOJZd GOJZS23
-#define GOJd GOJS23
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 24:
-#define GOJZd GOJZS24
-#define GOJd GOJS24
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 25:
-#define GOJZd GOJZS25
-#define GOJd GOJS25
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 26:
-#define GOJZd GOJZS26
-#define GOJd GOJS26
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 27:
-#define GOJZd GOJZS27
-#define GOJd GOJS27
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 28:
-#define GOJZd GOJZS28
-#define GOJd GOJS28
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 29:
-#define GOJZd GOJZS29
-#define GOJd GOJS29
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-		case 30:
-#define GOJZd GOJZS30
-#define GOJd GOJS30
-			GOI
-			return(outa[D]);
-#undef GOJZd
-#undef GOJd
-			
-		default:
-			GOID(D)
-			return(outa[D]);
-	}
-}
-
-
-
-
-
-
-
-
-//#define DEBTAPPROB
-
-
-float wordMatchProbability(unsigned short *ps,int numTaps,float **probByTapByLetter,float z,float bestProb) {
-#ifdef DEBTAPPROB
-	UnpackedWord wd;
-	unsigned short *ps2=ps;
-	unpackWord(&ps2, &wd);
-	if (!strcmp(wd.word,"text")) {
-		int k=0;
-		k=1;
-	}
-	if (!strcmp(wd.word,"txt")) {
-		int k=0;
-		k=1;
-	}
-	char word[1000];
-	memset(word,0,sizeof(word));
-#endif
-	
-	//if ((numTaps<=0)||(z<=bestProb)) return(-1);
-	
-	unsigned char shft=1,letter,tmpc;
-
-	NEXTLETTER(letter,ps,shft,tmpc);
-	
-#ifdef DEBTAPPROB
-	word[0]=letter+'a';
-#endif
-	
-	if ((z*=probByTapByLetter[letter][0])<=bestProb) return(-1);
-	
-	if (numTaps==1) return(z);
-	
-	unsigned char numLetters=1,tapi=1;
-	do {
-		NEXTLETTER(letter,ps,shft,tmpc);
-		if (letter==31) return(-1);
-#ifdef DEBTAPPROB
-		word[numLetters]=letter+'a';
-#endif
-	} while (((letterPs[numLetters++]=probByTapByLetter[letter])[tapi]<1.e-10f)||((++tapi)<numTaps));
-	
-	while (true) {
-		NEXTLETTER(letter,ps,shft,tmpc);
-#ifdef DEBTAPPROB
-		word[numLetters]=letter+'a';
-#endif
-		if (letter==31) break;
-		else letterPs[numLetters++]=probByTapByLetter[letter];
-	}
-
-	float ret;
-	return((ret=goi(numLetters-numTaps,numTaps,z,bestProb))>bestProb?ret:-1);
-}
-
-
-
-*/
-
+    }// interfaces
 
 
 
@@ -905,9 +905,10 @@ DictionaryWord
 
 
 
-/*interfaces
-static Dictionary *_Dictionary_default=nil;
-*/
+Globals
+    -interfaces
+        static Dictionary *_Dictionary_default=nil;
+
 
 Dictionary
 
@@ -1202,7 +1203,7 @@ Dictionary
 
 
     /*interfaces
-    static bool inVer=NO;
+        static bool inVer=NO;
     */
 
     - (NSString*)verify {
@@ -2104,12 +2105,12 @@ Dictionary
 
 
 
-/*top
-#include <iostream>
-#define MAINCPPFILE
-#define CPPTYPE(...) __VA_ARGS__
-#include "../BasicClassesCPP/Headers.h"
-*/
+Globals
+    -top
+        #include <iostream>
+        #define MAINCPPFILE
+        #define CPPTYPE(...) __VA_ARGS__
+        #include "../BasicClassesCPP/Headers.h"
 
 type PattStr "typedef:struct {char pattern[28];}"
 type ProMPWordsContext "typedef:struct {ManagedArray<StorableArray<PattStr> > *todo;Array<int> *todois;long todoCount;QuickHashTable<char> *seenMaxHT;QuickHashTable<bool> *seenWisHT;}"

@@ -282,12 +282,12 @@ DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
     }
 
 
-/*interfaces
-extern Model *_Model_default;
-*/
-/*interfaces:impl
-Model *_Model_default=nil;
-*/
+Globals
+    -interfaces
+        extern Model *_Model_default;
+
+    -interfaces:impl
+        Model *_Model_default=nil;
 
 Model<Model,Ticker,Waiter> "fn:model"
     dirtyInModel -s< <Commitable> dirtyObject

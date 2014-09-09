@@ -9,9 +9,9 @@ sys EAGLContext
 type GLint
 type GLuint
 
-/*top
-#define kMaxTextureSize   2048
-*/
+Globals
+    -top
+        #define kMaxTextureSize   2048
 
 
 type Texture2DPixelFormat "typedef:enum {
@@ -242,15 +242,14 @@ Texture2D <BaseObject> "fn:render"
         return(ret);
     }
 
-    /*interfaces
+    -interfaces
         void texture2D_releasedatacallback(void *info,const void *data,size_t size);
-    */
-    /*interfaces:impl
+
+    -interfaces:impl
         void texture2D_releasedatacallback(void *info,const void *data,size_t size) {
             BYT *dataBytes=(BYT*)info;
             DELETEA(Makecc('i','m'),dataBytes,size);
         }
-    */
 
 
     UIImage _uiImage=nil

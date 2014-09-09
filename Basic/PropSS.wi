@@ -10,6 +10,6 @@ WIMyClass
 
     -(void)retract {[self.hisnames removeAllObjects];}
 
-    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSNumber*)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]?@YES:nil);}
     -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(mynames)]);}
 

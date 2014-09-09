@@ -1008,20 +1008,20 @@ MetaEnabled
             selStr=[DataRegistry propertyKeyFromProperty:selStr];
             SEL sel=NSSelectorFromString(selStr);
             if (!viewerKey) {
-                if ([self respondsToSelector:sel]) [self performUnknownSelector:sel];
+                if ([self respondsToSelector:sel]) [self performUnknownVoidSelector:sel];
                 else {
                     NSObject<DataModelViewer> *v=self.nearestViewer;
                     if (v) {
-                        if ([v respondsToSelector:sel]) [v performUnknownSelector:sel];
-                        else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownSelector:sel];
+                        if ([v respondsToSelector:sel]) [v performUnknownVoidSelector:sel];
+                        else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownVoidSelector:sel];
                     }
                 }
             }
             else {
                 NSObject<DataModelViewer> *v=[self.dataRegistry.allViewers objectForKey:viewerKey];
                 if (v) {
-                    if ([v respondsToSelector:sel]) [v performUnknownSelector:sel];
-                    else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownSelector:sel];
+                    if ([v respondsToSelector:sel]) [v performUnknownVoidSelector:sel];
+                    else if ([v.dataModel respondsToSelector:sel]) [v.dataModel performUnknownVoidSelector:sel];
                 }
             }
         }
@@ -1368,7 +1368,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         self.image=imageView.image;
     }
     -(void)buttonPressed {
-        [self.currentTarget performUnknownSelector:self.finalAction];
+        [self.currentTarget performUnknownVoidSelector:self.finalAction];
     }
     
     

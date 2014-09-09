@@ -4,7 +4,7 @@ WIMyClass
 
     -(void)die {[v_hisnames removeAllObjects];}
 
-    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSNumber*)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]?@YES:nil);}
     -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(myname_endpoint)]);}
 
     -(void)addHisname:(NSHisClass)v {[v_hisnames addObject:v];}

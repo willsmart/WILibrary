@@ -45,15 +45,13 @@ RenderUIView : UIView<BaseObject>
 
 
 
-
 RenderUIViews <BaseObject>
+    -decl
+        extern RenderUIViews *_RenderUIViews_default;
 
-    /*decl
-    extern RenderUIViews *_RenderUIViews_default;
-    */
-    /*decl:impl
-    RenderUIViews *_RenderUIViews_default=nil;
-    */
+    -decl:impl
+        RenderUIViews *_RenderUIViews_default=nil;
+
     +(RenderUIViews*)getDefault {
         if (!_RenderUIViews_default) {
             ADDSINGLETON(_RenderUIViews_default=[[RenderUIViews alloc] init]);

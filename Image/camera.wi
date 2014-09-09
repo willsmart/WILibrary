@@ -13,9 +13,9 @@ sys AVCaptureConnection
 sys AVCaptureDevice
 sys AVCaptureSession
 
-/*interfaces
-#define CAMTEXSZ 256
-*/
+Globals
+    -interfaces
+        #define CAMTEXSZ 256
 
 Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
 /**! --    (notenote) Note: Please think about making property "texA" publicreadonly !**/

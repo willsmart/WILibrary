@@ -9,15 +9,15 @@
 type Mat44 "typedef:struct Mat44"
 type Vec4 "typedef:struct Vec4"
 
-/*interfaces:impl
-#define ThreeDCFILE
-*/
-/*interfaces
-    #define _MatMPtr(c,r) (m->m[((r)<<2)+(c)])
-    #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)+(c)])
-    #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)
-    #define MatM1Ptr(mm,r,c) MatMPtr(mm,(r)-1,(c)-1)
-*/
+Globals
+    -interfaces:impl
+        #define ThreeDCFILE
+
+    -interfaces
+        #define _MatMPtr(c,r) (m->m[((r)<<2)+(c)])
+        #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)+(c)])
+        #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)
+        #define MatM1Ptr(mm,r,c) MatMPtr(mm,(r)-1,(c)-1)
 
 
 Matrix44<BaseObject>

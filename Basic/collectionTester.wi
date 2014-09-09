@@ -19,12 +19,14 @@
 
 
 
-/*top
-extern NSString *testKey;
-*/
-/*top:impl
-NSString *testKey=nil;
-*/
+Globals
+    -top
+        extern NSString *testKey;
+
+    -top:impl
+        NSString *testKey=nil;
+
+
 CollectionTestObject
     Int intValue=nil (readonly)
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
@@ -118,33 +120,32 @@ CollectionTestSubObject
 
     NSDictionary *collections=[NSDictionary dictionary]
 
-    /*top
-    #define ITERATECOLLECTIONS(typ,v,...) \
-    for (NSString *_key in self.collections) { \
-        @autoreleasepool {} \
-        testKey=_key; \
-        typ v=[self.collections objectForKey:_key]; \
-        @autoreleasepool { \
-            NSObject *ret=nil; \
-            __VA_ARGS__ \
-            for (CollectionTestObject *o in self._allObjects) { \
-                CollectionTestSubObject *so=[o.subObjects objectForKey:_key]; \
-                Int opN=0; \
-                if ([ret isKindOfClass:[NSSet class]]) { \
-                    if ([(NSSet*)ret containsObject:o]) opN=1; \
+    -top
+        #define ITERATECOLLECTIONS(typ,v,...) \
+        for (NSString *_key in self.collections) { \
+            @autoreleasepool {} \
+            testKey=_key; \
+            typ v=[self.collections objectForKey:_key]; \
+            @autoreleasepool { \
+                NSObject *ret=nil; \
+                __VA_ARGS__ \
+                for (CollectionTestObject *o in self._allObjects) { \
+                    CollectionTestSubObject *so=[o.subObjects objectForKey:_key]; \
+                    Int opN=0; \
+                    if ([ret isKindOfClass:[NSSet class]]) { \
+                        if ([(NSSet*)ret containsObject:o]) opN=1; \
+                    } \
+                    if ([ret isKindOfClass:[NSArray class]]) { \
+                        for (id o2 in (NSArray*)ret) if (o==o2) opN++; \
+                    } \
+                    if ([ret isKindOfClass:[NSDictionary class]]) { \
+                        for (id k in (NSDictionary*)ret) if ([(NSDictionary*)ret  objectForKey:k]==o) opN++; \
+                    } \
+                    so.rcInner=so.rcWillBe-opN; \
                 } \
-                if ([ret isKindOfClass:[NSArray class]]) { \
-                    for (id o2 in (NSArray*)ret) if (o==o2) opN++; \
-                } \
-                if ([ret isKindOfClass:[NSDictionary class]]) { \
-                    for (id k in (NSDictionary*)ret) if ([(NSDictionary*)ret  objectForKey:k]==o) opN++; \
-                } \
-                so.rcInner=so.rcWillBe-opN; \
             } \
-        } \
-        testKey=nil; \
-    }
-    */
+            testKey=nil; \
+        }
 
     -(void)clearTest {
         [self._keyArray removeAllObjects];
@@ -311,6 +312,7 @@ CollectionTestSubObject
         }
         return(pass);
     }
+
 
 
 

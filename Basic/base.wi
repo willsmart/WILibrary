@@ -1,32 +1,45 @@
 "<objc/runtime.h>"
 
 
-/*top
-    typedef NSInteger Int;
-    typedef NSUInteger Unsigned;
-    extern NSInteger __bpc,__breakAtBP;
-    void BPoint();
-    void ERR(const char *format,...);
-*/
-/*top:impl
-    NSInteger __bpc=0,__breakAtBP=0;
-    void BPoint() {
-        if (__breakAtBP==++__bpc) {
-            printf("\n>>>>>>Breakpoint %d\n",(int)__bpc);
-        }
-    }
-    void ERR(const char *format,...) {
-        va_list pArgs;
-        va_start(pArgs, format);
-        vprintf(format, pArgs);
-        va_end(pArgs);
-        printf("\n");
-    }
-*/
-/*protocols
-#define CHECKZOMBIE(fn) {if ([self respondsToSelector:@selector(isZombie)]&&[(id<Object>)self isZombie]) ERR("Zombie call to %p: " #fn,self);}
-*/
+Globals
+    -top
+        typedef NSInteger Int;
+        typedef NSUInteger Unsigned;
+        extern NSInteger __bpc,__breakAtBP;
+        void BPoint();
+        void ERR(const char *format,...);
 
+    -top:impl
+        NSInteger __bpc=0,__breakAtBP=0;
+        void BPoint() {
+            if (__breakAtBP==++__bpc) {
+                printf("\n>>>>>>Breakpoint %d\n",(int)__bpc);
+            }
+        }
+        void ERR(const char *format,...) {
+            va_list pArgs;
+            va_start(pArgs, format);
+            vprintf(format, pArgs);
+            va_end(pArgs);
+            printf("\n");
+        }
+
+    -protocols
+        #define CHECKZOMBIE(fn) {if ([self respondsToSelector:@selector(isZombie)]&&[(id<Object>)self isZombie]) ERR("Zombie call to %p: " #fn,self);}
+
+
+
+AppDelegate
+    -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+        NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+
+    -impl
+        void uncaughtExceptionHandler(NSException *exception) {
+            NSLog(@"\n\n\nStack:(Here)\n%@\n\nStack:(Exception)\n%@\n\nException: %@\n",NSThread.callStackSymbols.description,exception.callStackSymbols.description,exception.reason);
+            BPNOW;
+        }
+    -iface
+        void uncaughtExceptionHandler(NSException *exception);
 
 
 

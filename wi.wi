@@ -4,7 +4,7 @@
 "<objc/runtime.h>"
 "<iostream>"
 "<sys/mman.h>"
-"include:{WIBASE}/BasicClassesCPP/Headers.h"
+$"include:{WIBASE}/BasicClassesCPP/Headers.h"
 
 "Basic/types.wi"
 "Basic/collections.wi"
@@ -19,7 +19,7 @@
 
 
 Globals
-    -top {
+    -top
         #ifdef TARGET_OS_IPHONE
             #import <UIKit/UIKit.h>
         #else
@@ -30,7 +30,8 @@ Globals
             #define TARGET_OS_OSX 1
             #import <AppKit/AppKit.h>
         #endif
-    }
+
     -top:impl
         #define MAINCPPFILE
-        #define CPPTYPE(...) __VA_ARGS__
+        #include $"{WIBASE}/BasicClassesCPP/Headers.h"
+

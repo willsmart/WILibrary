@@ -6,7 +6,7 @@ WIMyClass
         -v{[v_hisname_endpoint setValue:v];} (noivar)
 
     -(void)die {self.hisname=nil;} 
-    -(bool)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]);}
+    -(NSNumber*)isAcceptableHisname:(id)ahisname {return([ahisname isHisClass]?@YES:nil);}
     -(NSObject<LinkEndpoint>*)hisnameToEndpoint:(id)ahisname {return([ahisname performSelector:@selector(mynames)]);}
 
     -(void)retract {self.hisname=nil;}

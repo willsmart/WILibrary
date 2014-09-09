@@ -27,12 +27,12 @@ ImageFromCGImage:UIImage
     }
 
 
-/*interfaces
-#undef UIONLY
-#define UIONLY(...) __VA_ARGS__
-#undef NOTUI
-#define NOTUI(...)
-*/
+Globals
+    -interfaces
+        #undef UIONLY
+        #define UIONLY(...) __VA_ARGS__
+        #undef NOTUI
+        #define NOTUI(...)
 
 Singletons
     FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil (ivar=fontList,dealloc,publicreadonly)

@@ -70,12 +70,12 @@ Styler
     }
 
 
-/*interfaces
-extern Styler *_Styler_default;
-*/
-/*interfaces:impl
-Styler *_Styler_default=nil;
-*/
+Globals
+    -interfaces
+        extern Styler *_Styler_default;
+
+    -interfaces:impl
+        Styler *_Styler_default=nil;
 
 
 Styler <BaseObject>

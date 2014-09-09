@@ -639,12 +639,12 @@
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector];
+            [object performUnknownVoidSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector withObject:obj];
+            [object performUnknownVoidSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {
@@ -937,12 +937,12 @@ MutableSet : NSMutableSet
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector];
+            [object performUnknownVoidSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector withObject:obj];
+            [object performUnknownVoidSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {
@@ -1357,12 +1357,12 @@ MutableArray : NSMutableArray
     }
     –(void)makeObjectsPerformSelector:(SEL)selector {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector];
+            [object performUnknownVoidSelector:selector];
         }
     }
     –(void)makeObjectsPerformSelector:(SEL)selector withObject:obj {
         for (NSObject *object in self) if ([object respondsToSelector:selector]) {
-            [object performUnknownSelector:selector withObject:obj];
+            [object performUnknownVoidSelector:selector withObject:obj];
         }
     }
     –(BOOL)member:(id)object {

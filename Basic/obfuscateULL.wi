@@ -1,15 +1,15 @@
-/*decl
-ULL obfuscateULL(ULL ull);
-*/
-/*bottom:impl
-ULL obfuscateULL(ULL ull) {
-    return(charHashCodes[0][ull&0xff]+charHashCodes[1][(ull>>8)&0xff]+
-            charHashCodes[2][(ull>>16)&0xff]+charHashCodes[3][(ull>>24)&0xff]+
-            charHashCodes[4][(ull>>32)&0xff]+charHashCodes[5][(ull>>40)&0xff]+
-            charHashCodes[6][(ull>>48)&0xff]+charHashCodes[7][(ull>>56)&0xff]);
+Globals
+    -decl
+        ULL obfuscateULL(ULL ull);
 
-}
-*/
+    -bottom:impl
+        ULL obfuscateULL(ULL ull) {
+            return(charHashCodes[0][ull&0xff]+charHashCodes[1][(ull>>8)&0xff]+
+                    charHashCodes[2][(ull>>16)&0xff]+charHashCodes[3][(ull>>24)&0xff]+
+                    charHashCodes[4][(ull>>32)&0xff]+charHashCodes[5][(ull>>40)&0xff]+
+                    charHashCodes[6][(ull>>48)&0xff]+charHashCodes[7][(ull>>56)&0xff]);
+
+        }
 
 /*
 static ULL ullHashCodes[8][1024]={{

@@ -5,10 +5,12 @@
 "<OpenGLES/ES2/gl.h>"
 "<OpenGLES/ES2/glext.h>"
 
-/*top
-#define INVALIDSHADER (0xffff)
-#define SHADERDEBUG
-*/
+Globals
+    -top
+        #define INVALIDSHADER (0xffff)
+        #define SHADERDEBUG
+
+
 
 // overall
 Shader <BaseObject> "fn:shader"
