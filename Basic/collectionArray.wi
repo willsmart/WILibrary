@@ -115,7 +115,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
     //Querying an Array
     -(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
-    Unsigned count={return([__array count]);}
+    Unsigned count={return([__array count]);} (atomic)
     -(void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
         [__array getObjects:aBuffer range:aRange];
         if (weakObjectCount) for (Int i=aRange.length+aRange.location-1;i>=aRange.location;i--) aBuffer[i]=[aBuffer[i] strongSelf];

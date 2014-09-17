@@ -106,7 +106,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
     // Counting Entries
-    Unsigned count={return([__set count]);}
+    Unsigned count={return([__set count]);} (atomic)
 
 
     // Accessing Set Members

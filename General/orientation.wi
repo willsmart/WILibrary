@@ -79,7 +79,7 @@ Orientation<BaseObject>
         float xx=1,yy=1,xy=0,yx=0;
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         switch (orientation) {
-            case UIInterfaceOrientationPortrait:break;
+            case UIInterfaceOrientationPortrait:case UIInterfaceOrientationUnknown:break;
             case UIInterfaceOrientationPortraitUpsideDown:xx=-1;yy=-1;break;
             case UIInterfaceOrientationLandscapeLeft:xx=yy=0;xy=1;yx=-1;break;
             case UIInterfaceOrientationLandscapeRight:xx=yy=0;xy=-1;yx=1;break;

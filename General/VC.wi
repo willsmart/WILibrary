@@ -122,6 +122,7 @@
     -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {@-999 
         NSString *orientStr=nil;
         switch (interfaceOrientation) {
+            case UIInterfaceOrientationUnknown:return(NO);
             case UIInterfaceOrientationPortrait:orientStr=@"n";break;
             case UIInterfaceOrientationPortraitUpsideDown:orientStr=@"s";break;
             case UIInterfaceOrientationLandscapeLeft:orientStr=@"e";break;

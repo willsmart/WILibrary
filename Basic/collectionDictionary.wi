@@ -109,7 +109,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
     //Counting Entries
-    Unsigned count={return([__dictionary count]);}
+    Unsigned count={return([__dictionary count]);} (atomic)
     
     
     //Comparing Dictionaries

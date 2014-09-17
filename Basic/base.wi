@@ -57,6 +57,7 @@ AppDelegate
     -(init)init {}
 
 <BaseObject>
+
     //NSDictionary *__dictionaryForInit=nil (publicreadonly,ivar=__dictionaryForInit)
     
     //Int __rc=1,__arc=0;
