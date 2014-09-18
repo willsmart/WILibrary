@@ -10,6 +10,7 @@ Globals
         #endif
 
 "<pthread.h>"
+"<libkern/OSAtomic.h>"
 
 <ThreadKey> "multi" "nac"
     -decl:{
@@ -331,7 +332,9 @@ Globals
     -interfaces
         extern ULL g_sequence;
         extern Trace *g_trace;
-        extern NSMutableString *g_newTraces;
+        void addTraceString(NSString *string);
+        NSString *__getCurrentTraceString();
+
         #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((__bridge const void*)self)!=(__bridge const void*)g_trace)&&(((__bridge const void*)self)!=(__bridge const void*)[g_trace class]),__trcfnnm);
         
         extern QuickHashOfInts *g_noTraceHT;
@@ -378,7 +381,6 @@ Globals
     -interfaces:impl
         ULL g_sequence=0;
         Trace *g_trace=nil;
-        NSMutableString *g_newTraces=nil;
         pthread_key_t TraceFunctionTracker::key=0;
         Int g_numNamedThreads=0;
         
@@ -399,63 +401,130 @@ Globals
             return(nm);
         }
 
+        NSMutableArray *allTraceStringArrays=nil;
+        volatile Unsigned32 threadTraceStringFragmentPartition=0;
+        volatile Int32 threadTraceWritingStringFragment=0;
+        volatile Int64 threadTraceStringPosition=0;
+        void addTraceString(NSString *string) {
+            NSArray *a=(NSArray*)[NSThread currentThread].threadDictionary[@"threadTraceStringFragments"];
+            if (!a) {
+                [NSThread currentThread].threadDictionary[@"threadTraceStringFragments"]=a=
+                        @[NSMutableString.string,NSMutableArray.array,NSMutableString.string,NSMutableArray.array];
+                if (!allTraceStringArrays) allTraceStringArrays=NSMutableArray.array;
+                [allTraceStringArrays addObject:a];
+            }
+            Unsigned32 pi=OSAtomicIncrement32(threadTraceWritingStringFragment)>>31;
+            Unsigned64 len=string.length,offset=OSAtomicAdd64(len,&threadTraceStringPosition);
+            [((NSMutableArray*)a[(pi<<1)+1]) addObject:[NSValue valueWithRange:NSMakeRange(offset-len,len)]];
+            [((NSMutableString*)a[pi<<1]) appendString:string];
+            OSAtomicDecrement32(threadTraceWritingStringFragment);
+        }
+
+        NSString *__getCurrentTraceString() {
+            Unsigned32 pi;
+            if ((pi=OSAtomicOr32(1<<31,threadTraceStringFragmentPartition))&~(1<<31)) {
+                // slight glimmer of a possibility of non-synchronization
+                OSAtomicAnd32(~(1<<31),threadTraceStringFragmentPartition);
+                return(@"");
+            }
+            pi=(pi>>31)^1;
+            NSMutableString *ret=NSMutableString.string;
+            NSArray *as=allTraceStringArrays.copy;
+            Array<Int> indexes,counts,positions;
+            Array<NSRange> ranges;
+            positions.setUpperBound(as.count-1);
+            ranges.setUpperBound(as.count-1);
+            indexes.setUpperBound(as.count-1);
+            counts.setUpperBound(as.count-1);
+            IterateArray(Int,count,counts,  count=((NSArray*)as[countIndex][(pi<<1)+1]).count;);
+            IterateArray(NSRange,range,ranges,
+                range=(counts.a[rangeIndex]?((NSValue*)((NSArray*)as[rangeIndex][(pi<<1)+1]).firstObject).rangeValue:NSMakeRange(NSNotFound,0));
+            );
+
+            while (true) {
+                Int mini=0;
+                NSRange min=NSMakeRange(NSNotFound,0);
+                IterateArray(NSRange,range,ranges,   if (range.location<min.location) {mini=rangeIndex;min=range;});
+                if (min.location==NSNotFound) break;
+
+                NSString *s=as[mini][pi<<1];
+                [ret appendString:[s substringWithRange:NSMakeRange(positions.a[mini],min.length)]];
+                positions.a[mini]+=min.length;
+
+                if ((++indexes.a[mini])==counts.a[mini]) {
+                    ranges.a[mini].location=NSNotFound;
+                }
+                else {
+                    ranges.a[mini]=((NSValue*)((NSArray*)as[mini][(pi<<1)+1])[indexes.a[mini]]).rangeValue;
+                }
+            }
+
+            for (NSArray *a in as) {
+                [(NSMutableString*)a[pi<<1] setString:@""];
+                [(NSMutableArray*)a[(pi<<1)+1] removeAllObjects];
+            }
+
+
+            return(ret);
+        }
+
 
         void addTrace(NSString *trace,Int depth) {
             if ((!g_noTraceHT)||(*g_noTraceHT)[CurrentThreadHash]) {
-                [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
+                addTraceString([NSString stringWithFormat:@"[%d,%qu,%f,\"%@\",\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
                     threadNameJSON(),
                     JSONStringForString(trace,@"addTrace")
-                ];
+                ]);
             }
         }
         
         void addTraceCString(const char *trace,Int depth) {
             if ((!g_noTraceHT)||(*g_noTraceHT)[CurrentThreadHash]) {
-                [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
+                addTraceString([NSString stringWithFormat:@"[%d,%qu,%f,\"%@\",\"%S\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
                     threadNameJSON(),
                     JSONunicharsStringForCString(trace,(Int)strlen(trace),nil,nil,@"addTrace")
-                ];
+                ]);
             }
         }
         
         void finishDepth(Int depth) {
-            [g_newTraces appendFormat:@"[%d,%qu,%f,\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
+            addTraceString([NSString stringWithFormat:@"[%d,%qu,%f,\"%@\"],\n",(int)depth,g_sequence++,CACurrentMediaTime(),
                 threadNameJSON()
-            ];
+            ]);
         }
 
         void ADDOWNER(id object,id owner) {
-            [g_newTraces appendFormat:@"[-1,%qu,%f,%qx,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)owner,(ULL)object,class_getName([object class])];
+            addTraceString([NSString stringWithFormat:@"[-1,%qu,%f,%qx,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)owner,(ULL)object,class_getName([object class])]);
         }
         void REMOVEOWNER(id object,id owner) {
-            [g_newTraces appendFormat:@"[-2,%qu,%f,%qx,%qx],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)owner,(ULL)object];
+            addTraceString([NSString stringWithFormat:@"[-2,%qu,%f,%qx,%qx],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)owner,(ULL)object]);
         }
 
         void objectRetained(id object) {
-            [g_newTraces appendFormat:@"[-3,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object,class_getName([object class])];
+            addTraceString([NSString stringWithFormat:@"[-3,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object,class_getName([object class])]);
         }
         void objectReleased(id object) {
-            [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object];
+            addTraceString([NSString stringWithFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object]);
         }
         void objectAutoreleasePending(id object) {
-            [g_newTraces appendFormat:@"[-5,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object];
+            addTraceString([NSString stringWithFormat:@"[-5,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object]);
         }
         void objectAutoreleaseCollected(id object) {
-            [g_newTraces appendFormat:@"[-6,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object];
+            addTraceString([NSString stringWithFormat:@"[-6,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object]);
         }
         void objectAllocated(id object) {
-            [g_newTraces appendFormat:@"[-7,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object,class_getName([object class])];
+            addTraceString([NSString stringWithFormat:@"[-7,%qu,%f,%qx,\"%s\"],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object,class_getName([object class])]);
         }
         void objectDeallocated(id object) {
-            [g_newTraces appendFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
-                (ULL)object];
+            addTraceString([NSString stringWithFormat:@"[-4,%qu,%f,%qx],\n",g_sequence++,CACurrentMediaTime(),
+                (ULL)object]);
         }
  
 
@@ -503,7 +572,7 @@ Trace<Ticker,BaseObject> "notrace"
     NSMutableString *nwTraces=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces)
     NSMutableString *nwTraces2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces2)
 
-    -(void)start {g_newTraces=newTraces;g_trace=self;[self startWithInterval:0.5];}
+    -(void)start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
     -(void)stop {@100 g_trace=nil;}
     
     bool savingTrace={return(v_tim!=nil);}
@@ -514,18 +583,13 @@ Trace<Ticker,BaseObject> "notrace"
     -(void)tick {
         g_trace=self;
         
+        NSString *s=__getCurrentTraceString();
         
-        [newTraces2 setString:@""];
-        NSMutableString *tmp=newTraces;g_newTraces=newTraces=newTraces2;newTraces2=tmp;
-        
-        if (newTraces2.length) {
+        if (s.length) {
             NSURL *url=[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savetrace.php?fn=%@&fst=%d",g_singletons.styleName,not_first?0:1]];
-            [[newTraces2 dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
+            [[s dataUsingEncoding:NSUTF8StringEncoding] sendAsBodyOfPOSTRequestWithURL:url returningResponse:nil error:nil];
             not_first=1;
         }
-
-        [newTraces2 setString:newTraces];
-        newTraces2=newTraces;g_newTraces=newTraces=tmp;
     }
     
     

@@ -44,6 +44,10 @@ type char
 type constchar "typedef:const char"
 type Int
 type Unsigned
+type Int32 "typedef:int32_t"
+type Unsigned32 "typedef:uint32_t"
+type Int64 "typedef:int64_t"
+type Unsigned64 "typedef:uint64_t"
 type long
 type float
 type double
