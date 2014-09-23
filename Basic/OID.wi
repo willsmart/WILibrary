@@ -413,18 +413,18 @@ Globals
                 if (!allTraceStringArrays) allTraceStringArrays=NSMutableArray.array;
                 [allTraceStringArrays addObject:a];
             }
-            Unsigned32 pi=OSAtomicIncrement32(threadTraceWritingStringFragment)>>31;
+            Unsigned32 pi=OSAtomicIncrement32(&threadTraceWritingStringFragment)>>31;
             Unsigned64 len=string.length,offset=OSAtomicAdd64(len,&threadTraceStringPosition);
             [((NSMutableArray*)a[(pi<<1)+1]) addObject:[NSValue valueWithRange:NSMakeRange(offset-len,len)]];
             [((NSMutableString*)a[pi<<1]) appendString:string];
-            OSAtomicDecrement32(threadTraceWritingStringFragment);
+            OSAtomicDecrement32(&threadTraceWritingStringFragment);
         }
 
         NSString *__getCurrentTraceString() {
             Unsigned32 pi;
-            if ((pi=OSAtomicOr32(1<<31,threadTraceStringFragmentPartition))&~(1<<31)) {
+            if ((pi=OSAtomicOr32(1<<31,&threadTraceStringFragmentPartition))&~(1<<31)) {
                 // slight glimmer of a possibility of non-synchronization
-                OSAtomicAnd32(~(1<<31),threadTraceStringFragmentPartition);
+                OSAtomicAnd32(~(1<<31),&threadTraceStringFragmentPartition);
                 return(@"");
             }
             pi=(pi>>31)^1;
