@@ -1,5 +1,5 @@
 
-NSArray
+NSArray<WeakNSCollection> "__MutableClass__=>NSMutableArray"
     -(CollectionWeakness)weakness
         CollectionWeakness __block ret=CollectionIsEmpty;
         [self enumerateObjectsWithOptions:0 usingBlock:^(id object,NSUInteger index,BOOL *stop) {
@@ -33,13 +33,11 @@ NSArray
 
 
 
-
-
 MutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester> {}
 
 
 
-WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMutableArray> {}
+WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCollection,MutableArray> {}
 
 
 
@@ -49,7 +47,12 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 <Array>
     NSArray __array=nil (readonly,dealloc,ivar=__array)
+    bool insertsWeakObjectsByDefault (nodef)
     Int weakObjectCount=0 (readonly)
+    CollectionWeakness weakness=
+        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        -v{}
+
     -(void)countWeakObjects {
         Int c=0;
         for (NSObject *o in __array) if (o.isWeakSelf) c++;
@@ -63,22 +66,33 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         @-100 __array=[[NSArray alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
-        @-100 __array=[[NSArray alloc] initWithCoder:coder];[self countWeakObjects];
+        @-100 __array=[[NSArray alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithArray:(NSArray*)array {
-        @-100 __array=[[NSArray alloc] initWithArray:array];[self countWeakObjects];
+        @-100 __array=(insertsWeakObjectsByDefault?array.weakCopy:[[NSArray alloc] initWithArray:array]);
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
-        @-100 __array=[[NSArray alloc] initWithArray:array copyItems:copy];[self countWeakObjects];
+        @-100 __array=[[NSArray alloc] initWithArray:array copyItems:copy];
+        if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithContentsOfFile:(NSString*)file {
-        @-100 __array=[[NSArray alloc] initWithContentsOfFile:file];[self countWeakObjects];
+        @-100 __array=[[NSArray alloc] initWithContentsOfFile:file];
+        if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithContentsOfURL:(NSURL*)url {
-        @-100 __array=[[NSArray alloc] initWithContentsOfURL:url];[self countWeakObjects];
+        @-100 __array=[[NSArray alloc] initWithContentsOfURL:url];
+        if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
-        @-100 __array=[[NSArray alloc] initWithObjects:objects count:count];[self countWeakObjects];
+        @-100 __array=[[NSArray alloc] initWithObjects:objects count:count];
+        if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
+        @-99[self countWeakObjects];
     }
 
 
@@ -410,6 +424,19 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 <MinimalMutableArray:Array,MutableArrayDelegate,ObjectEquate>
     NSMutableArray __mutableArray=nil (readonly,ivar=__mutableArray)
+    CollectionWeakness weakness=
+        -v{
+            switch (v) {
+                case CollectionIsEmpty:[self removeAllObjects];break;
+                case CollectionIsWeakAndStrong:default:break;
+                case CollectionIsWeak:
+                    if (self.weakness&CollectionIsStrong) [self setArray:__array.asWeak];
+                    break;
+                case CollectionIsStrong:
+                    if (self.weakness&CollectionIsWeak) [self setArray:__array.asStrong];
+                    break;
+            }
+        }
 
     -(init) {
         self.delegateForArray=self;
@@ -427,25 +454,31 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
     -(init)init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCoder:coder];[self countWeakObjects];
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     -(init[super init])initWithArray:(NSArray*)array {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array];[self countWeakObjects];
+        @!-100 __array=__mutableArray=(insertsWeakObjectsByDefault?array.weakMutableCopy:[[NSMutableArray alloc] initWithArray:array]);
     }
     -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array copyItems:copy];[self countWeakObjects];
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array copyItems:copy];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     -(init[super init])initWithContentsOfFile:(NSString*)file {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfFile:file];[self countWeakObjects];
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfFile:file];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     -(init[super init])initWithContentsOfURL:(NSURL*)url {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfURL:url];[self countWeakObjects];
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfURL:url];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
-        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithObjects:objects count:count];[self countWeakObjects];
+        @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithObjects:objects count:count];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     -(init[super init])initWithCapacity:(Unsigned)numItems {
-        @-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCapacity:numItems];[self countWeakObjects];
+        @-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCapacity:numItems];
+        if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
     
     
@@ -473,7 +506,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
             return(NO);
         }
         [self willTryToAddObjectsWithCount:1];
-        bool weak=NO;
+        bool weak=insertsWeakObjectsByDefault;
         if (![self shouldAddObject:object makeWeak:weak]) [self wontAddObject:object withIndex:index];
         else {
             id useObject;
@@ -521,7 +554,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         NSObject *object2=[__array objectAtIndex:index];
         if (object==object2) return(NO);
                 
-        bool weak=NO;
+        bool weak=insertsWeakObjectsByDefault;
         if (![self shouldAddObject:object makeWeak:weak]) [self wontAddObject:object withIndex:index];
         else {
             id useObject;
@@ -574,7 +607,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
             Unsigned cwas=__array.count,added=0;
             [self willTryToAddObjectsWithCount:array.count];
             for (NSObject *object in array) {
-                bool weak=NO;
+                bool weak=insertsWeakObjectsByDefault;
                 if (![self shouldAddObject:object makeWeak:weak]) [self wontAddObject:object withIndex:cwas+added];
                 else {
                     id useObject;
@@ -606,7 +639,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         
         [self willTryToAddObjectsWithCount:objects.count];
         for (NSObject *object in objects) {
-            bool weak=NO;
+            bool weak=insertsWeakObjectsByDefault;
             if (![self shouldAddObject:object makeWeak:weak]) {
                 [self wontAddObject:object withIndex:index];
                 skipped++;
@@ -904,11 +937,6 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
 
 
 
-<WeakMutableArray>
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {@900 
-    }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@-900 
-    }
 
 
 

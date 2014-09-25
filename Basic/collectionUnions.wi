@@ -140,7 +140,7 @@ UnionSet<UnionSet>
                 [self didRemoveObject:object];
             }
             for (NSObject *object in inss) {
-                bool weak=NO;
+                bool weak=insertsWeakObjectsByDefault;
                 if ([self shouldAddObject:object makeWeak:weak]) {
                     [self willAddObject:object];
                     [__mutableSet addObject:[object strongSelf]]
@@ -312,7 +312,7 @@ UnionDictionary<UnionDictionary>
                 id newObject=nil;
                 for (Int d=del.depth+1;d<self.dictionaries.count;d++) {
                     newObject=[(NSDictionary*)[self.dictionaries objectAtIndex:d] objectForKey:key];
-                    bool weak=NO;
+                    bool weak=insertsWeakObjectsByDefault;
                     if (newObject&&[self shouldAddObject:newObject forKey:key makeWeak:weak]) {n.intValue=d;break;}
                 }
                 if (newObject) {
@@ -358,7 +358,7 @@ UnionDictionary<UnionDictionary>
             Int d=0;
             for (NSDictionary *dict in self.dictionaries) {
                 object=[dict objectForKey:key];
-                bool weak=NO;
+                bool weak=insertsWeakObjectsByDefault;
                 if (object&&[self shouldAddObject:object forKey:key makeWeak:weak]) break;
                 d++;
             }

@@ -1,7 +1,7 @@
 
 
 
-NSDictionary
+NSDictionary<WeakNSCollection> "__MutableClass__=>NSMutableDictionary"
     -(CollectionWeakness)weakness
         CollectionWeakness __block ret=CollectionIsEmpty;
         [self enumerateKeysAndObjectsWithOptions:0 usingBlock:^(id key, id object, BOOL *stop) {
@@ -39,7 +39,7 @@ MutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirrorTe
 
 
 
-WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirrorTester,WeakMutableDictionary> {}
+WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirrorTester,WeakCollection,MutableDictionary> {}
 
 
 
@@ -52,6 +52,17 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 <Dictionary>
     NSDictionary __dictionary=nil (readonly,dealloc,ivar=__dictionary)
+    bool insertsWeakObjectsByDefault (nodef)
+    Int weakObjectCount=0 (readonly)
+    CollectionWeakness weakness=
+        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        -v{}
+
+    -(void)countWeakObjects {
+        Int c=0;
+        for (kid o in __dictionary) if ([[__dictionary objectForKey:o] isWeakSelf]) c++;
+        weakObjectCount=c;
+    }
 
 
     // initializing a set
@@ -61,21 +72,32 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
         @-100 __dictionary=[[NSDictionary alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithContentsOfFile:(NSString*)file {
         @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfFile:file];
+        if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithContentsOfURL:(NSURL*)url {
         @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfURL:url];
+        if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary {
-        @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary];
+        @-100 __dictionary=(insertsWeakObjectsByDefault?dictionary.weakCopy:[[NSDictionary alloc] initWithDictionary:dictionary]);
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
         @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary copyItems:copy];
+        if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count {
         @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
+        if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
+        @-99[self countWeakObjects];
     }
 
 
@@ -371,6 +393,20 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 <MinimalMutableDictionary:Dictionary,MutableDictionaryDelegate,ObjectEquate>
     NSMutableDictionary __mutableDictionary=nil (readonly,ivar=__mutableDictionary)
+    CollectionWeakness weakness=
+        -v{
+            switch (v) {
+                case CollectionIsEmpty:[self removeAllObjects];break;
+                case CollectionIsWeakAndStrong:default:break;
+                case CollectionIsWeak:
+                    if (self.weakness&CollectionIsStrong) [self setDictionary:__dictionary.asWeak];
+                    break;
+                case CollectionIsStrong:
+                    if (self.weakness&CollectionIsWeak) [self setDictionary:__dictionary.asStrong];
+                    break;
+            }
+        }
+
 
     -(init) {
         self.delegateForDictionary=self;
@@ -390,24 +426,31 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithContentsOfFile:(NSString*)file {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfFile:file];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithContentsOfURL:(NSURL*)url {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfURL:url];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:copy];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
     -(init[super init])initWithCapacity:(Unsigned)numItems {
         @-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCapacity:numItems];
+        if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
 
 
@@ -423,16 +466,19 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         if (!object) return([self _removeObjectForKey:key]);
         id was=[__dictionary objectForKey:key];
         if (was==object) return(NO);
-        bool weak=NO;
+        bool weak=insertsWeakObjectsByDefault;
         if (![self shouldAddObject:object forKey:key makeWeak:weak]) return(NO);
         if (was) {
             [self willReplaceObject:was withObject:object forKey:key];
+            if ([was isWeakSelf]) --weakObjectCount;
             [__mutableDictionary setObject:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
+            if (weak) weakObjectCount++;
             [self didReplaceObject:was withObject:object forKey:key];
         }
         else {
             [self willReplaceObject:nil withObject:object forKey:key];
             [__mutableDictionary setObject:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
+            if (weak) weakObjectCount++;
             [self didReplaceObject:nil withObject:object forKey:key];
         }
         return(YES);
@@ -442,6 +488,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         NSObject *object=[__dictionary objectForKey:key];
         if (!object) return(NO);
         [self willReplaceObject:object withObject:nil forKey:key];
+        if ([object isWeakSelf]) --weakObjectCount;
         [__mutableDictionary removeObjectForKey:key];
         [self didReplaceObject:object withObject:nil forKey:key];
         return(YES);
@@ -467,18 +514,21 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     }
 
     -(bool)_setValue:(id)object forKey:(NSString*)key {
-        bool weak=NO;
+        bool weak=insertsWeakObjectsByDefault;
         if (![self shouldAddObject:object forKey:key makeWeak:weak]) return(NO);
         id was=[__dictionary valueForKey:key];
         if (was==object) return(NO);
         if (was) {
             [self willReplaceObject:was withObject:object forKey:key];
+            if ([was isWeakSelf]) --weakObjectCount;
             [__mutableDictionary setValue:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
+            if (weak) weakObjectCount++;
             [self didReplaceObject:was withObject:object forKey:key];
         }
         else {
             [self willReplaceObject:nil withObject:object forKey:key];
             [__mutableDictionary setValue:(weak?[object weakSelf]:[object strongSelf]) forKey:key];
+            if (weak) weakObjectCount++;
             [self didReplaceObject:nil withObject:object forKey:key];
         }
         return(YES);
@@ -516,6 +566,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         for (id<NSCopying> key in was) {
             [self willReplaceObject:[was objectForKey:key] withObject:nil forKey:key];
         }
+        weakObjectCount=0;
         [__mutableDictionary removeAllObjects];
         for (id<NSCopying> key in was) {
             [self didReplaceObject:[was objectForKey:key] withObject:nil forKey:key];
@@ -535,11 +586,8 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     
     
 
-<WeakMutableDictionary>
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
-    }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
-    }
+
+
 
 <ModelMutableDictionary>
     -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {@-200 

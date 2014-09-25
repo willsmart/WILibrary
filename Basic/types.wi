@@ -117,6 +117,7 @@ type OSType
 sys CADisplayLink
 sys NSRegularExpression
 sys UITapGestureRecognizer
+type CollectionWeakness
 
 type Mat44 "typedef:struct Mat44"
 type Vec4 "typedef:struct Vec4"

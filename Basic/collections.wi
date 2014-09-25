@@ -18,15 +18,10 @@ Globals -
 
 
 
+<WeakCollection>
+    bool insertsWeakObjectsByDefault=YES
 
 
-<WeakSet:Set>
-    -(void)makeWeak {
-    }
-    -(void)makeStrong {
-    }
-    -(init) {@-500 [self makeWeak];}
-    -(void)dealloc {@-500 [self makeStrong];}
 
 <ModelSet:Set>
     -(void)makeModel {
@@ -42,14 +37,6 @@ Globals -
     -(init) {@-500 [self makeModel];}
     -(void)dealloc {@-500 [self makeNonModel];}
 
-
-<WeakDictionary:Dictionary>
-    -(void)makeWeak {
-    }
-    -(void)makeStrong {
-    }
-    -(init) {@-500 [self makeWeak];}
-    -(void)dealloc {@-500 [self makeStrong];}
 
 <ModelDictionary:Dictionary>
     -(void)makeModel {
@@ -72,14 +59,6 @@ Globals -
     -(void)dealloc {@-500 [self makeNonModel];}
 
 
-
-<WeakArray:Array>
-    -(void)makeWeak {
-    }
-    -(void)makeStrong {
-    }
-    -(init) {@-500 [self makeWeak];}
-    -(void)dealloc {@-500 [self makeStrong];}
 
 <ModelArray:Array>
     -(void)makeModel {
@@ -157,19 +136,20 @@ ImmutableSet:NSSet<Set>
 ImmutableDictionary:NSDictionary<Dictionary>
 
 
-//WeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray> {}
+WeakMutableArray:NSMutableArray<MutableArray,WeakCollection> {}
+
 MutableArray:NSMutableArray<MutableArray> {}
 //ModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray> {}
 
-//NotifyingWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,NotifyingMutableArray> {}
+//NotifyingWeakMutableArray:NSMutableArray<MutableArray,WeakCollection,NotifyingMutableArray> {}
 //NotifyingMutableArray:NSMutableArray<MutableArray,NotifyingMutableArray> {}
 //NotifyingModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,NotifyingMutableArray> {}
 
-//CommitableWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,CommitableCollection> {}
+//CommitableWeakMutableArray:NSMutableArray<MutableArray,WeakCollection,CommitableCollection> {}
 //CommitableMutableArray:NSMutableArray<MutableArray,CommitableCollection> {}
 //CommitableModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,CommitableCollection> {}
 
-//RefCountedWeakMutableArray:NSMutableArray<MutableArray,WeakMutableArray,RefCountedObject> {}
+//RefCountedWeakMutableArray:NSMutableArray<MutableArray,WeakCollection,RefCountedObject> {}
 //RefCountedMutableArray:NSMutableArray<MutableArray,RefCountedObject> {}
 //RefCountedModelMutableArray:NSMutableArray<MutableArray,ModelMutableArray,RefCountedObject> {}
 
@@ -183,25 +163,62 @@ MutableArray:NSMutableArray<MutableArray> {}
 
 
 
-WeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary> {}
+WeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakCollection> {}
+
+
+<WeakNSCollection> "nap"
+    -(__MutableClass__*)weakMutableCopy
+        __MutableClass__ *ret=(__MutableClass__*)self.asWeak;
+        return([ret isEqual:self]?self.mutableCopy:ret);
+
+    -(__MutableClass__*)strongMutableCopy
+        __MutableClass__ *ret=(__MutableClass__*)self.asStrong;
+        return([ret isEqual:self]?self.mutableCopy:ret);
+
+    -(__Class__*)weakCopy
+        return(self.asWeak.copy);
+
+    -(__Class__*)strongCopy
+        return(self.asStrong.copy);
+
+    -(__Class__*)withWeakness:(CollectionWeakness)weakness
+        switch (weakness) {
+            case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self);
+            case CollectionIsWeak:return(self.asWeak);
+            case CollectionIsStrong:return(self.asStrong);
+        }
+
+    -(__Class__*)copyWithWeakness:(CollectionWeakness)weakness
+        switch (weakness) {
+            case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self.copy);
+            case CollectionIsWeak:return(self.weakCopy);
+            case CollectionIsStrong:return(self.strongCopy);
+        }
+
+    -(__MutableClass__*)mutableCopyWithWeakness:(CollectionWeakness)weakness
+        switch (weakness) {
+            case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self.mutableCopy);
+            case CollectionIsWeak:return(self.weakMutableCopy);
+            case CollectionIsStrong:return(self.strongMutableCopy);
+        }
 
 
 
 MutableDictionary:NSMutableDictionary<MutableDictionary> {}
 //ModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary> {}
 
-//NotifyingWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,NotifyingMutableDictionary> {}
+//NotifyingWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakCollection,NotifyingMutableDictionary> {}
 //NotifyingMutableDictionary:NSMutableDictionary<MutableDictionary,NotifyingMutableDictionary> {}
 //NotifyingModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,NotifyingMutableDictionary> {}
 
-//CommitableWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,CommitableCollection> {}
+//CommitableWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakCollection,CommitableCollection> {}
 
 
 
 CommitableMutableDictionary:NSMutableDictionary<MutableDictionary,CommitableCollection> {}
 //CommitableModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,CommitableCollection> {}
 
-//RefCountedWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakMutableDictionary,RefCountedObject> {}
+//RefCountedWeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakCollection,RefCountedObject> {}
 //RefCountedMutableDictionary:NSMutableDictionary<MutableDictionary,RefCountedObject> {}
 //RefCountedModelMutableDictionary:NSMutableDictionary<MutableDictionary,ModelMutableDictionary,RefCountedObject> {}
 
@@ -213,22 +230,22 @@ CommitableMutableDictionary:NSMutableDictionary<MutableDictionary,CommitableColl
 
 
     
-//WeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet> {}
+WeakMutableSet:NSMutableSet<MutableSet,WeakCollection> {}
 
 
 
 MutableSet:NSMutableSet<MutableSet> {}
 //ModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet> {}
 
-//NotifyingWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,NotifyingMutableSet> {}
+//NotifyingWeakMutableSet:NSMutableSet<MutableSet,WeakCollection,NotifyingMutableSet> {}
 //NotifyingMutableSet:NSMutableSet<MutableSet,NotifyingMutableSet> {}
 //NotifyingModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,NotifyingMutableSet> {}
 
-//CommitableWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,CommitableCollection> {}
+//CommitableWeakMutableSet:NSMutableSet<MutableSet,WeakCollection,CommitableCollection> {}
 //CommitableMutableSet:NSMutableSet<MutableSet,CommitableCollection> {}
 //CommitableModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,CommitableCollection> {}
 
-//RefCountedWeakMutableSet:NSMutableSet<MutableSet,WeakMutableSet,RefCountedObject> {}
+//RefCountedWeakMutableSet:NSMutableSet<MutableSet,WeakCollection,RefCountedObject> {}
 //RefCountedMutableSet:NSMutableSet<MutableSet,RefCountedObject> {}
 //RefCountedModelMutableSet:NSMutableSet<MutableSet,ModelMutableSet,RefCountedObject> {}
 

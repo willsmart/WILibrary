@@ -1,5 +1,5 @@
 
-ModelOwnedObjectSet:NSMutableSet<MutableSet,WeakMutableSet> "fn:model"
+ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model"
 
 <Model>
     ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] (ivar=objectsOwnedOnlyByModels)

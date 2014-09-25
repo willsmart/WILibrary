@@ -1,7 +1,7 @@
 
 
 
-NSSet
+NSSet<WeakNSCollection> "__MutableClass__=>NSMutableSet"
     -(CollectionWeakness)weakness
         CollectionWeakness __block ret=CollectionIsEmpty;
         [self enumerateObjectsWithOptions:0 usingBlock:^(id object,BOOL *stop) {
@@ -38,12 +38,11 @@ NSSet
 
 
 
-
 MutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester>
 
 
 
-WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableSet>
+WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,WeakCollection>
 
 
 
@@ -51,8 +50,18 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <Set>
-    bool retrievesWeakValues=0
+    bool retrievesWeakValues,insertsWeakObjectsByDefault (nodef)
     NSSet __set=nil (readonly,dealloc,ivar=__set)
+    Int weakObjectCount=0 (readonly)
+    CollectionWeakness weakness=
+        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        -v{}
+
+    -(void)countWeakObjects {
+        Int c=0;
+        for (NSObject *o in __set) if (o.isWeakSelf) c++;
+        weakObjectCount=c;
+    }
 
     // initializing a set
 
@@ -61,18 +70,27 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
         @-100 __set=[[NSSet alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithArray:(NSArray*)array {
         @-100 __set=[[NSSet alloc] initWithArray:array];
+        if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
         @-100 __set=[[NSSet alloc] initWithObjects:objects count:count];
+        if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithSet:(NSSet*)set {
-        @-100 __set=[[NSSet alloc] initWithSet:set];
+        @-100 __set=(insertsWeakObjectsByDefault?set.weakCopy:[[NSSet alloc] initWithSet:set]);
+        @-99[self countWeakObjects];
     }
     -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
         @-100 __set=[[NSSet alloc] initWithSet:set copyItems:copy];
+        if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
+        @-99[self countWeakObjects];
     }
 
 
@@ -217,9 +235,21 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
-    bool weak=0 (ivar=v_weak)
-
     NSMutableSet __mutableSet=nil (readonly,ivar=__mutableSet)
+    CollectionWeakness weakness=
+        -v{
+            switch (v) {
+                case CollectionIsEmpty:[self removeAllObjects];break;
+                case CollectionIsWeakAndStrong:default:break;
+                case CollectionIsWeak:
+                    if (self.weakness&CollectionIsStrong) [self setSet:__set.asWeak];
+                    break;
+                case CollectionIsStrong:
+                    if (self.weakness&CollectionIsWeak) [self setSet:__set.asStrong];
+                    break;
+            }
+        }
+
 
     -(init) {
         self.delegateForSet=self;
@@ -241,21 +271,26 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCoder:coder];
+        if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
     -(init[super init])initWithArray:(NSArray*)array {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithArray:array];
+        if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
     -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithObjects:objects count:count];
+        if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
     -(init[super init])initWithSet:(NSSet*)set {
-        @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set];
+        @!-100 __set=__mutableSet=(insertsWeakObjectsByDefault?set.weakMutableCopy:[[NSMutableSet alloc] initWithSet:set]);
     }
     -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set copyItems:copy];
+        if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
     -(init[super init])initWithCapacity:(Unsigned)numItems {
         @-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCapacity:numItems];
+        if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
         
 
@@ -302,10 +337,11 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     
     //Adding and Removing Entries
     -(bool)_addObject:(id)object {
-        bool isWeak=v_weak;
-        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:isWeak]) {
+        bool weak=insertsWeakObjectsByDefault;
+        if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [self willAddObject:object];
-            [__mutableSet addObject:(isWeak?[object weakSelf]:[object strongSelf])];
+            [__mutableSet addObject:(weak?[object weakSelf]:[object strongSelf])];
+            if (weak) weakObjectCount++;
             [self didAddObject:object];
             return(YES);
         }
@@ -326,6 +362,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
     -(bool)_removeObject:(id)object {
         if ([__set containsObject:object]) {
             [self willRemoveObject:object];
+            if ([object isWeakSelf]) --weakObjectCount;
             [__mutableSet removeObject:object];
             [self didRemoveObject:object];
             return(YES);
@@ -336,6 +373,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
         if (!self.count) return(NO);
         NSSet *was=[__set copy];
         for (NSObject *object in was) [self willRemoveObject:object];
+        weakObjectCount=0;
         [__mutableSet removeAllObjects];
         for (NSObject *object in was) [self didRemoveObject:object];
         return(YES);
@@ -378,11 +416,6 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,WeakMutableS
 
 
 
-<WeakMutableSet>
-    -(void)didAddObject:(id)object {@900 
-    }
-    -(void)willRemoveObject:(id)object {@-900 
-    }
 
 <ModelMutableSet>
     -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-200
