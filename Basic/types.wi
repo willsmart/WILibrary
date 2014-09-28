@@ -117,7 +117,7 @@ type OSType
 sys CADisplayLink
 sys NSRegularExpression
 sys UITapGestureRecognizer
-type CollectionWeakness
+type CollectionWeakness "typedef:enum {CollectionIsEmpty=0,CollectionIsWeak=1,CollectionIsStrong=2,CollectionIsWeakAndStrong=3}"
 
 type Mat44 "typedef:struct Mat44"
 type Vec4 "typedef:struct Vec4"

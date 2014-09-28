@@ -45,10 +45,12 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
         Int getThreadId();
         ULL getThreadMask();
 
+        NOSWIFT(
         bool authorized_thread(ULL&mask);
         bool authorize_thread(ULL&mask);
         void deauthorize_thread(ULL&mask);
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
+        )
     }
     -decl:impl:{
         Int g_prevThreadId=0;
@@ -63,6 +65,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
             return(ret);
         }
 
+        NOSWIFT(
         bool authorized_thread(ULL&mask) {
             ULL tmask=getThreadMask();
             if (!tmask) ERR("Too many threads for this implementation of publicreadonly properties (64)");
@@ -84,6 +87,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
         void deauthorize_thread(ULL&mask) {
             mask&=~getThreadMask();
         }
+        )
     }
 
 <ClassObject>
@@ -110,16 +114,20 @@ type QuickHashTableOfClassCounts "typedef:QuickHashTable<UnsafeClassCount>"
 type ArrayOfClassCounts "typedef:Array<UnsafeClassCount>"
 Globals
     -decl
+        NOSWIFT(
         template class QuickHashTable<UnsafeClassCount>;
         extern QuickHashTableOfClassCounts *g_classCountht;
         extern ArrayOfClassCounts *g_classCountArray;
+        )
         extern NSMutableArray *g_classCounts;
         extern ClassCount *g_totalObjectCount;
         extern ClassCount *g_classCountForClass(Class clas);
 
     -decl:impl
+        NOSWIFT(
         QuickHashTableOfClassCounts *g_classCountht=nil;
         ArrayOfClassCounts *g_classCountArray=nil;
+        )
         NSMutableArray *g_classCounts=nil;
         ClassCount *g_totalObjectCount=nil;
         ClassCount *g_classCountForClass(Class clas) {
@@ -203,8 +211,10 @@ Globals
         //extern void retainFn(NSObject *me,Int &rc,Int &arc);
         //extern void releaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
         //extern void autoreleaseFn(NSObject *me,Int &rc,Int &arc,bool debugAutorelease);
+        NOSWIFT(
         extern void objInitFn(NSObject *me,LL &mei,LL &meci);
         extern void deallocFn(NSObject *me,LL &mei,LL &meci);
+        )
         extern NSString *g_objectName(id object);
         extern const char *g_cobjectName(id object);
     
@@ -246,6 +256,7 @@ Globals
         //    }
         //}
 
+        NOSWIFT(
         void objInitFn(NSObject *me,LL &mei,LL &meci) {
             ClassCount *c=g_classCountForClass([me class]);
             c.count++;
@@ -275,6 +286,7 @@ Globals
             objectDeallocated(me);
             mei=meci=-1;
         }
+        )
         NSString *g_objectName(id object) {
             if ([(NSObject*)object respondsToSelector:@selector(objectName)]) return([(NSObject<Object>*)object objectName]);
             else return([NSString stringWithFormat:@"%s:%p",class_getName([(NSObject*)object class]),object]);
@@ -336,9 +348,7 @@ Globals
         NSString *__getCurrentTraceString();
 
         #define ADDTRACE(__trcfnnm) TraceFunctionTracker __functionTracker((((__bridge const void*)self)!=(__bridge const void*)g_trace)&&(((__bridge const void*)self)!=(__bridge const void*)[g_trace class]),__trcfnnm);
-        
-        extern QuickHashOfInts *g_noTraceHT;
-        
+
         void addTrace(NSString *trace,Int depth);
         void addTraceCString(const char *trace,Int depth);
         void finishDepth(Int depth);
@@ -353,8 +363,10 @@ Globals
 
         NSString *threadNameJSON();
         
+        NOSWIFT(
         #define CurrentThreadHash ((ULL)(__bridge const void*)(id)NSThread.currentThread)
 
+        extern QuickHashOfInts *g_noTraceHT;
         class TraceFunctionTracker {
             public:
                 LL depth;
@@ -376,6 +388,7 @@ Globals
                     }
                 }
         };
+        )
         extern Int g_numNamedThreads;
 
     -interfaces:impl
@@ -383,7 +396,7 @@ Globals
         Trace *g_trace=nil;
         pthread_key_t TraceFunctionTracker::key=0;
         Int g_numNamedThreads=0;
-        
+
         QuickHashOfInts *g_noTraceHT=NULL;
         void preventTrace() {
             if (!g_noTraceHT) g_noTraceHT=NEWCONSb(QuickHashOfInts,((ContextIndex){0},1,2048));

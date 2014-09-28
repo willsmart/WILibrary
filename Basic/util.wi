@@ -140,10 +140,13 @@ NSString "fn:sys"
     }
 
     -iface
+        NOSWIFT(
         NSString *JSONStringForString(NSString *str, kid threadTmpDataKey=nil);
         NSString *JSONStringForCString(const char *from, Int length, NSMutableData *tmpData, kid threadTmpDataKey=nil);
         const unichar *JSONunicharsStringForCString(const char *from, Int length, NSMutableData *__strong*ptmpData, Int *retLength,kid threadTmpDataKey=nil);
+        )
     -impl
+        NOSWIFT(
         NSString *JSONStringForString(NSString *str, kid threadTmpDataKey) {
             return(JSONStringForCString([str cStringUsingEncoding:NSASCIIStringEncoding],str.length,nil,threadTmpDataKey));
         }
@@ -185,6 +188,7 @@ NSString "fn:sys"
             *to=0;
             if (retLength) *retLength=(Int)(to-toWas);
             return(toWas);
+            )
         }
 
 

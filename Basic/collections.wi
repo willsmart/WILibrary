@@ -8,9 +8,6 @@
 "collectionTester.wi"
 //"collectionUnions.wi"
 
-Globals -
-    enum CollectionWeakness {CollectionIsEmpty=0,CollectionIsWeak=1,CollectionIsStrong=2,CollectionIsWeakAndStrong=3};
-
 <CommitableCollection:Commitable>
     -(void)stateOK {@100 [self markDirty];}
     -(Int)commitProperties:(Int)substageIndex {modelObjectHasChanged=YES;}
@@ -82,14 +79,14 @@ ModelArray<ModelArray>
 
 
 
-type id100 "typedef:struct{id ids[100];}"
+type id100 "typedef:struct{void *ids[100];}"
 <DebugMutableArray>
     Unsigned array_count=0
     id100 array_objects=nil
     -(void)stateOK {
         array_count=0;
         for (id o in __array) {
-            array_objects.ids[array_count++]=o;
+            array_objects.ids[array_count++]=(__bridge void*)o;
             if (array_count==100) break;
         }
         memset(array_objects.ids+array_count,0,sizeof(array_objects.ids[0])*(100-array_count));
@@ -102,14 +99,14 @@ type id100 "typedef:struct{id ids[100];}"
     -(void)stateOK {
         set_count=0;
         for (id o in __set) {
-            set_objects.ids[set_count++]=o;
+            set_objects.ids[set_count++]=(__bridge void*)o;
             if (set_count==100) break;
         }
         memset(set_objects.ids+set_count,0,sizeof(set_objects.ids[0])*(100-set_count));
         set_count=__set.count;
     }
 
-type keyval "typedef:struct{id<NSCopying>key;id value;}"
+type keyval "typedef:struct{void *key,*value;}"
 type keyval100 "typedef:struct{keyval keyvals[100];}"
 <DebugMutableDictionary>
     Unsigned dictionary_count=0
@@ -117,8 +114,8 @@ type keyval100 "typedef:struct{keyval keyvals[100];}"
     -(void)stateOK {
         dictionary_count=0;
         for (id k in __dictionary) {
-            dictionary_objects.keyvals[dictionary_count].key=k;
-            dictionary_objects.keyvals[dictionary_count++].value=[__dictionary objectForKey:k];
+            dictionary_objects.keyvals[dictionary_count].key=(__bridge void*)k;
+            dictionary_objects.keyvals[dictionary_count++].value=(__bridge void*)[__dictionary objectForKey:k];
             if (dictionary_count==100) break;
         }
         memset(dictionary_objects.keyvals+dictionary_count,0,sizeof(dictionary_objects.keyvals[0])*(100-dictionary_count));
