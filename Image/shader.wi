@@ -119,7 +119,7 @@ Shader
     
     NSDictionary mainFragFn (fragFunction,-void main()/*frag*/;)
     -void main()/*frag*/ {@-999 
-        lowp vec4 colour=lowp vec4(0.9,0.0,1.0,1.0);
+        lowp vec4 colour=vec4(0.9,0.0,1.0,1.0);
         @999 gl_FragColor=colour;
     }
     
@@ -1281,7 +1281,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                     [t.str isEqualToString:@"mat2"]||
                     [t.str isEqualToString:@"mat3"]||
                     [t.str isEqualToString:@"mat4"]) {
-                    if (!hasp) {
+                    if ((!hasp)&&!((r.tokenizer.tokens.count>r.pos+1)&&[r.tokenizer.tokens[r.pos+1].str isEqualToString:@"("])) {
                         [r.tokenizer.tokens insertObject:[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w'] atIndex:r.pos++];
                         [r.tokenizer.tokens insertObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z'] atIndex:r.pos++];
                         changed=YES;
@@ -1404,8 +1404,8 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
                         else {utype=un_vec2;N=2;}
                         
                         NSMutableArray *newTokens=[MutableArray array];
-                        [newTokens addObject:[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w']];
-                        [newTokens addObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z']];
+//                        [newTokens addObject:[[WReaderToken alloc] initWithString:@"highp" bracketCount:t.bracketCount type:'w']];
+//                        [newTokens addObject:[[WReaderToken alloc] initWithString:@" " bracketCount:t.bracketCount type:'z']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:[UniformTypeFunctions stringForType:utype] bracketCount:t.bracketCount type:'w']];
                         [newTokens addObject:[[WReaderToken alloc] initWithString:@"(" bracketCount:t.bracketCount type:'o']];
                         for (Int i=0;i<N;i++) {

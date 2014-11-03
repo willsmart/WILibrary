@@ -7,8 +7,9 @@ Singletons
 
 
 
+"fn:meta"
 
-MetaRenderer <BaseObject> "fn:meta"
+MetaRenderer <BaseObject>
     UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)] (readonly,dealloc,ivar=webView)
 
     +(NSString*)jsStringForURL:(NSURL*)url {
@@ -125,7 +126,7 @@ MetaEnabledURLRegistryDelegate<MutableDictionaryDelegate,BaseObject>
 URLMetaEnableds<BaseObject>
 
     
-MetaRequestCache<BaseObject,RootCodable> "fn:meta"
+MetaRequestCache<BaseObject,RootCodable>
     LRUCache cache=[[LRUCache alloc] init] (publicreadonly,dealloc,ivar=cache)
 
     NSDictionary asDictionary=

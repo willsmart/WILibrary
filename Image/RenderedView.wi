@@ -25,7 +25,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
         @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
     }
 
-    -void main()/*frag*/ {@!-999 lowp vec4 colour=lowp vec4(1,0,1,1);
+    -void main()/*frag*/ {@!-999 lowp vec4 colour=vec4(1,0,1,1);
         @-500 {getColour}
         @!999 gl_FragColor=colour;
     }
