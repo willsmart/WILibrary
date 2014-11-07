@@ -19,17 +19,17 @@ Globals
 
 Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
 /**! --    (notenote) Note: Please think about making property "texA" publicreadonly !**/
-    Texture2D texA=[[Texture2D alloc] init] (readonly,dealloc,ivar=texA)
+    Texture2D texA=[[Texture2D alloc] init] (readonly)
 /**! --    (notenote) Note: Please think about making property "texB" publicreadonly !**/
-    Texture2D texB=[[Texture2D alloc] init] (readonly,dealloc,ivar=texB)
-    NSMutableData texdA=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdA)
-    NSMutableData texdB=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly,dealloc,ivar=texdB)
+    Texture2D texB=[[Texture2D alloc] init] (readonly)
+    NSMutableData texdA=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly)
+    NSMutableData texdB=[[NSMutableData alloc] initWithLength:CAMTEXSZ*CAMTEXSZ*4] (readonly)
     char lockedA=nil,lockedB=nil
     CGSize szA=nil,szB=nil
     Int last=nil (readonly,ivar)
     
     char direction=nil
-    AVCaptureSession sess=nil (readonly,ivar=sess,dealloc)
+    AVCaptureSession sess=nil (readonly)
 
 
     -(Texture2D*)tex:(Int)i {return(i==0?texA:texB);}

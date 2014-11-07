@@ -3,7 +3,7 @@
 
 
 <NSSetWrapper>
-    NSSet __set (readonly,dealloc)
+    NSSet __set (readonly)
 
     -(void)initObj {}
 
@@ -135,7 +135,7 @@
 
 
 <NSArrayWrapper>
-    NSArray __array (readonly,dealloc)
+    NSArray __array (readonly)
 
     -(void)initObj {}
 
@@ -395,7 +395,7 @@
 
 
 <NSDictionary Wrapper>
-    NSDictionary __dictionary (readonly,dealloc)
+    NSDictionary __dictionary (readonly)
 
     -(void)initObj {}
 
@@ -839,7 +839,7 @@ NSMutableSet
 MutableSet : NSMutableSet
     bool weakObjects
 
-    NSMutableSet __base (readonly,dealloc)
+    NSMutableSet __base (readonly)
 
     -(id)init {
         if (!(self=[super init])) return(nil);
@@ -976,7 +976,7 @@ MutableSet : NSMutableSet
 MutableArray : NSMutableArray
     bool weakObjects
 
-    NSMutableArray __base (readonly,dealloc)
+    NSMutableArray __base (readonly)
 
     –(void)addObject:(id)object {
         if ([self willAddObject:object atIndex:self.count]) {

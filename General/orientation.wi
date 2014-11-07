@@ -20,8 +20,8 @@ Orientation<BaseObject>
     float rotateMin=2 (readonly,ivar)
     float rotateScale=0.08 (readonly,ivar)
 
-    CLLocationManager locManager=[[CLLocationManager alloc] init] (readonly,dealloc,ivar=locManager)
-    CMMotionManager motManager=[[CMMotionManager alloc] init] (readonly,dealloc,ivar=motManager)
+    CLLocationManager locManager=[[CLLocationManager alloc] init] (readonly)
+    CMMotionManager motManager=[[CMMotionManager alloc] init] (readonly)
 
 
     -(void)dealloc {@-100 

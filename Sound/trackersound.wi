@@ -343,10 +343,10 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
         return([SonicBinPlay valForSample:si ci:0]);
     }
 
-    BinTracker t1=[[BinTracker alloc] initWithCI:0 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:0] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t1,dealloc)
-    BinTracker t2=[[BinTracker alloc] initWithCI:1 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:1] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t2,dealloc)
-    BinTracker t3=[[BinTracker alloc] initWithCI:2 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:2] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t3,dealloc)
-    BinTracker t4=[[BinTracker alloc] initWithCI:3 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:3] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly,ivar=t4,dealloc)
+    BinTracker t1=[[BinTracker alloc] initWithCI:0 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:0] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly)
+    BinTracker t2=[[BinTracker alloc] initWithCI:1 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:1] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly)
+    BinTracker t3=[[BinTracker alloc] initWithCI:2 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:2] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly)
+    BinTracker t4=[[BinTracker alloc] initWithCI:3 samplesPerCycle:[SonicBinPlay cycleSamples] wavesPerCycle:[SonicBinPlay cycleWaves:3] cyclesPerBuffer:[SonicBinPlay bufferCycles]] (readonly)
 
     Int recsiwas=0
 

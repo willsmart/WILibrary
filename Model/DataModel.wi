@@ -10,10 +10,10 @@
 
 PropertyData
     SEL getter=nil,setter=nil (readonly)
-    NSString name=nil (readonly,dealloc,ivar=name)
+    NSString name=nil (readonly)
     Class clas=nil (readonly)
     bool direct=nil (readonly)
-    NSString clasName=nil (readonly,dealloc,ivar=clasName)
+    NSString clasName=nil (readonly)
     -(init[super init])initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect {
         direct=adirect;
         name=aname;
@@ -25,7 +25,7 @@ PropertyData
 
 
 //DataRepresentationSchema
-//    NSArray childRepresentations=[NSMutableArray array] (readonly,dealloc)
+//    NSArray childRepresentations=[NSMutableArray array] (readonly)
 //
 //    NSString dataBinding
 //    NSURL _metaURL=nil
@@ -208,8 +208,8 @@ PropertyViewerDelegate<MutableSetDelegate>
 
 
 <DataModel:DataModelViewer>
-    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=dataModelParentFilterDel)
-    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_dataModelParentProperties,dealloc)
+    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (publicreadonly,ivar=dataModelParentFilterDel)
+    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_dataModelParentProperties)
 
 
     -(init) {@15 
@@ -318,7 +318,7 @@ PropertyViewerDelegate<MutableSetDelegate>
 
 
 Singletons
-    NSMutableDictionary dataModelPropertySelectors=[[NSMutableDictionary alloc] init] (dealloc,ivar=dataModelPropertySelectors,readonly)
+    NSMutableDictionary dataModelPropertySelectors=[[NSMutableDictionary alloc] init] (readonly)
 
 
 <DataModelViewer:HasProperties>

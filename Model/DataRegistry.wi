@@ -1,6 +1,6 @@
 
 Singletons
-    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil (ivar=rootDataRegistry,dealloc)
+    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil (ivar=rootDataRegistry)
 
 
 
@@ -69,15 +69,15 @@ DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
 
 DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedProxiedDictionaryDelegate,BaseObject>
     viewerInRegistry >s< <DataModelViewer> setOfMyViewer
-    WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] (ivar=myViewers,publicreadonly,dealloc)
-    WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] (ivar=allViewers,publicreadonly,dealloc)
-    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=propertyStack)
+    WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] (ivar=myViewers,publicreadonly)
+    WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] (ivar=allViewers,publicreadonly)
+    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,ivar=propertyStack)
 
     registry -m< ViewerListenerSet viewerListenerSet
 
     parent -s<~ DataRegistry child
 
-    DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (dealloc,publicreadonly,ivar=parentDel)
+    DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (publicreadonly,ivar=parentDel)
 
     -(init) {
         @10
@@ -230,7 +230,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
 
     
-    NSMutableSet viewersThatChanged=[[NSMutableSet alloc] init] (ivar=viewersThatChanged,dealloc,readonly)
+    NSMutableSet viewersThatChanged=[[NSMutableSet alloc] init] (readonly)
 
 
     -(void)willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
@@ -256,7 +256,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 ViewerListenerSet
     -(init)init {}
     viewerListenerSet -m<~ ViewerPropertyListenerSet viewerPropertyListenerSet
-    NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init] (ivar=propertiesThatChanged,dealloc,readonly)
+    NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init] (readonly)
 
     -(void)willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         ViewerPropertyListenerSet *ls=[self viewerPropertyListenerSetForKey:propertyKey];
@@ -318,7 +318,7 @@ ViewerPropertyListenerSet
                 dataRegistry=v;
                 self.propertyNamesListenedTo=ns;
             }
-        }=nil (ivar=dataRegistry,dealloc)
+        }=nil (ivar=dataRegistry)
 
     NSSet propertyNamesListenedTo=
         {

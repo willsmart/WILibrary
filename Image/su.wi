@@ -49,7 +49,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
             uiScrollView.contentSize=CGSizeMake(1000,1000);
             uiScrollView.contentOffset=CGPointMake(500,500);
             //uiScrollView.delegate=self;
-        } (dealloc,ivar=uiScrollView)
+        } (ivar=uiScrollView)
 
     -(CGPoint)nearestBoundaryPointForPoint:(CGPoint)pt {@999 
         return(pt);

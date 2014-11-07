@@ -25,7 +25,7 @@ UnionSetDelegate<MutableSetDelegate,BaseObject>
         [aset addDelegate:self];
     }
 
-    NSMutableSet shouldAddObjects=[[NSMutableSet alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    NSMutableSet shouldAddObjects=[[NSMutableSet alloc] init] (readonly)
     
     -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret&&[self.owner shouldAddObject:object makeWeak:weak fromDelegate:self]) {
@@ -58,11 +58,11 @@ UnionSetDelegate<MutableSetDelegate,BaseObject>
 UnionSet<UnionSet>
 
 <UnionSet:Set,ObjectEquate,MutableSetDelegate>
-    NSMutableDictionary __countsForKeys=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=__depthsForKeys)
-    NSMutableSet __mutableSet=[[NSMutableSet alloc] init] (readonly,ivar=__mutableSet)
+    NSMutableDictionary __countsForKeys=[[NSMutableDictionary alloc] init] (readonly)
+    NSMutableSet __mutableSet=[[NSMutableSet alloc] init] (readonly)
     
     
-    MutableSet sets=[[MutableSet alloc] init] (readonly,dealloc,ivar=sets)
+    MutableSet sets=[[MutableSet alloc] init] (readonly)
     -(init) {@-5 
         __set=__mutableSet;
         delegateForSet=self;
@@ -208,7 +208,7 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
         [adictionary addDelegate:self];
     }
 
-    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly)
     
     -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         if (ret&&[self.owner shouldAddObject:object forKey:key makeWeak:weak fromDelegate:self]) {
@@ -248,11 +248,11 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
 UnionDictionary<UnionDictionary>
 
 <UnionDictionary:Dictionary,ObjectEquate,MutableDictionaryDelegate>
-    NSMutableDictionary __depthsForKeys=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=__depthsForKeys)
-    NSMutableDictionary __mutableDictionary=[[NSMutableDictionary alloc] init] (readonly,ivar=__mutableDictionary)
+    NSMutableDictionary __depthsForKeys=[[NSMutableDictionary alloc] init] (readonly)
+    NSMutableDictionary __mutableDictionary=[[NSMutableDictionary alloc] init] (readonly)
     
     
-    MutableArray dictionaries=[[MutableArray alloc] init] (readonly,dealloc,ivar=dictionaries)
+    MutableArray dictionaries=[[MutableArray alloc] init] (readonly)
     -(init) {@-5 
         __dictionary=__mutableDictionary;
         delegateForDictionary=self;
@@ -447,9 +447,9 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     arrayDelegate >a~ <UnionArray> owner
 
     Int addIndex,willSkipped,didSkipped=nil
-    NSMutableIndexSet unionHasIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionHasIndexes)
-    NSMutableIndexSet unionWillHaveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillHaveIndexes)
-    NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=unionWillRemoveIndexes)
+    NSMutableIndexSet unionHasIndexes=[[NSMutableIndexSet alloc] init] (readonly)
+    NSMutableIndexSet unionWillHaveIndexes=[[NSMutableIndexSet alloc] init] (readonly)
+    NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly)
 
 
     -(init[super init])initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray {
@@ -457,7 +457,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     }
 
 
-    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly,dealloc,ivar=shouldAddObjects)
+    NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly)
     
     -(void)willTryToAddObjectsWithCount:(Unsigned)count {
         [self.owner willTryToAddObjectsWithCount:count fromDelegate:self];
@@ -543,7 +543,7 @@ UnionArray<UnionArray>
     MutableArray __unionArray=[[MutableArray alloc] init] (readonly,ivar=__mutableArray)
     
     
-    MutableArray arrays=[[MutableArray alloc] init] (readonly,dealloc,ivar=arrays)
+    MutableArray arrays=[[MutableArray alloc] init] (readonly)
     -(init) {@-5 
         __array=__unionArray.__array;
         __unionArray.arrayDelegate=self;
@@ -598,8 +598,8 @@ UnionArray<UnionArray>
 
 
 
-    NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] (readonly,dealloc,ivar=tmpis);
-    NSMutableArray __tmpa=[[NSMutableArray alloc] init] (readonly,dealloc,ivar=tmpa);
+    NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] (readonly,ivar=tmpis);
+    NSMutableArray __tmpa=[[NSMutableArray alloc] init] (readonly,ivar=tmpa);
 
     -(void)doAddObjects {
         [tmpis removeAllIndexes];

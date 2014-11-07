@@ -1,6 +1,6 @@
 
 <LinkEndpoint>
-    id owner=nil (readonly,nonatomic,ivar=v_owner)
+    id owner=nil (readonly,nonatomic)
     bool retains=nil (readonly,nonatomic)
     SEL otherEndObjectToEndpoint=nil,acceptableSel=nil (readonly,nonatomic)
 
@@ -16,7 +16,7 @@
 
     -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
         @-900 
-        v_owner=aowner;
+        owner=aowner;
         retains=aretains;
         acceptableSel=aacceptableSel;
         otherEndObjectToEndpoint=aotherEndObjectToEndpoint;

@@ -134,7 +134,7 @@ ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
 
 
 Singletons
-    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}=nil (dealloc,ivar)
+    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}=nil (ivar)
     NSString description={
         [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,(int)self.shaderURLConversionCache.count];
     }
@@ -207,7 +207,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
 
 
 Singletons
-    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}=nil (dealloc,ivar)
+    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}=nil (ivar)
 
     -(void)startImageTicker {
         [self.shaderTicker startWithInterval:0.5];

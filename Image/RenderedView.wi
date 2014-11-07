@@ -266,15 +266,15 @@ ShaderTicker
 
 
 Singletons
-    ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));}=nil (dealloc,ivar)
+    ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));}=nil (ivar)
     NSString description={
         [ret appendFormat:@"\nImageShaderRequestCaches %p has %d/%d in cache, %d/%d outstanding\n",self.imageShaderRequestCaches,(int)self.imageShaderRequestCaches.imageShaderRequestCache.cache.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.cache.count,(int)self.imageShaderRequestCaches.imageShaderRequestCache.proxyList.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.proxyList.count];
     }
 
     
 ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
-    ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (publicreadonly,dealloc,ivar=imageShaderRequestCache)
-    ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] (publicreadonly,dealloc,ivar=shaderImageRequestCache)
+    ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (publicreadonly,ivar=imageShaderRequestCache)
+    ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] (publicreadonly,ivar=shaderImageRequestCache)
 
     -(init) {
         [self setCache:imageShaderRequestCache forKey:@"imageShaders"];
@@ -313,7 +313,7 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
     }
 
 ImageShaderRequest<Request> "fn:renderimage"
-    <HasURL,HasImageShader> object=nil (readonly,dealloc,ivar=object)
+    <HasURL,HasImageShader> object=nil (readonly)
     -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader>*)aobject {
         object=aobject;
     }
@@ -342,7 +342,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
     }
 
 ShaderImageRequest<Request> "fn:renderimage"
-    <HasURL,HasImageShader,HasImage> object=nil (readonly,dealloc,ivar=object)
+    <HasURL,HasImageShader,HasImage> object=nil (readonly)
     -(init[super init])initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject {
         object=aobject;
     }
@@ -392,7 +392,7 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
 
 ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
     proxyOwner >s~ <ImageRequestOwner> owner
-    ImageToken token=nil (dealloc,ivar=token)
+    ImageToken token=nil (ivar=token)
 
     -(init[super init])initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner {@100 
         token=atoken;
@@ -461,14 +461,14 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
 
 
 Singletons
-    ImageRenderer imageRenderer={return(v_imageRenderer?v_imageRenderer:(v_imageRenderer=[[ImageRenderer alloc] init]));}=nil (dealloc,ivar)
+    ImageRenderer imageRenderer={return(v_imageRenderer?v_imageRenderer:(v_imageRenderer=[[ImageRenderer alloc] init]));}=nil (ivar)
     NSString description={
         [ret appendFormat:@"\nxImageRenderer %p\n",self.imageRenderer];
     }
 
 ImageRenderer <BaseObject> "fn:render"
 
-    Texture2D texture=[[Texture2D alloc] init] (publicreadonly,dealloc,ivar=texture)
+    Texture2D texture=[[Texture2D alloc] init] (publicreadonly,ivar=texture)
     -(init) {
         [texture initContext];
         [texture loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:2048 pixelsHigh:2048 contentSize:CGSizeMake(0,0)];
@@ -556,8 +556,8 @@ ImageRenderer <BaseObject> "fn:render"
 
 
 Singletons
-    NSRegularExpression SingleURLImageView_szregex=nil (readonly,dealloc)
-    NSRegularExpression SingleURLImageView_rectregex=nil (readonly,dealloc)
+    NSRegularExpression SingleURLImageView_szregex=nil (readonly)
+    NSRegularExpression SingleURLImageView_rectregex=nil (readonly)
 
 
     -(init) {
@@ -577,7 +577,7 @@ Singletons
             [imageViewURLRegistry addDelegate:[[ImageViewURLRegistryDelegate alloc] init]];
         }
         return(imageViewURLRegistry);
-    }=nil (ivar=imageViewURLRegistry,dealloc,publicreadonly)
+    }=nil (ivar=imageViewURLRegistry,publicreadonly)
     -(void)refreshImageViewURLs {
         NSSet *s=self.urlImageViews.urlImageViews.__set.copy;
         for (URLImageView *v in s) [v refreshFromRegisteredURLs];
@@ -588,7 +588,7 @@ Singletons
             urlImageViews=[[URLImageViews alloc] init];
         }
         return(urlImageViews);
-    }=nil (ivar=urlImageViews,dealloc,publicreadonly)
+    }=nil (ivar=urlImageViews,publicreadonly)
 
     NSString description={
         [ret appendFormat:@"\nImageViewURLRegistry %@\n",self.imageViewURLRegistry.allKeys.description];
@@ -640,7 +640,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
                 self.imageURL=url;
             }
-        }=nil (ivar=imageURLKey,dealloc)
+        }=nil (ivar=imageURLKey)
 
     NSString highlightedImageURLKey=
         {return(highlightedImageURLKey);}
@@ -651,7 +651,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
                 self.highlightedImageURL=url;
             }
-        }=nil (ivar=highlightedImageURLKey,dealloc)
+        }=nil (ivar=highlightedImageURLKey)
 
     CGRect imageRenderedAsRect=nil,highlightedImageRenderedAsRect=nil (ivar,readonly)
     +(CGRect)roundedRect:(CGRect)r {
@@ -678,7 +678,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 imageURL=v;
                 self.sizedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:imageURL] frame:self.frame toRect:&imageRenderedAsRect];
             }
-        }=nil (ivar=imageURL,dealloc)
+        }=nil (ivar=imageURL)
 
     NSURL highlightedImageURL=
         {return(highlightedImageURL);}
@@ -696,7 +696,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 highlightedImageURL=v;
                 self.sizedHighlightedImageURL=[__Class__ sizedURLForURL:[ShaderURLConversion simplifiedURLForURL:highlightedImageURL] frame:self.frame toRect:&highlightedImageRenderedAsRect];
             }
-        }=nil (ivar=highlightedImageURL,dealloc)
+        }=nil (ivar=highlightedImageURL)
 
 
     NSURL sizedImageURL=
@@ -725,7 +725,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 }
                 else {needImage=YES;[self goWait];}
             }
-        }=nil (ivar=sizedImageURL,dealloc)
+        }=nil (ivar=sizedImageURL)
 
     NSURL sizedHighlightedImageURL=
         {return(sizedHighlightedImageURL);}
@@ -753,7 +753,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
                 }
                 else {needHighlightedImage=YES;[self goWait];}
             }
-        }=nil (ivar=sizedHighlightedImageURL,dealloc)
+        }=nil (ivar=sizedHighlightedImageURL)
 
     bool needImage=nil,needHighlightedImage=nil (readonly)
 

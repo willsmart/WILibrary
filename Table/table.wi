@@ -109,13 +109,13 @@
             header=[[__HeaderClass__ alloc] init];
         }
         return(header);
-    }=nil (ivar=header,dealloc,readonly!)
+    }=nil (readonly!)
     UIView footer={
         if (!footer) {
             footer=[[__FooterClass__ alloc] init];
         }
         return(footer);
-    }=nil (ivar=footer,dealloc,readonly!)
+    }=nil (readonly!)
 
 
 
@@ -127,7 +127,7 @@
     float cellHeight={return(self.likelyCellHeight);}
 
     NSString cellReuseIdentifier=
-        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}=nil (ivar=cellReuseIdentifier,readonly!)
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}=nil (readonly!)
 
     UITableViewCell newUITVCell={
         UITableViewCell *ret=[[__CellClass__ alloc] init];
@@ -146,7 +146,7 @@
     Int tag=0
     Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} (ivar=uiTVCellClass)
     NSString cellReuseIdentifier=
-        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (ivar=cellReuseIdentifier,readonly!)
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (readonly!)
     UITableViewCell newUITVCell={@-999
         UITableViewCell *ret=[ViewUtilities loadViewOfClass:self.uiTVCellClass withTag:tag fromNibWithName:self.nibName];
         if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
@@ -164,11 +164,11 @@
     UIView header={@-999 
         id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
         @999 return(ret);
-    } (ivar=header,dealloc,readonly!)
+    } (readonly!)
     UIView footer={@-999 
         id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
         @999 return(ret);
-    } (ivar=footer,dealloc,readonly!)
+    } (readonly!)
         
 
 

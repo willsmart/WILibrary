@@ -46,7 +46,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 <Array>
-    NSArray __array=nil (readonly,dealloc,ivar=__array)
+    NSArray __array=nil (readonly)
     bool insertsWeakObjectsByDefault (nodef)
     Int weakObjectCount=0 (readonly)
     CollectionWeakness weakness=
@@ -354,7 +354,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     NSArray delegateForArray=nil (assign,ivar=delegateForArray)
     -(void)delegateForArrayChanged {}
 
-    <MutableArrayDelegate> arrayDelegate=nil (dealloc,ivar=arrayDelegate,readonly)
+    <MutableArrayDelegate> arrayDelegate=nil (readonly)
     -(void)addDelegate:(NSObject<MutableArrayDelegate>*)v {
         if (v.arrayDelegate) return;
         if (v==self) return;
@@ -423,7 +423,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 <MinimalMutableArray:Array,MutableArrayDelegate,ObjectEquate>
-    NSMutableArray __mutableArray=nil (readonly,ivar=__mutableArray)
+    NSMutableArray __mutableArray=nil (readonly)
     CollectionWeakness weakness=
         -v{
             switch (v) {

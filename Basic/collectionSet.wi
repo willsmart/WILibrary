@@ -51,7 +51,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 <Set>
     bool retrievesWeakValues,insertsWeakObjectsByDefault (nodef)
-    NSSet __set=nil (readonly,dealloc,ivar=__set)
+    NSSet __set=nil (readonly)
     Int weakObjectCount=0 (readonly)
     CollectionWeakness weakness=
         {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
@@ -191,7 +191,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     NSSet delegateForSet=nil (assign,ivar=delegateForSet)
     -(void)delegateForSetChanged {}
 
-    <MutableSetDelegate> setDelegate=nil (dealloc,ivar=setDelegate,readonly)
+    <MutableSetDelegate> setDelegate=nil (readonly)
     -(void)addDelegate:(NSObject<MutableSetDelegate>*)v {
         if (v.setDelegate) return;
         if (v==self) return;
@@ -235,7 +235,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
-    NSMutableSet __mutableSet=nil (readonly,ivar=__mutableSet)
+    NSMutableSet __mutableSet=nil (readonly)
     CollectionWeakness weakness=
         -v{
             switch (v) {
@@ -463,12 +463,12 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         @999 return(ret);
     }
 
-    NSMutableDictionary __map1=[[NSMutableDictionary alloc] init] (readonly,ivar=map1,dealloc)
-    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets,dealloc)
-    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
+    NSMutableDictionary __map1=[[NSMutableDictionary alloc] init] (readonly,ivar=map1)
+    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets)
+    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts)
     MutableSet followerSet=
         {return(followerSet);}
-        -v{followerSet=v;[self refreshFollowerSet];}=nil (ivar=followerSet,dealloc)
+        -v{followerSet=v;[self refreshFollowerSet];}=nil (ivar=followerSet)
 
     -(void)delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -587,12 +587,12 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
     }
 
 
-    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets,dealloc)
-    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts,dealloc)
+    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets)
+    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts)
 
     MutableSet unionSet=
         {return(unionSet);}
-        -v{unionSet=v;[self refreshUnionSet];}=nil (ivar=unionSet,dealloc)
+        -v{unionSet=v;[self refreshUnionSet];}=nil (ivar=unionSet)
 
     -(void)delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];

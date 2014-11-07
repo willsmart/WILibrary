@@ -598,7 +598,7 @@ Globals
         URLHandlerRegistry *_URLHandlerRegistry_default=nil;
 
 URLHandlerRegistry "fn:util"
-    MutableArray handlers=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=handlers)
+    MutableArray handlers=[[MutableArray alloc] init] (publicreadonly,ivar=handlers)
 
     -(init)init {}
 
@@ -978,8 +978,8 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 <Waiter>
     NSTimer waitTimer=nil
-    double _waiterGoAtSeconds=nil (readonly,ivar=_waiterGoAtSeconds)
-    bool waiterEnabled=YES (readonly,ivar=waiterEnabled)
+    double _waiterGoAtSeconds=nil (readonly)
+    bool waiterEnabled=YES (readonly)
     -(void)waited {}
     -(void)cancelledWait {}
 
@@ -1022,15 +1022,15 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 Singletons
-    Log log={return(log?log:(log=[[Log alloc] init]));}=nil (dealloc,ivar=log)
+    Log log={return(log?log:(log=[[Log alloc] init]));}=nil (ivar=log)
 
 
 Log<BaseObject>
-    NSTimer tim=nil (readonly,ivar=tim)
+    NSTimer tim=nil (readonly)
 
     +(Log*)getDefault {return(g_singletons.log);}
 
-    NSMutableString *value=[[NSMutableString alloc] init] (readonly,dealloc,ivar=value)
+    NSMutableString *value=[[NSMutableString alloc] init] (readonly)
 
     +(void)log:(NSString*)format,... {
         Log *log=[Log getDefault];

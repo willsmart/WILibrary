@@ -975,7 +975,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     NSString _fragShaderString=nil,fragShaderString={[self makeShaderStrings];return(self._fragShaderString);}
     NSString _vertShaderString=nil,vertShaderString={[self makeShaderStrings];return(self._vertShaderString);}
 
-    MutableDictionary macros=[[MutableDictionary alloc] init] (publicreadonly,dealloc,ivar=macros)
+    MutableDictionary macros=[[MutableDictionary alloc] init] (publicreadonly,ivar=macros)
 
     -(NSString*)macroForKey:(NSObject*)key {return([macros objectForKey:(NSObject<NSCopying>*)key]);}
     -(void)removeMacroForKey:(NSObject*)key {

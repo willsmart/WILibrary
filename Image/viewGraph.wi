@@ -918,7 +918,7 @@ ViewGraph<BaseObject> "fn:graph"
     }
 
     Int graphedIndexVersion=nil
-    VGObject graphOkForView=nil (readonly,ivar=graphOkForView)
+    VGObject graphOkForView=nil (readonly)
 
     -(Int)commitProperties:(Int)substageIndex {@-998 |2@10 
         [self refreshIndexesWithFocus:self.focus];
@@ -1020,8 +1020,8 @@ ViewGraph<BaseObject> "fn:graph"
     _prev>>prev -- <TreeCell> _next>>next
     _parent>>parent ~a< <TreeCell> _child>>child
 
-    NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (ivar=bindings,readonly,dealloc)
-    NSMutableSet bindingsThanChanged=[NSMutableSet set] (ivar=bindingsThanChanged,dealloc,readonly)
+    NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (readonly)
+    NSMutableSet bindingsThanChanged=[NSMutableSet set] (readonly)
 
     -(Int)commitProperties:(Int)substageIndex {@100 
         if (modelObjectChanged) {

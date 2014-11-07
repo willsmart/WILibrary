@@ -99,7 +99,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 
 ClassCount "-Object" "fn:object"
     LL count=nil,nextID=nil
-    NSString name=nil (readonly,dealloc,ivar=name)
+    NSString name=nil (readonly)
     +(ClassCount*)classCount {
         return([[ClassCount alloc] init]);
     }
@@ -146,7 +146,7 @@ Singletons<Ticker> "-Object" "fn:object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
     QuickHashTableOfClassCounts *classCountht=nil (readonly)
     ArrayOfClassCounts *classCountArray=nil (readonly)
-    ClassCount totalObjectCount=nil (publicreadonly,dealloc,ivar=totalObjectCount)
+    ClassCount totalObjectCount=nil (publicreadonly,ivar=totalObjectCount)
 
     -(void)dealloc {
         {
@@ -337,7 +337,7 @@ Globals
     
 Singletons
 
-    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil(publicreadonly,dealloc,ivar=trace)
+    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil(publicreadonly,ivar=trace)
     
 "<pthread.h>"
 Globals
@@ -580,11 +580,8 @@ Trace<Ticker,BaseObject> "notrace"
     }
     
 
-    //NSMutableData tmpJSONData=[[NSMutableData alloc] init] (readonly,dealloc,ivar=tmpJSONData)
+    //NSMutableData tmpJSONData=[[NSMutableData alloc] init] (readonly)
     
-    NSMutableString *nwTraces=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces)
-    NSMutableString *nwTraces2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newTraces2)
-
     -(void)start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
     -(void)stop {@100 g_trace=nil;}
     
@@ -622,7 +619,7 @@ Trace<Ticker,BaseObject> "notrace"
 
     
 Singletons
-    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil(publicreadonly,dealloc,ivar=objectGraph)
+    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil(publicreadonly,ivar=objectGraph)
     
 "<pthread.h>"
 Globals
@@ -634,8 +631,8 @@ Globals
         ObjectGraph *g_objectGraph=nil;
 
 ObjectGraph<Ticker,BaseObject>
-    NSMutableString *nwEdits=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newEdits)
-    NSMutableString *nwEdits2=[[NSMutableString alloc] init] (readonly,dealloc,ivar=newEdits2)
+    NSMutableString *newEdits=[[NSMutableString alloc] init] (readonly)
+    NSMutableString *newEdits2=[[NSMutableString alloc] init] (readonly)
 
     -(void)start {g_objectGraph=self;[self startWithInterval:0.5];}
     -(void)stop {@100 g_objectGraph=nil;}

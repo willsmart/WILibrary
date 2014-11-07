@@ -32,15 +32,15 @@ WReader <BaseObject> "fn:token"
         }
 
 
-    NSArray lines=[[NSArray alloc] init] (readonly,dealloc,ivar=lines)
+    NSArray lines=[[NSArray alloc] init] (readonly)
     Int pos=nil
     -(init) {
         pos=-1;
     }
 
-    MutableDictionary replaces=[[MutableDictionary alloc] init] (publicreadonly,dealloc,ivar=replaces)
+    MutableDictionary replaces=[[MutableDictionary alloc] init] (publicreadonly,ivar=replaces)
 
-    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (publicreadonly,dealloc,ivar=tokenizer)
+    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (publicreadonly,ivar=tokenizer)
 
 
     WReaderToken nextToken={
@@ -109,7 +109,7 @@ WReaderToken "fn:token"
 
 WReaderTokenizer <BaseObject> "fn:token"
 
-    NSMutableArray tokens=[[MutableArray alloc] init] (readonly,dealloc,ivar=tokens)
+    NSMutableArray tokens=[[MutableArray alloc] init] (readonly)
     NSString _str=@""
     NSString str=
         {

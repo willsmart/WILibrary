@@ -42,7 +42,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
     parent -s< <HasProperties> child
 
-    HasPropertiesParentValueDelegate parentDel=[[HasPropertiesParentValueDelegate alloc] initWithOwner:self] (dealloc,publicreadonly,ivar=parentDel)
+    HasPropertiesParentValueDelegate parentDel=[[HasPropertiesParentValueDelegate alloc] initWithOwner:self] (publicreadonly,ivar=parentDel)
 
 
     NSString keyPrefix=
@@ -55,13 +55,13 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
         {return(filterDel.keepKeyPrefixSuffixLength);}
         -v{filterDel.keepKeyPrefixSuffixLength=v;}
 
-    MutableDictionary _myProperties>>myProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_myProperties,dealloc)
-    MutableDictionary _parentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_parentProperties,dealloc)
-    CommitableMutableDictionary _properties>>properties=[[CommitableMutableDictionary alloc] init] (publicreadonly,ivar=_properties,dealloc)
+    MutableDictionary _myProperties>>myProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_myProperties)
+    MutableDictionary _parentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_parentProperties)
+    CommitableMutableDictionary _properties>>properties=[[CommitableMutableDictionary alloc] init] (publicreadonly,ivar=_properties)
 
-    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,dealloc,ivar=propertyStack)
+    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,ivar=propertyStack)
 
-    MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=filterDel)
+    MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (publicreadonly,ivar=filterDel)
 
 
     -(void)attachPropertyDebuggers {
@@ -120,7 +120,7 @@ ParentPropertyValueDelegate<MutableValueDelegate>
 
 
 Singletons
-    App app={return(app?app:(app=[[App alloc] init]));}=nil (dealloc,ivar=app)
+    App app={return(app?app:(app=[[App alloc] init]));}=nil (ivar=app)
 
 App<HasProperties,BaseObject>
 
@@ -136,8 +136,8 @@ App<HasProperties,BaseObject>
 
 
 <StdHasAppProperties:StdHasProperties>
-    MutableDictionaryPrefixedKeyDelegate appFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (dealloc,publicreadonly,ivar=appFilterDel)
-    MutableDictionary _appProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_appProperties,dealloc)
+    MutableDictionaryPrefixedKeyDelegate appFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (publicreadonly,ivar=appFilterDel)
+    MutableDictionary _appProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_appProperties)
 
     NSString keyPrefix=
         {}
@@ -176,7 +176,7 @@ App<HasProperties,BaseObject>
 
 
 <StdTableModelFollower:TableController,TableModelFollower>
-    <TableModel> model={return(model);}=nil (dealloc,ivar=model,readonly!)
+    <TableModel> model={return(model);}=nil (readonly!)
     UITableView _table=nil (IBOutlet,retain,nonatomic)
     UITableView table={return(self._table);}
 
@@ -390,7 +390,7 @@ __Table__Cell "nac" "multi"
     }
 
 <BasicTable:UITableViewMetaEnabled> "nac" "multi"
-    __Table__TableController tableController=[[__Table__TableController alloc] init] (publicreadonly,ivar=tableController,dealloc)
+    __Table__TableController tableController=[[__Table__TableController alloc] init] (publicreadonly,ivar=tableController)
     -(void)dealloc {@-200 tableController.__table=nil;}
     
     -(init) {
@@ -423,7 +423,7 @@ __Table__Cell "nac" "multi"
 
 <BasicTableModel:StdTableModel> "nac" "multi"
     __Table__TableController controller=nil (assign,ivar=controller)
-    MutableArray __table__s=[[MutableArray alloc] init] (readonly,dealloc,ivar=__table__s)
+    MutableArray __table__s=[[MutableArray alloc] init] (readonly)
     -(init) {
         {
             [self addSection:[__Table__SectionModel class]];
