@@ -14,7 +14,7 @@
     -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep;
     -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep;
 
-    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+    Self initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint "super init" {
         @-900 
         owner=aowner;
         retains=aretains;
@@ -122,7 +122,7 @@
 <SetLinkEndpoint:MutableSet>
     bool __restrictRef=NO
 
-    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+    Self initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint "super init" {
         @-900 
         __set=__mutableSet=[[MutableSet alloc] init];
     }
@@ -160,7 +160,7 @@
 <ArrayLinkEndpoint:MutableArrayIndexFollower>
     bool __restrictRef=NO
 
-    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+    Self initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint "super init" {
         @-900 
         __array=__mutableArray=[[MutableArray alloc] init];
     }
@@ -202,7 +202,7 @@
 <DictionaryLinkEndpoint:MutableDictionaryKeyFollower>
     bool __restrictRef=NO
 
-    -(init[super init])initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
+    Self initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint "super init" {
         @-900 
         __dictionary=__mutableDictionary=[[MutableDictionary alloc] init];
     }

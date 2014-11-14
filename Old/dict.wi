@@ -874,7 +874,7 @@ DictionaryWord
 
 
 
-    - (init[super init])initWithUnpackedWord:(UnpackedWord)wd calculatedProb:(double)prob {
+    Self initWithUnpackedWord:(UnpackedWord)wd calculatedProb:(double)prob "super init" {
         self.word=[NSString stringWithFormat:@"%s",wd.word];
         wordFreq=wd.freq;
         self._calculatedProb=prob;
@@ -882,7 +882,7 @@ DictionaryWord
     }
 
 
-    - (init[super init])initWithWord:(NSString*)aword {
+    Self initWithWord:(NSString*)aword "super init" {
         self.word=aword;
         self._calculatedProb=wordFreq=-1;
         return(self);

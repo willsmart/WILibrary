@@ -347,7 +347,7 @@ VGObjectBindingReference
 
 
 VGRelativePosition
-    -(init[super init])initFrom:(NSObject<VGObject>*)afrom to:(NSObject<VGObject>*)ato calculatedPoint:(VGCalculatedPoint*)cpt {
+    Self initFrom:(NSObject<VGObject>*)afrom to:(NSObject<VGObject>*)ato calculatedPoint:(VGCalculatedPoint*)cpt "super init" {
         self.from=afrom;
         self.to=ato;
         self.calculatedPoint=cpt;
@@ -830,7 +830,7 @@ VGSumPointPart<VGPointPart>
 
 ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
     <VGObject> owner=nil (readonly,assign)
-    -(init[super init])initWithOwner:(NSObject<VGObject>*)aowner {
+    Self initWithOwner:(NSObject<VGObject>*)aowner "super init" {
         aowner=owner;
     }
     -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
@@ -854,7 +854,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
 
 ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
     ViewGraph graph=nil (readonly,assign)
-    -(init[super init])initWithGraph:(ViewGraph*)agraph {
+    Self initWithGraph:(ViewGraph*)agraph "super init" {
         graph=agraph;
     }
     -(void)didAddObject:(id)object {

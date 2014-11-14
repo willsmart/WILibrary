@@ -213,7 +213,7 @@ JSMetaPropertyInState
     NSObject varDef=nil (readonly)
     NSObject cachedValue=nil (readonly)
 
-    -(init[super init])initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar {
+    Self initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar "super init" {
         js=ajs;
         if (!js) cachedValue=avalue;
         if (avar&&!(js||cachedValue)) {
@@ -283,7 +283,7 @@ JSMetaProperty<NamedDataListener>
 
     NSString stateProp=nil (readonly)
 
-    -(init[super init])initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d {
+    Self initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d "super init" {
         @100
         [aowner setJsproperty:self forKey:name];
         
@@ -1117,7 +1117,7 @@ MetaEnabled
 
 UISliderMetaEnabled:UISlider<UISliderMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@"Rend",}
-    -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
+    Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1205,7 +1205,7 @@ MetaEnabled
 
 UIToolbarMetaEnabled:UIToolbar<UIToolbarMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@"ToolbarItem",}
-    -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
+    Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1407,7 +1407,7 @@ MetaEnabled
 
 UIViewMetaEnabled:UIView<UIViewMetaEnabled>
     -(NSSet*)allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
-    -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
+    Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1416,7 +1416,7 @@ UIViewMetaEnabled:UIView<UIViewMetaEnabled>
 
 UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
     -(NSSet*)allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
-    -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
+    Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1425,7 +1425,7 @@ UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
 
 
 UILabelViewMetaEnabled:UILabel<UILabelViewMetaEnabled>
-    -(init[super initWithFrame:CGRectMake(0,0,1,1)])init {}
+    Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     -(id)superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1448,7 +1448,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     -(void)willDettachChild:(NSObject<MetaEnabled>*)child withName:(NSString*)name {
         if ([child isKindOfClass:[UIView class]]) [(UIView*)child removeFromSuperview];
     }
-    -(init[super initWithStyle:style reuseIdentifier:reuseIdentifier])initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent {
+    Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent "super initWithStyle:style reuseIdentifier:reuseIdentifier" {
         [self metaEnabledPartialInitWithMeta:metaProps parent:aparent key:keyInParent];
     }
     Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {
@@ -1485,7 +1485,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     -(void)refreshMetaEnabledURLs {
         [tableModelFollower.model markDirty];
     }
-    -(init[super initWithFrame:framev style:UITableViewStylePlain])initWithFrame:(CGRect)framev {
+    Self initWithFrame:(CGRect)framev "super initWithFrame:framev style:UITableViewStylePlain" {
         self.separatorStyle=UITableViewCellSeparatorStyleNone;
     }
     -(id)superInitWithFrame:(CGRect)framev style:(UITableViewStyle)style {return([super initWithFrame:framev style:style]);}
@@ -1545,8 +1545,8 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
     Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)framev {}
     Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)framev {}
 
-    -(init[super initWithImageURL:nil frame:CGRectMake(0,0,1,1)])init {}
-    -(init[super initWithImageURL:nil frame:framev])initWithFrame:(CGRect)framev {}
+    Self init "super initWithImageURL:nil frame:CGRectMake(0,0,1,1)" {}
+    Self initWithFrame:(CGRect)framev "super initWithImageURL:nil frame:framev" {}
 
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         {

@@ -103,7 +103,7 @@ ClassCount "-Object" "fn:object"
     +(ClassCount*)classCount {
         return([[ClassCount alloc] init]);
     }
-    -(init[super init])initWithName:(NSString*)aname {
+    Self initWithName:(NSString*)aname "super init" {
         name=aname;
         count=0;nextID=1;
     }
@@ -672,7 +672,7 @@ ObjectGraph<Ticker,BaseObject>
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     LL objectIDInTotal=nil (readonly)
-    -(init[super init])initWithObjectID:(LL)aobjectIDInTotal {
+    Self initWithObjectID:(LL)aobjectIDInTotal "super init" {
         objectIDInTotal=aobjectIDInTotal;
     }
     

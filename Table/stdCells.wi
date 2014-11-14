@@ -6,7 +6,7 @@
 
 HasPropertiesParentValueDelegate<MutableValueDelegate>
     <HasProperties> owner=nil (assign,ivar=owner)
-    -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
+    Self initWithOwner:(NSObject<HasProperties>*)aowner "super init" {
         owner=aowner;
     }
     -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
@@ -97,7 +97,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
 ParentPropertyValueDelegate<MutableValueDelegate>
     <HasProperties> owner=nil (assign,ivar=owner)
-    -(init[super init])initWithOwner:(NSObject<HasProperties>*)aowner {
+    Self initWithOwner:(NSObject<HasProperties>*)aowner "super init" {
         owner=aowner;
     }
     -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {

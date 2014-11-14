@@ -65,31 +65,31 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     Self init {
         @-100 __array=[[NSArray alloc] init];
     }
-    -(init[super init])initWithCoder:(NSCoder*)coder {
+    Self initWithCoder:(NSCoder*)coder "super init" {
         @-100 __array=[[NSArray alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithArray:(NSArray*)array {
+    Self initWithArray:(NSArray*)array "super init" {
         @-100 __array=(insertsWeakObjectsByDefault?array.weakCopy:[[NSArray alloc] initWithArray:array]);
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
+    Self initWithArray:(NSArray*)array copyItems:(BOOL)copy "super init" {
         @-100 __array=[[NSArray alloc] initWithArray:array copyItems:copy];
         if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithContentsOfFile:(NSString*)file {
+    Self initWithContentsOfFile:(NSString*)file "super init" {
         @-100 __array=[[NSArray alloc] initWithContentsOfFile:file];
         if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+    Self initWithContentsOfURL:(NSURL*)url "super init" {
         @-100 __array=[[NSArray alloc] initWithContentsOfURL:url];
         if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
+    Self initWithObjects:(id*)objects count:(Unsigned)count "super init" {
         @-100 __array=[[NSArray alloc] initWithObjects:objects count:count];
         if (insertsWeakObjectsByDefault) __array=__array.weakCopy;
         @-99[self countWeakObjects];
@@ -453,30 +453,30 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     }
     Self init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
     }
-    -(init[super init])initWithCoder:(NSCoder*)coder {
+    Self initWithCoder:(NSCoder*)coder "super init" {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
-    -(init[super init])initWithArray:(NSArray*)array {
+    Self initWithArray:(NSArray*)array "super init" {
         @!-100 __array=__mutableArray=(insertsWeakObjectsByDefault?array.weakMutableCopy:[[NSMutableArray alloc] initWithArray:array]);
     }
-    -(init[super init])initWithArray:(NSArray*)array copyItems:(BOOL)copy {
+    Self initWithArray:(NSArray*)array copyItems:(BOOL)copy "super init" {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithArray:array copyItems:copy];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
-    -(init[super init])initWithContentsOfFile:(NSString*)file {
+    Self initWithContentsOfFile:(NSString*)file "super init" {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfFile:file];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
-    -(init[super init])initWithContentsOfURL:(NSURL*)url {
+    Self initWithContentsOfURL:(NSURL*)url "super init" {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithContentsOfURL:url];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
-    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
+    Self initWithObjects:(id*)objects count:(Unsigned)count "super init" {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithObjects:objects count:count];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }
-    -(init[super init])initWithCapacity:(Unsigned)numItems {
+    Self initWithCapacity:(Unsigned)numItems "super init" {
         @-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCapacity:numItems];
         if (insertsWeakObjectsByDefault) __array=__mutableArray=__array.weakMutableCopy;
     }

@@ -42,7 +42,7 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
         [self stop];
     }
 
-    -(init[super init])initWithDirection:(char)dir {
+    Self initWithDirection:(char)dir "super init" {
         direction=dir;
     }
     Self init {

@@ -21,7 +21,7 @@ UnionSetsMutableSetDelegate<MutableSetDelegate,BaseObject>
 UnionSetDelegate<MutableSetDelegate,BaseObject>
     setDelegate >s~ <UnionSet> owner
 
-    -(init[super init])initWithSet:(NSMutableSet<MutableSetDelegate>*)aset {
+    Self initWithSet:(NSMutableSet<MutableSetDelegate>*)aset "super init" {
         [aset addDelegate:self];
     }
 
@@ -204,7 +204,7 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
     dictionaryDelegate >s~ <UnionDictionary> owner
     Int depth;
 
-    -(init[super init])initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary {
+    Self initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary "super init" {
         [adictionary addDelegate:self];
     }
 
@@ -452,7 +452,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     NSMutableIndexSet unionWillRemoveIndexes=[[NSMutableIndexSet alloc] init] (readonly)
 
 
-    -(init[super init])initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray {
+    Self initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray "super init" {
         [aarray addDelegate:self];
     }
 

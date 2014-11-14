@@ -68,26 +68,26 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     Self init {
         @-100 __set=[[NSSet alloc] init];
     }
-    -(init[super init])initWithCoder:(NSCoder*)coder {
+    Self initWithCoder:(NSCoder*)coder "super init" {
         @-100 __set=[[NSSet alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithArray:(NSArray*)array {
+    Self initWithArray:(NSArray*)array "super init" {
         @-100 __set=[[NSSet alloc] initWithArray:array];
         if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
+    Self initWithObjects:(id*)objects count:(Unsigned)count "super init" {
         @-100 __set=[[NSSet alloc] initWithObjects:objects count:count];
         if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithSet:(NSSet*)set {
+    Self initWithSet:(NSSet*)set "super init" {
         @-100 __set=(insertsWeakObjectsByDefault?set.weakCopy:[[NSSet alloc] initWithSet:set]);
         @-99[self countWeakObjects];
     }
-    -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
+    Self initWithSet:(NSSet*)set copyItems:(BOOL)copy "super init" {
         @-100 __set=[[NSSet alloc] initWithSet:set copyItems:copy];
         if (insertsWeakObjectsByDefault) __set=__set.weakCopy;
         @-99[self countWeakObjects];
@@ -269,26 +269,26 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     Self init {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] init];
     }
-    -(init[super init])initWithCoder:(NSCoder*)coder {
+    Self initWithCoder:(NSCoder*)coder "super init" {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
-    -(init[super init])initWithArray:(NSArray*)array {
+    Self initWithArray:(NSArray*)array "super init" {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithArray:array];
         if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
-    -(init[super init])initWithObjects:(id*)objects count:(Unsigned)count {
+    Self initWithObjects:(id*)objects count:(Unsigned)count "super init" {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithObjects:objects count:count];
         if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
-    -(init[super init])initWithSet:(NSSet*)set {
+    Self initWithSet:(NSSet*)set "super init" {
         @!-100 __set=__mutableSet=(insertsWeakObjectsByDefault?set.weakMutableCopy:[[NSMutableSet alloc] initWithSet:set]);
     }
-    -(init[super init])initWithSet:(NSSet*)set copyItems:(BOOL)copy {
+    Self initWithSet:(NSSet*)set copyItems:(BOOL)copy "super init" {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] initWithSet:set copyItems:copy];
         if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
-    -(init[super init])initWithCapacity:(Unsigned)numItems {
+    Self initWithCapacity:(Unsigned)numItems "super init" {
         @-100 __set=__mutableSet=[[NSMutableSet alloc] initWithCapacity:numItems];
         if (insertsWeakObjectsByDefault) __set=__mutableSet=__set.weakMutableCopy;
     }
@@ -565,7 +565,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
 
 MutableSetUnionDelegate1<MutableSetDelegate>
     MutableSetUnionDelegate owner=nil (publicreadonly,ivar=owner)
-    -(init[super init])initWithOwner:(MutableSetUnionDelegate*)aowner {
+    Self initWithOwner:(MutableSetUnionDelegate*)aowner "super init" {
         owner=aowner;
     }
 

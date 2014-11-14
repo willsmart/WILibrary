@@ -62,7 +62,7 @@ AppDelegate
     
     //Int __rc=1,__arc=0;
     Self init {}
-    /*-(init[super init])initWithDictionary:(NSDictionary*)d {/ *-950* /__dictionaryForInit=d;
+    /*Self initWithDictionary:(NSDictionary*)d "super init" {/ *-950* /__dictionaryForInit=d;
         / *950* /__dictionaryForInit=nil;
     }*/
     -(void)setWithDictionary:(NSDictionary*)d {}
