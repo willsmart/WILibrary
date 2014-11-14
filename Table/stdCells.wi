@@ -465,7 +465,7 @@ __Table__Cell "nac" "multi"
 <BasicSectionModel:StdSectionModel> "nac" "multi"
 
 <BasicCell:MetaComponent> "nac" "multi"
-    -(init[super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"__Class__" meta:[NSDictionary dictionaryWithObjectsAndKeys:@"cell",@"type",[__Class__ metaURLKey],@"urlkey",nil] parent:nil key:nil])init {}
+    Self init "super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@\"__Class__\" meta:[NSDictionary dictionaryWithObjectsAndKeys:@\"cell\",@\"type\",[__Class__ metaURLKey],@\"urlkey\",nil] parent:nil key:nil" {}
     +(NSString*)metaURLKey {return(@"__table___cell");}
 
     -(void)clearCell {
