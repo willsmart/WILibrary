@@ -103,7 +103,7 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
 ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
     NSString* +urlType {return([ImageShader urlType]);}
     NSURL simplifiedClearedURL=nil,simplifiedURL=nil
-    Self initWithURL:(NSURL*)url "super init" {
+    Self initWithURL:(NSURL*)url super:init {
         self.simplifiedClearedURL=[__Class__ _simplifiedClearedURLForURL:url];
         self.simplifiedURL=[ImageShader simplifiedURLForURL:url];
     }

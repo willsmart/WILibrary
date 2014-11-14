@@ -70,31 +70,31 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     Self init {
         @-100 __dictionary=[[NSDictionary alloc] init];
     }
-    Self initWithCoder:(NSCoder*)coder "super init" {
+    Self initWithCoder:(NSCoder*)coder super:init {
         @-100 __dictionary=[[NSDictionary alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
         @-99[self countWeakObjects];
     }
-    Self initWithContentsOfFile:(NSString*)file "super init" {
+    Self initWithContentsOfFile:(NSString*)file super:init {
         @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfFile:file];
         if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
         @-99[self countWeakObjects];
     }
-    Self initWithContentsOfURL:(NSURL*)url "super init" {
+    Self initWithContentsOfURL:(NSURL*)url super:init {
         @-100 __dictionary=[[NSDictionary alloc] initWithContentsOfURL:url];
         if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
         @-99[self countWeakObjects];
     }
-    Self initWithDictionary:(NSDictionary*)dictionary "super init" {
+    Self initWithDictionary:(NSDictionary*)dictionary super:init {
         @-100 __dictionary=(insertsWeakObjectsByDefault?dictionary.weakCopy:[[NSDictionary alloc] initWithDictionary:dictionary]);
         @-99[self countWeakObjects];
     }
-    Self initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy "super init" {
+    Self initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy super:init {
         @-100 __dictionary=[[NSDictionary alloc] initWithDictionary:dictionary copyItems:copy];
         if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
         @-99[self countWeakObjects];
     }
-    Self initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count "super init" {
+    Self initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count super:init {
         @-100 __dictionary=[[NSDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
         if (insertsWeakObjectsByDefault) __dictionary=__dictionary.weakCopy;
         @-99[self countWeakObjects];
@@ -252,7 +252,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 <ProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
     <Basic_ProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
-    Self initWithOwner:(NSObject<Basic_ProxiedDictionaryDelegate>*)aowner "super init" {
+    Self initWithOwner:(NSObject<Basic_ProxiedDictionaryDelegate>*)aowner super:init {
         owner=aowner;
     }
     void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
@@ -312,7 +312,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 <SourcedProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
     <Basic_SourcedProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
     NSObject<NSCopying> source=nil (readonly)
-    Self initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource "super init" {
+    Self initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource super:init {
         owner=aowner;
         source=asource;
     }
@@ -424,31 +424,31 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     Self init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] init];
     }
-    Self initWithCoder:(NSCoder*)coder "super init" {
+    Self initWithCoder:(NSCoder*)coder super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCoder:coder];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithContentsOfFile:(NSString*)file "super init" {
+    Self initWithContentsOfFile:(NSString*)file super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfFile:file];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithContentsOfURL:(NSURL*)url "super init" {
+    Self initWithContentsOfURL:(NSURL*)url super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithContentsOfURL:url];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithDictionary:(NSDictionary*)dictionary "super init" {
+    Self initWithDictionary:(NSDictionary*)dictionary super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy "super init" {
+    Self initWithDictionary:(NSDictionary*)dictionary copyItems:(BOOL)copy super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:copy];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count "super init" {
+    Self initWithObjects:(const id[])objects forKeys:(const id<NSCopying>[])keys count:(Unsigned)count super:init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithObjects:objects forKeys:keys count:/*ivar*/count];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
-    Self initWithCapacity:(Unsigned)numItems "super init" {
+    Self initWithCapacity:(Unsigned)numItems super:init {
         @-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] initWithCapacity:numItems];
         if (insertsWeakObjectsByDefault) __dictionary=__mutableDictionary=__dictionary.weakMutableCopy;
     }
@@ -779,7 +779,7 @@ MutableDictionaryUnionDelegate1<MutableDictionaryDelegate>
     MutableDictionaryUnionDelegate owner=nil (publicreadonly,ivar=owner)
     Unsigned depth=nil
 
-    Self initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(Unsigned)adepth "super init" {
+    Self initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(Unsigned)adepth super:init {
         owner=aowner;depth=adepth;
     }
 

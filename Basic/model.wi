@@ -133,7 +133,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
             
 SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
     <Commitable> owner=nil (readonly)
-    Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
+    Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
     void didAddObject:(id)object {
@@ -151,7 +151,7 @@ SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
             
 SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
     <Commitable> owner=nil (readonly)
-    Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
+    Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
     void didAddObject:(id)object {
@@ -171,7 +171,7 @@ SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
 SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     <Commitable> owner=nil (readonly)
 
-    Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
+    Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
     void willAddObject:(id)object withIndex:(Unsigned)index {
@@ -204,7 +204,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
 SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     <Commitable> owner=nil (readonly)
 
-    Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
+    Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
     void willAddObject:(id)object withIndex:(Unsigned)index {

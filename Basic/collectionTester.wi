@@ -44,7 +44,7 @@ CollectionTestObject
         [s appendFormat:@")"];
         return(s);
     }
-    Self initWithInt:(Int)v tester:(NSObject<Tester>*)atester "super init" {
+    Self initWithInt:(Int)v tester:(NSObject<Tester>*)atester super:init {
         intValue=v;
         self.tester=atester;
     }
@@ -81,7 +81,7 @@ CollectionTestSubObject
 
     NSString description={return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
 
-    Self initWithTestObject:(CollectionTestObject*)atestObject "super init" {
+    Self initWithTestObject:(CollectionTestObject*)atestObject super:init {
         self.testObject=atestObject;
     }
 

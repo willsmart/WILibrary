@@ -297,7 +297,7 @@
 
 
 //TableModelController <TableController,TableModelFollower>
-//    Self initWithTable:(UITableView*)atable model:(NSObject<TableModel>*)amodel "super init" {
+//    Self initWithTable:(UITableView*)atable model:(NSObject<TableModel>*)amodel super:init {
 //        self.table=atable;
 //        self.model=amodel;
 //    }

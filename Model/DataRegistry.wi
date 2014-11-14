@@ -17,7 +17,7 @@ DataViewerProperties_SourcedProxyDictionaryDelegate<SourcedProxyDictionaryDelega
 
 DataRegistryParentValueDelegate<MutableValueDelegate>
     DataRegistry owner=nil (assign,ivar=owner)
-    Self initWithOwner:(DataRegistry*)aowner "super init" {
+    Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
     void willChangeValueFrom:(id)fromObject to:(id)toObject {
@@ -38,7 +38,7 @@ DataRegistryParentValueDelegate<MutableValueDelegate>
 
 DataRegistryMyViewersSetDelegate<MutableSetDelegate>
     DataRegistry owner=nil (assign,ivar=owner)
-    Self initWithOwner:(DataRegistry*)aowner "super init" {
+    Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
     void didRemoveObject:(id)object {
@@ -51,7 +51,7 @@ DataRegistryMyViewersSetDelegate<MutableSetDelegate>
     }
 DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
     DataRegistry owner=nil (assign,ivar=owner)
-    Self initWithOwner:(DataRegistry*)aowner "super init" {
+    Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
     void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {

@@ -314,7 +314,7 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
 
 ImageShaderRequest<Request> "fn:renderimage"
     <HasURL,HasImageShader> object=nil (readonly)
-    Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject "super init" {
+    Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject super:init {
         object=aobject;
     }
     float resultSize={return(0);}
@@ -343,7 +343,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
 
 ShaderImageRequest<Request> "fn:renderimage"
     <HasURL,HasImageShader,HasImage> object=nil (readonly)
-    Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject "super init" {
+    Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject super:init {
         object=aobject;
     }
     float resultSize={return(800);}
@@ -370,7 +370,7 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
     NSURL url=nil (nonatomic)
     ImageShader imageShader=nil (nonatomic)
     UIImage image=nil (nonatomic)
-    Self initWithURL:(NSURL*)aurl "super init" {
+    Self initWithURL:(NSURL*)aurl super:init {
         self.url=aurl;
     }
 
@@ -394,7 +394,7 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
     proxyOwner >s~ <ImageRequestOwner> owner
     ImageToken token=nil (ivar=token)
 
-    Self initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner "super init" {@100 
+    Self initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner super:init {@100 
         token=atoken;
         self.owner=aowner;
         [self requestImage];
@@ -785,7 +785,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 
     bool waitForResize=nil
 
-    Self initWithImageURL:(NSURL*)aurl frame:(CGRect)frame "super initWithImage:aimage" {@-10100
+    Self initWithImageURL:(NSURL*)aurl frame:(CGRect)frame super:initWithImage:aimage {@-10100
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
@@ -810,7 +810,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         }
     }
 
-    Self initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame "super initWithImage:aimage highlightedImage:ahighlightedImage" {@-10100
+    Self initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame super:initWithImage:aimage highlightedImage:ahighlightedImage {@-10100
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
@@ -851,7 +851,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
     }
 
 
-    Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame "super initWithImage:aimage" {@-10100
+    Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame super:initWithImage:aimage {@-10100
         UIImage *aimage=nil;
         NSURL *aimageURL=nil;
         NSURL *asizedImageURL=nil;
@@ -883,7 +883,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         }
     }
 
-    Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame "super initWithImage:aimage highlightedImage:ahighlightedImage" {@-10100 
+    Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame super:initWithImage:aimage highlightedImage:ahighlightedImage {@-10100 
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);

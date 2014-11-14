@@ -65,7 +65,7 @@ RequestCaches "fn:util"
 
 
 RequestProxy <WeakListItem> "fn:util"
-    Self initWithRequest:(NSObject<Request>*)request "super init" {
+    Self initWithRequest:(NSObject<Request>*)request super:init {
         self.request=request;
     }
 
@@ -215,7 +215,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
 LRUCacheItem<LRUCacheItem> "fn:util"
     NSObject object=nil (readonly)
     float size=nil (ivar)
-    Self initWithObject:(NSObject*)aobject size:(float)asize "super init" {
+    Self initWithObject:(NSObject*)aobject size:(float)asize super:init {
         size=asize;
         object=aobject;
     }

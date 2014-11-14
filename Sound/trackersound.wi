@@ -22,7 +22,7 @@ BinTracker<BaseObject>
     double samplesPerWave=nil
     longdouble sumsine=0,sumcos=0
 
-    Self initWithCI:(Int)aci samplesPerCycle:(Int)asamplesPerCycle wavesPerCycle:(Int)awavesPerCycle cyclesPerBuffer:(Int)acyclesPerBuffer "super init" {
+    Self initWithCI:(Int)aci samplesPerCycle:(Int)asamplesPerCycle wavesPerCycle:(Int)awavesPerCycle cyclesPerBuffer:(Int)acyclesPerBuffer super:init {
         ci=aci;
         samplesPerCycle=asamplesPerCycle;
         wavesPerCycle=awavesPerCycle;

@@ -257,7 +257,7 @@ MutableSet:NSMutableSet<MutableSet> {}
     NSString name=nil
     bool attached=nil
 
-    Self initWithName:(NSString*)aname "super init" {
+    Self initWithName:(NSString*)aname super:init {
         self.name=aname;
         attached=YES;
     }

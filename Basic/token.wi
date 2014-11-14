@@ -90,7 +90,7 @@ WReaderToken "fn:token"
     char type=nil
 
 
-    Self initWithString:(NSString*)astr bracketCount:(Int)bc type:(char)atype "super init" {
+    Self initWithString:(NSString*)astr bracketCount:(Int)bc type:(char)atype super:init {
         self.str=astr.copy;
         bracketCount=bc;
         type=atype;
