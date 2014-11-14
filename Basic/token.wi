@@ -57,7 +57,7 @@ WReader <BaseObject> "fn:token"
 
 
 
-    -(NSString*)stringWithTokensInRange:(NSRange)r {
+    NSString* stringWithTokensInRange:(NSRange)r {
         NSMutableString *s=[NSMutableString string];
         for (Int i=MAX(0,(int)r.location);i<MIN(tokenizer.tokens.count,r.location+r.length);i++) {
             [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];

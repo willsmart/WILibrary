@@ -29,7 +29,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 <RecordingAudioUnit:AudioUnit,Ticker>
     Int RECORDING_SAMPLE_RATE
-    -(void)processSamplesWithCount:(Int)numSamples {@-100 Int *samples=recordingSamples->a;
+    void processSamplesWithCount:(Int)numSamples {@-100 Int *samples=recordingSamples->a;
         @100 recordingSamplei+=numSamples;
     }
 
@@ -47,14 +47,14 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         recordingSamples=NEW(ArrayOfInts);
         recordingSamples->setUpperBound(recordingSamplesSize-1);
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(ArrayOfInts,recordingQueue);
         DELETE(ArrayOfInts,recordingSamples);
     }
 
     Int recordingQueueNum={return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
     Int _debrci=0;
-    -(void)addInts:(Int*)arecordingSamples num:(Int)Ns {
+    void addInts:(Int*)arecordingSamples num:(Int)Ns {
         memcpy(recordingSamples->a,arecordingSamples,sizeof(int)*Ns);
         [self processSamplesWithCount:Ns];
         return;
@@ -67,7 +67,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
                 recordingQueueIn+=N;
             }
             else {
-                Int N=MIN(recordingQueueSize-(recordingQueueOut?0:1)-recordingQueueIn,Ns);
+                Int N=MIN(recordingQueueSizerecordingQueueOut?0:1 -recordingQueueIn,Ns);
                 memcpy(recordingQueue->a+recordingQueueIn,arecordingSamples,sizeof(int)*N);
                 recordingQueueIn+=N;
                 if (recordingQueueIn==recordingQueueSize) {
@@ -83,10 +83,10 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         if (!self.tim) [self tickRecording];
     }
 
-    -(void)tick {@-14 
+    void tick {@-14 
         [self tickRecording];
     }
-    -(void)tickRecording {
+    void tickRecording {
         while (YES) {
             Int numSamples;
             @synchronized(self) {
@@ -117,7 +117,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 
-    -(void)setupAudio {
+    void setupAudio {
         @10 
         {
             UInt32 flag=1;
@@ -226,7 +226,7 @@ Globals
     Int PLAYBACK_SAMPLE_RATE
     Int numChannels=2
 
-    -(void)prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
+    void prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
         @100 playbackSamplei+=toCount;
     }
 
@@ -240,7 +240,7 @@ Globals
         playbackSamples=NEW(ArrayOfPLAYFRAMEs);
         playbackSamples->setUpperBound(playbackSamplesSize-1);
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(ArrayOfPLAYFRAMEs,playbackQueue);
         DELETE(ArrayOfPLAYFRAMEs,playbackSamples);
     }
@@ -253,7 +253,7 @@ Globals
 
 
     Int _debpbi=0;
-    -(void)getInts:(PLAYFRAME*)to withCount:(Int*)pNs {
+    void getInts:(PLAYFRAME*)to withCount:(Int*)pNs {
         [self prepareSamples:to withCount:*pNs];
         return;
         if (_debpbi++>25) {prnt("P");_debpbi=0;}
@@ -281,11 +281,11 @@ Globals
         }
     }
     
-    -(void)tick {@-13 
+    void tick {@-13 
         [self tickPlayback];
     }
 
-    -(void)tickPlayback {
+    void tickPlayback {
         Int Ns=MIN(playbackQueueSize-1,playbackQueueThreshold);
         while (((playbackQueueIn-playbackQueueOut)+playbackQueueSize)%playbackQueueSize<Ns) {
             @synchronized(self) {
@@ -295,7 +295,7 @@ Globals
                     playbackQueueIn+=N;
                 }
                 else {
-                    Int N=MIN(playbackQueueSize-(playbackQueueOut?0:1)-playbackQueueIn,Ns);
+                    Int N=MIN(playbackQueueSizeplaybackQueueOut?0:1 -playbackQueueIn,Ns);
                     [self prepareSamples:playbackQueue->a+playbackQueueIn withCount:N];
                     playbackQueueIn+=N;
                     if (playbackQueueIn==playbackQueueSize) {
@@ -317,7 +317,7 @@ Globals
 
 
 
-    -(void)setupAudio {
+    void setupAudio {
         @10 
         {
             UInt32 flag=1;
@@ -414,7 +414,7 @@ Globals
 
     bool isSetup=NO,isStarted=NO (readonly)
     
-    -(void)setupAudio {@5 
+    void setupAudio {@5 
         if (isSetup) return;
         OSStatus status;
 
@@ -461,12 +461,12 @@ Globals
         isSetup=(status==noErr);
     }
     
-    -(void)startAudio {
+    void startAudio {
         if (isStarted) return;
         [self setupAudio];
         if (isSetup) isStarted=(AudioOutputUnitStart(audioUnit)==noErr);
     }
-    -(void)stopAudio {
+    void stopAudio {
         if (!isStarted) return;
         AudioOutputUnitStop(audioUnit);
         isStarted=NO;

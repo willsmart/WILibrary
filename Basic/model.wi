@@ -4,7 +4,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
 <Model>
     ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] (ivar=objectsOwnedOnlyByModels)
 
-    -(void)startOfAutoreleasePool {
+    void startOfAutoreleasePool {
         for (NSObject<RefCountedObject> *o in objectsOwnedOnlyByModels) o.noMOForNextRetain=YES;
         NSMutableSet *s=[objectsOwnedOnlyByModels getAndClear];
         for (NSObject<RefCountedObject> *o in s) [o retract];
@@ -16,13 +16,13 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
     Int totalRetainCount=1,modelRetaincount=0 (readonly)
     bool noMOForNextRetain=NO
 
-    -(void)dealloc {
+    void dealloc {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount)) {
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
         }
     }
     /*
-    -(void)w_release {
+    void w_release {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
             Int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
@@ -30,7 +30,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
         }
         totalRetainCount--;
     }
-    -(id)w_retain {
+    id w_retain {
         totalRetainCount++;
         if (noMOForNextRetain) noMOForNextRetain=NO;
         else if (modelRetaincount&&(totalRetainCount==modelRetaincount+1)) {
@@ -41,14 +41,14 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
     }
     */
     //! needs work
-    -(void)modeladd {
+    void modeladd {
         if ((++modelRetaincount)&&(totalRetainCount==modelRetaincount)) {
             Int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels addObject:self];
             modelRetaincount=c;
         }
     }
-    -(void)modelsub {
+    void modelsub {
         if (modelRetaincount&&(totalRetainCount==modelRetaincount)) {
             Int c=modelRetaincount;modelRetaincount=0;
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
@@ -56,10 +56,10 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
         }
         modelRetaincount--;
     }
-    -(void)modelrelease {
+    void modelrelease {
         modelRetaincount--;
     }
-    -(void)modelautorelease {
+    void modelautorelease {
         modelRetaincount--;
         if (!modelRetaincount) {
             Int c=modelRetaincount;modelRetaincount=0;
@@ -73,14 +73,14 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
         }
         //self;
     }
-    -(id)modelretain {
+    id modelretain {
         modelRetaincount++;
         return(self);
     }
 
     bool onlyOwnedByModels={return(totalRetainCount==modelRetaincount);}
 
-    -(void)retract {
+    void retract {
         noMOForNextRetain=NO;
     }
 
@@ -97,7 +97,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
 
     sourceCommitter >s< <Commitable> sinkCommitter
 
-    -(Int)commitProperties:(Int)substageIndex {@-999 Int implementedStages=1@-990 ;
+    Int commitProperties:(Int)substageIndex {@-999 Int implementedStages=1@-990 ;
         @-5 switch(substageIndex) {case 0:
             modelObjectHasChanged=alwaysChangedIfSourceChanged;{
         @5 }break;case 1:{@15 }break;case 2:{@25 }break;case 3:{@35 }break;case 4:{@45 }break;case 5:{@55 }break;case 6:{@65 }break;case 7:{@75 }break;case 8:{@85 }break;case 9:{@95 }break;case 10:{@105 }default:break;}
@@ -108,18 +108,18 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
         @950 }
         @999 return((ret<0)||(ret>10)?-1:ret);
     }
-    -(void)startCommit {}
-    -(void)willCommit {}
-    -(void)commit {}
-    -(void)didCommit {}
-    -(void)finishCommit {}
+    void startCommit {}
+    void willCommit {}
+    void commit {}
+    void didCommit {}
+    void finishCommit {}
 
-    -(void)cleanupCommit {
+    void cleanupCommit {
         modelObjectHasChanged=NO;
     }
 
     bool _isDirty=NO,isDirty={return(_isDirty);}
-    -(void)markDirty {@-900 
+    void markDirty {@-900 
         if (_isDirty) {
             //prnt("%s already dirty\n",[Util cnameFor:self]);
             return;
@@ -136,13 +136,13 @@ SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
     Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             [self.owner markDirty];
             [self.owner addSourceCommitter:(NSObject<Commitable>*)object];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             [self.owner markDirty];
             [self.owner removeSourceCommitter:(NSObject<Commitable>*)object];
@@ -154,13 +154,13 @@ SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
     Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             [self.owner markDirty];
             [self.owner addSinkCommitter:(NSObject<Commitable>*)object];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             [self.owner markDirty];
             [self.owner removeSinkCommitter:(NSObject<Commitable>*)object];
@@ -174,7 +174,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
+    void willAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -182,7 +182,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -190,13 +190,13 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         [self.owner markDirty];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         [self.owner markDirty];
     }
 
@@ -207,7 +207,7 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     Self initWithOwner:(NSObject<Commitable>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
+    void willAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -215,7 +215,7 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         [self.owner markDirty];
         if ([object conformsToProtocol:@protocol(Commitable)]) {
             if (![delegateForArray containsObject:object]) {
@@ -223,59 +223,59 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
             }
         }
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         [self.owner markDirty];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         [self.owner markDirty];
     }
 
             
 DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject> "fn:model"
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         Unsigned i=0;
         for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         Unsigned i=0;
         for (id o in delegateForArray) if ((i++>index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         id o=[delegateForArray objectAtIndex:fromIndex];
         if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
         o=[delegateForArray objectAtIndex:toIndex];
         if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         Unsigned i=0,index=(toLocation<fromRange.location?toLocation:fromRange.location);
         for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         for (id o in delegateForArray) if ([o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
     }
 
 
 
 DirtyObjectSetDelegate<MutableSetDelegate,BaseObject> "fn:model"
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)object markDirty];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)object markDirty];
     }
 
 
 
 DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             if ([toObject conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)toObject markDirty];
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             if ([fromObject conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)fromObject markDirty];
         }
@@ -308,7 +308,7 @@ Model<Model,Ticker,Waiter> "fn:model"
     +(bool)commit {
         return([[Model getDefault] _commit]);
     }
-    -(bool)_commit {@-999 
+    bool _commit {@-999 
         NSSet *_dirties;
         @synchronized (self) {
             if (!self.waiterEnabled) return(NO);
@@ -398,7 +398,7 @@ Model<Model,Ticker,Waiter> "fn:model"
         return(_Model_default);
     }
 
-    -(void)tick {@-100 
+    void tick {@-100 
         [self startOfAutoreleasePool];
         //@autoreleasepool {
             @-1 

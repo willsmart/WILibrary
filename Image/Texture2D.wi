@@ -38,7 +38,7 @@ Texture2D <BaseObject> "fn:render"
         return(frameBuffer);
     }=nil (ivar=frameBuffer)
 
-    -(void)dealloc {@-50 
+    void dealloc {@-50 
         self.context=nil;
     }
 
@@ -60,7 +60,7 @@ Texture2D <BaseObject> "fn:render"
         }
 
 
-    - (bool)bindFrameBuffer {
+    bool bindFrameBuffer {
         [EAGLContext setCurrentContext:self.context];
         if ((self.context)&&(self.frameBuffer!=GL_INVALID_VALUE)) {
             glBindFramebufferOES(GL_FRAMEBUFFER_OES, frameBuffer);
@@ -69,19 +69,19 @@ Texture2D <BaseObject> "fn:render"
         }
         else return(NO);
     }
-    - (void)unbindFrameBuffer {
+    void unbindFrameBuffer {
         if (self.context&&([EAGLContext currentContext] == self.context)&&(self.frameBuffer!=GL_INVALID_VALUE)) {
             glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
         }
     }
-    -(void)deleteFramebuffer {
+    void deleteFramebuffer {
         if (frameBuffer!=GL_INVALID_VALUE) {
             glDeleteFramebuffers(1, &frameBuffer);
             frameBuffer = GL_INVALID_VALUE;
         }
     }
 
-    -(BOOL)initContext {
+    BOOL initContext {
         self.context=nil;
         EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
         if (!aContext) {
@@ -107,7 +107,7 @@ Texture2D <BaseObject> "fn:render"
         frameBuffer=GL_INVALID_VALUE;
     }
 
-    -(void)clear {
+    void clear {
         if (frameBuffer!=GL_INVALID_VALUE) glDeleteFramebuffersOES(1,&frameBuffer);
         if (glname) glDeleteTextures(1, &glname);
         frameBuffer=GL_INVALID_VALUE;
@@ -115,11 +115,11 @@ Texture2D <BaseObject> "fn:render"
         self._uiImage=nil;
     }
 
-    - (void)dealloc {
+    void dealloc {
         [self clear];
     }
 
-    - (void)loadWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat pixelsWide:(Unsigned)width pixelsHigh:(Unsigned)height contentSize:(CGSize)size {
+    void loadWithData:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat pixelsWide:(Unsigned)width pixelsHigh:(Unsigned)height contentSize:(CGSize)size {
         [self clear];
 
         GLint saveName;
@@ -173,7 +173,7 @@ Texture2D <BaseObject> "fn:render"
 
 
 
-    -(DWRD*)pixelsWithWidth:(Int)w height:(Int)h {
+    DWRD* pixelsWithWidth:(Int)w height:(Int)h {
         if (self.frameBuffer==GL_INVALID_VALUE) return(nil);
         GLint fmt,fmt2;
         Unsigned fmtSize;
@@ -205,7 +205,7 @@ Texture2D <BaseObject> "fn:render"
     }
 
 
-    -(UIImage*)uiImageWithWidth:(Int)w height:(Int)h {
+    UIImage* uiImageWithWidth:(Int)w height:(Int)h {
         return([__Class__ uiImageWithWidth:w height:h data:[self pixelsWithWidth:w height:h] pixelFormat:pixelFormat]);
     }
 
@@ -363,7 +363,7 @@ Texture2D <BaseObject> "fn:render"
             free(data);
         }
 
-    - (void)loadWithString:(NSString*)string dimensions:(CGSize)dimensions alignment:(NSTextAlignment)alignment fontName:(NSString*)name fontSize:(CGFloat)size {
+    void loadWithString:(NSString*)string dimensions:(CGSize)dimensions alignment:(NSTextAlignment)alignment fontName:(NSString*)name fontSize:(CGFloat)size {
         [self clear];
         
         
@@ -410,7 +410,7 @@ Texture2D <BaseObject> "fn:render"
 
 
 
-    - (void)drawAtPoint:(CGPoint)point {
+    void drawAtPoint:(CGPoint)point {
         GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
         GLfloat width = pixelWidth*maxS,height=pixelHeight* maxT;
         GLfloat vertices[]={
@@ -426,7 +426,7 @@ Texture2D <BaseObject> "fn:render"
     }
 
 
-    - (void) drawInRect:(CGRect)rect {
+    void drawInRect:(CGRect)rect {
         GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
         GLfloat  vertices[] = {
             (GLfloat)rect.origin.x,(GLfloat)rect.origin.y,0.0,

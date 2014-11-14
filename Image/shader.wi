@@ -29,14 +29,14 @@ Shader <BaseObject> "fn:shader"
 
 
 <StandardUniformProtocol>
-    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {}
-    -(void)setup {}
-    -(void)tearDown {}
+    void setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {}
+    void setup {}
+    void tearDown {}
 
 
 <GLObject>
     GLuint _glname=INVALIDSHADER,glname={return(_glname);}
-    -(void)dealloc {
+    void dealloc {
         if (_glname!=INVALIDSHADER) glDeleteProgram(_glname);
     }
 
@@ -62,7 +62,7 @@ Shader
         self.program=[ShaderProgram get];
     }
     
-    -(void)renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(ShaderData*)data standardUniforms:(NSSet*)sus {
+    void renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(ShaderData*)data standardUniforms:(NSSet*)sus {
         if (sus) for (NSObject<StandardUniformProtocol> *su in sus) {
             [su setInShaderProgram:self.program withData:data frameBufferRect:frameBufferRect drawRect:drawRect];
         }
@@ -131,7 +131,7 @@ Shader
     ShaderData shaderData=nil (assign)
     CGRect frameBufferRect=nil,drawRect=nil
 
-    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {
+    void setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {
         frameBufferRect=aframeBufferRect;
         drawRect=adrawRect;
 
@@ -144,7 +144,7 @@ Shader
                 u.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
                 [self.program setUniform:u forKey:[d objectForKey:@"name"]];
             }
-            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"-(NSObject*)%@AsObject",[d objectForKey:@"name"]]);
+            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"NSObject* %@AsObject",[d objectForKey:@"name"]]);
             //if ([self respondsToSelector:sel]) {
               //  NSObject *o=[self performSelector:sel];
               //  u.asObject=o;
@@ -157,7 +157,7 @@ Shader
                 a.type=[UniformTypeFunctions typeForString:[d objectForKey:@"type"]];
                 [self.program setAttribute:a forKey:[d objectForKey:@"name"]];
             }
-            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"-(NSObject*)%@AsObject",[d objectForKey:@"name"]]);
+            //SEL sel=NSSelectorFromString([NSString stringWithFormat:@"NSObject* %@AsObject",[d objectForKey:@"name"]]);
             //if ([self respondsToSelector:sel]) {
                 //NSObject *o=[self performSelector:sel];
                // a.asObject=o;
@@ -300,7 +300,7 @@ SHUniform <BaseObject> "fn:shader"
             }
         }=nil (ivar=enabled)
 
-    -(void)copyFrom:(SHUniform*)copy {
+    void copyFrom:(SHUniform*)copy {
         self.type=copy.type;
         enabled=copy.enabled;
         Int len=0;
@@ -603,7 +603,7 @@ SHUniform <BaseObject> "fn:shader"
             }
         }
        
-    -(void)set {
+    void set {
         if (!enabled) return;
         if (glname==INVALIDSHADER) return;
         switch (type) {
@@ -698,7 +698,7 @@ SHAttribute <BaseObject> "fn:shader"
     bool transpose=NO
     GLint glname=INVALIDSHADER
 
-    -(void)copyFrom:(SHAttribute*)copy {
+    void copyFrom:(SHAttribute*)copy {
         self.type=copy.type;
         enabled=copy.enabled;
         memcpy(_buf.c,copy._buf.c,sizeof(_buf.c));
@@ -858,7 +858,7 @@ SHAttribute <BaseObject> "fn:shader"
         }
 
 
-    -(void)set {
+    void set {
         if (!enabled) return;
         if (glname==INVALIDSHADER) return;
         GLint number;
@@ -977,11 +977,11 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
 
     MutableDictionary macros=[[MutableDictionary alloc] init] (publicreadonly,ivar=macros)
 
-    -(NSString*)macroForKey:(NSObject*)key {return([macros objectForKey:(NSObject<NSCopying>*)key]);}
-    -(void)removeMacroForKey:(NSObject*)key {
+    NSString* macroForKey:(NSObject*)key {return([macros objectForKey:(NSObject<NSCopying>*)key]);}
+    void removeMacroForKey:(NSObject*)key {
         [self setMacro:nil forKey:key];
     }
-    -(void)setMacro:(NSString*)value forKey:(NSObject*)key {
+    void setMacro:(NSString*)value forKey:(NSObject*)key {
         if (!value) [macros removeObjectForKey:(NSObject<NSCopying>*)key];
         else [macros setObject:value forKey:(NSObject<NSCopying>*)key];
         [self markChanged];
@@ -991,15 +991,15 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     Self start {
     }
 
-    -(void)set {
+    void set {
         for (NSString *uniform in self.uniforms) [[self uniformForKey:uniform] set];
         for (NSString *attribute in self.attributes) [[self attributeForKey:attribute] set];
     }
 
-    -(void)markChanged {
+    void markChanged {
     }
 
-    -(void)reloadShader {
+    void reloadShader {
         NSString *frag=self.fragShaderString,*vert=self.vertShaderString;
         if (!(frag&&vert)) {
             if (_glname!=INVALIDSHADER) {
@@ -1016,7 +1016,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         }
     }
 
-    -(void)render {
+    void render {
         [self reloadShader];
         if ((!self.vertexCount)||(_glname==INVALIDSHADER)) return;
         glUseProgram(_glname);
@@ -1025,10 +1025,10 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     }
 
 
-    -(NSString*)macroStringForString:(NSString*)s {
+    NSString* macroStringForString:(NSString*)s {
         return([[s stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"] stringByReplacingOccurrencesOfString:@"\n" withString:@" \\\n"]);
     }
-    -(void)makeShaderStrings {
+    void makeShaderStrings {
         if (_changed||!(self._fragShaderString&&self._vertShaderString)) {
             _changed=NO;
             //if (!self.filename) {self._vertShaderString=self._fragShaderString=nil;}
@@ -1146,7 +1146,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
 
     NSMutableString shaderLog=[NSMutableString string] (ivar=shaderLog)
 
-    -(GLuint)loadShaderWithVert:(NSString*)vert frag:(NSString*)frag {
+    GLuint loadShaderWithVert:(NSString*)vert frag:(NSString*)frag {
         GLuint vertShader=INVALIDSHADER, fragShader=INVALIDSHADER;
     
         //NSLog(@"Frag shader:\n%@\n\nVert shader:\n%@\n\n",frag,vert);

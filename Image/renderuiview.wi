@@ -1,6 +1,6 @@
 
 Singletons
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable renderUIViews has an ivar, but no default value. This is less a strict error than unclean !**/
+/**! -wi!warnwarn Address warning: Non-imaginary variable renderUIViews has an ivar, but no default value. This is less a strict error than unclean !**/
     RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));}=nil (readonly)
 
 
@@ -24,7 +24,7 @@ RenderUIView : UIView<BaseObject>
 
     bool renderUIViewEnabled=YES
 
-    -(void)renderWithData:(ShaderData*)data standardUniforms:(NSSet*)sus {
+    void renderWithData:(ShaderData*)data standardUniforms:(NSSet*)sus {
         float a=1;for (UIView *vw=self;vw;a*=vw.hidden?0:vw.alpha,vw=vw.superview);
         if (!a) return;
         if (!self.renderUIViewEnabled) return;
@@ -66,7 +66,7 @@ RenderUIViews <BaseObject>
         //        [self addStandardUniform:[SU_time get]];
     }
 
-    -(void)renderWithDatas:(NSDictionary*)dataByView {
+    void renderWithDatas:(NSDictionary*)dataByView {
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT);
         NSSet *a;NSSet *sus;

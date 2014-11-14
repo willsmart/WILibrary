@@ -4,13 +4,13 @@ Singletons
 StyleTicker<Ticker,BaseObject> "fn:style"
     +(StyleTicker*)getDefault {return(g_singletons.styleTicker);}
 
-    -(void)go {
+    void go {
         [self startWithInterval:4];
     }
 
     bool debug=NO
     
-    -(void)setProp:(NSString*)prop toArgs:(NSDictionary*)args {@-100
+    void setProp:(NSString*)prop toArgs:(NSDictionary*)args {@-100
         if (prop) {
             NSURL *url=[ImageShader urlForArgStringDictionary:args];
             if (debug) NSLog(@">%@:\n  --  %@",prop,args.description);
@@ -22,7 +22,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
         }
     }
 
-    -(void)setProp:(NSString*)prop toObject:(NSObject*)object {
+    void setProp:(NSString*)prop toObject:(NSObject*)object {
         if (prop&&object) {
             if (debug) NSLog(@">%@ = %@",prop,object.description);
             [g_singletons.app.myProperties setObject:object forKey:prop];
@@ -122,7 +122,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
             }
         }=nil (ivar=stylerString)
 
-    -(void)tick {
+    void tick {
         prnt(".");
         [NSString requestStringWithContentsOfURL:[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"readtext.php?fn=%@",g_singletons.styleName]] encoding:NSUTF8StringEncoding timeoutInterval:2 completion:^void(NSString *s,NSError *err) {
             //prnt("\nshader req %p %s\n",s,err.description.UTF8String);

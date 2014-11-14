@@ -75,7 +75,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
       xy=abs(xy);
       vec2 low=(max(0,sz.x-sz.y),max(0,sz.y-sz.x));
       vec2 lxy=xy-low;vec2 lsz=sz-low;
-      vec2 high=sz-(radius,radius);
+      vec2 high=szradius,radius ;
       squiggle.y=PI*radius*0.5+high.x+high.y;
       squiggle.z=1;
       if ((lxy.x>0)&&(lxy.y<(lsz.y-radius)*lxy.x/lsz.x)) {
@@ -151,14 +151,14 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
       b=4*BUMP(bumps,bumpSqueeze,d/sz.y,bumpPow);
 
       LINE(d,alias,linew,,,f,
-        TXY(sizeInPixels*0.5-pixel.xy-(1,0),dx=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+        TXY(sizeInPixels*0.5-pixel.xy1,0 ,dx=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
         dx*=dmul;
         if (squiggleSize>0) {
           dx+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
         }
 
         bx=4*BUMP(bumps,bumpSqueeze,dx/sz.y,bumpPow);
-        TXY(sizeInPixels*0.5-pixel.xy-(0,1),dy=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+        TXY(sizeInPixels*0.5-pixel.xy0,1 ,dy=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
         dy*=dmul;
         if (squiggleSize>0) {
           dy+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
@@ -202,7 +202,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
         [self.program setMacro:@"{float _v=__v;float _alias=__alias;float _w=__w;"
         "if (_v<0) {__a;if (_v+_alias>-_w*0.5)  {float __bfv=min(1,(_v+_w*0.5)/_alias+1);__b;}"
         "} else {"
-        "__c;if (_v-_alias<_w*0.5) {float __bfv=min(1,1-(_v-_w*0.5)/_alias);__b;}"
+        "__c;if (_v-_alias<_w*0.5) {float __bfv=min(1,1_v-_w*0.5 /_alias);__b;}"
         "}}" forKey:@"LINE(__v,__alias,__w,__a,__b,__bfv,__c)"];
         [self.program setMacro:@"(pow(__v,__pow)*(1+0.5*cos((__bumps)*PI*(1/(1+pow(5*(__v),__squeeze))))))" forKey:@"BUMP(__bumps,__squeeze,__v,__pow)"];
         [self.program setMacro:@"clamp(__val,(0,0,0),(1,1,1))" forKey:@"saturatev3(__val)"];
@@ -249,7 +249,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
 
 
 ShaderTicker
-    -(void)tick {
+    void tick {
         [g_singletons.imageShaderRequestCaches goForSeconds:0.2];
     }
 
@@ -305,7 +305,7 @@ ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
 
 ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
     Self start {cache.maxSize=100000;cache.maxCount=1000;}
-    -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
+    NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]) {
             return([[ImageShaderRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader>*)reqData]);
         }
@@ -324,7 +324,7 @@ ImageShaderRequest<Request> "fn:renderimage"
         float age=self.ageAsRequest;
         return(age<2?(2-age)*2.0:((age-2)*0.9));
     }
-    -(void)goRequest {
+    void goRequest {
         if (object.url&&!object.imageShader) {
             object.imageShader=[g_singletons.imageRenderer imageShaderForURL:[ShaderURLConversion simplifiedClearedURLForURL:object.url]];
         }
@@ -334,7 +334,7 @@ ImageShaderRequest<Request> "fn:renderimage"
 
 ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
     Self start {cache.maxSize=10000000;cache.maxCount=1000;}
-    -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
+    NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]&&[reqData conformsToProtocol:@protocol(HasImage)]) {
             return([[ShaderImageRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)reqData]);
         }
@@ -353,7 +353,7 @@ ShaderImageRequest<Request> "fn:renderimage"
         float age=self.ageAsRequest;
         return(age<2?(2-age)*0.2:((age-2)*0.05));
     }
-    -(void)goRequest {
+    void goRequest {
         if (object.url&&object.imageShader&&!object.image) {
             object.image=[g_singletons.imageRenderer imageForURL:object.url shader:object.imageShader];
         }
@@ -379,10 +379,10 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
 
 
 <ImageRequestOwner>
-    -(void)gotImageShader:(ImageShader*)ashader forURL:(NSURL*)aurl {}
-    -(void)gotImage:(UIImage*)aimage forURL:(NSURL*)aurl;
+    void gotImageShader:(ImageShader*)ashader forURL:(NSURL*)aurl {}
+    void gotImage:(UIImage*)aimage forURL:(NSURL*)aurl;
 
-    -(ImageToken*)goRequestWithURL:(NSURL*)url {
+    ImageToken* goRequestWithURL:(NSURL*)url {
         ImageToken *token=[[ImageToken alloc] initWithURL:url];
         (void)[[ImageRequestProxyOwner alloc] initWithToken:token owner:self];
         return(token);
@@ -400,7 +400,7 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
         [self requestImage];
     }
 
-    -(void)requestImage {
+    void requestImage {
         if (!token.url) return;
         if (!token.image) {
             NSObject *o=[g_singletons.imageShaderRequestCaches.shaderImageRequestCache resultForKey:[ShaderURLConversion simplifiedURLForURL:token.url]];
@@ -416,7 +416,7 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
         [self _requestGotImageShader];
     }
 
-    -(void)_requestGotImageShader {
+    void _requestGotImageShader {
         [self.owner gotImageShader:token.imageShader forURL:token.url];
         if (!(token.imageShader||token.image)) return;
         if (!token.image) {
@@ -427,13 +427,13 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
         [self _requestGotImage];
     }
 
-    -(void)_requestGotImage {
+    void _requestGotImage {
         [self.owner gotImage:token.image forURL:token.url];
     }
 
 
 
-    -(void)doneRequestSync:(NSObject<Request>*)request {
+    void doneRequestSync:(NSObject<Request>*)request {
         if ([request isKindOfClass:[ImageShaderRequest class]]) {
             if (((ImageShaderRequest*)request).object!=token) {
                 token.imageShader=((ImageShaderRequest*)request).object.imageShader;
@@ -475,7 +475,7 @@ ImageRenderer <BaseObject> "fn:render"
         [EAGLContext setCurrentContext:nil];
     }
 
-    -(ImageShader*)imageShaderForURL:(NSURL*)url {
+    ImageShader* imageShaderForURL:(NSURL*)url {
         if (!url) return(nil);
         ImageShader *ret=[ImageShader get];
         if (![texture bindFrameBuffer]) return(nil);
@@ -485,7 +485,7 @@ ImageRenderer <BaseObject> "fn:render"
         return(ret);
     }
 
-    -(void)setShader:(Shader*)shader uniformsFromURL:(NSURL*)url {
+    void setShader:(Shader*)shader uniformsFromURL:(NSURL*)url {
         NSMutableDictionary *args=[ImageShader argDictionaryForURL:url];
         if (!args) return;
         for (NSString *key in args) {
@@ -497,7 +497,7 @@ ImageRenderer <BaseObject> "fn:render"
         }
     }
 
-    -(UIImage*)imageForURL:(NSURL*)url shader:(ImageShader*)shader {
+    UIImage* imageForURL:(NSURL*)url shader:(ImageShader*)shader {
     //[Log log:@"Render\n  url %@\n  shader%@\n\n",url.absoluteString,shader.program.shaderLog];
         if (!(url&&shader)) return(nil);
         
@@ -578,7 +578,7 @@ Singletons
         }
         return(imageViewURLRegistry);
     }=nil (ivar=imageViewURLRegistry,publicreadonly)
-    -(void)refreshImageViewURLs {
+    void refreshImageViewURLs {
         NSSet *s=self.urlImageViews.urlImageViews.__set.copy;
         for (URLImageView *v in s) [v refreshFromRegisteredURLs];
     }
@@ -598,7 +598,7 @@ Singletons
 
 
 StyleTicker
-    -(void)setProp:(NSString*)prop toArgs:(NSDictionary*)args {
+    void setProp:(NSString*)prop toArgs:(NSDictionary*)args {
             if ([prop hasPrefix:@"rend-"]) {
                 [g_singletons.imageViewURLRegistry setObject:url forKey:[prop substringFromIndex:@"rend-".length]];
             }
@@ -610,7 +610,7 @@ StyleTicker
 URLImageViews<BaseObject>
 
 ImageViewURLRegistryDelegate<MutableDictionaryDelegate,BaseObject>
-    -(void)stateOK {
+    void stateOK {
         [g_singletons refreshImageViewURLs];
     }
 
@@ -618,7 +618,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
     urlImageView >s- URLImageViews views
     Self start {self.views=g_singletons.urlImageViews;}
 
-    -(void)refreshFromRegisteredURLs {
+    void refreshFromRegisteredURLs {
         if (imageURLKey) {
             NSObject *o=[g_singletons.imageViewURLRegistry objectForKey:imageURLKey];
             NSURL *url=([o isKindOfClass:[NSURL class]]?(NSURL*)o:nil);
@@ -757,8 +757,8 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 
     bool needImage=nil,needHighlightedImage=nil (readonly)
 
-    -(void)goWait {[self waitForSeconds:0.2];}
-    -(void)waited {
+    void goWait {[self waitForSeconds:0.2];}
+    void waited {
         if (needImage&&self.imageURL) [self goRequestWithURL:self.sizedImageURL];
         if (needHighlightedImage&&self.highlightedImageURL) [self goRequestWithURL:self.sizedHighlightedImageURL];
     }
@@ -939,7 +939,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 
 
 
-    -(void)gotImage:(UIImage*)aimage forURL:(NSURL*)aurl {
+    void gotImage:(UIImage*)aimage forURL:(NSURL*)aurl {
         bool changed=NO;
         if ((aurl==sizedImageURL)&&needImage) {
             needImage=NO;
@@ -956,14 +956,14 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             
 
 
-    -(void)layoutSubviews {
+    void layoutSubviews {
         [super layoutSubviews];
         if (imageURL) self.imageURL=imageURL;
         if (highlightedImageURL) self.highlightedImageURL=highlightedImageURL;
     }
 
 
-    -(void)notifyImageChanged {
+    void notifyImageChanged {
         for (NSObject<URLImageViewListener> *l in self.imageViewListeners) {
             [l imageChangedInImageView:self];
         }
@@ -974,7 +974,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 <URLImageViewListener>
     imageViewListener >s< URLImageView listenToImageView
 
-    -(void)imageChangedInImageView:(URLImageView*)imageView;
+    void imageChangedInImageView:(URLImageView*)imageView;
 
 
 

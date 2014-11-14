@@ -148,7 +148,7 @@ Singletons<Ticker> "-Object" "fn:object"
     ArrayOfClassCounts *classCountArray=nil (readonly)
     ClassCount totalObjectCount=nil (publicreadonly,ivar=totalObjectCount)
 
-    -(void)dealloc {
+    void dealloc {
         {
             DELETE(QuickHashTableOfClassCounts,g_classCountht);
             DELETE(ArrayOfClassCounts,g_classCountArray);
@@ -182,15 +182,14 @@ Singletons<Ticker> "-Object" "fn:object"
                     ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:2] objectForKey:name]).intValue,
                     ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:3] objectForKey:name]).intValue,
                     ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:4] objectForKey:name]).intValue,
-                    int(cc.count)-
-                    ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue
+                    int(cc.count)(NSNumber* [(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue
                     ];
             );
         }
         @999 return(ret);
     }
 
-    -(void)tick {
+    void tick {
         [Log sendToLog:@"Singletons" format:@"Singletons at %@\n%@\n\n",((NSDate*)[NSDate date]).description,self.description];
         if (!self.online) prnt("%s\n",self.description.UTF8String);
         NSMutableDictionary *d=(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4];
@@ -307,7 +306,7 @@ Globals
     Self start {@-996 debugAutorelease=YES;}
     Self start {@-995 objInitFn(self,objectIDInTotal,objectIDInClass);
     }
-    -(void)dealloc {@998 deallocFn(self,objectIDInTotal,objectIDInClass);
+    void dealloc {@998 deallocFn(self,objectIDInTotal,objectIDInClass);
         isZombie=YES;
 #if defined(LONGLIVEZOMBIES) || defined(LONGLIVEZOMBIES___WI_CLASS__)
         if (YES) return;
@@ -551,7 +550,7 @@ Trace<Ticker,BaseObject> "notrace"
             Unsigned st=[s rangeOfString:@"["].location;
             Unsigned en=[s rangeOfString:@"]" options:NSBackwardsSearch].location;
             if ((st!=NSNotFound)&&(en!=NSNotFound)&&(en>st)) {
-                s=[s substringWithRange:NSMakeRange(st-1,en+1-(st-1))];
+                s=[s substringWithRange:NSMakeRange(st-1,en+1st-1 )];
                 if ([s isEqualToString:@"-[EndpointS didAddObject:]"]) [ret appendFormat:@" ES+ "];
                 else if ([s isEqualToString:@"-[EndpointS addObject:]"]||[s isEqualToString:@"-[EndpointS _addObject:]"]) {}
                 else if ([s isEqualToString:@"-[MutableSet didAddObject:]"]) [ret appendFormat:@" MS+ "];
@@ -582,15 +581,15 @@ Trace<Ticker,BaseObject> "notrace"
 
     //NSMutableData tmpJSONData=[[NSMutableData alloc] init] (readonly)
     
-    -(void)start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
-    -(void)stop {@100 g_trace=nil;}
+    void start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
+    void stop {@100 g_trace=nil;}
     
     bool savingTrace={return(v_tim!=nil);}
 
 
     bool not_first=nil
 
-    -(void)tick {
+    void tick {
         g_trace=self;
         
         NSString *s=__getCurrentTraceString();
@@ -634,18 +633,18 @@ ObjectGraph<Ticker,BaseObject>
     NSMutableString *newEdits=[[NSMutableString alloc] init] (readonly)
     NSMutableString *newEdits2=[[NSMutableString alloc] init] (readonly)
 
-    -(void)start {g_objectGraph=self;[self startWithInterval:0.5];}
-    -(void)stop {@100 g_objectGraph=nil;}
+    void start {g_objectGraph=self;[self startWithInterval:0.5];}
+    void stop {@100 g_objectGraph=nil;}
     
     bool savingGraph={return(v_tim!=nil);}
 
-    -(void)object:(LL)owner ownsObject:(LL)object count:(Int)count {
+    void object:(LL)owner ownsObject:(LL)object count:(Int)count {
         [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,(int)count];
     }
 
     bool not_first=nil
 
-    -(void)tick {
+    void tick {
         g_objectGraph=self;
         
         [newEdits2 setString:@""];
@@ -678,16 +677,16 @@ ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
     
 <ObjectEquate>
     LL objectIDInTotal (readonly)
-    -(BOOL)isEqual:(id)obj {@-999 
+    BOOL isEqual:(id)obj {@-999 
         bool ret=(obj==self)||
                     ([obj respondsToSelector:@selector(objectIDInTotal)]&&
                     (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
         @999 return(ret);
     }
-    -(Unsigned)hash {return((Unsigned)obfuscateULL(objectIDInTotal));}
+    Unsigned hash {return((Unsigned)obfuscateULL(objectIDInTotal));}
 
 <ObjectEquateAndCopy:NSCopying,ObjectEquate>
-    -(id)copyWithZone:(NSZone*)zone {
+    id copyWithZone:(NSZone*)zone {
         return([[ObjectPointer allocWithZone:zone] initWithObjectID:objectIDInTotal]);
     }
 

@@ -1,7 +1,7 @@
 
 
 SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
-    -(void)set {
+    void set {
         {
             RenderUIView *view=self.program.shader.view;
             CGRect rectOnEAGLView=view.rectOnEAGLView;
@@ -51,7 +51,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
             //uiScrollView.delegate=self;
         } (ivar=uiScrollView)
 
-    -(CGPoint)nearestBoundaryPointForPoint:(CGPoint)pt {@999 
+    CGPoint nearestBoundaryPointForPoint:(CGPoint)pt {@999 
         return(pt);
     }
     CGPoint visibleOffset={@-999 
@@ -89,7 +89,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
         return(ret);
     }
 
-    - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
+    void scrollViewDidScroll:(UIScrollView*)scrollView {
         CGPoint pt=self.overallNearestInnerPoint;
         UIEdgeInsets insets={0,0,0,0};
         bool doInsets=NO;
@@ -118,7 +118,7 @@ ScrollViewTracker<ScrollViewTracker> {}
 
 ScrollViewTrackerUniform : SHUniform<DerivedBaseObject>
     <ScrollViewTracker> tracker=nil
-    -(void)set {
+    void set {
         if (!self.tracker) return;
         CGPoint pt=self.tracker.visibleOffset;
         float v[2]={(float)floor(pt.x),(float)floor(pt.y)};

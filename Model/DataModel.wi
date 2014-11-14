@@ -98,16 +98,16 @@ PropertyData
     <__Property__s__model> owner=nil (ivar=owner,assign)
     Self initWithOwner:(NSObject<__Property__s__model>*)aowner "super init" {owner=aowner;}
 
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:index];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         [self.owner willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:index];
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [self.owner __property__sSwappedWithIndex:fromIndex andIndex:toIndex];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         [self.owner all__Property__sMoved];
     }
 
@@ -115,7 +115,7 @@ PropertyData
 
 <ChildArrayPropertyViewer:DataModelViewer> "nac" "multi"
     //__property__s_parent ~a< <__Property____viewedObject> __property__
-    -(NSObject<__Property____viewedObject>*)make__Property__ViewedObjectForModelObject:(NSObject<__Property____modelObject>*)modelObject {@-999 NSObject<__Property____viewedObject> *ret=nil;
+    NSObject<__Property____viewedObject>* make__Property__ViewedObjectForModelObject:(NSObject<__Property____modelObject>*)modelObject {@-999 NSObject<__Property____viewedObject> *ret=nil;
         @999 return(ret);
     }
 
@@ -128,7 +128,7 @@ PropertyData
     Self start {
         [self.__property__s addDelegate:[[__Property__s__modelDelegate alloc] initWithOwner:self]];
     }
-    -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {@-100 
+    void didAddViewer:(NSObject<DataModelViewer>*)viewer {@-100 
         {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -143,7 +143,7 @@ PropertyData
             }
         }
     }
-    -(void)willRemoveViewer:(NSObject<DataModelViewer>*)viewer {@-100 
+    void willRemoveViewer:(NSObject<DataModelViewer>*)viewer {@-100 
         {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -151,7 +151,7 @@ PropertyData
             }
         }
     }
-    -(void)didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:(Unsigned)index {@-100 
+    void didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:(Unsigned)index {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -162,7 +162,7 @@ PropertyData
             }
         }
     }
-    -(void)willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:(Unsigned)index {@-100 
+    void willRemove__Property__:(NSObject<__Property____modelObject>*)object fromIndex:(Unsigned)index {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -170,7 +170,7 @@ PropertyData
             }
         }
     }
-    -(void)__property__sSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void __property__sSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -178,7 +178,7 @@ PropertyData
             }
         }
     }
-    -(void)all__Property__sMoved {
+    void all__Property__sMoved {
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
             if ([viewer conformsToProtocol:@protocol(__Property__s__viewer)]) {
                 NSObject<__Property__s__viewer> *vw=(NSObject<__Property__s__viewer>*)viewer;
@@ -203,8 +203,8 @@ PropertyData
 PropertyViewerDelegate<MutableSetDelegate>
     <DataModel> owner=nil (ivar=owner,assign)
     Self initWithOwner:(NSObject<DataModel>*)aowner "super init" {owner=aowner;}
-    -(void)didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
-    -(void)willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
+    void didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
+    void willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
 
 
 <DataModel:DataModelViewer>
@@ -217,13 +217,13 @@ PropertyViewerDelegate<MutableSetDelegate>
         dataModelParentFilterDel.followerDictionary=_dataModelParentProperties;
         [self.dataModelViewers addDelegate:[[PropertyViewerDelegate alloc] initWithOwner:self]];
     }
-    -(void)dealloc {@-100 
+    void dealloc {@-100 
         for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) [viewer._properties removeDelegate:dataModelParentFilterDel];
     }
 
     dataModel -s< <DataModelViewer> dataModelViewer
 
-    -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {
+    void didAddViewer:(NSObject<DataModelViewer>*)viewer {
         {
             bool changed=NO;
             for (NSObject<NSCopying> *key in self._properties) {
@@ -247,7 +247,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             if (changed) [viewer modelStateOK];
         }
     }
-    -(void)willRemoveViewer:(NSObject<DataModelViewer>*)viewer {
+    void willRemoveViewer:(NSObject<DataModelViewer>*)viewer {
         {
             bool changed=NO;
             for (NSObject<NSCopying> *key in self.propertyDatas) {
@@ -283,7 +283,7 @@ PropertyViewerDelegate<MutableSetDelegate>
 
     bool needViewerStateOK=nil (readonly)
 
-    -(void)property_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void property_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             PropertyData *d=[self.propertyDatas objectForKey:key];
             if (d?d.direct:[__Class__ isDirectObject:toObject]) {
@@ -294,7 +294,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             }
         }
     }
-    -(void)property_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void property_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             PropertyData *d=[self.propertyDatas objectForKey:key];
             if (d?d.direct:YES) {
@@ -305,7 +305,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             }
         }
     }
-    -(void)property_stateOK {
+    void property_stateOK {
         {
             if (needViewerStateOK) {
                 for (NSObject<DataModelViewer> *viewer in self.dataModelViewers) {
@@ -322,28 +322,28 @@ Singletons
 
 
 <DataModelViewer:HasProperties>
-    -(void)modelSetObject:(id)object forKey:(id<NSCopying>)key {@-999
+    void modelSetObject:(id)object forKey:(id<NSCopying>)key {@-999
         NSObject *setObject=(NSObject*)object;
         kid forKey=key;
         @999
         if (setObject&&forKey) [self._myProperties setObject:setObject forKey:forKey];
     }
-    -(void)modelRemovedObjectForKey:(id<NSCopying>)key {@-999
+    void modelRemovedObjectForKey:(id<NSCopying>)key {@-999
         kid forKey=key;
         @999
         if (forKey) [self._myProperties removeObjectForKey:forKey];
     }
-    -(void)modelStateOK {}
+    void modelStateOK {}
 
 
 
 
 /*
 <JSDataModelViewer:DataModelViewer>
-    -(bool)objectIsJS:(NSObject*)object {
+    bool objectIsJS:(NSObject*)object {
         return([object isKindOfClass:[NSDictionary class]]&&[[(NSDictionary*)object objectForKey:@"js"] isKindOfClass:[NSString class]]&&[[(NSDictionary*)object objectForKey:@"jsvars"] isKindOfClass:[NSDictionary class]]);
     }
-    -(NSString*)jsForObject:(NSObject*)object {
+    NSString* jsForObject:(NSObject*)object {
         if ([object isKindOfClass:[NSDictionary class]]&&[[(NSDictionary*)object objectForKey:@"js"] isKindOfClass:[NSString class]]&&[[(NSDictionary*)object objectForKey:@"vars"] isKindOfClass:[NSDictionary class]]) {
             NSMutableString *rawjs=((NSString*)[(NSDictionary*)object objectForKey:@"js"]).mutablecopy;
             NSDictionary *vars=(NSDictionary*)[(NSDictionary*)object objectForKey:@"vars"];

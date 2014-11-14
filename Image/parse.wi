@@ -1,6 +1,6 @@
 @interface AShader : NSObject
 
--(void)renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(AShaderData*)data standardUniforms:(NSSet*)sus;
+void renderOnRect:(CGRect)frameBufferRect toRect:(CGRect)drawRect data:(AShaderData*)data standardUniforms:(NSSet*)sus;
 
 @property (readonly) AShaderProgram *shaderProgram;
 @property (readonly) Parse *parse;
@@ -26,7 +26,7 @@
     enum UniformType _type;
     bool _enabled;
 }
--(id)initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
+id initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
 
 @property bool enabled;
 @property (assign,nonatomic) AShaderProgram *program;
@@ -44,7 +44,7 @@
 @property float *asMat2,*asMat3,*asMat4;
 @property Int asSampler2D,asSamplerCube;
 
--(void)set;
+void set;
 
 @property (readonly) NSString *shaderString;
 
@@ -59,7 +59,7 @@
     enum UniformType _type;
     bool _enabled;
 }
--(id)initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
+id initWithProgram:(AShaderProgram*)prog Name:(NSString*)aname glName:(GLuint)aglname;
 
 @property bool enabled;
 @property (assign,nonatomic) AShaderProgram *program;
@@ -75,7 +75,7 @@
 @property float *asVec2,*asVec3,*asVec4;
 @property float *asMat2,*asMat3,*asMat4;
 
--(void)set;
+void set;
 @property (readonly) NSString *shaderString_vert,*shaderString_frag,*assignString_vert;
 
 @end
@@ -93,26 +93,26 @@
 @property (nonatomic,retain) NSMutableDictionary *uniforms;
 @property (nonatomic,retain) NSMutableDictionary *attributes;
 
--(id)init;
+id init;
 
--(SHAttribute*)getAttribute:(NSString*)name;
--(SHUniform*)getUniform:(NSString*)name;
--(SHUniform*)removeUniform:(NSString*)name;
--(NSString*)getMacroWithName:(NSString*)name;
--(void)setMacroWithName:(NSString*)name toValue:(NSString*)value;
--(void)clearAttributes;
--(void)clearUniforms;
+SHAttribute* getAttribute:(NSString*)name;
+SHUniform* getUniform:(NSString*)name;
+SHUniform* removeUniform:(NSString*)name;
+NSString* getMacroWithName:(NSString*)name;
+void setMacroWithName:(NSString*)name toValue:(NSString*)value;
+void clearAttributes;
+void clearUniforms;
 
--(void)set;
+void set;
 @property (retain,nonatomic) NSDictionary *macros;
 @property (retain,nonatomic) NSString *filename;
 @property (readonly) NSString *fragShaderString,*vertShaderString;
 
--(void)changed;
+void changed;
 @property (readonly) bool valid;
--(void)reloadShader;
+void reloadShader;
 
--(void)render;
+void render;
 
 @end
 

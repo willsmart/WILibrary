@@ -25,12 +25,12 @@ DictWords {
     int maxLen=0,wordLimit=10000000
     DictWordArray *_words=nil (readonly)
     
-    -(bool)validWord:(const char*)pc {
+    bool validWord:(const char*)pc {
         for (;*pc;pc++) if ((pc[0]!='\'')&&(pc[0]!='-')&&((pc[0]<'a')||(pc[0]>'z'))&&((pc[0]<'A')||(pc[0]>'Z'))) return(NO);
         return(YES);
     }
 
-    -(void)readWordsFromOldStyleDictionary {
+    void readWordsFromOldStyleDictionary {
         if (!_words) _words=NEW(DictWordArray);
         
         Dictionary *dict=[Dictionary getDefault];
@@ -51,16 +51,16 @@ DictWords {
         FilterArray(DictWord,w,*_words,    [self validWord:w.word]);
     }
     
-    -(int)intFromChar:(char)c {
+    int intFromChar:(char)c {
         return(c=='\''?1:(c=='-'?2:((c>='a')&&(c<='z')?c+3-'a':(c+3+26-'A'))));
     }
     
-    -(long)intFromWord:(const char*)pc {
+    long intFromWord:(const char*)pc {
         long ret=0;
         for (int b=18;(*pc)&&(b>=0);pc++,b-=6) ret|=[self intFromChar:*pc]<<b;
         return(ret);
     }
-    -(int)compareWord:(const char*)a to:(const char*)b {
+    int compareWord:(const char*)a to:(const char*)b {
         while ((*a)&&*b) {
             int i=[self intFromChar:*a]-[self intFromChar:*b];
             if (i<0) return(-1);
@@ -74,7 +74,7 @@ DictWords {
         else return(0);
     }
 
-    -(void)sortWordsAlphabetically {
+    void sortWordsAlphabetically {
         if (!_words) return;
         DictWord *wds=_words->a;
         
@@ -105,7 +105,7 @@ DictWords {
     
     NSString binfn=@"dict.bin" (ivar=binfn)
     
-    -(bool)writeBin {
+    bool writeBin {
         if (!_words) return(NO);
         
         FILE *fil=fopen(binfn.UTF8String,"wb");
@@ -131,7 +131,7 @@ DictWords {
         return(YES);
     }
 
-    -(void)writeBinWithFil:(FILE*)fil ull:(ULL*)pull shft:(BYT*)pshft wdi:(int*)pwdi depth:(int)depth {
+    void writeBinWithFil:(FILE*)fil ull:(ULL*)pull shft:(BYT*)pshft wdi:(int*)pwdi depth:(int)depth {
         int &wdi=*pwdi;ULL &ull=*pull;BYT &shft=*pshft;
         DictWord &w=_words->a[wdi];
 
@@ -186,7 +186,7 @@ DictWords {
     }
         
 
-    -(void)readBin {
+    void readBin {
         int N=0;
         [self startIterateWords];
         DictWord w;
@@ -236,7 +236,7 @@ DictWords {
         return(_ulls);
     }
     
-    -(void)startIterateWords {
+    void startIterateWords {
         ulls_pull=self.ulls->a;
         ulls_shft=0;
         ulls_depth=0;ulls_state=0;

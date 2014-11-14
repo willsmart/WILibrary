@@ -24,7 +24,7 @@ Orientation<BaseObject>
     CMMotionManager motManager=[[CMMotionManager alloc] init] (readonly)
 
 
-    -(void)dealloc {@-100 
+    void dealloc {@-100 
         [locManager stopUpdatingHeading];
         [motManager stopDeviceMotionUpdates];
     }
@@ -50,7 +50,7 @@ Orientation<BaseObject>
     }
 
 
-    -(bool)initMat44 {
+    bool initMat44 {
         if (mat44Inited) return(YES);
         else if (motManager.deviceMotion==nil) return(NO);
         else if (useReferenceFrame) {
@@ -98,7 +98,7 @@ Orientation<BaseObject>
         return(mm);
     }
 
-    -(void)magAdjust {
+    void magAdjust {
         if (!magAdjustFactor) return;
         
         Mat44 mm=self.mat44,imm;
@@ -129,7 +129,7 @@ Orientation<BaseObject>
     }
 
 
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable rotZoomTransform has an ivar, but no default value. This is less a strict error than unclean !**/
+/**! -wi!warnwarn Address warning: Non-imaginary variable rotZoomTransform has an ivar, but no default value. This is less a strict error than unclean !**/
     Mat44 rotZoomTransform={
         float zoom=self.currentZoom;//orientation.zoom;
         float rot=(self.rotateDegrees+self.currentRotateDegrees)*M_PI/180.0;
@@ -151,7 +151,7 @@ Orientation<BaseObject>
         svol=(svol<0?-pow(-svol,2):pow(svol,2));
         return(1.0/(1.0+fmax(-0.99,svol*zoomScale)));
     }
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable volume has an ivar, but no default value. This is less a strict error than unclean !**/
+/**! -wi!warnwarn Address warning: Non-imaginary variable volume has an ivar, but no default value. This is less a strict error than unclean !**/
     float volume=
         {
             return(volume*1.0/zoomLevels);

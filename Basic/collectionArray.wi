@@ -1,13 +1,13 @@
 
 NSArray<WeakNSCollection> "__MutableClass__=>NSMutableArray"
-    -(CollectionWeakness)weakness
+    CollectionWeakness weakness
         CollectionWeakness __block ret=CollectionIsEmpty;
         [self enumerateObjectsWithOptions:0 usingBlock:^(id object,NSUInteger index,BOOL *stop) {
             if (((ret=(CollectionWeakness)(ret|([object isWeakSelf]?CollectionIsWeak:CollectionIsStrong))))==CollectionIsWeakAndStrong) *stop=YES;
         }];
         return ret;
 
-    -(NSArray*)asWeak
+    NSArray* asWeak
         CollectionWeakness weakness=self.weakness;
         if (weakness&CollectionIsStrong) {
             NSMutableArray __block *ret=[NSMutableArray arrayWithCapacity:self.count];
@@ -18,7 +18,7 @@ NSArray<WeakNSCollection> "__MutableClass__=>NSMutableArray"
         }
         else return(self);
 
-    -(NSArray*)asStrong
+    NSArray* asStrong
         CollectionWeakness weakness=self.weakness;
         if (weakness&CollectionIsWeak) {
             NSMutableArray __block *ret=[NSMutableArray arrayWithCapacity:self.count];
@@ -53,7 +53,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
         -v{}
 
-    -(void)countWeakObjects {
+    void countWeakObjects {
         Int c=0;
         for (NSObject *o in __array) if (o.isWeakSelf) c++;
         weakObjectCount=c;
@@ -96,18 +96,18 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     }
 
 
-    -(void)encodeWithCoder:(NSCoder*)coder {
+    void encodeWithCoder:(NSCoder*)coder {
         [__array encodeWithCoder:coder];
     }
 
-    -(id)copyWithZone:(NSZone*)zone {
+    id copyWithZone:(NSZone*)zone {
         return([[ImmutableArray allocWithZone:zone] initWithArray:__array]);
     }
-    -(id)mutableCopyWithZone:(NSZone*)zone {
+    id mutableCopyWithZone:(NSZone*)zone {
         return([[MutableArray allocWithZone:zone] initWithArray:__array]);
     }
 
-    -(Unsigned)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
+    Unsigned countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
         return([__array countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -128,18 +128,18 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
     //Querying an Array
-    -(BOOL)containsObject:(id)object {return([__array containsObject:object]);}
+    BOOL containsObject:(id)object {return([__array containsObject:object]);}
     Unsigned count={return([__array count]);} (atomic)
-    -(void)getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
+    void getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
         [__array getObjects:aBuffer range:aRange];
         if (weakObjectCount) for (Int i=aRange.length+aRange.location-1;i>=aRange.location;i--) aBuffer[i]=[aBuffer[i] strongSelf];
     }
     id lastObject={return(weakObjectCount?[__array.lastObject strongSelf]:__array.lastObject);}
-    -(id)objectAtIndex:(Unsigned)index {
+    id objectAtIndex:(Unsigned)index {
         if (index>=__array.count) ERR("Index %d is out of bounds [0,%d)",int(index),int(__array.count));
         return(weakObjectCount?[__array[index] strongSelf]:__array[index]);
     }
-    -(NSArray*)objects {
+    NSArray* objects {
         if (weakObjectCount) {
             NSMutableArray *mret=nil;
             Int i=0;
@@ -154,7 +154,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
         else return(__array);
     }
-    -(NSArray*)objectsAtIndexes:(NSIndexSet*)indexes {
+    NSArray* objectsAtIndexes:(NSIndexSet*)indexes {
         if (weakObjectCount) {
             NSMutableArray *mret=nil;
             NSArray *ret=[__array objectsAtIndexes:indexes];
@@ -175,167 +175,167 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
     //Finding Objects in an Array
-    -(Unsigned)indexOfObject:(id)object {
+    Unsigned indexOfObject:(id)object {
         return([__array indexOfObject:object]);
     }
-    -(Unsigned)indexOfObject:(id)object inRange:(NSRange)range {
+    Unsigned indexOfObject:(id)object inRange:(NSRange)range {
         return([__array indexOfObject:object inRange:range]);
     }
-    -(Unsigned)indexOfObjectIdenticalTo:(id)object {
+    Unsigned indexOfObjectIdenticalTo:(id)object {
         if (weakObjectCount) {
             return(MIN([__array indexOfObjectIdenticalTo:[object strongSelf]],[__array indexOfObjectIdenticalTo:[object weakSelf]]));
         }
         else return([__array indexOfObjectIdenticalTo:object]);
     }
-    -(Unsigned)indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
+    Unsigned indexOfObjectIdenticalTo:(id)object inRange:(NSRange)range {
         if (weakObjectCount) {
             return(MIN([__array indexOfObjectIdenticalTo:[object strongSelf] inRange:range],[__array indexOfObjectIdenticalTo:[object weakSelf] inRange:range]));
         }
         else return([__array indexOfObjectIdenticalTo:object inRange:range]);
     }
-    -(Unsigned)indexOfObjectPassingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    Unsigned indexOfObjectPassingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexOfObjectPassingTest:predicate]);
     }
-    -(Unsigned)indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    Unsigned indexOfObjectWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexOfObjectWithOptions:opts passingTest:predicate]);
     }
-    -(Unsigned)indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    Unsigned indexOfObjectAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexOfObjectAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    -(NSIndexSet*)indexesOfObjectsPassingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    NSIndexSet* indexesOfObjectsPassingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexesOfObjectsPassingTest:predicate]);
     }
-    -(NSIndexSet*)indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    NSIndexSet* indexesOfObjectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexesOfObjectsWithOptions:opts passingTest:predicate]);
     }
-    -(NSIndexSet*)indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
+    NSIndexSet* indexesOfObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, Unsigned idx, BOOL *stop))predicate {
         return([__array indexesOfObjectsAtIndexes:indexSet options:opts passingTest:predicate]);
     }
-    -(Unsigned)indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
+    Unsigned indexOfObject:(id)obj inSortedRange:(NSRange)r options:(NSBinarySearchingOptions)opts usingComparator:(NSComparator)cmp {
         return([__array indexOfObject:obj inSortedRange:r options:opts usingComparator:cmp]);
     }
 
 
     //Sending Messages to Elements
-    -(void)makeObjectsPerformSelector:(SEL)selector {
+    void makeObjectsPerformSelector:(SEL)selector {
         [__array makeObjectsPerformSelector:selector];
     }
-    -(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
+    void makeObjectsPerformSelector:(SEL)selector withObject:(id)object {
         [__array makeObjectsPerformSelector:selector withObject:object];
     }
-    -(void)enumerateObjectsUsingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
+    void enumerateObjectsUsingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
         [__array enumerateObjectsUsingBlock:block];
     }
-    -(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
+    void enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
         [__array enumerateObjectsWithOptions:opts usingBlock:block];
     }
-    -(void)enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
+    void enumerateObjectsAtIndexes:(NSIndexSet *)indexSet options:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, Unsigned idx, BOOL *stop))block {
         [__array enumerateObjectsAtIndexes:indexSet options:opts usingBlock:block];
     }
 
 
     //Comparing Arrays
-    -(id)firstObjectCommonWithArray:(NSArray*)array {
+    id firstObjectCommonWithArray:(NSArray*)array {
         return([__array firstObjectCommonWithArray:array]);
     }
-    -(BOOL)isEqualToArray:(NSArray*)array {
+    BOOL isEqualToArray:(NSArray*)array {
         return([__array isEqualToArray:array]);
     }
 
 
     //Deriving New Arrays
-    -(NSArray*)arrayByAddingObject:(id)object {
+    NSArray* arrayByAddingObject:(id)object {
         return([self.objects arrayByAddingObject:object]);
     }
-    -(NSArray*)arrayByAddingObjectsFromArray:(NSArray*)array {
+    NSArray* arrayByAddingObjectsFromArray:(NSArray*)array {
         return([self.objects arrayByAddingObjectsFromArray:array]);
     }
-    -(NSArray*)filteredArrayUsingPredicate:(NSPredicate *)predicate {
+    NSArray* filteredArrayUsingPredicate:(NSPredicate *)predicate {
         return([self.objects filteredArrayUsingPredicate:predicate]);
     }
-    -(NSArray*)subarrayWithRange:(NSRange)r {
+    NSArray* subarrayWithRange:(NSRange)r {
         return([self.objects subarrayWithRange:r]);
     }
 
 
     //Sorting
-    -(NSData*)sortedArrayHint {
+    NSData* sortedArrayHint {
         return([__array sortedArrayHint]);
     }
-    -(NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context {
+    NSArray * sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context {
         return([self.objects sortedArrayUsingFunction:comparator context:context]);
     }
-    -(NSArray *)sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
+    NSArray * sortedArrayUsingFunction:(Int (*)(id, id, void *))comparator context:(void *)context hint:(NSData *)hint {
         return([self.objects sortedArrayUsingFunction:comparator context:context hint:hint]);
     }
-    -(NSArray *)sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
+    NSArray * sortedArrayUsingDescriptors:(NSArray *)sortDescriptors {
         return([self.objects sortedArrayUsingDescriptors:sortDescriptors]);
     }
-    -(NSArray*)sortedArrayUsingSelector:(SEL)selector {
+    NSArray* sortedArrayUsingSelector:(SEL)selector {
         return([self.objects sortedArrayUsingSelector:selector]);
     }
-    -(NSArray *)sortedArrayUsingComparator:(NSComparator)cmptr {
+    NSArray * sortedArrayUsingComparator:(NSComparator)cmptr {
         return([self.objects sortedArrayUsingComparator:cmptr]);
     }
-    -(NSArray *)sortedArrayWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+    NSArray * sortedArrayWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
         return([self.objects sortedArrayWithOptions:opts usingComparator:cmptr]);
     }
 
 
     //Working with String Elements
-    -(NSString *)componentsJoinedByString:(NSString *)separator {
+    NSString * componentsJoinedByString:(NSString *)separator {
         return([__array componentsJoinedByString:separator]);
     }
 
 
     //Creating a Description
     NSString description={return([__array description]);}
-    -(NSString *)descriptionWithLocale:(id)locale {
+    NSString * descriptionWithLocale:(id)locale {
         return([self.objects descriptionWithLocale:locale]);
     }
-    -(NSString *)descriptionWithLocale:(id)locale indent:(Unsigned)level {
+    NSString * descriptionWithLocale:(id)locale indent:(Unsigned)level {
         return([self.objects descriptionWithLocale:locale indent:level]);
     }
-    -(BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
+    BOOL writeToFile:(NSString *)path atomically:(BOOL)flag {
         return([self.objects writeToFile:path atomically:flag]);
     }
-    -(BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag {
+    BOOL writeToURL:(NSURL *)url atomically:(BOOL)flag {
         return([self.objects writeToURL:url atomically:flag]);
     }
 
 
     //Collecting Paths
-    -(NSArray *)pathsMatchingExtensions:(NSArray *)filterTypes {
+    NSArray * pathsMatchingExtensions:(NSArray *)filterTypes {
         return([self.objects pathsMatchingExtensions:filterTypes]);
     }
 
 
     //Key-Value Observing
-    -(void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+    void addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
         [__array addObserver:observer forKeyPath:keyPath options:options context:context];
     }
-    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
+    void removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
         [__array removeObserver:observer forKeyPath:keyPath];
     }
-    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
+    void removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
         [__array removeObserver:observer forKeyPath:keyPath context:context];
     }
-    -(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath context:(void *)context {
+    void removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath context:(void *)context {
         [__array removeObserver:observer fromObjectsAtIndexes:indexes forKeyPath:keyPath context:context];
     }
-    -(void)addObserver:(NSObject *)observer toObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+    void addObserver:(NSObject *)observer toObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
         [__array addObserver:observer toObjectsAtIndexes:indexes forKeyPath:keyPath options:options context:context];
     }
-    -(void)removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath {
+    void removeObserver:(NSObject *)observer fromObjectsAtIndexes:(NSIndexSet*)indexes forKeyPath:(NSString *)keyPath {
         [__array removeObserver:observer fromObjectsAtIndexes:indexes forKeyPath:keyPath];
     }
 
 
     //Key-Value Coding
-    -(void)setValue:(id)value forKey:(NSString *)key {
+    void setValue:(id)value forKey:(NSString *)key {
         [__array setValue:value forKey:key];
     }
-    -(id)valueForKey:(NSString*)key {
+    id valueForKey:(NSString*)key {
         return([__array valueForKey:key]);
     }
 
@@ -352,10 +352,10 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 <MutableArrayDelegate>
     NSArray delegateForArray=nil (assign,ivar=delegateForArray)
-    -(void)delegateForArrayChanged {}
+    void delegateForArrayChanged {}
 
     <MutableArrayDelegate> arrayDelegate=nil (readonly)
-    -(void)addDelegate:(NSObject<MutableArrayDelegate>*)v {
+    void addDelegate:(NSObject<MutableArrayDelegate>*)v {
         if (v.arrayDelegate) return;
         if (v==self) return;
         if (arrayDelegate) [arrayDelegate addDelegate:v];
@@ -365,8 +365,8 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
             [v delegateForArrayChanged];
         }
     }
-    -(void)removedDelegate {@-100arrayDelegate=nil;}
-    -(void)removeDelegate:(NSObject<MutableArrayDelegate>*)v {
+    void removedDelegate {@-100arrayDelegate=nil;}
+    void removeDelegate:(NSObject<MutableArrayDelegate>*)v {
         if (arrayDelegate) {
             if (arrayDelegate==v) {
                 v.delegateForArray=nil;
@@ -378,43 +378,43 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
     }
 
-    -(void)willTryToAddObjectsWithCount:(Unsigned)count {
+    void willTryToAddObjectsWithCount:(Unsigned)count {
         @100 [arrayDelegate willTryToAddObjectsWithCount:count];
     }
-    -(void)willRemoveObjectsWithCount:(Unsigned)count {
+    void willRemoveObjectsWithCount:(Unsigned)count {
         @100 [arrayDelegate willRemoveObjectsWithCount:count];
     }
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
         bool ret=YES;
         @100 if (ret&&arrayDelegate) ret=[arrayDelegate shouldAddObject:object makeWeak:weak];
         @999 return(ret);
     }
-    -(void)wontAddObject:(id)object withIndex:(Unsigned)index {
+    void wontAddObject:(id)object withIndex:(Unsigned)index {
         @100 [arrayDelegate wontAddObject:object withIndex:index];
     }
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
+    void willAddObject:(id)object withIndex:(Unsigned)index {
         @100 [arrayDelegate willAddObject:object withIndex:index];
     }
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         @100 [arrayDelegate didAddObject:object withIndex:index];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         @100 [arrayDelegate willRemoveObject:object fromIndex:index];
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         @100 [arrayDelegate didRemoveObject:object];
     }
 
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         @100 [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         @100 [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         @100 [arrayDelegate allObjectsMoved];
     }
-    -(void)stateOK {
+    void stateOK {
         @100 [arrayDelegate stateOK];
     }
 
@@ -443,9 +443,9 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     }
 
     long version=1
-    -(void)stateOK {@-100 version++;}
+    void stateOK {@-100 version++;}
 
-    -(void)dealloc {@-100 [self removeAllObjects];}
+    void dealloc {@-100 [self removeAllObjects];}
 
     //Creating a Mutable Array
     +(id)arrayWithCapacity:(Unsigned)numItems {
@@ -483,23 +483,23 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     
     
     //Adding Objects
-    -(void)addObject:(id)object {
+    void addObject:(id)object {
         [self insertObject:object atIndex:__mutableArray.count];
     }
-    -(void)removeLastObject {
+    void removeLastObject {
         if (__array.count) [self removeObjectAtIndex:__array.count-1];
     }
-    -(void)insertObject:(id)object atIndex:(Unsigned)index {
+    void insertObject:(id)object atIndex:(Unsigned)index {
         if ([self _insertObject:object atIndex:index]) [self stateOK];
     }
-    -(void)removeObjectAtIndex:(Unsigned)index {
+    void removeObjectAtIndex:(Unsigned)index {
         if ([self _removeObjectAtIndex:index]) [self stateOK];
     }
-    -(void)replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
+    void replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
         if ([self _replaceObjectAtIndex:index withObject:object]) [self stateOK];
     }
 
-    -(bool)_insertObject:(id)object atIndex:(Unsigned)index {
+    bool _insertObject:(id)object atIndex:(Unsigned)index {
         if (index==NSNotFound) return(NO);
         if (index>__array.count) {
             ERR("%d outside bounds [0,%d]\n",int(index),int(__array.count));
@@ -518,13 +518,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
             [__mutableArray insertObject:useObject atIndex:index];
             if (weak) weakObjectCount++;
 
-            if (index!=__array.count) [self objectsMovedFromRange:NSMakeRange(index,__array.count-(index+1)) toLocation:index+1];
+            if (index!=__array.count) [self objectsMovedFromRange:NSMakeRange(index,__array.countindex+1 ) toLocation:index+1];
             [self didAddObject:object withIndex:index];
             return(YES);
         }
         return(NO);
     }
-    -(bool)_removeObjectAtIndex:(Unsigned)index {
+    bool _removeObjectAtIndex:(Unsigned)index {
         if (index!=NSNotFound) {
             if (index>=__array.count) {
                 ERR("%d outside bounds [0,%d)\n",int(index),int(__array.count));
@@ -544,7 +544,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         else return(NO);
     }
 
-    -(bool)_replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
+    bool _replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
         if (index==NSNotFound) return(NO);
         if (index>=__array.count) {
             ERR("%d outside bounds [0,%d)\n",int(index),int(__array.count));
@@ -588,21 +588,21 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 <MutableArray:MinimalMutableArray>
-    -(void)insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
+    void insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
         if ([self _insertObjects:objects atIndexes:indexes]) [self stateOK];
     }
-    -(void)addObjectsFromArray:(NSArray*)array {
+    void addObjectsFromArray:(NSArray*)array {
         if ([self _addObjectsFromArray:array]) [self stateOK];
     }
-    -(void)removeAllObjects {
+    void removeAllObjects {
         if ([self _removeAllObjects]) [self stateOK];
     }
-    -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
+    void removeObjectsAtIndexes:(NSIndexSet*)indexes {
         if ([self _removeObjectsAtIndexes:indexes]) [self stateOK];
     }
 
 
-    -(bool)_addObjectsFromArray:(NSArray*)array {
+    bool _addObjectsFromArray:(NSArray*)array {
         if (array.count) {
             Unsigned cwas=__array.count,added=0;
             [self willTryToAddObjectsWithCount:array.count];
@@ -627,7 +627,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
         else return(NO);
     }
-    -(bool)_insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
+    bool _insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
         bool ret=NO;
         if (objects.count!=indexes.count) {
             ERR("Bad count");
@@ -661,7 +661,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         if (move) {
             for (prvIndex=__mutableArray.count+indexes.count-skipped,index=indexes.lastIndex;index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
                 if ([addedInds containsIndex:index]) {
-                    [self objectsMovedFromRange:NSMakeRange(index-skipped,prvIndex-(index-skipped)) toLocation:(index-skipped)+move];
+                    [self objectsMovedFromRange:NSMakeRange(index-skipped,prvIndexindex-skipped ) toLocation:(index-skipped)+move];
                     prvIndex=index-skipped;
                     move--;
                 }
@@ -682,7 +682,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     
     
     //Removing Objects
-    -(bool)_removeAllObjects {
+    bool _removeAllObjects {
         if (!self.count) return(NO);
         NSArray *was=[__array copy];
         [self willRemoveObjectsWithCount:was.count];
@@ -696,7 +696,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         return(YES);
     }
 
-    /*-(void)removeObject:(id)object {
+    /*void removeObject:(id)object {
         Int i=0,oi=NSNotFound,weakRemovalCount=0;
         NSMutableArray *toRemove=nil;
         for (NSObject *object2 in self) {
@@ -719,7 +719,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
         [self stateOK];
     }*/
-    /*-(void)removeObject:(id)object inRange:(NSRange)r {
+    /*void removeObject:(id)object inRange:(NSRange)r {
         Int i=0,oi=NSNotFound,weakRemovalCount=0;
         NSMutableArray *toRemove=nil;
         for (NSObject *object2 in self) {
@@ -746,7 +746,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         [self stateOK];
     }*/
 
-    -(bool)_removeObjectsAtIndexes:(NSIndexSet*)indexes {
+    bool _removeObjectsAtIndexes:(NSIndexSet*)indexes {
         [self willRemoveObjectsWithCount:indexes.count];
         for (Unsigned index=[indexes lastIndex];index!=NSNotFound;index=[indexes indexLessThanIndex:index]) {
             NSObject *object=[__array objectAtIndex:index];
@@ -760,11 +760,11 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         for (Unsigned index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
             Unsigned nxtIndex=[indexes indexGreaterThanIndex:index];
             if (nxtIndex==NSNotFound) nxtIndex=__mutableArray.count+indexes.count;
-            if (nxtIndex>index+1) [self objectsMovedFromRange:NSMakeRange(index+1,nxtIndex-(index+1)) toLocation:index-i];
+            if (nxtIndex>index+1) [self objectsMovedFromRange:NSMakeRange(index+1,nxtIndexindex+1 ) toLocation:index-i];
         }
         return(indexes.count>0);
     }
-    /*-(void)removeObjectIdenticalTo:(id)object {
+    /*void removeObjectIdenticalTo:(id)object {
         Int i=0,c=0,oi=NSNotFound;
         for (NSObject *object2 in __array) {
             if (object2==object) {
@@ -782,7 +782,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         else [self allObjectsMoved];
         [self stateOK];
     }*/
-    /*-(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
+    /*void removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
         Int i=0,c=0,oi=NSNotFound;
         for (NSObject *object2 in __array) {
             if (i>=r.location) {
@@ -803,10 +803,10 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         else [self allObjectsMoved];
         [self stateOK];
     }*/
-    /*-(void)removeObjectsInArray:(NSArray*)array {
+    /*void removeObjectsInArray:(NSArray*)array {
         for (NSObject *object in array) [self removeObject:object];
     }*/
-    /*-(void)removeObjectsInRange:(NSRange)r {
+    /*void removeObjectsInRange:(NSRange)r {
         for (Int i=((int)r.length)-1;i>=0;i--) {
             NSObject *object=[__array objectAtIndex:r.location+i];
             [self willRemoveObject:object fromIndex:r.location+i];
@@ -822,7 +822,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     
     
     //Replacing Objects
-    /*-(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
+    /*void replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
         Unsigned index=[indexes firstIndex];
         for (NSObject *object in array) {
             [self replaceObjectAtIndex:index withObject:object];
@@ -830,7 +830,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
         [self stateOK];
     }*/
-    /*-(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
+    /*void replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
         NSIndexSet *inss,*dels;
         NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
         for (Unsigned i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
@@ -850,7 +850,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         [self allObjectsMoved];        
         [self stateOK];
     }*/
-    /*-(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
+    /*void replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
         NSIndexSet *inss,*dels;
         NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
         for (Unsigned i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
@@ -871,7 +871,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 
-    -(void)setArray:(NSArray*)array {
+    void setArray:(NSArray*)array {
         NSIndexSet *inss,*dels;
         if (![Util getInsertsAndDeletesAsIndexSetWhenChanging:__array to:array inss:&inss dels:&dels]) return;
         [self _removeObjectsAtIndexes:dels];
@@ -882,7 +882,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     
     
     //Filtering Content
-    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+    void filterUsingPredicate:(NSPredicate *)predicate {
         NSMutableIndexSet *toRemove=nil;
         Unsigned index=0;
         for (NSObject *object in __array) {
@@ -900,34 +900,34 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     
     
     //Rearranging Content
-    -(void)exchangeObjectAtIndex:(Unsigned)fromi withObjectAtIndex:(Unsigned)toi {
+    void exchangeObjectAtIndex:(Unsigned)fromi withObjectAtIndex:(Unsigned)toi {
         if (fromi!=toi) {
             [__mutableArray exchangeObjectAtIndex:fromi withObjectAtIndex:toi];
             [self objectsSwappedWithIndex:fromi andIndex:toi];
             [self stateOK];
         }
     }
-    -(void)sortUsingDescriptors:(NSArray*)sortDescriptors {
+    void sortUsingDescriptors:(NSArray*)sortDescriptors {
         [__mutableArray sortUsingDescriptors:sortDescriptors];
         [self allObjectsMoved];
         [self stateOK];
     }
-    -(void)sortUsingComparator:(NSComparator)cmptr {
+    void sortUsingComparator:(NSComparator)cmptr {
         [__mutableArray sortUsingComparator:cmptr];
         [self allObjectsMoved];
         [self stateOK];
     }
-    -(void)sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+    void sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
         [__mutableArray sortWithOptions:opts usingComparator:cmptr];
         [self allObjectsMoved];
         [self stateOK];
     }
-    -(void)sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
+    void sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
         [__mutableArray sortUsingFunction:compare context:context];
         [self allObjectsMoved];
         [self stateOK];
     }
-    -(void)sortUsingSelector:(SEL)selector {
+    void sortUsingSelector:(SEL)selector {
         [__mutableArray sortUsingSelector:selector];
         [self allObjectsMoved];
         [self stateOK];
@@ -941,13 +941,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 <ModelMutableArray>
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
     }
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         [object modeladd];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         [object modelsub];
     }
     
@@ -955,13 +955,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
 <NotifiedByArray>
-    -(void)markDirtyByArray {[self markDirty];}
-    -(void)markDirty {}
+    void markDirtyByArray {[self markDirty];}
+    void markDirty {}
 
 <NotifyingMutableArray>
     notifyingArray -s< <NotifiedByArray> arrayWatcher
 
-    -(void)stateOK {@100 
+    void stateOK {@100 
         for (NSObject<NotifiedByArray>*w in self.arrayWatchers) {
             [w markDirtyByArray];
         }
@@ -980,15 +980,15 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     NSMutableDictionary __arrayObjectIndexes=[NSMutableDictionary dictionary] (ivar=__arrayObjectIndexes)
     
 
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {@-950 
+    void didAddObject:(id)object withIndex:(Unsigned)index {@-950 
         //[self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
         [self doAddIndex:index forObject:object];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@950 
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {@950 
         [self doRemoveIndex:index forObject:object];
         //[self objectsMovedFromRange:NSMakeRange(index+1,__array.count-1-index) toLocation:index];
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         NSObject *object1=[__array objectAtIndex:toIndex];
         NSObject *object2=[__array objectAtIndex:fromIndex];
         if (object1!=object2) {
@@ -996,14 +996,14 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         for (Unsigned i=0;i<fromRange.length;i++) {
             Unsigned j=(toLocation>fromRange.location?fromRange.length-1-i:i);
             NSObject *object=[__array objectAtIndex:toLocation+j];
             [self doChangeIndex:fromRange.location+j toIndex:toLocation+j forObject:object];
         }
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index=0;
         for (NSObject *object in __array) {
@@ -1012,20 +1012,20 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     }
     
     
-    -(void)doAddIndex:(Unsigned)index forObject:(id)object {
+    void doAddIndex:(Unsigned)index forObject:(id)object {
         NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
         if (!indexes) [__arrayObjectIndexes setObject:indexes=[NSMutableIndexSet indexSet] forWeakKey:object];
         else if ([indexes containsIndex:index]) {[self passFail:NO format:@"!!!ai Index exists\n"];ERR("a");}
         [indexes addIndex:index];
     }
-    -(void)doRemoveIndex:(Unsigned)index forObject:(id)object {
+    void doRemoveIndex:(Unsigned)index forObject:(id)object {
         NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
         if (!indexes) {[self passFail:NO format:@"!!!ai Object not known\n"];ERR("a");}
         if (![indexes containsIndex:index]) {[self passFail:NO format:@"!!!ai Index doesn't exist\n"];ERR("a");}
         if (indexes.count==1) [__arrayObjectIndexes removeObjectForKey:(id<NSCopying>)object];
         else [indexes removeIndex:index];
     }
-    -(void)doChangeIndex:(Unsigned)fromIndex toIndex:(Unsigned)toIndex forObject:(id)object {
+    void doChangeIndex:(Unsigned)fromIndex toIndex:(Unsigned)toIndex forObject:(id)object {
         NSMutableIndexSet *indexes=[__arrayObjectIndexes objectForKey:(id<NSCopying>)object];
         if (!indexes) {[self passFail:NO format:@"!!!ai Object not known (2)\n"];ERR("a");}
         if (![indexes containsIndex:fromIndex]) {[self passFail:NO format:@"!!!ai Index doesn't exist (2)\n"];ERR("a");}

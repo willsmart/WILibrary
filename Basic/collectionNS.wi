@@ -2,8 +2,8 @@
 
 PointerKey <NSCopying> "-Object"
     id o=nil (readonly)
-    -(void)dealloc {}
-    -(id)initWithObject:(id)ao {
+    void dealloc {}
+    id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         if (ao) {
             v_o=ao;
@@ -21,10 +21,10 @@ PointerKey <NSCopying> "-Object"
 
     NSString description={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
     NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
-    -(id)copyWithZone:(NSZone*)zone {
+    id copyWithZone:(NSZone*)zone {
         return([[PointerKey allocWithZone:zone] initWithObject:v_o]);
     }
-    -(BOOL)isEqual:(id)object {
+    BOOL isEqual:(id)object {
         bool ret=(([object isKindOfClass:[PointerKey class]]?(v_o==((PointerKey*)object).o):
               ([object isKindOfClass:[WeakObject class]]?(v_o==((WeakObject*)object).o):(v_o==object)))
               ||[super isEqual:object]);
@@ -36,7 +36,7 @@ PointerKey <NSCopying> "-Object"
 
 WeakObject <NSCopying> "-Object"
     id o=nil (readonly)
-    -(id)initWithObject:(id)ao {
+    id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         v_o=ao;
         hash=[ao hash];
@@ -54,10 +54,10 @@ WeakObject <NSCopying> "-Object"
 
     NSString description={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
     NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
-    -(id)copyWithZone:(NSZone*)zone {
+    id copyWithZone:(NSZone*)zone {
         return([[WeakObject allocWithZone:zone] initWithObject:v_o]);
     }
-    -(BOOL)isEqual:(id)object {
+    BOOL isEqual:(id)object {
         bool ret=(([object isKindOfClass:[PointerKey class]]?(v_o==((PointerKey*)object).o):
               ([object isKindOfClass:[WeakObject class]]?(v_o==((WeakObject*)object).o):(v_o==object)))
               ||[super isEqual:object]);
@@ -71,7 +71,7 @@ WeakObject <NSCopying> "-Object"
 
 
 NSMutableDictionary
-    -(void)setObject:(id)anObject weak:(bool)weakObject forKey:(id)aKeyo weak:(bool)weakKey pointer:(bool)pointerKey {
+    void setObject:(id)anObject weak:(bool)weakObject forKey:(id)aKeyo weak:(bool)weakKey pointer:(bool)pointerKey {
         if (weakKey) {
             if (weakObject) [self setWeakObject:anObject forWeakKey:aKeyo];
             else [self setObject:anObject forWeakKey:aKeyo];
@@ -85,73 +85,73 @@ NSMutableDictionary
             else [self setObject:anObject forKey:aKeyo];
         }
     }
-    -(void)setObject:(id)anObject forPointerKey:(id)aKeyo {
+    void setObject:(id)anObject forPointerKey:(id)aKeyo {
         PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
         [self setObject:anObject forKey:k];
     }
-    -(void)setObject:(id)anObject forWeakKey:(id)aKeyo {
+    void setObject:(id)anObject forWeakKey:(id)aKeyo {
         WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
         [self setObject:anObject forKey:k];
     }
-    -(void)setWeakObject:(id)anObject forKey:(id)aKeyo {
+    void setWeakObject:(id)anObject forKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self setObject:v forKey:aKeyo];
     }
-    -(void)setWeakObject:(id)anObject forPointerKey:(id)aKeyo {
+    void setWeakObject:(id)anObject forPointerKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
         [self setObject:v forKey:k];
     }
-    -(void)setWeakObject:(id)anObject forWeakKey:(id)aKeyo {
+    void setWeakObject:(id)anObject forWeakKey:(id)aKeyo {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
         [self setObject:v forKey:k];
     }
 
 NSDictionary
-    -(id)derefedObjectForKey:(id)key {
+    id derefedObjectForKey:(id)key {
         return([WeakObject deref:[self objectForKey:key]]);
     }
 
 NSMutableArray
-    -(void)addObject:(id)anObject weak:(bool)weakObject {
+    void addObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self addWeakObject:anObject];
         else [self addObject:anObject];
     }
-    -(void)addWeakObject:(id)anObject {
+    void addWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self addObject:v];
     }
 
-    -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(Unsigned)index {
+    void insertObject:(id)anObject weak:(bool)weakObject atIndex:(Unsigned)index {
         if (weakObject) [self insertWeakObject:anObject atIndex:index];
         else [self insertObject:anObject atIndex:index];
     }
-    -(void)insertWeakObject:(id)anObject atIndex:(Unsigned)index {
+    void insertWeakObject:(id)anObject atIndex:(Unsigned)index {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self insertObject:v atIndex:index];
     }
 
-    -(void)replaceObjectAtIndex:(Unsigned)index withObject:(id)anObject weak:(bool)weakObject {
+    void replaceObjectAtIndex:(Unsigned)index withObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
         else [self replaceObjectAtIndex:index withObject:(id)anObject];
     }
-    -(void)replaceObjectAtIndex:(Unsigned)index withWeakObject:(id)anObject {
+    void replaceObjectAtIndex:(Unsigned)index withWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self replaceObjectAtIndex:index withObject:v];
     }
 
 NSArray
-    -(id)derefedObjectAtIndex:(Unsigned)index {
+    id derefedObjectAtIndex:(Unsigned)index {
         return([WeakObject deref:[self objectAtIndex:index]]);
     }
 
 NSMutableSet
-    -(void)addObject:(id)anObject weak:(bool)weakObject {
+    void addObject:(id)anObject weak:(bool)weakObject {
         if (weakObject) [self addWeakObject:anObject];
         else [self addObject:anObject];
     }
-    -(void)addWeakObject:(id)anObject {
+    void addWeakObject:(id)anObject {
         WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
         [self addObject:v];
     }

@@ -2,7 +2,7 @@
 
 
 UIImage
-    -(bool)writeImageToFileWithPath:(NSString*)path {
+    bool writeImageToFileWithPath:(NSString*)path {
         NSString *pathLowered=path.lowercaseString;
         if ([pathLowered hasSuffix:@".jpeg"]||[pathLowered hasSuffix:@".jpg"]) {
             return([UIImageJPEGRepresentation(self, 1.0) writeToFile:path atomically:YES]);
@@ -22,7 +22,7 @@ ImageFromCGImage:UIImage
     Self initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         sourceImage=CGImageRetain(imageRef);
     }
-    -(void)dealloc {
+    void dealloc {
         if (sourceImage) CGImageRelease(sourceImage);
     }
 
@@ -63,16 +63,16 @@ FontList <BaseObject>
               }];
         }
     }
-    -(NSString*)fontNameMatchingPattern:(NSString*)pattern {
+    NSString* fontNameMatchingPattern:(NSString*)pattern {
         return([self fontNameMatchingPattern:pattern orDefault:@"Helvetica"]);
     }
-    -(NSString*)fontNameMatchingPattern:(NSString*)pattern orDefault:(NSString*)def {
+    NSString* fontNameMatchingPattern:(NSString*)pattern orDefault:(NSString*)def {
         for (NSString *name in fontNames) {
             if ([self fontName:name matchesPattern:pattern]) return(name);
         }
         return(def);
     }
-    -(bool)fontName:(NSString*)name matchesPattern:(NSString*)pattern {
+    bool fontName:(NSString*)name matchesPattern:(NSString*)pattern {
         NSData *nd=[name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
         if (!nd) return(NO);
         Unsigned nlen=nd.length;
@@ -81,7 +81,7 @@ FontList <BaseObject>
         for (Int pi=0,ni=0;pi<pattern.length;pi++) {
             char pc=[pattern characterAtIndex:pi];
             if ((pc>='a')&&(pc<='z')) pc-='a'-'A';
-            while ((ni<nlen)&&(ncs[ni]-((ncs[ni]>='a')&&(ncs[ni]<='z')?'a'-'A':0)!=pc)) ni++;
+            while ((ni<nlen)&&(ncs[ni](ncs[ni]>='a' &&(ncs[ni]<='z')?'a'-'A':0)!=pc)) ni++;
             if (ni++==nlen) return(NO);
         }
         return(YES);
@@ -109,7 +109,7 @@ ViewUtilities<ViewUtilities>
 
 
 <PermissiveGestureRecognizerDelegate:UIGestureRecognizerDelegate>
-    - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    BOOL gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
         return(YES);
     }
 

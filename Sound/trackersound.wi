@@ -38,7 +38,7 @@ BinTracker<BaseObject>
         edges1->setUpperBound(wavesPerCycle-1);
     }
 
-    -(void)dealloc {
+    void dealloc {
         DELETE(ArrayOfDoubles,sampBuffer);
         DELETE(ArrayOfDoubles,edges);
         DELETE(ArrayOfDoubles,edges1);
@@ -56,7 +56,7 @@ BinTracker<BaseObject>
     Int sign=1,signmul=1
 
 
-    -(void)processSamples:(Int*)samples shift:(Int)sampleShift withCount:(Int)numSamples {
+    void processSamples:(Int*)samples shift:(Int)sampleShift withCount:(Int)numSamples {
         bool debug=(ci==-1);
         double ph=2*PI*bufferi/samplesPerWave,dph=2*PI/samplesPerWave;
         for (Int si=0;si<numSamples;si++) {
@@ -263,7 +263,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
         return(4000*sin(ph));
     }
 
-    -(void)prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
+    void prepareSamples:(PLAYFRAME*)to withCount:(Int)toCount {
         for (Int i=0,si=playbackSamplei;i<toCount;i++,si++) {
             short s1=[__Class__ valForSample:si*2 ci:0];
             short s2=0;//[__Class__ valForSample:si*2 ci:1];
@@ -330,7 +330,7 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
     Self start {
         t1.signmul=-1;
     }
-    -(void)setupAudio {@12 
+    void setupAudio {@12 
         status = AudioUnitSetProperty(audioUnit,
                       kAudioOutputUnitProperty_CurrentDevice,
                       kAudioUnitScope_Global,
@@ -339,7 +339,7 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
                       sizeof(mic));
     }
 
-    -(short)simulatedSample:(double)si {
+    short simulatedSample:(double)si {
         return([SonicBinPlay valForSample:si ci:0]);
     }
 
@@ -352,7 +352,7 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
 
     double simlphase=0
 
-    -(void)processSamplesWithCount:(Int)numSamples {
+    void processSamplesWithCount:(Int)numSamples {
         if (simulate) for (Int N=[SonicBinPlay cycleSamples]*2,si=recordingSamplei%N,i=0;i<numSamples;i++,si=(si+1)%N) {
             samples[i]=[self simulatedSample:si+simlphase*[SonicBinPlay cycleSamples]/t1.wavesPerCycle];
             //prnt("%d ",samples[i]);

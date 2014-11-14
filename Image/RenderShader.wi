@@ -37,7 +37,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
     }
 
 
-    -(void)setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {@-10
+    void setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {@-10
         {
             float a=1;for (UIView *vw=renderedInView;vw;a*=vw.hidden?0:vw.alpha,vw=vw.superview);
             self.opacity.asFloat=a;
@@ -87,7 +87,7 @@ MetaEnabled
 
 
 RenderLoopView:RenderUIView<UIViewMetaEnabled>
-/**! --    (notenote) Note: Please think about making property "renderShader" publicreadonly !**/
+/**! -notenote Note: Please think about making property "renderShader" publicreadonly !**/
     RenderShader renderShader=[[RenderShader alloc] init] (readonly)
     Self start {
         renderShader.renderedInView=self;
@@ -96,7 +96,7 @@ RenderLoopView:RenderUIView<UIViewMetaEnabled>
         self.views=g_singletons.renderUIViews;
     }
     
-    -(id)superInitWithFrame:(CGRect)frame {
+    id superInitWithFrame:(CGRect)frame {
         return([super initWithFrame:frame]);
     }
     +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -106,7 +106,7 @@ RenderLoopView:RenderUIView<UIViewMetaEnabled>
     Self init {}
     Self initWithFrame:(CGRect)frame {}
 
-    -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
+    void didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr hasPrefix:@"macro_"]) {
             if (objectStr) {
                 [renderShader.program setMacro:objectStr forKey:[keyStr substringFromIndex:@"macro_".length]];

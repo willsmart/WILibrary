@@ -48,13 +48,13 @@ RecordVideo
     CVPixelBufferRef pixBuf=nil (readonly,ivar)
     NSDate startedAt=nil (readonly)
 
-    -(void)dealloc {@-100 
+    void dealloc {@-100 
         [self stop];
         if (self.pixBuf) CVPixelBufferRelease(self.pixBuf);
     }
 
 
-    -(id)initWithURL:(NSURL*)url size:(CGSize)asize {
+    id initWithURL:(NSURL*)url size:(CGSize)asize {
         if (!(self=[super init])) return(nil);    
        // AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];// output for 32BGRA pixel format, with me as the delegate and a suitable dispatch queue affixed.
         //[output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
@@ -164,7 +164,7 @@ RecordVideo
         return(self);
     }
     /*
-    -(void*)addFrameFromTexture:(Texture2D*)tex {
+    void* addFrameFromTexture:(Texture2D*)tex {
         glFramebufferTexture2DOES(￼, ￼, ￼, ￼, ￼)
         //    [assetWriter finishWriting];
         
@@ -206,7 +206,7 @@ RecordVideo
     }*/
 
 
-    -(void)addFrameFromGLFrameBufferWithScale:(CGSize)scale {
+    void addFrameFromGLFrameBufferWithScale:(CGSize)scale {
         Int w=size.width,h=size.height;
 
        // if (self.pixelData.length<w*h*2) self.pixelData.length=w*h*2;
@@ -304,7 +304,7 @@ RecordVideo
     }
 
     /*    
-        -(void)captureOutput:(AVCaptureOutput*)captureOutput
+        void captureOutput:(AVCaptureOutput*)captureOutput
     didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
     fromConnection:(AVCaptureConnection*)connection
         {
@@ -316,7 +316,7 @@ RecordVideo
         }
         */
 
-    -(void)stop {
+    void stop {
         if (going) {
             going=false;
             //NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];

@@ -888,11 +888,11 @@ DictionaryWord
         return(self);
     }
 
-    - (bool)removeWord {
+    bool removeWord {
         return([[Dictionary getDefault] removeWord:self.word]);
     }
 
-    - (bool)addWord {
+    bool addWord {
         return([[Dictionary getDefault] addWord:self.word freq:self.wordFreq freqIsMultiplier:false]);
     }
 
@@ -936,9 +936,9 @@ Dictionary
     }
 
 
-    - (void)saveIfRequired {if (changed) [self saveToFile:self.dictPath];}
+    void saveIfRequired {if (changed) [self saveToFile:self.dictPath];}
 
-    -(void)initDicts {
+    void initDicts {
         [self.dictsForLengths removeAllObjects];
         for (int len=1;len<128;len++) {
             [self.dictsForLengths addObject:[NSNull null]];
@@ -951,14 +951,14 @@ Dictionary
 
     Self init {}
 
-    -(void)load {
+    void load {
         if (![self loadFromFile:self.dictPath]) {
             [self loadFromResource:@"wc3c4"];
             [self saveToFile:self.dictPath];
 		}
 	}
 
-    - (void)revert {
+    void revert {
         [[NSFileManager defaultManager] removeItemAtPath:self.dictPath error:nil];
         [self load];
         
@@ -970,7 +970,7 @@ Dictionary
     }
 
 
-    - (void)setFromPreferences {
+    void setFromPreferences {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults synchronize];
         //NSString *s=[defaults stringForKey:@"multi_numWords"];
@@ -1002,10 +1002,10 @@ Dictionary
 
 
 
-    - (unsigned short*)dictStartForLength:(int)len {
+    unsigned short* dictStartForLength:(int)len {
         return((unsigned short*)[(NSMutableData*)[dictsForLengths objectAtIndex:len] mutableBytes]);
     }
-    - (unsigned short*)dictEndForLength:(int)len {
+    unsigned short* dictEndForLength:(int)len {
         return((unsigned short*)(((BYT*)[(NSMutableData*)[dictsForLengths objectAtIndex:len] mutableBytes])+((NSMutableData*)[dictsForLengths objectAtIndex:len]).length));
     }
 
@@ -1021,12 +1021,12 @@ Dictionary
     //#define MINLETTERMUL (1.e-50)
 
 
-    - (bool)loadFromResource:(NSString*)resource {
+    bool loadFromResource:(NSString*)resource {
         return([self loadFromFile:[[NSBundle mainBundle] pathForResource:resource ofType:@"dict"]]);
     }
 
 
-    - (bool)loadFromFile:(NSString*)path {
+    bool loadFromFile:(NSString*)path {
         @synchronized (self) {
             inited=YES;
             changed=NO;
@@ -1098,7 +1098,7 @@ Dictionary
     }
 
 
-    - (bool)saveToFile:(NSString*)path {
+    bool saveToFile:(NSString*)path {
         @synchronized (self) {
             if (![self verifyOrAlert]) return(NO);
         
@@ -1164,7 +1164,7 @@ Dictionary
 
 
 
-    - (double)findMinFreq {
+    double findMinFreq {
         unsigned short *pss[NUMLENGTHS],*epss[NUMLENGTHS];
         UnpackedWord wds[NUMLENGTHS];
         int nwds=0;
@@ -1206,7 +1206,7 @@ Dictionary
         static bool inVer=NO;
     */
 
-    - (NSString*)verify {
+    NSString* verify {
         NSString *ret=nil;
         @synchronized (self) {
             @try {
@@ -1223,7 +1223,7 @@ Dictionary
         return(ret);
     }
 
-    - (bool)verifyOrAlert {
+    bool verifyOrAlert {
         NSString *err=[self verify];
         if (err.length) {
             //[[[UIAlertView alloc] initWithTitle:@"Error: the dictionary was in an invalid state, and has been reloaded"
@@ -1246,7 +1246,7 @@ Dictionary
     }
     */
 
-    - (void)verifyLength:(int)len {
+    void verifyLength:(int)len {
         unsigned short *st=[self dictStartForLength:len],*en=[self dictEndForLength:len],*addr=st;
         UnpackedWord wd;
         double freq=1.e300;
@@ -1264,7 +1264,7 @@ Dictionary
     }
 
 
-    - (unsigned short*)_findWord:(NSString*)str {
+    unsigned short* _findWord:(NSString*)str {
         int len=wordLenIndex(str);
         if (len<0) return(nil);
         
@@ -1280,7 +1280,7 @@ Dictionary
 
 
 
-    - (void)test:(id)progressTextView {
+    void test:(id)progressTextView {
         srand(100);
         int numtest=10000;
         //progressTextView.text=[progressTextView.text stringByAppendingFormat:@"\n\nTesting dict..\n"];
@@ -1343,7 +1343,7 @@ Dictionary
     }
 
 
-    - (unsigned short*)_findFreq:(float)freq wordLengthIndex:(int)len {
+    unsigned short* _findFreq:(float)freq wordLengthIndex:(int)len {
         UnpackedWord wd;
         unsigned short *ps=[self dictStartForLength:len],*eps=[self dictEndForLength:len];
         while (ps<eps) {
@@ -1354,19 +1354,19 @@ Dictionary
     }
 
 
-    - (void)_removeBytesForLength:(int)len at:(int)at numBytes:(int)numBytes {
+    void _removeBytesForLength:(int)len at:(int)at numBytes:(int)numBytes {
         if ((at<0)||(at+numBytes>((NSMutableData*)[dictsForLengths objectAtIndex:len]).length)) {
             [NSException raise:@"Invalid operation" format:@"Cannot remove bytes at [%d,%d+%d) from a data of length %lu",at,at,numBytes,((NSMutableData*)[dictsForLengths objectAtIndex:len]).length];
         }
         if (at+numBytes<((NSMutableData*)[dictsForLengths objectAtIndex:len]).length) {
             BYT *vp=((BYT*)[((NSMutableData*)[dictsForLengths objectAtIndex:len]) mutableBytes])+at;
-            memmove(vp,vp+numBytes,((NSMutableData*)[dictsForLengths objectAtIndex:len]).length-(at+numBytes));
+            memmove(vp,vp+numBytes,((NSMutableData*)[dictsForLengths objectAtIndex:len]).lengthat+numBytes );
         }
         ((NSMutableData*)[dictsForLengths objectAtIndex:len]).length-=numBytes;
     }
 
 
-    - (void)_addBytesForLength:(int)len at:(int)at numBytes:(int)numBytes bytes:(void*)bytes {
+    void _addBytesForLength:(int)len at:(int)at numBytes:(int)numBytes bytes:(void*)bytes {
         if ((at<0)||(at>((NSMutableData*)[dictsForLengths objectAtIndex:len]).length)) {
             [NSException raise:@"Invalid operation" format:@"Cannot add bytes at %d to a data of length %lu",at,((NSMutableData*)[dictsForLengths objectAtIndex:len]).length];
         }
@@ -1379,7 +1379,7 @@ Dictionary
     }
 
 
-    - (void)_moveBytesForLength:(int)len from:(int)from to:(int)to numBytes:(int)numBytes bytes:(void*)newBytes {
+    void _moveBytesForLength:(int)len from:(int)from to:(int)to numBytes:(int)numBytes bytes:(void*)newBytes {
         if ((from<0)||(from+numBytes>((NSMutableData*)[dictsForLengths objectAtIndex:len]).length)) {
             [NSException raise:@"Invalid operation" format:@"Cannot remove (in move) bytes at [%d,%d+%d) from a data of length %lu",from,from,numBytes,((NSMutableData*)[dictsForLengths objectAtIndex:len]).length];
         }
@@ -1401,7 +1401,7 @@ Dictionary
     }
 
 
-    - (bool)_removeWordAtAddress:(unsigned short*)addr {
+    bool _removeWordAtAddress:(unsigned short*)addr {
         if (addr==nil) return(NO);
         int len;
         for (len=0;len<NUMLENGTHS;len++) {
@@ -1414,11 +1414,11 @@ Dictionary
         int at=(int)(((BYT*)addr)-st);
         UnpackedWord wd;
         unpackWord(&addr,&wd);
-        [self _removeBytesForLength:len at:at numBytes:(int)(((BYT*)addr)-((BYT*)wd.addr))];
+        [self _removeBytesForLength:len at:at numBytes:(int)(((BYT*)addr)(BYT* wd.addr))];
         return(YES);
     }
 
-    - (bool)_addWordAtAddress:(unsigned short*)addr word:(UnpackedWord)word {
+    bool _addWordAtAddress:(unsigned short*)addr word:(UnpackedWord)word {
         if (addr==nil) return(NO);
         int len;
         for (len=0;len<NUMLENGTHS;len++) {
@@ -1438,7 +1438,7 @@ Dictionary
         return(YES);
     }
 
-    - (bool)_moveWordFromAddress:(unsigned short*)fromAddr toAddr:(unsigned short*)toAddr newFreq:(float)freq {
+    bool _moveWordFromAddress:(unsigned short*)fromAddr toAddr:(unsigned short*)toAddr newFreq:(float)freq {
         if ((fromAddr==nil)||(toAddr==nil)) return(NO);
         int len;
         for (len=0;len<NUMLENGTHS;len++) {
@@ -1463,7 +1463,7 @@ Dictionary
         int numBytes=sizeof(short)*makeUnpackedWordForFile(&wd,buf);
         if (numBytes==0) return(NO);
 
-        int fromNumBytes=(int)(((BYT*)fromAddr)-(BYT*)wd.addr);
+        int fromNumBytes=(int)(((BYT*)fromAddr)BYT* wd.addr);
         
         if (numBytes==fromNumBytes) {		
             [self _moveBytesForLength:len from:from to:to numBytes:numBytes bytes:(void*)buf];
@@ -1478,7 +1478,7 @@ Dictionary
         return(YES);
     }
 
-    - (bool)removeWord:(NSString*)str {
+    bool removeWord:(NSString*)str {
         @synchronized (self) {
             if ([self _removeWordAtAddress:[self _findWord:str]]) {
                 [self verifyOrAlert];
@@ -1488,7 +1488,7 @@ Dictionary
         }
     }
 
-    - (bool)addWord:(NSString*)str freq:(float)freq freqIsMultiplier:(bool)freqIsMultiplier {
+    bool addWord:(NSString*)str freq:(float)freq freqIsMultiplier:(bool)freqIsMultiplier {
         @synchronized (self) {
             if (str.length>=MAXWORDLEN) return(NO);
             unsigned short *addr=[self _findWord:str],*addr2=addr;
@@ -1520,13 +1520,13 @@ Dictionary
         }
     }
 
-    - (bool)setWordFreq:(NSString*)str toFreq:(float)freq freqIsMultiplier:(bool)freqIsMultiplier {
+    bool setWordFreq:(NSString*)str toFreq:(float)freq freqIsMultiplier:(bool)freqIsMultiplier {
         if ([self addWord:str freq:freq freqIsMultiplier:freqIsMultiplier]) {changed=YES;return(YES);}
         else return(NO);
     }
 
 
-    - (UnpackedWord)findWord:(NSString*)str {
+    UnpackedWord findWord:(NSString*)str {
         UnpackedWord ret;memset(&ret,0,sizeof(ret));
         @synchronized (self) {
             unsigned short *ps=[self _findWord:str];
@@ -1632,7 +1632,7 @@ Dictionary
     }
     */
     
-    - (double) adjustedMissingMulForNumTaps:(int)numTaps {
+    double adjustedMissingMulForNumTaps:(int)numTaps {
         double oneLetterWordPrecisionPower=2;
         int maxPresisionedNumTaps=3;
         if (numTaps<=maxPresisionedNumTaps) {
@@ -1644,7 +1644,7 @@ Dictionary
         
 
 
-    - (void)getBest:(float**)letterMuls numLetters:(int)numTaps length:(double)length lengthRange:(double)lengthRange maxResults:(int)maxResults {
+    void getBest:(float**)letterMuls numLetters:(int)numTaps length:(double)length lengthRange:(double)lengthRange maxResults:(int)maxResults {
         
         double adjMissingMul=[self adjustedMissingMulForNumTaps:numTaps];
         
@@ -1765,7 +1765,7 @@ Dictionary
 
 
 
-    -(NSArray*)getBestWordsWithLetters:(float**)letterMuls numLetters:(int)numTaps length:(double)length lengthRange:(double)lengthRange maxResults:(int)maxResults {
+    NSArray* getBestWordsWithLetters:(float**)letterMuls numLetters:(int)numTaps length:(double)length lengthRange:(double)lengthRange maxResults:(int)maxResults {
         @synchronized (self) {
             double oneLetterWordPrecisionPower=2;
             int maxPresisionedNumTaps=2;
@@ -1920,7 +1920,7 @@ Dictionary
     }
 
 
-    -(NSData*)compressWordProbTrie:(NSMutableData*)trie {
+    NSData* compressWordProbTrie:(NSMutableData*)trie {
         WordProbTrie *wd=(WordProbTrie*)trie.mutableBytes;
         for (int i=0;i<trie.length/sizeof(WordProbTrie);i++) {
             wd[i].offset=-1;
@@ -1934,7 +1934,7 @@ Dictionary
         return(d);
     }
 
-    -(void)addWPT:(WordProbTrie*)awd windex:(int)windex toBytes:(BYT*)b index:(int*)pbi {
+    void addWPT:(WordProbTrie*)awd windex:(int)windex toBytes:(BYT*)b index:(int*)pbi {
         WordProbTrie *wd=awd+windex;
         int bi=*pbi;
         if (wd->offset==-1) {
@@ -1961,7 +1961,7 @@ Dictionary
     }
     int tnumWords=0
 
-    -(NSMutableData*)wordProbTrieForNumLetters:(int)maxNumLetters {
+    NSMutableData* wordProbTrieForNumLetters:(int)maxNumLetters {
 
         tnumWords=0;
         for (int len=0;len<NUMLENGTHS;len++) {
@@ -2010,7 +2010,7 @@ Dictionary
         return(trie);
     }
 
-    -(int)trieCountFromNumLetters:(int)numLetters maxNumLetters:(int)maxNumLetters letters:(char*)letters withWordIndexes:(NSIndexSet*)wis wordLetterIndexes:(BYT*)lis wiStack:(NSMutableArray*)wiStack liStack:(NSMutableArray*)liStack wordAddrs:(unsigned short**)wordAddrs seen:(NSMutableDictionary*)seen seenSubtree:(NSMutableDictionary*)seenSubtree tot:(int*)ptot trie:(NSMutableData*)trie triei:(int*)triei {
+    int trieCountFromNumLetters:(int)numLetters maxNumLetters:(int)maxNumLetters letters:(char*)letters withWordIndexes:(NSIndexSet*)wis wordLetterIndexes:(BYT*)lis wiStack:(NSMutableArray*)wiStack liStack:(NSMutableArray*)liStack wordAddrs:(unsigned short**)wordAddrs seen:(NSMutableDictionary*)seen seenSubtree:(NSMutableDictionary*)seenSubtree tot:(int*)ptot trie:(NSMutableData*)trie triei:(int*)triei {
         
         if (trie.length<=((*triei)+1)*sizeof(WordProbTrie)) {
             trie.length=2*trie.length;
@@ -2141,13 +2141,13 @@ ProMPWords
         }
     }
 
-    -(void)printCtxt {
+    void printCtxt {
         printf("seenMaxs:%ld -- seenWiss:%ld -- todo:%ld:",ctxt.seenMaxHT->numCellsFilled(),ctxt.seenWisHT->numCellsFilled(),ctxt.todoCount);
         for (int i=0;i<ctxt.todo->num();i++) printf("[%d]%d<%ld  ",i,ctxt.todois->a[i],ctxt.todo->get(i).num());
         printf("\n");
     }
 
-    -(void)dealloc {
+    void dealloc {
         delete ctxt.seenMaxHT;
         delete ctxt.seenWisHT;
         delete ctxt.todo;
@@ -2159,17 +2159,17 @@ ProMPWords
 
 
 
-    -(ULL)strHash_pc:(const char*)pc {
+    ULL strHash_pc:(const char*)pc {
         return(makeStringHashCode(pc));
     }
 
-    -(bool)haveSeenWisHash_addIfNot:(ULL)hash {
+    bool haveSeenWisHash_addIfNot:(ULL)hash {
         if ((*ctxt.seenWisHT)[hash]) return(YES);
         ctxt.seenWisHT->add(hash,YES);
         return(NO);
     }
 
-    -(bool)haveSeenMax_addIfNot:(const char*)max explore:(bool)explore wisCount:(Unsigned)wisCount {
+    bool haveSeenMax_addIfNot:(const char*)max explore:(bool)explore wisCount:(Unsigned)wisCount {
         ULL hash=[self strHash_pc:max];
         char c=(*ctxt.seenMaxHT)[hash];
         if ((c==YES)||((c=='?')&&!explore)) return(YES);
@@ -2202,7 +2202,7 @@ ProMPWords
     }
 
 
-    -(PattStr)nextMax {
+    PattStr nextMax {
         PattStr ret={""};
         int length=-1;
         IterateArray(int,N,*ctxt.todois,  if (N) length=(int)NIndex;);
@@ -2258,7 +2258,7 @@ ProMPWords
 
 
     NSMutableArray incIndsStack=[NSMutableArray array] (readonly)
-    -(NSMutableArray*)incIndsArrayForDepth:(int)depth {
+    NSMutableArray* incIndsArrayForDepth:(int)depth {
         NSMutableArray *ret;
         while (incIndsStack.count<=depth) [incIndsStack addObject:[NSMutableArray array]];
         ret=[incIndsStack objectAtIndex:depth];
@@ -2267,7 +2267,7 @@ ProMPWords
     }
 
     NSMutableArray indsStack=[NSMutableArray array] (readonly)
-    -(NSMutableIndexSet*)indsIndexSetForDepth:(int)depth {
+    NSMutableIndexSet* indsIndexSetForDepth:(int)depth {
         NSMutableIndexSet *ret;
         while (indsStack.count<=depth) [indsStack addObject:[NSMutableIndexSet indexSet]];
         ret=[indsStack objectAtIndex:depth];
@@ -2284,7 +2284,7 @@ ProMPWords
 
     NSMutableArray maxPattIndsStack=[NSMutableArray array] (readonly)
 
-    -(int*)getMaxPattIndsForDepth:(int)d num:(int)n {
+    int* getMaxPattIndsForDepth:(int)d num:(int)n {
         while (maxPattIndsStack.count<=d) [maxPattIndsStack addObject:[NSMutableData dataWithLength:n*sizeof(int)]];
         NSMutableData *retd=[maxPattIndsStack objectAtIndex:d];
         if (retd.length<n*sizeof(int)) {
@@ -2301,7 +2301,7 @@ ProMPWords
 
 
         
-    -(void)oprntWisWords:(NSIndexSet*)wis {
+    void oprntWisWords:(NSIndexSet*)wis {
         Wd *wds=self.words;
         oprnt("Wordsx%d:",wis.count);
         for (Unsigned wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
@@ -2320,13 +2320,13 @@ ProMPWords
         addMaxWPA=NEW(WPatternArray);
         addMaxWPA->setUpperBound(99);
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(WPatternArray,addMaxWPA);
     }
 
     
 
-    -(int)addMaxPatternsForWordsAtIndexes:(NSIndexSet*)wis {
+    int addMaxPatternsForWordsAtIndexes:(NSIndexSet*)wis {
         WPatternArray &maxs=*addMaxWPA;
         int N=0;
         
@@ -2353,7 +2353,7 @@ ProMPWords
 
 
 
-    -(int)addMaxPatternsForWordsAtIndexes:(NSIndexSet*)wis fromInds:(int*)parInds indDepth:(int)indDepth maxWd:(Wd*)maxWd deb:(bool)deb to:(WPatternArray*)to toi:(int*)pN {
+    int addMaxPatternsForWordsAtIndexes:(NSIndexSet*)wis fromInds:(int*)parInds indDepth:(int)indDepth maxWd:(Wd*)maxWd deb:(bool)deb to:(WPatternArray*)to toi:(int*)pN {
         int ret=0;
         
         bool countedCommonLetter[NUMLETTERS];
@@ -2416,7 +2416,7 @@ ProMPWords
 
 
     
-    -(Unsigned)incedWordIndexesForWordIndexes:(NSIndexSet*)wis withMaximal:(const char*)maxWd ret:(NSMutableArray*)ret {
+    Unsigned incedWordIndexesForWordIndexes:(NSIndexSet*)wis withMaximal:(const char*)maxWd ret:(NSMutableArray*)ret {
         //fprintf(stderr,"i");
 
         Unsigned retN=0;
@@ -2522,7 +2522,7 @@ ProMPWords
     
 
 
-    -(int)wordCountMatchingPattern:(const char*)wd {
+    int wordCountMatchingPattern:(const char*)wd {
         Wd *wds=self.words;
         int N=self.numWords,Nc=(int)strlen(wd),ret=0;
         for (int i=0;i<N;i++) {
@@ -2540,7 +2540,7 @@ ProMPWords
     }
     NSMutableIndexSet tmpWis=[[NSMutableIndexSet alloc] init] (readonly)
 
-    -(NSIndexSet*)wordIndexesMatchingPattern:(const char*)wd {
+    NSIndexSet* wordIndexesMatchingPattern:(const char*)wd {
         if (strcmp(tmpWisPattern.pattern,wd)) {
             strcpy(tmpWisPattern.pattern,wd);
             [self wordIndexesMatchingPattern:wd ret:tmpWis];
@@ -2548,7 +2548,7 @@ ProMPWords
         return(tmpWis);
     }
 
-    -(NSIndexSet*)wordIndexesMatchingPattern:(const char*)wd ret:(NSMutableIndexSet*)ret {
+    NSIndexSet* wordIndexesMatchingPattern:(const char*)wd ret:(NSMutableIndexSet*)ret {
         //fprintf(stderr,"w");
 
         [ret removeAllIndexes];
@@ -2566,7 +2566,7 @@ ProMPWords
 
 
 
-    -(Unsigned)countMaximalSubpatterns {
+    Unsigned countMaximalSubpatterns {
         
         NSMutableArray *indsArray=[[NSMutableArray alloc] init];
         NSMutableIndexSet *wisIS=[[NSMutableIndexSet alloc] init];
@@ -2604,7 +2604,7 @@ ProMPWords
 
 
 
-    -(void)goFromWordSet:(NSIndexSet*)wis {
+    void goFromWordSet:(NSIndexSet*)wis {
         [self addMaxPatternsForWordsAtIndexes:wis];
     }
 
@@ -2612,7 +2612,7 @@ ProMPWords
     Unsigned prvRetCount=0;
 
 
-    -(void)goFromPattern:(const char*)s tmpArray:(NSMutableArray*)indsArray {
+    void goFromPattern:(const char*)s tmpArray:(NSMutableArray*)indsArray {
         NSIndexSet *wis=[self wordIndexesMatchingPattern:s];
         Unsigned indN=[self incedWordIndexesForWordIndexes:wis withMaximal:s ret:indsArray];
         for (NSIndexSet *chwis in indsArray) {
@@ -2626,7 +2626,7 @@ ProMPWords
 
 
 
-    -(void)prntPattern:(const char*)s {
+    void prntPattern:(const char*)s {
         NSIndexSet *wis=[self wordIndexesMatchingPattern:s];
         BCArray_BigUInt *counts=[ssc countsByLengthForString:s];
         NSString *countStr=[ssc stringForCounts:counts ret:nil];
@@ -2643,7 +2643,7 @@ type IntArray "typedef:Array<int>"
 type BYTArray "typedef:Array<unsigned char>"
 
 ProMPWords
-    -(WPattern)readNextPattern:(FILE*)fil {
+    WPattern readNextPattern:(FILE*)fil {
         char buf[10000],word[128];
         WPattern ret={-1,-1,0,""},nret=ret;
         TA_init(ret.counts);
@@ -2685,7 +2685,7 @@ ProMPWords
 
 
     WPatternArray *_patterns=nil
-    -(void)dealloc {
+    void dealloc {
         if (_patterns) {
             DELETE(WPatternArray,_patterns);
             _patterns=nil;
@@ -2714,7 +2714,7 @@ ProMPWords
 
 
 
-    -(int)addMidPatternsBetween:(const char*)a andPattern:(const char*)b buf:(char*)buf depth:(int)depth ht:(QuickHashTable<bool>*)ht to:(WPatternArray*)newpa toi:(int*)ptoi template:(WPattern*)templatep {
+    int addMidPatternsBetween:(const char*)a andPattern:(const char*)b buf:(char*)buf depth:(int)depth ht:(QuickHashTable<bool>*)ht to:(WPatternArray*)newpa toi:(int*)ptoi template:(WPattern*)templatep {
         int ret=0;
         while (*a) {
             const char *bb=b;
@@ -2759,12 +2759,12 @@ ProMPWords
             addMidWPA->setUpperBound(99);
         }
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(QHT_bool,addMidHT);
         DELETE(WPatternArray,addMidWPA);
     }
 
-    -(int)addMidPatternsTo:(WPatternArray*)ppa {
+    int addMidPatternsTo:(WPatternArray*)ppa {
         QHT_bool &ht=*addMidHT;
 
         ht.clear();
@@ -2860,7 +2860,7 @@ ProMPWords
 
     float timenow={return(0);}
 
-    -(void)subFromSups  {
+    void subFromSups  {
         prnt("Get patterns and sort...");
         Array<int> &a=*self.sortedPatternIndexes_length.cppArray;
         WPatternArray &pa=*self.patterns;
@@ -2979,7 +2979,7 @@ ProMPWords
     }
 
 
-    -(void)goOwnedPatternCounts {
+    void goOwnedPatternCounts {
         prnt("Get patterns and sort...");
         Array<int> &inds=*self.sortedPatternIndexes_length.cppArray;
         prnt(" .\n");
@@ -3005,7 +3005,7 @@ ProMPWords
     }
     
     
-    -(void)writePatterns:(NSString*)fn evenMid:(bool)evenMid {
+    void writePatterns:(NSString*)fn evenMid:(bool)evenMid {
         FILE *fil=fopen(fn.UTF8String,"wb");
         NSMutableString *str=[NSMutableString string];
         Array<int> &inds=*self.sortedPatternIndexes_length.cppArray;
@@ -3020,7 +3020,7 @@ ProMPWords
     }
 
 
-    -(void)goOwned {
+    void goOwned {
         self.patternFilename=[NSString stringWithFormat:@"maxs%d.txt",self.numWords];
         //[self addMidPatterns];
         [self subFromSups];
@@ -3031,7 +3031,7 @@ ProMPWords
 
     CountSubsequences ssc=[[CountSubsequences alloc] init] (readonly)
 
-    -(void)goOptsWithDictWordArray:(DictWordArray*)pwds {
+    void goOptsWithDictWordArray:(DictWordArray*)pwds {
         self.patternFilename=[NSString stringWithFormat:@"maxs%d_owned.txt",self.numWords];
         WPatternArray &pa=*self.patterns;
 
@@ -3077,7 +3077,7 @@ ProMPWords
         );
     }
 
-    -(void)goOpts {
+    void goOpts {
         self.patternFilename=[NSString stringWithFormat:@"maxs%d_owned.txt",self.numWords];
         WPatternArray &pa=*self.patterns;
 
@@ -3241,21 +3241,21 @@ CountSubsequences
     BCArray_BigUInt countsByLength=[[BCArray_BigUInt alloc] init] (readonly)
     BCArray_BigUInt dpcounts=[[BCArray_BigUInt alloc] init] (readonly)
     BCArray_bool dpgot=[[BCArray_bool alloc] init] (readonly)
-    -(void)dealloc {@-950 
+    void dealloc {@-950 
         [self setUpperBound:-1 ofBigUIntArray:countsByLength];
         [self setUpperBound:-1 ofBigUIntArray:dpcounts];
     }
 
     Self init {}
 
-    -(void)setUpperBound:(int)ub ofBigUIntArray:(BCArray_BigUInt*)a {
+    void setUpperBound:(int)ub ofBigUIntArray:(BCArray_BigUInt*)a {
         int ubwas=a.upperBound;
         for (int i=ub+1;i<=ubwas;i++) TA_clear(a.a[i]);
         a.upperBound=ub;
         for (int i=ubwas+1;i<=ub;i++) TA_init(a.a[i]);
     }
 
-    -(BCArray_BigUInt*)countsByLengthForString:(const char*)pc {
+    BCArray_BigUInt* countsByLengthForString:(const char*)pc {
         int N=(int)strlen(pc);
         //prnt("N%d ",N);
         [self setUpperBound:N ofBigUIntArray:countsByLength];
@@ -3289,14 +3289,14 @@ CountSubsequences
     }
 
 
-    -(BigUInt&)goWithChars:(const char *)pc N:(int)N len:(int)len at:(int)at k:(int)k {
+    BigUInt& goWithChars:(const char *)pc N:(int)N len:(int)len at:(int)at k:(int)k {
         int myi=(N+1)*k+(at+1);
         //printf(">> [%d(%d)] %d %d %d %d\n",myi,dpgot.a[myi],N,len,at,k);
         BigUInt &ret=dpcounts.a[myi];
         if (!dpgot.a[myi]) {
             TA_clear(ret);
             dpgot.a[myi]=YES;
-            if (k>N-(at+1)) ret=BigUIntFunctions::zero();
+            if (k>Nat+1 ) ret=BigUIntFunctions::zero();
             else if (k==0) ret=BigUIntFunctions::one();
             else {
                 bool seen[256];memset(seen,0,256);
@@ -3361,7 +3361,7 @@ CountSubsequences
     BCString bcs=[[BCString alloc] init] (readonly)
     NSMutableString countstr=[[NSMutableString alloc] init] (readonly)
 
-    -(NSString*)stringForCounts:(BCArray_BigUInt*)counts ret:(NSMutableString*)ret {
+    NSString* stringForCounts:(BCArray_BigUInt*)counts ret:(NSMutableString*)ret {
         if (!ret) ret=countstr;
         [ret setString:@""];
         for (int i=1;i<counts.num;i++) {
@@ -3372,7 +3372,7 @@ CountSubsequences
         return(ret);
     }
 
-    -(NSString*)stringForSCCounts:(SchemaCount*)counts ret:(NSMutableString*)ret {
+    NSString* stringForSCCounts:(SchemaCount*)counts ret:(NSMutableString*)ret {
         if (!ret) ret=countstr;
         [ret setString:@""];
         for (int i=1;i<TA_num(*counts);i++) {

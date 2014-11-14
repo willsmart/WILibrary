@@ -7,9 +7,9 @@
     CGRect kbRect=nil (readonly)
     NSString allowedOrientations
 
-    -(void)resized {
+    void resized {
     }
-    -(void)restyle {
+    void restyle {
     }
 
     UIViewController parVC=nil (assign,nonatomic)
@@ -24,10 +24,10 @@
     }
 
 
-    -(void)resize {
+    void resize {
         [self resizeWithNavigationFaded:self.navigationController.navigationBar.alpha<0.5];
     }
-    -(void)resizeWithNavigationFaded:(bool)ignoreNavBar {
+    void resizeWithNavigationFaded:(bool)ignoreNavBar {
         CGRect r=[[UIScreen mainScreen] applicationFrame];
         r = [self.view convertRect:r fromView:nil];   
         r.origin.x=r.origin.y=0;
@@ -51,13 +51,13 @@
         }];
     }
 
-    -(void)willShowKB:(NSNotification*)inNotification {
+    void willShowKB:(NSNotification*)inNotification {
         kbRect = [self.view convertRect:[[[inNotification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue] fromView:nil];   
         [self resize];
     }
 
 
-    -(void)willHideKB:(NSNotification *)inNotification {
+    void willHideKB:(NSNotification *)inNotification {
         kbRect=CGRectMake(0, 0, [self.view convertRect:[[UIScreen mainScreen] applicationFrame] fromView:nil].size.width,0);
         [self resize];
     }
@@ -80,13 +80,13 @@
     Self initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {}
     Self init "super initWithNibName:nil bundle:nil" {}
 
-    -(void)viewDidLoad {@-500 
+    void viewDidLoad {@-500 
         [super viewDidLoad];
         @-100 
         [self restyle];
     }
 
-    -(void)viewWillAppear:(BOOL)animated {@500 
+    void viewWillAppear:(BOOL)animated {@500 
         [super viewWillAppear:animated];
         
         //NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -94,7 +94,7 @@
         //[center addObserver:self selector:@selector(willHideKB:) name:UIKeyboardWillHideNotification object:nil];
     }
 
-    -(void)viewWillDisappear:(BOOL)animated {@500 
+    void viewWillDisappear:(BOOL)animated {@500 
         [super viewWillDisappear:animated];
         
         //NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -102,11 +102,11 @@
         //[center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     }
 
-    -(BOOL)shouldAutorotate{
+    BOOL shouldAutorotate{
         return YES;
     }
 
-    -(Int)supportedInterfaceOrientations{
+    Int supportedInterfaceOrientations{
         Int mask = 0;
         if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
             mask |= UIInterfaceOrientationMaskLandscapeRight;
@@ -119,7 +119,7 @@
         return mask;
     }
 
-    -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {@-999 
+    BOOL shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {@-999 
         NSString *orientStr=nil;
         switch (interfaceOrientation) {
             case UIInterfaceOrientationUnknown:return(NO);
@@ -133,7 +133,7 @@
     }
 
 
-    -(void)didReceiveMemoryWarning {@900 
+    void didReceiveMemoryWarning {@900 
         [super didReceiveMemoryWarning];
     }
 

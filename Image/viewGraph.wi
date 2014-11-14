@@ -24,7 +24,7 @@
 //  has pointers to other objects (eg parent/next/first child)
 //  and points of its own (eh size/child attachment place/image attachment place/xy rotation)
 <VGObject:Commitable>
-    -(VGCalculatedPoint*)calculatedPointForKey:(id<NSCopying>)key;
+    VGCalculatedPoint* calculatedPointForKey:(id<NSCopying>)key;
 
     _object>>object ~d< <VGRelativePosition> _relativePosition>>relativePosition
 
@@ -34,8 +34,8 @@
 
     object -d< <VGObjectBindingReference> _objectBindingReference
     object -d< <VGPointBindingReference> _pointBindingReference
-    -(NSObject<VGObjectObjectReference>*)objectBindingReferenceForKey:(id<NSCopying>)key;
-    -(NSObject<VGObjectPointReference>*)pointBindingReferenceForKey:(id<NSCopying>)key;
+    NSObject<VGObjectObjectReference>* objectBindingReferenceForKey:(id<NSCopying>)key;
+    NSObject<VGObjectPointReference>* pointBindingReferenceForKey:(id<NSCopying>)key;
 
 
 
@@ -77,7 +77,7 @@ type ArrayOfCGPoints "typedef:Array<CGPoint>"
 // has a pattern and is magically notified if it changes
 <VGPointPart>
     part >~s- __Class__Pattern pattern
-    -(void)calculatePart;
+    void calculatePart;
 
 // This type of part has referenced to other objects/points (eg sum of siblings)
 <ReferentialVGPointPart:VGPointPart,Commitable>
@@ -137,7 +137,7 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
     Self start {
         [self.parts addDelegate:self.partsSetDelegate=[[VGPartsSinglyReferencedPointFollowerSetDelegate alloc] init]];
     }
-    -(void)setReferencedPointForPart:(NSObject<ReferentialVGPointPart>*)part {
+    void setReferencedPointForPart:(NSObject<ReferentialVGPointPart>*)part {
         if (referencedObjectBinding) [part.objectBindings setSet:[NSSet setWithObject:[part.point.object objectBindingReferenceForKey:referencedObjectBinding]]];
         else [part removeAllObjectBindings];
         
@@ -172,11 +172,11 @@ referencedObjectBinding=v;
 
 
 VGPartsSinglyReferencedPointFollowerSetDelegate
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
         [self.partPattern setReferencedPointForPoint:part];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
         [part removeAllObjectBindings];
         [part removeAllPointBindings];
@@ -192,7 +192,7 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
     Self start {
         [self.parts addDelegate:self.partsSetDelegate=[[VGPartsGreedilyReferencedPointFollowerSetDelegate alloc] init]];
     }
-    -(void)setReferencedPointsForPart:(NSObject<ReferentialVGPointPart>*)part {
+    void setReferencedPointsForPart:(NSObject<ReferentialVGPointPart>*)part {
         NSMutableSet *obbs=[NSMutableSet set],*ptbs=[NSMutableSet set],*rpts=[NSMutableSet set];
 
         if (referencedObjectBinding&&referencedPointBinding) {
@@ -236,11 +236,11 @@ referencedObjectBinding=v;
 
 
 VGPartsGreedilyReferencedPointFollowerSetDelegate
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
         [self.partPattern setReferencedPointsForPoint:part];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         NSObject<ReferentialVGPointPart> *part=(NSObject<ReferentialVGPointPart>*)object;
         [part removeAllObjectBindings];
         [part removeAllPointBindings];
@@ -263,7 +263,7 @@ Globals
 <VGPoint>
     ArrayOfCGPoints *pointStack=nil (readonly,ivar)
     CGPoint value=nil (readonly)
-    -(void)_calculatedValue {
+    void _calculatedValue {
         memset(pointStack->a,0,64*sizeof(CGPoint));
         for (NSObject<VGPointPart> *part in self.parts) [part calculatePart];
         value=pointStack->a[0];
@@ -278,7 +278,7 @@ Globals
             g_VGPoints->setUpperBound(40000);
         }
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(ArrayOfCGPoints,pointStack);
     }
 
@@ -310,17 +310,17 @@ Globals
 
 
 <VGObject>
-    -(NSObject<VGObjectObjectReference>*)objectBindingReferenceForKey:(id<NSCopying>)key {
+    NSObject<VGObjectObjectReference>* objectBindingReferenceForKey:(id<NSCopying>)key {
       NSObject<VGObjectObjectReference> *ret=[self _objectBindingReferenceForKey:key];
       if (!ret) [self set_objectBindingReference:ret=[VGObjectObjectReference get] forKey:key];
       return(ret);
     }
-    -(NSObject<VGObjectPointReference>*)pointBindingReferenceForKey:(id<NSCopying>)key {
+    NSObject<VGObjectPointReference>* pointBindingReferenceForKey:(id<NSCopying>)key {
       NSObject<VGObjectPointReference> *ret=[self _pointBindingReferenceForKey:key];
       if (!ret) [self set_pointBindingReference:ret=[VGObjectPointBinding get] forKey:key];
       return(ret);
     }
-    -(VGCalculatedPoint*)makeCalculatedPointForKey:(id<NSCopying>)key {
+    VGCalculatedPoint* makeCalculatedPointForKey:(id<NSCopying>)key {
       VGCalculatedPoint *ret=[self _calculatedPointForKey:key];
       if (!ret) [self set_calculatedPoint:ret=[[VGCalculatedPoint alloc] init] forKey:key];
       return(ret);
@@ -356,7 +356,7 @@ VGRelativePosition
         
 
 VGObjectObjectDictionaryDelegate
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             [[self.object _objectBindingReferenceForKey:key] markDirty];
             NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
@@ -367,7 +367,7 @@ VGObjectObjectDictionaryDelegate
             }
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             [[self.object _objectBindingReferenceForKey:key] markDirty];
             VGRelativePosition *rel=[self _relativePositionForKey:key];
@@ -377,7 +377,7 @@ VGObjectObjectDictionaryDelegate
 
 
 VGObjectPointDictionaryDelegate
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             [[self.object _pointBindingReferenceForKey:key] markDirty];
             VGCalculatedPoint *cpt=[self.object._calculatedPoints objectForKey:key];
@@ -393,7 +393,7 @@ VGObjectPointDictionaryDelegate
             }
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             VGCalculatedPoint *cpt=[self.object._calculatedPoints objectForKey:key];
             if (cpt) {
@@ -408,7 +408,7 @@ VGObjectPointDictionaryDelegate
 
 
 VGObjectCalculatedPointDictionaryDelegate
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
             if (pt) {
@@ -417,7 +417,7 @@ VGObjectCalculatedPointDictionaryDelegate
             }
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             NSObject<VGPoint> *pt=[self.object.points objectForKey:key];
             if (pt) {
@@ -430,7 +430,7 @@ VGObjectCalculatedPointDictionaryDelegate
 
 
 VGCalculatedPoint
-    -(CGPoint)_value {
+    CGPoint _value {
         return(self.calculatesValueOfPoint.calculatedValue);
     }
 
@@ -459,7 +459,7 @@ VGCalculatedPoint
 
 
 VGObjectsSetDelegate
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         NSObject<VGObject> *object=(NSObject<VGObject>*)object;
         [object removeAllPoints];
         for (id<NSCopying> key in self.pointPatterns) {
@@ -467,7 +467,7 @@ VGObjectsSetDelegate
             [object.parts setObject:pointPattern.makePoint forKey:key];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         NSObject<VGObject> *object=(NSObject<VGObject>*)object;
         [object removeAllPoints];
     }
@@ -475,7 +475,7 @@ VGObjectsSetDelegate
 
 
 VGObjectPointFollowerDictionaryDelegate
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             NSObject<VGPointPattern> *pointPattern=(NSObject<VGPointPattern>*)toObject;
             for (NSObject<VGObject> *object in self.pattern.objects) {
@@ -484,7 +484,7 @@ VGObjectPointFollowerDictionaryDelegate
             }
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             for (NSObject<VGObject> *object in self.pattern.objects) {
                 [object.points removeObjectForKey:key];
@@ -497,40 +497,40 @@ VGObjectPointFollowerDictionaryDelegate
 
 
 VGPointsSetDelegate
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         NSObject<VGPoint> *point=(NSObject<VGPoint>*)object;
         [point removeAllParts];
         for (NSObject<VGPointPartPattern> *partPattern in self.partPatterns) {
             [point.parts addObject:partPattern.makePart];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         NSObject<VGPoint> *point=(NSObject<VGPoint>*)object;
         [point removeAllParts];
     }
 
 
 VGPointPartFollowerArrayDelegate
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
         for (NSObject<VGPoint> *point in self.pattern.points) {
             NSObject<VGPointPart> *part=partPattern.makePart;
             [point.parts insertObject:part atIndex:index];
         }
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
         for (NSObject<VGPoint> *point in self.pattern.points) {
             NSObject<VGPointPart> *part=partPattern.makePart;
             [point.parts addObject:part];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             [point.parts removeObjectAtIndex:index];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         NSObject<VGPointPartPattern> *partPattern=(NSObject<VGPointPartPattern>*)object;
         for (NSObject<VGPoint> *point in self.pattern.points) {
             Unsigned index=0;
@@ -541,19 +541,19 @@ VGPointPartFollowerArrayDelegate
             if (index<point.parts.count) [point.parts removeObjectAtIndex:index];
         }
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             [point.parts exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
         }
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             NSArray *parts=[point.parts objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
             [point.parts removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:fromRange]];
             [point.parts replaceObjectsInRange:NSMakeRange(toLocation,0) withObjectsFromArray:parts];
         }
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         for (NSObject<VGPoint> *point in self.pattern.points) {
             [point.parts sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 NSObject<VGPointPart> *part1=(NSObject<VGPointPart>*)obj1;
@@ -610,7 +610,7 @@ VGConstantPointPartPattern<VGPointPartPattern>
     <VGPointPart> makePart={return([[VGConstantPointPart alloc] init]);}
 
 VGConstantPointPart<VGPointPart>
-    -(void)calculatePart {self.point.pointStack->a[0]=self.pattern.value;}
+    void calculatePart {self.point.pointStack->a[0]=self.pattern.value;}
 
 
 
@@ -634,7 +634,7 @@ VGScalerPointPartPattern<VGPointPartPattern>
     <VGPointPart> makePart={return([[VGScalerPointPart alloc] init]);}
 
 VGScalerPointPart<VGPointPart>
-    -(void)calculatePart {
+    void calculatePart {
         CGPoint &pt=self.point.pointStack->a[0],mul=self.pattern.multiply,add=self.pattern.add;
         pt.x=pt.x*mul.x+add.x;
         pt.y=pt.y*mul.y+add.y;
@@ -642,10 +642,10 @@ VGScalerPointPart<VGPointPart>
 
 
 VGSwizzlePointPartPattern<VGPointPartPattern>
-    -(BYT)sourceAtIndex:(Unsigned)index {
+    BYT sourceAtIndex:(Unsigned)index {
         return((indexMask>>(index<<2))&0xff);
     }
-    -(void)setSource:(BYT)v atIndex:(Unsigned)index {
+    void setSource:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self sourceAtIndex:index]!=v)) {
             indexMask&=0xf<<(index<<2);
             indexMask|=v<<(index<<2);
@@ -663,7 +663,7 @@ VGSwizzlePointPartPattern<VGPointPartPattern>
     <VGPointPart> makePart={return([[VGSwizzlePointPart alloc] init]);}
 
 VGSwizzlePointPart<VGPointPart>
-    -(void)calculatePart {
+    void calculatePart {
         CGPoint *ppt=self.point.pointStack->a;
         CGPoint fromppt[16];
         memcpy(fromppt,ppt,16*sizeof(CGPoint));
@@ -689,10 +689,10 @@ VGSwizzlePointPart<VGPointPart>
 
 
 VGAddSubPointPartPattern<VGPointPartPattern>
-    -(BYT)addMulTimes4AtIndex:(Unsigned)index {
+    BYT addMulTimes4AtIndex:(Unsigned)index {
         return((addMulMask>>(index<<2))&0xff);
     }
-    -(void)setAddMulTimes4:(BYT)v atIndex:(Unsigned)index {
+    void setAddMulTimes4:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self addMulTimes4AtIndex:index]!=v)) {
             addMulMask&=0xf<<(index<<2);
             addMulMask|=v<<(index<<2);
@@ -707,10 +707,10 @@ VGAddSubPointPartPattern<VGPointPartPattern>
                 [self markDirty];
             }
         } (ivar)
-    -(BYT)subMulTimes4AtIndex:(Unsigned)index {
+    BYT subMulTimes4AtIndex:(Unsigned)index {
         return((subMulMask>>(index<<2))&0xff);
     }
-    -(void)setSubMulTimes4:(BYT)v atIndex:(Unsigned)index {
+    void setSubMulTimes4:(BYT)v atIndex:(Unsigned)index {
         if ((v<16)&&(index<16)&&([self subMulTimes4AtIndex:index]!=v)) {
             subMulMask&=0xf<<(index<<2);
             subMulMask|=v<<(index<<2);
@@ -736,7 +736,7 @@ VGAddSubPointPartPattern<VGPointPartPattern>
     <VGPointPart> makePart={return([[VGAddSubPointPart alloc] init]);}
 
 VGAddSubPointPart<VGPointPart>
-    -(void)calculatePart {
+    void calculatePart {
         CGPoint *ppt=self.point.pointStack->a;
         ULL addMask=self.pattern.addMulMask;
         ULL subMask=self.pattern.subMulMask;
@@ -794,7 +794,7 @@ VGSumPointPartPattern<VGPointPartPattern>
     <VGPointPart> makePart={return([[VGSumPointPart alloc] init]);}
 
 VGSumPointPart<VGPointPart>
-    -(void)calculatePart {
+    void calculatePart {
         CGPoint &pt=self.point.pointStack->a[0];
         for (NSObject<VGPoint> *point in self.referencedPoints) {
             CGPoint pt2=point.calculatedValue;
@@ -812,13 +812,13 @@ VGSumPointPart<VGPointPart>
     Int graphedIndex,graphedIndexVersion=nil
     owner ~m< VGPoint binding
 
-    -(NSObject<VGObject>*)objectForBinding:(NSString*)binding;
+    NSObject<VGObject>* objectForBinding:(NSString*)binding;
 
     Self start {
         [self.bindings addDelegate:[[ViewGraphBindingDelegate alloc] initWithOwner:self]];
     }
 
-    -(Int)commitProperties:(Int)substageIndex {@-998 |1@2 
+    Int commitProperties:(Int)substageIndex {@-998 |1@2 
         if ((!positionMoved)&&(previousPosition!=position)) {
             self.positionMoved=YES;
             if ((!edgeMoved)&&(self.graphedIndexVersion==self.graph.graphedIndexVersion)) {
@@ -833,7 +833,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
     Self initWithOwner:(NSObject<VGObject>*)aowner "super init" {
         aowner=owner;
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             if ([toObject isKindOfClass:[VGPoint class]]) {
                 NSObject<VGPoint> *b=(NSObject<VGPoint>*)toObject;
@@ -842,7 +842,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
             }
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             if ([fromObject isKindOfClass:[VGPoint class]]) {
                 NSObject<VGPoint> *b=(NSObject<VGPoint>*)fromObject;
@@ -857,7 +857,7 @@ ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
     Self initWithGraph:(ViewGraph*)agraph "super init" {
         graph=agraph;
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([object conformsToProtocol:@protocol(VGObject)]) {
             NSObject<VGObject> *vg=(NSObject<VGObject>*)object;
             for (NSObject<VGPoint> *b in vg.bindings) {
@@ -867,7 +867,7 @@ ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
             graph.graphOkForView=nil;
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         if ([object conformsToProtocol:@protocol(VGObject)]) {
             NSObject<VGObject> *vg=(NSObject<VGObject>*)object;
             for (NSObject<VGPoint> *b in vg.bindings) {
@@ -891,7 +891,7 @@ ViewGraph<BaseObject> "fn:graph"
         [self.items addDelegate:[[ViewGraphItemDelegate alloc] initWithGraph:self]];
     }
 
-    -(void)itemMoved:(Int)aindex {
+    void itemMoved:(Int)aindex {
         long foundAtIndex,insertAtIndex;
         FindArrayElement(Int,aindex,movedIndexes->a[index],0,numMovedIndexes-1,foundAtIndex,insertAtIndex,NO);
         if (foundAtIndex==-1) {
@@ -911,7 +911,7 @@ ViewGraph<BaseObject> "fn:graph"
         vgs=NEW(_VGObjects);
         vgs2=NEW(_VGObjects);
     }
-    -(void)dealloc {
+    void dealloc {
         DELETE(ArrayOfInts,movedIndexes);
         DELETE(_VGObjects,vgs);vgs=nil;
         DELETE(_VGObjects,vgs2);vgs2=nil;
@@ -920,12 +920,12 @@ ViewGraph<BaseObject> "fn:graph"
     Int graphedIndexVersion=nil
     VGObject graphOkForView=nil (readonly)
 
-    -(Int)commitProperties:(Int)substageIndex {@-998 |2@10 
+    Int commitProperties:(Int)substageIndex {@-998 |2@10 
         [self refreshIndexesWithFocus:self.focus];
         [self computePositions];
     }
         
-    -(void)refreshIndexesWithFocus:(NSObject<VGObject>*)focus {
+    void refreshIndexesWithFocus:(NSObject<VGObject>*)focus {
         if (graphOkForView==focus) return;
         graphOkForView=focus;
         graphedIndexVersion++;
@@ -981,7 +981,7 @@ ViewGraph<BaseObject> "fn:graph"
 
     double moveThreshold=0.1
 
-    -(void)computePositions {
+    void computePositions {
         for (Int i=0;i<vgs->num();i++) {
             _VGObject &v=vgs->a[i];
             if (v.v.movable&&v.v.positionMoved&&(sqrt((v.position.x-v.v.position.x)*(v.position.x-v.v.position.x)+(v.position.y-v.v.position.y)*(v.position.y-v.v.position.y)>moveThreshold))) {
@@ -1023,7 +1023,7 @@ ViewGraph<BaseObject> "fn:graph"
     NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (readonly)
     NSMutableSet bindingsThanChanged=[NSMutableSet set] (readonly)
 
-    -(Int)commitProperties:(Int)substageIndex {@100 
+    Int commitProperties:(Int)substageIndex {@100 
         if (modelObjectChanged) {
             [bindings setObject:(prev?prev:[NSNull null]) forKey:@"Pprv"];
             [bindings setObject:(next?prev:[NSNull null]) forKey:@"Pnxt"];

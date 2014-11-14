@@ -1,17 +1,17 @@
 RequestCaches "fn:util"
     caches ~m< <RequestCache> cache
-        -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
+        NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
         cache -m< <Request> request
             float worthAsRequest (readonly)
-            -(void)goRequest;
+            void goRequest;
             NSObject result (readonly)
             float resultSize (readonly)
             request >s<~ <RequestOwner> owner
-                -(void)doneRequestSync:(NSObject<Request>*)request {}
-                -(void)doneRequestAsync:(NSObject<Request>*)request {@990}
+                void doneRequestSync:(NSObject<Request>*)request {}
+                void doneRequestAsync:(NSObject<Request>*)request {@990}
             request ~s< RequestProxy proxy
 
-        -(void)prntList {
+        void prntList {
             prnt("List: ");
             for (NSObject<WeakListItem>*item=self.proxyList.headItem;item;item=item.next) {
                 prnt(" %s -- ",((NSObject<Object>*)item).cdescription);
@@ -45,7 +45,7 @@ RequestCaches "fn:util"
 <Request>
     NSObject<NSCopying> definingKey=nil
 
-    -(void)goRequest {@-500 
+    void goRequest {@-500 
         prnt("%s goRequest\n",self.cdescription);
         [self removeAllProxys];
         if (!self.owners.count) return;
@@ -79,11 +79,11 @@ RequestProxy <WeakListItem> "fn:util"
         -v{cache.asDictionary=v;}
 
 
-    -(NSObject*)immediateResultForKey:(id<NSCopying>)key {
+    NSObject* immediateResultForKey:(id<NSCopying>)key {
         return([self immediateResultForKey:key requestData:nil]);
     }
 
-    -(NSObject*)immediateResultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData {
+    NSObject* immediateResultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData {
         NSObject *ret=[cache derefedObjectForKey:key];
         if (ret) return(ret);
         NSObject<Request> *req=[self requestForKey:key];
@@ -101,17 +101,17 @@ RequestProxy <WeakListItem> "fn:util"
 
 
 
-    -(NSObject*)resultForKey:(id<NSCopying>)key {
+    NSObject* resultForKey:(id<NSCopying>)key {
         return([self resultForKey:key requestData:nil owner:nil]);
     }
 
-    -(NSObject*)resultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
+    NSObject* resultForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
         NSObject *ret=[cache derefedObjectForKey:key];
         if (!ret) ret=[self requestForKey:key requestData:reqData owner:owner].result;
         return(ret);
     }
 
-    -(NSObject<Request>*)requestForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
+    NSObject<Request>* requestForKey:(id<NSCopying>)key requestData:(NSObject*)reqData owner:(NSObject<RequestOwner>*)owner {
         NSObject<Request> *req=[self requestForKey:key];
         if (!owner) return(req);
         
@@ -170,7 +170,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         return(bestReq);
     }
 
-    -(bool)goNext {
+    bool goNext {
         NSObject<Request> *req=self.worthiestRequest;
         if (req) {
             //[req.cache prntList];
@@ -184,7 +184,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
         else return(NO);
     }
 
-    -(Int)goForSeconds:(float)sec {
+    Int goForSeconds:(float)sec {
         Int ret=0;
         NSDate *start = [NSDate date];
         do {
@@ -195,7 +195,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
     }
 
 
-    -(void)clearCaches {
+    void clearCaches {
         for (kid key in self.caches) {
             [[self cacheForKey:key].cache clear];
         }
@@ -226,12 +226,12 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     Int maxCount=1000000
 
 <LRUCache:List,MinimalMutableDictionary,Codable>
-    -(void)clear {@100 
+    void clear {@100 
         [self removeAllObjects];
         totalSize=0;
     }
     Int imi=1;
-    -(NSString*)nextPath {
+    NSString* nextPath {
         NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         return([dir stringByAppendingFormat:@"/render_%04d.png",(int)imi++]);
     }
@@ -316,14 +316,14 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
             }
         }
 
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         {
             if (![object conformsToProtocol:@protocol(LRUCacheItem)]) ret=NO;
             NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)object;
             if (item.cache) return(NO);
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         {
             if (fromObject) {
                 NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)fromObject;
@@ -341,7 +341,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
             }
         }
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         {
             if (toObject) {
                 NSObject<LRUCacheItem> *item=(NSObject<LRUCacheItem>*)toObject;
@@ -356,7 +356,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
     float totalSize=0,maxSize
     Int maxCount
     
-    -(id)objectForKey:(id<NSCopying>)key {@-100 
+    id objectForKey:(id<NSCopying>)key {@-100 
         NSObject<LRUCacheItem> *item=[__dictionary objectForKey:key];
         if (item) {
             totalSize-=item.initialSize;
@@ -367,7 +367,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
             [self setObject:item forKey:key];
         }
     }
-    -(NSObject*)derefedObjectForKey:(id<NSCopying>)key {@-999 
+    NSObject* derefedObjectForKey:(id<NSCopying>)key {@-999 
         NSObject *ret=[self objectForKey:key];
         @-10 if ([ret isKindOfClass:[LRUCacheItem class]]) {
             ret=((LRUCacheItem*)ret).object;
@@ -375,7 +375,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
         @999 return(ret);
     }
 
-    -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {@-999 
+    NSObject<LRUCacheItem>* makeForKey:(NSObject<NSCopying>*)key {@-999 
         NSObject<LRUCacheItem> *ret=nil;
         @999 return(ret);
     }

@@ -2,7 +2,7 @@ sys CADisplayLink
 
 RenderLoop <BaseObject>
 
-    -(void)dealloc {@-100 self.animating=NO;self.eaglView=nil;}
+    void dealloc {@-100 self.animating=NO;self.eaglView=nil;}
 
     EAGLView _eaglView=nil
     EAGLView eaglView=
@@ -22,7 +22,7 @@ RenderLoop <BaseObject>
 
     CADisplayLink displayLink=nil
 
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable animating has an ivar, but no default value. This is less a strict error than unclean !**/
+/**! -wi!warnwarn Address warning: Non-imaginary variable animating has an ivar, but no default value. This is less a strict error than unclean !**/
     BOOL animating=
         {return(animating);}
         -v{
@@ -41,7 +41,7 @@ RenderLoop <BaseObject>
             }
         }=nil (ivar)
 
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
+/**! -wi!warnwarn Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
     Int animationFrameInterval=
         {return animationFrameInterval;}
         -v{
@@ -63,7 +63,7 @@ RenderLoop <BaseObject>
 
 
 
-    -(void)drawFrame {
+    void drawFrame {
         @synchronized (self) {
             if (self.shaderData==nil) self.shaderData=[ShaderData get];
             

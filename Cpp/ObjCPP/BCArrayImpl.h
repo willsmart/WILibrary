@@ -13,79 +13,79 @@
 
 #define implementation(IName,I,nsObjectToI,valueToNSObject) \
 @implementation BCArray_##IName \
--(void) dealloc { \
+void dealloc { \
     if (myCppArray) DELETE(Array<I>,cppArray); \
     cppArray=NULL; \
 } \
  \
--(id)init { \
+id init { \
     if (!(self=[super init])) return(nil); \
     cppArray=NEW(Array<I>); \
     myCppArray=YES; \
     return(self); \
 } \
--(id)initWithArray:(void *)vp { \
+id initWithArray:(void *)vp { \
     if (!(self=[super init])) return(nil); \
     cppArray=(Array<I>*)vp; \
     myCppArray=NO; \
     return(self); \
 } \
--(I*)a { \
+I* a { \
     return(cppArray->a); \
 } \
--(void)removeAllValues { \
+void removeAllValues { \
     cppArray->clear(); \
 } \
--(void)addValue:(I)value { \
+void addValue:(I)value { \
     (*cppArray)+=value; \
 } \
--(void)insertValue:(I)value atIndex:(int)index { \
+void insertValue:(I)value atIndex:(int)index { \
     cppArray->insert(index, value, 1); \
 } \
--(void)insertValues:(I*)values atIndex:(int)index count:(int)count { \
+void insertValues:(I*)values atIndex:(int)index count:(int)count { \
     cppArray->insert(index, *values, count); \
 } \
--(I)valueAtIndex:(int)index { \
+I valueAtIndex:(int)index { \
     return((*cppArray)[index]); \
 } \
--(void)setLowerBound:(int)v { \
+void setLowerBound:(int)v { \
     cppArray->setLowerBound(v); \
 } \
--(int)lowerBound { \
+int lowerBound { \
     return((int)cppArray->lowerBound()); \
 } \
--(void)setUpperBound:(int)v { \
+void setUpperBound:(int)v { \
     cppArray->setUpperBound(v); \
 } \
--(int)upperBound { \
+int upperBound { \
     return((int)cppArray->upperBound()); \
 } \
--(int)num { \
+int num { \
     return((int)cppArray->num()); \
 } \
--(NSArray*)asNSArray { \
+NSArray* asNSArray { \
     NSMutableArray *ret=[NSMutableArray arrayWithCapacity:self.num]; \
     IterateArray(I,value,*cppArray,[ret addObject:valueToNSObject];); \
     return(ret.copy); \
 } \
--(void)setAsNSArray:(NSArray*)v { \
+void setAsNSArray:(NSArray*)v { \
     int lb=(int)cppArray->lowerBound(); \
     cppArray->setUpperBound(lb+v.count-1); \
     int i=0; \
     for (NSObject *nsObject in v) cppArray->a[i++]=(nsObjectToI); \
 } \
--(CPPTYPE(Array<I>)*)cppArray { \
+CPPTYPE(Array<I> *)cppArray { \
     return(cppArray); \
 } \
--(void)setCppArray:(CPPTYPE(Array<I>)*)vp { \
+void setCppArray:(CPPTYPE(Array<I>)*)vp { \
     if (myCppArray) DELETE(Array<I>, cppArray); \
     cppArray=(Array<I>*)vp; \
 } \
--(CPPTYPE(Array<I>)*)asCPPArray { \
+CPPTYPE(Array<I> *)asCPPArray { \
     Array<I> *ret=new Array<I>(); \
     return(&((*ret)=*cppArray)); \
 } \
--(void)setAsCPPArray:(CPPTYPE(Array<I>)*)vp { \
+void setAsCPPArray:(CPPTYPE(Array<I>)*)vp { \
     (*cppArray)=*(Array<I>*)vp; \
 } \
 @end

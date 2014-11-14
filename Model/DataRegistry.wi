@@ -20,12 +20,12 @@ DataRegistryParentValueDelegate<MutableValueDelegate>
     Self initWithOwner:(DataRegistry*)aowner "super init" {
         owner=aowner;
     }
-    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+    void willChangeValueFrom:(id)fromObject to:(id)toObject {
         if (owner) {
             while (owner.propertyStack.count>=2) [owner.propertyStack removeObjectAtIndex:1];
         }
     }
-    -(void)didSetValueTo:(id)object {
+    void didSetValueTo:(id)object {
         if (owner) {
             if ([object isKindOfClass:[DataRegistry class]]) {
                 [owner.propertyStack addObject:((DataRegistry*)object).allViewers];
@@ -41,7 +41,7 @@ DataRegistryMyViewersSetDelegate<MutableSetDelegate>
     Self initWithOwner:(DataRegistry*)aowner "super init" {
         owner=aowner;
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         NSArray *keys=self.owner.myViewers.allKeys;
         for (kid key in keys) {
             if ([self.owner.myViewers objectForKey:key]==object) {
@@ -54,7 +54,7 @@ DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
     Self initWithOwner:(DataRegistry*)aowner "super init" {
         owner=aowner;
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             [self.owner.setOfMyViewers removeObject:fromObject];
         }
@@ -103,15 +103,15 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         [self dataViewer_attachDictionaryDelegateTo:self.allViewers];
     }
 
-    -(NSObject*)valueForProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
+    NSObject* valueForProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
         if ([propertyKey isEqual:@""]) return([self.allViewers objectForKey:viewerKey]);
         else return([((NSObject<DataModelViewer>*)[self.allViewers objectForKey:viewerKey])._properties objectForKey:propertyKey]);
     }
-    -(NSObject*)valueForProperty:(NSString*)propertyNamev {
+    NSObject* valueForProperty:(NSString*)propertyNamev {
         return([self valueForProperty:[__Class__ propertyKeyFromProperty:propertyNamev] inViewer:[__Class__ viewerKeyFromProperty:propertyNamev]]);
     }
 
-    -(void)attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
+    void attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
         ViewerListenerSet *mls=[self viewerListenerSetForKey:viewerKey];
         if (!mls) [self setViewerListenerSet:mls=[[ViewerListenerSet alloc] init] forKey:viewerKey];
         ViewerPropertyListenerSet *mpls=[mls viewerPropertyListenerSetForKey:propertyKey];
@@ -119,7 +119,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         [mpls addNamedDataListener:l];
     }
 
-    -(void)attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSString*)propertyNamev {
+    void attachListener:(NSObject<NamedDataListener>*)l toProperty:(NSString*)propertyNamev {
         [self attachListener:l toProperty:[__Class__ propertyKeyFromProperty:propertyNamev] inViewer:[__Class__ viewerKeyFromProperty:propertyNamev]];
     }
 
@@ -143,7 +143,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         return(r.location==NSNotFound?propertyNamev:[propertyNamev substringFromIndex:r.location+r.length]);
     }
 
-    -(void)dataViewer_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void dataViewer_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         NSObject<DataModelViewer> *tov=(NSObject<DataModelViewer>*)toObject;
         NSObject<DataModelViewer> *fromv=(NSObject<DataModelViewer>*)fromObject;
 
@@ -179,7 +179,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
     }
     
 
-    -(void)dataViewer_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void dataViewer_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         NSObject<DataModelViewer> *tov=(NSObject<DataModelViewer>*)toObject;
         NSObject<DataModelViewer> *fromv=(NSObject<DataModelViewer>*)fromObject;
         if (tov) {
@@ -212,16 +212,16 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         [self didChangeValueOfProperty:@"" inViewer:(NSObject<NSCopying>*)key from:fromv to:tov];
     }
     
-    -(void)dataViewer_stateOK {
+    void dataViewer_stateOK {
         [self namedDataStateOK];
     }
-    -(void)dataViewerProperties_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
+    void dataViewerProperties_willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
         [self willChangeValueOfProperty:(NSObject<NSCopying>*)key inViewer:source from:(NSObject*)fromObject to:(NSObject*)toObject];
     }
-    -(void)dataViewerProperties_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
+    void dataViewerProperties_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key source:(NSObject<NSCopying>*)source {
         [self didChangeValueOfProperty:(NSObject<NSCopying>*)key inViewer:source from:(NSObject*)fromObject to:(NSObject*)toObject];
     }
-    -(void)dataViewerProperties_stateOKForSource:(NSObject<NSCopying>*)source {
+    void dataViewerProperties_stateOKForSource:(NSObject<NSCopying>*)source {
         if ([viewersThatChanged containsObject:source]) {
             [[self viewerListenerSetForKey:source] namedDataStateOK];
             [viewersThatChanged removeObject:source];
@@ -233,18 +233,18 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
     NSMutableSet viewersThatChanged=[[NSMutableSet alloc] init] (readonly)
 
 
-    -(void)willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
+    void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         ViewerListenerSet *ls=[self viewerListenerSetForKey:viewerKey];
         if (ls) {
             [viewersThatChanged addObject:viewerKey];
             [ls willChangeValueOfProperty:propertyKey from:fromValue to:toValue];
         }
     }
-    -(void)didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
+    void didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         [[self viewerListenerSetForKey:viewerKey] didChangeValueOfProperty:propertyKey from:fromValue to:toValue];
     }
 
-    -(void)namedDataStateOK {
+    void namedDataStateOK {
         for (NSObject<NSCopying> *viewerKey in viewersThatChanged) {
             [[self viewerListenerSetForKey:viewerKey] namedDataStateOK];
         }
@@ -258,17 +258,17 @@ ViewerListenerSet
     viewerListenerSet -m<~ ViewerPropertyListenerSet viewerPropertyListenerSet
     NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init] (readonly)
 
-    -(void)willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
+    void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         ViewerPropertyListenerSet *ls=[self viewerPropertyListenerSetForKey:propertyKey];
         if (ls) {
             [propertiesThatChanged addObject:propertyKey];
             [ls willChangeValueFrom:fromValue to:toValue];
         }
     }
-    -(void)didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
+    void didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         [[self viewerPropertyListenerSetForKey:propertyKey] didChangeValueFrom:fromValue to:toValue];
     }
-    -(void)namedDataStateOK {
+    void namedDataStateOK {
         for (NSObject<NSCopying> *propertyKey in propertiesThatChanged) {
             ViewerPropertyListenerSet *ls=[self viewerPropertyListenerSetForKey:propertyKey];
             [ls namedDataStateOK];
@@ -280,21 +280,21 @@ ViewerPropertyListenerSet
     Self init {}
     namedDataListenerSet >s<~ <NamedDataListener> namedDataListener
 
-    -(void)willChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
+    void willChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
         NSString *propertyNamev=self.propertyName;
         for (NSObject<NamedDataListener> *l in self.namedDataListeners) {
             [l willChangeValueOfProperty:(NSObject<NSCopying>*)self.keyInViewerListenerSet inViewer:(NSObject<NSCopying>*)self.viewerListenerSet.keyInRegistry from:fromValue to:toValue];
             if (propertyNamev) [l willChangeValueOfProperty:propertyNamev from:fromValue to:toValue];
         }
     }
-    -(void)didChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
+    void didChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
         NSString *propertyNamev=self.propertyName;
         for (NSObject<NamedDataListener> *l in self.namedDataListeners) {
             if (propertyNamev) [l didChangeValueOfProperty:propertyNamev from:fromValue to:toValue];
             [l didChangeValueOfProperty:(NSObject<NSCopying>*)self.keyInViewerListenerSet inViewer:(NSObject<NSCopying>*)self.viewerListenerSet.keyInRegistry from:fromValue to:toValue];
         }
     }
-    -(void)namedDataStateOK {
+    void namedDataStateOK {
         for (NSObject<NamedDataListener> *l in self.namedDataListeners) {
             [l namedDataStateOK];
         }
@@ -343,11 +343,11 @@ ViewerPropertyListenerSet
         }
                     
             
-    -(void)willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {}
-    -(void)didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {}
-    -(void)willChangeValueOfProperty:(NSString*)propertyNamev from:(NSObject*)fromValue to:(NSObject*)toValue {}
-    -(void)didChangeValueOfProperty:(NSString*)propertyNamev from:(NSObject*)fromValue to:(NSObject*)toValue {}
-    -(void)namedDataStateOK {}
+    void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {}
+    void didChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {}
+    void willChangeValueOfProperty:(NSString*)propertyNamev from:(NSObject*)fromValue to:(NSObject*)toValue {}
+    void didChangeValueOfProperty:(NSString*)propertyNamev from:(NSObject*)fromValue to:(NSObject*)toValue {}
+    void namedDataStateOK {}
 
 
 

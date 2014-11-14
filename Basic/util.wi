@@ -20,79 +20,79 @@
     selectorReceiver >s< <SendsSelector> selectorSender
 
 NSObject "fn:sys"
-    -(id)performUnknownSelector:(SEL)aSelector {
+    id performUnknownSelector:(SEL)aSelector {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [self performSelector:aSelector];
 #pragma clang diagnostic pop
     }
-    -(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject {
+    id performUnknownSelector:(SEL)aSelector withObject:(id)anObject {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [self performSelector:aSelector withObject:anObject];
 #pragma clang diagnostic pop
     }
-    -(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
+    id performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [self performSelector:aSelector withObject:anObject withObject:anotherObject];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownVoidSelector:(SEL)aSelector {
+    void performUnknownVoidSelector:(SEL)aSelector {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownVoidSelector:(SEL)aSelector withObject:(id)anObject {
+    void performUnknownVoidSelector:(SEL)aSelector withObject:(id)anObject {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector withObject:anObject];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownVoidSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
+    void performUnknownVoidSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector withObject:anObject withObject:anotherObject];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait {
+    void performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
+    void performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait modes:array];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay {
+    void performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector withObject:anArgument afterDelay:delay];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes {
+    void performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:aSelector withObject:anArgument afterDelay:delay inModes:modes];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg {
+    void performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelectorInBackground:aSelector withObject:arg];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait {
+    void performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait];
 #pragma clang diagnostic pop
     }
-    -(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
+    void performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait modes:array];
@@ -103,12 +103,12 @@ NSObject "fn:sys"
 
 
 NSString "fn:sys"
-    -(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
+    NSString* urlEncodeUsingEncoding:(NSStringEncoding)encoding {
         return((NSString*)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding))));
     }
 
 
-    -(NSString*)stringByReplacingPairs:(NSObject*)firstNeedle,... {
+    NSString* stringByReplacingPairs:(NSObject*)firstNeedle,... {
         NSMutableString *s=self.mutableCopy;
         va_list args;va_start(args,firstNeedle);
         for (NSObject *k=firstNeedle;k!=nil;k=va_arg(args,NSObject*)) {
@@ -121,11 +121,11 @@ NSString "fn:sys"
         return(s.copy);
     }
 
-    -(NSString*)stringByEncodingHTMLEntities {
+    NSString* stringByEncodingHTMLEntities {
         return([self stringByReplacingPairs:@"&",@"&amp;",@"<",@"&lt;",@">",@"&gt;",@"\"",@"&quot;",@"\n",@"<br/>\n",nil]);
     }
 
-    -(NSString*)stringByEncodingCEscapes {
+    NSString* stringByEncodingCEscapes {
         return([self stringByReplacingPairs:@"\\",@"\\\\",@"\"",@"\\\"",@"\n",@"\\n",@"\r",@"\\r",@"\t",@"\\t",nil]);
     }
 
@@ -192,7 +192,7 @@ NSString "fn:sys"
         }
 
 
-    -(NSString*)stringByDecodingCEscapes {
+    NSString* stringByDecodingCEscapes {
         return([self stringByReplacingPairs:@"\\\\",@"\\\\ ",@"\\t",@"\t",@"\\r",@"\r",@"\\n",@"\n",@"\\\"",@"\"",@"\\'",@"'",@"\\\\ ",@"\\",nil]);
     }
 
@@ -226,7 +226,7 @@ NSString "fn:sys"
 
 
 NSData
-    -(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse*__strong*)retresponse error:(NSError*__strong*)reterr {
+    NSData* sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse*__strong*)retresponse error:(NSError*__strong*)reterr {
         NSError *err=nil;
         NSURLResponse *response=nil;
         if (reterr) *reterr=nil;
@@ -259,7 +259,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     NSMutableString *partialRequestedString=[NSMutableString string]
     bool finished=nil
 
-    -(void)dealloc {
+    void dealloc {
     }
 
     Self initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock "super init" {
@@ -267,29 +267,29 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
         self.completionBlock=acompletionBlock;
     }
 
-    - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
+    void connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
     }
 
-    - (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
+    void connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
         NSString *str=[[NSString alloc] initWithData:data encoding:encoding];
         if (str) [self.partialRequestedString appendString:str];
     }
 
-    - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError *)error {
+    void connection:(NSURLConnection*)connection didFailWithError:(NSError *)error {
         self.completionBlock(nil,error);
         //self;
         finished=YES;
         self.connection=nil;
     }
 
-    - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    void connectionDidFinishLoading:(NSURLConnection *)connection {
         self.completionBlock(self.partialRequestedString,nil);
         //self;
         finished=YES;
         self.connection=nil;
     }
 
-    - (void)cancel {
+    void cancel {
         if (self.connection&&!finished) {
             [self.connection cancel];
             //self;
@@ -329,7 +329,7 @@ Singletons
 
 <LogObjectProtocol>
     NSMutableString logDescription=[NSMutableString string];
-    -(NSMutableString*) logDescriptionRecurseWithStack:(NSMutableSet*)stack;
+    NSMutableString* logDescriptionRecurseWithStack:(NSMutableSet*)stack;
 
 Util "fn:util"
 
@@ -602,7 +602,7 @@ URLHandlerRegistry "fn:util"
 
     Self init {}
 
-    -(void)addHandler:(id)handler {
+    void addHandler:(id)handler {
         [self.handlers addObject:handler];
     }
 
@@ -613,7 +613,7 @@ URLHandlerRegistry "fn:util"
         return(_URLHandlerRegistry_default);
     }
 
-    -(NSObject*)makeResourceFromURL:(NSURL*)url {
+    NSObject* makeResourceFromURL:(NSURL*)url {
         for (NSObject<URLResourceHandler> *handler in handlers) {
             NSObject *ret=[handler makeResourceFromURL:url];
             if (ret) return(ret);
@@ -621,7 +621,7 @@ URLHandlerRegistry "fn:util"
         return(nil);
     }
     
-    -(bool)actOnURL:(NSURL*)url {
+    bool actOnURL:(NSURL*)url {
         NSObject *ret=[self makeResourceFromURL:url];
         if (!(ret&&[ret respondsToSelector:@selector(act)])) return(NO);
         else {
@@ -633,12 +633,12 @@ URLHandlerRegistry "fn:util"
 
     
 <URLResourceHandler>
-    -(NSObject*)makeResourceFromURL:(NSURL*)url;
+    NSObject* makeResourceFromURL:(NSURL*)url;
 
 
 
 <HasAction>
-    -(void)act;
+    void act;
 
 
 <URLResource>
@@ -834,19 +834,19 @@ URLHandlerRegistry "fn:util"
     Unsigned _count=0
     Unsigned count={return(_count);}
 
-    -(void)dealloc {@-500 self.headItem=self.tailItem=nil;}
-    -(void)link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {
+    void dealloc {@-500 self.headItem=self.tailItem=nil;}
+    void link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {
         [item unlink];
         item.list=self;
         [item linkAfter:prev];
     }
-    -(void)link:(NSObject<WeakListItem>*)item before:(NSObject<WeakListItem>*)next {
+    void link:(NSObject<WeakListItem>*)item before:(NSObject<WeakListItem>*)next {
         [item unlink];
         item.list=self;
         [item linkBefore:next];
     }
-    -(void)append:(NSObject<WeakListItem>*)item {[self link:item before:nil];}
-    -(void)prepend:(NSObject<WeakListItem>*)item {[self link:item after:nil];}
+    void append:(NSObject<WeakListItem>*)item {[self link:item before:nil];}
+    void prepend:(NSObject<WeakListItem>*)item {[self link:item after:nil];}
 
 
 
@@ -856,11 +856,11 @@ WeakList <BaseObject,WeakList> "fn:util"
     next -- <WeakListItem> prev
     <WeakList> list=nil (assign,ivar=list)
 
-    -(void)dealloc {@-500 
+    void dealloc {@-500 
         [self unlink];
     }
 
-    -(void)unlink {
+    void unlink {
         if (self.prev||(self.listAsHead==self.list)) self.list._count--;
         NSObject<WeakListItem> *n=self.next,*p=self.prev;
         if (n) n.prev=p;
@@ -868,7 +868,7 @@ WeakList <BaseObject,WeakList> "fn:util"
         if (self.listAsHead) self.listAsHead.headItem=n;
         if (self.listAsTail) self.listAsTail.tailItem=p;
     }
-    -(void)linkAfter:(NSObject<WeakListItem>*)prev {
+    void linkAfter:(NSObject<WeakListItem>*)prev {
         if (prev?prev==self.prev:(self.list==self.listAsHead)) return;
         [self unlink];
         if (!prev) {
@@ -884,7 +884,7 @@ WeakList <BaseObject,WeakList> "fn:util"
         }
         self.list._count++;
     }
-    -(void)linkBefore:(NSObject<WeakListItem>*)next {
+    void linkBefore:(NSObject<WeakListItem>*)next {
         if (next?next==self.next:(self.list==self.listAsTail)) return;
         [self unlink];
         if (!next) {
@@ -900,8 +900,8 @@ WeakList <BaseObject,WeakList> "fn:util"
         }
         self.list._count++;
     }
-    -(void)prepend {[self linkAfter:nil];}
-    -(void)append {[self linkBefore:nil];}
+    void prepend {[self linkAfter:nil];}
+    void append {[self linkBefore:nil];}
 
 
 
@@ -909,25 +909,25 @@ WeakList <BaseObject,WeakList> "fn:util"
 <List>
     <ListItem> headItem=nil
     <ListItem> tailItem=nil (assign)
-    -(void)clear {
+    void clear {
         while (self.headItem) [self.headItem unlink];
     }
         
-    -(void)dealloc {@-500 [self clear];}
+    void dealloc {@-500 [self clear];}
 
 <ListItem>
     <List> list=nil (assign,ivar=list)
     <ListItem> prev=nil (assign)
     <ListItem> next=nil
 
-    -(void)unlink {
+    void unlink {
         if (self.prev) self.prev.next=self.next;
         else if (list.headItem==self) list.headItem=self.next;
         if (self.next) self.next.prev=self.prev;
         else if (list.tailItem==self) list.tailItem=self.prev;
         self.prev=self.next=nil;
     }
-    -(void)linkAfter:(NSObject<ListItem>*)prev {
+    void linkAfter:(NSObject<ListItem>*)prev {
         if (prev==self) return;
         if (prev?(prev==self.prev):(list.headItem==self)) return;
         [self unlink];
@@ -936,7 +936,7 @@ WeakList <BaseObject,WeakList> "fn:util"
         if ((self.prev=prev)) prev.next=self;
         else list.headItem=self;
     }
-    -(void)linkBefore:(NSObject<ListItem>*)next {
+    void linkBefore:(NSObject<ListItem>*)next {
         if (next==self) return;
         if (next?(next==self.next):(list.tailItem==self)) return;
         [self unlink];
@@ -945,19 +945,19 @@ WeakList <BaseObject,WeakList> "fn:util"
         if ((self.prev=(next?next.prev:list.tailItem))) self.prev.next=self;
         else list.headItem=self;
     }
-    -(void)prepend {[self linkAfter:nil];}
-    -(void)append {[self linkBefore:nil];}
+    void prepend {[self linkAfter:nil];}
+    void append {[self linkBefore:nil];}
 
 
 
 <Ticker>
     NSTimer tim=nil
-    -(void)startWithInterval:(float)interval {
+    void startWithInterval:(float)interval {
         [self.tim invalidate];
         self.tim=[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(tick) userInfo:nil repeats:YES];
     }
     bool inTick=nil (readonly)
-    -(void)tick {@-100 
+    void tick {@-100 
         @synchronized (self) {
             if (inTick) return;
             inTick=YES;
@@ -967,11 +967,11 @@ WeakList <BaseObject,WeakList> "fn:util"
             inTick=NO;
         }
     }
-    -(void)stop {
+    void stop {
         [self.tim invalidate];
         self.tim=nil;
     }
-    -(void)dealloc {@-500 
+    void dealloc {@-500 
         [self stop];
     }
 
@@ -980,10 +980,10 @@ WeakList <BaseObject,WeakList> "fn:util"
     NSTimer waitTimer=nil
     double _waiterGoAtSeconds=nil (readonly)
     bool waiterEnabled=YES (readonly)
-    -(void)waited {}
-    -(void)cancelledWait {}
+    void waited {}
+    void cancelledWait {}
 
-    -(void)waitForSeconds:(float)sec {
+    void waitForSeconds:(float)sec {
         double time=CFAbsoluteTimeGetCurrent();
         if (_waiterGoAtSeconds<time+sec) {
             if (self.waitTimer) {
@@ -993,7 +993,7 @@ WeakList <BaseObject,WeakList> "fn:util"
             self.waitTimer=[NSTimer scheduledTimerWithTimeInterval:sec target:self selector:@selector(_enableWaiter:) userInfo:nil repeats:NO];
         }
     }
-    -(void)_enableWaiter:(NSTimer*)t {
+    void _enableWaiter:(NSTimer*)t {
         if (t==self.waitTimer) {
             @synchronized(self) {
                 _waiterGoAtSeconds=0;
@@ -1003,7 +1003,7 @@ WeakList <BaseObject,WeakList> "fn:util"
             [self waited];
         }
     }
-    -(void)stopWaiting {
+    void stopWaiting {
         if (self.waitTimer) {
             [self.waitTimer invalidate];
         }
@@ -1014,7 +1014,7 @@ WeakList <BaseObject,WeakList> "fn:util"
         }
         [self cancelledWait];
     }
-    -(void)dealloc {@-500 
+    void dealloc {@-500 
         [self stopWaiting];
     }
 
@@ -1040,7 +1040,7 @@ Log<BaseObject>
         if (!log->tim) log->tim=[NSTimer scheduledTimerWithTimeInterval:1 target:log selector:@selector(tick) userInfo:nil repeats:NO];
     }
 
-    -(void)tick {
+    void tick {
         NSString *s=value.copy;
         [value setString:@""];
 tim=nil;
@@ -1092,13 +1092,13 @@ tim=nil;
             self.codingFilename=[documentsDirectory stringByAppendingPathComponent:v];
         }=nil (ivar)
 
-    -(void)loadCodable {
+    void loadCodable {
         [self loadCodableFromFilename:self.codingFilename];
     }
-    -(void)saveCodable {
+    void saveCodable {
         [self saveCodableToFilename:self.codingFilename];
     }
-    -(bool)deleteCodableFile {
+    bool deleteCodableFile {
         if (self.codingFilename) {
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSError *error=nil;
@@ -1107,7 +1107,7 @@ tim=nil;
         else return(NO);
     }
 
-    -(void)loadCodableFromFilename:(NSString*)fn {
+    void loadCodableFromFilename:(NSString*)fn {
         if (fn) {
             NSObject *o=[NSKeyedUnarchiver unarchiveObjectWithFile:fn];
             if ([o isKindOfClass:[NSDictionary class]]) {
@@ -1115,13 +1115,13 @@ tim=nil;
             }
         }
     }
-    -(void)saveCodableToFilename:(NSString*)fn {
+    void saveCodableToFilename:(NSString*)fn {
         if (fn) {
             NSDictionary *d=self.asDictionary;
             [NSKeyedArchiver archiveRootObject:d toFile:fn];
         }
     }
 
-    -(void)saveCodableToServer {
+    void saveCodableToServer {
         [self.asData sendAsBodyOfPOSTRequestWithURL:[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savecodable.php"]] returningResponse:nil error:nil];
     }

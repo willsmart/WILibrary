@@ -4,15 +4,15 @@
     bool retains=nil (readonly,nonatomic)
     SEL otherEndObjectToEndpoint=nil,acceptableSel=nil (readonly,nonatomic)
 
-    -(bool)unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performUnknownSelector:acceptableSel withObject:obj]));}
+    bool unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performUnknownSelector:acceptableSel withObject:obj]));}
 
-    -(NSObject<LinkEndpoint>*)endpointForObject:(id)obj {
+    NSObject<LinkEndpoint>* endpointForObject:(id)obj {
         if (obj) return((NSObject<LinkEndpoint>*)[self.owner performUnknownSelector:otherEndObjectToEndpoint withObject:obj]);
         else return(nil);
     }
 
-    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep;
-    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep;
+    bool _addReferrer:(NSObject<LinkEndpoint>*)ep;
+    void _removeReferrer:(NSObject<LinkEndpoint>*)ep;
 
     Self initWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint "super init" {
         @-900 
@@ -28,7 +28,7 @@
     bool retainsAsValueDelegate=YES
     <MutableValueDelegate> parentValueDelegate=nil (ivar=parentValueDelegate,assign)
     <MutableValueDelegate> valueDelegate=nil (ivar=valueDelegate,weakandstrong)
-    -(void)addDelegate:(NSObject<MutableValueDelegate>*)v {
+    void addDelegate:(NSObject<MutableValueDelegate>*)v {
         if (v.valueDelegate) return;
         if (v==self) return;
         if (valueDelegate) [valueDelegate addDelegate:v];
@@ -38,8 +38,8 @@
             valueDelegate.parentValueDelegate=self;
         }
     }
-    -(void)removedDelegate {}
-    -(void)removeDelegate:(NSObject<MutableValueDelegate>*)v {
+    void removedDelegate {}
+    void removeDelegate:(NSObject<MutableValueDelegate>*)v {
         if (valueDelegate) {
             if (valueDelegate==v) {
                 v.parentValueDelegate=nil;
@@ -59,8 +59,8 @@
             else [valueDelegate removeDelegate:v];
         }
     }
-    -(void)dealloc {@-500 [self unlinkValueDelegate];}
-    -(void)unlinkValueDelegate {
+    void dealloc {@-500 [self unlinkValueDelegate];}
+    void unlinkValueDelegate {
         [parentValueDelegate removeDelegate:self];
         if (valueDelegate) {
             valueDelegate.parentValueDelegate=nil;
@@ -69,10 +69,10 @@
         if (parentValueDelegate) ERR("Bad");
         parentValueDelegate=nil;
     }
-    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+    void willChangeValueFrom:(id)fromObject to:(id)toObject {
         @100 [valueDelegate willChangeValueFrom:fromObject to:toObject];
     }
-    -(void)didSetValueTo:(id)object {
+    void didSetValueTo:(id)object {
         @100 [valueDelegate didSetValueTo:object];
     }
 
@@ -94,7 +94,7 @@
             v_value_strong=(retains?v_value:nil);
             [self didSetValueTo:v];
         }=nil (weakandstrong,ivar=v_value)
-    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+    bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);
         if (v_value==v) return(YES);
@@ -107,7 +107,7 @@
         [self didSetValueTo:v];
         return(YES);
     }
-    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+    void _removeReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (v&&(v==v_value)) {
             [self willChangeValueFrom:v_value to:nil];
@@ -126,17 +126,17 @@
         @-900 
         __set=__mutableSet=[[MutableSet alloc] init];
     }
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if ((!__restrictRef)&&([self containsObject:object]||[self unacceptable:object])) ret=NO;
     }
-    -(void)didAddObject:(id)object {@900 
+    void didAddObject:(id)object {@900 
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
     }
-    -(void)willRemoveObject:(id)object {@-900 
+    void willRemoveObject:(id)object {@-900 
         if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 
-    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+    bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);
         bool r=__restrictRef;
@@ -145,7 +145,7 @@
         __restrictRef=r;
         return(YES);
     }
-    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+    void _removeReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (v) {
             bool r=__restrictRef;
@@ -164,21 +164,21 @@
         @-900 
         __array=__mutableArray=[[MutableArray alloc] init];
     }
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
     }
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {@900 
+    void didAddObject:(id)object withIndex:(Unsigned)index {@900 
         if (!__restrictRef) {
             [[self endpointForObject:object] _addReferrer:self];
         }
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@-900
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {@-900
         if (!__restrictRef) {
             [[self endpointForObject:object] _removeReferrer:self];
         }
     }
 
-    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+    bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);
         bool r=__restrictRef;
@@ -187,7 +187,7 @@
         __restrictRef=r;
         return(YES);
     }
-    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+    void _removeReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (v) {
             bool r=__restrictRef;
@@ -206,21 +206,21 @@
         @-900 
         __dictionary=__mutableDictionary=[[MutableDictionary alloc] init];
     }
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         if ((!__restrictRef)&&[self unacceptable:object]) ret=NO;
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@900
         if (toObject) {
             if (!__restrictRef) [[self endpointForObject:toObject] _addReferrer:self];
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-900
         if (fromObject) {
             if (!__restrictRef) [[self endpointForObject:fromObject] _removeReferrer:self];
         }
     }
 
-    -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
+    bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);
         bool r=__restrictRef;
@@ -229,7 +229,7 @@
         __restrictRef=r;
         return(YES);
     }
-    -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
+    void _removeReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (v) {
             bool r=__restrictRef;

@@ -2,14 +2,14 @@
 
 
 NSSet<WeakNSCollection> "__MutableClass__=>NSMutableSet"
-    -(CollectionWeakness)weakness
+    CollectionWeakness weakness
         CollectionWeakness __block ret=CollectionIsEmpty;
         [self enumerateObjectsWithOptions:0 usingBlock:^(id object,BOOL *stop) {
             if (((ret=(CollectionWeakness)(ret|([object isWeakSelf]?CollectionIsWeak:CollectionIsStrong))))==CollectionIsWeakAndStrong) *stop=YES;
         }];
         return ret;
 
-    -(NSSet*)asWeak
+    NSSet* asWeak
         CollectionWeakness weakness=self.weakness;
         if (weakness&CollectionIsStrong) {
             NSMutableSet __block *ret=[NSMutableSet setWithCapacity:self.count];
@@ -20,7 +20,7 @@ NSSet<WeakNSCollection> "__MutableClass__=>NSMutableSet"
         }
         else return(self);
 
-    -(NSSet*)asStrong
+    NSSet* asStrong
         CollectionWeakness weakness=self.weakness;
         if (weakness&CollectionIsWeak) {
             NSMutableSet __block *ret=[NSMutableSet setWithCapacity:self.count];
@@ -57,7 +57,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
         -v{}
 
-    -(void)countWeakObjects {
+    void countWeakObjects {
         Int c=0;
         for (NSObject *o in __set) if (o.isWeakSelf) c++;
         weakObjectCount=c;
@@ -94,18 +94,18 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     }
 
 
-    -(void)encodeWithCoder:(NSCoder*)coder {
+    void encodeWithCoder:(NSCoder*)coder {
         [__set encodeWithCoder:coder];
     }
 
-    -(id)copyWithZone:(NSZone*)zone {
+    id copyWithZone:(NSZone*)zone {
         return([[ImmutableSet allocWithZone:zone] initWithSet:__set]);
     }
-    -(id)mutableCopyWithZone:(NSZone*)zone {
+    id mutableCopyWithZone:(NSZone*)zone {
         return([[MutableSet allocWithZone:zone] initWithSet:__set]);
     }
 
-    -(Unsigned)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
+    Unsigned countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id*)stackbuf count:(Unsigned)len {
         return([__set countByEnumeratingWithState:state objects:stackbuf count:len]);
     }
 
@@ -117,10 +117,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     +(__WIClass__*)setWithObject:(id)object {return([[__WIClass__ alloc] initWithObjects:&object count:1]);}
     //+(__WIClass__*)setWithObjects:( {return([[__WIClass__ alloc] init]);}
     +(__WIClass__*)setWithSet:(NSSet*)set {return([[__WIClass__ alloc] initWithSet:set]);}
-    -(NSSet*)setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
-    //-(NSSet*)setByAddingObjects: {return([__set setByAddingObject:object]);}
-    -(NSSet*)setByAddingObjectsFromSet:(NSSet*)set {return([__set setByAddingObjectsFromSet:set]);}
-    -(NSSet*)setByAddingObjectsFromArray:(NSArray*)array {return([__set setByAddingObjectsFromArray:array]);}
+    NSSet* setByAddingObject:(id)object {return([__set setByAddingObject:object]);}
+    //NSSet* setByAddingObjects: {return([__set setByAddingObject:object]);}
+    NSSet* setByAddingObjectsFromSet:(NSSet*)set {return([__set setByAddingObjectsFromSet:set]);}
+    NSSet* setByAddingObjectsFromArray:(NSArray*)array {return([__set setByAddingObjectsFromArray:array]);}
 
 
     // Counting Entries
@@ -130,50 +130,50 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     // Accessing Set Members
     NSArray allObjects={return([__set allObjects]);}
     id anyObject={return([[__set anyObject] selfWithWeakness:retrievesWeakValues]);}
-    -(BOOL)containsObject:(id)object {return([__set containsObject:object]);}
-    -(NSSet*)filteredSetUsingPredicate:(NSPredicate *)predicate {return([__set filteredSetUsingPredicate:predicate]);}
-    -(void)makeObjectsPerformSelector:(SEL)selector {[__set makeObjectsPerformSelector:selector];}
-    -(void)makeObjectsPerformSelector:(SEL)selector withObject:(id)object {[__set makeObjectsPerformSelector:selector withObject:object];}
-    -(id)member:(id)object {return([__set member:object]);}
+    BOOL containsObject:(id)object {return([__set containsObject:object]);}
+    NSSet* filteredSetUsingPredicate:(NSPredicate *)predicate {return([__set filteredSetUsingPredicate:predicate]);}
+    void makeObjectsPerformSelector:(SEL)selector {[__set makeObjectsPerformSelector:selector];}
+    void makeObjectsPerformSelector:(SEL)selector withObject:(id)object {[__set makeObjectsPerformSelector:selector withObject:object];}
+    id member:(id)object {return([__set member:object]);}
     NSEnumerator objectEnumerator={return([__set objectEnumerator]);}
-    -(void)enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block {
+    void enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block {
         [__set enumerateObjectsUsingBlock:block];
     }
-    -(void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, BOOL *stop))block {
+    void enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id obj, BOOL *stop))block {
         [__set enumerateObjectsWithOptions:opts usingBlock:block];
     }
 
-    -(NSSet*)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsPassingTest:predicate]);}
-    -(NSSet*)objectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsWithOptions:opts passingTest:predicate]);}
+    NSSet* objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsPassingTest:predicate]);}
+    NSSet* objectsWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(id obj, BOOL *stop))predicate {return([__set objectsWithOptions:opts passingTest:predicate]);}
 
 
     //Comparing Sets
-    -(BOOL)isSubsetOfSet:(NSSet*)set {return([__set isSubsetOfSet:set]);}
-    -(BOOL)intersectsSet:(NSSet*)set {return([__set intersectsSet:set]);}
-    -(BOOL)isEqualToSet:(NSSet*)set {return([__set isEqualToSet:set]);}
-    -(void)setValue:(id)value forKey:(NSString *)key {[__set setValue:value forKey:key];}
-    -(id)valueForKey:(NSString*)key {return([__set valueForKey:key]);}
+    BOOL isSubsetOfSet:(NSSet*)set {return([__set isSubsetOfSet:set]);}
+    BOOL intersectsSet:(NSSet*)set {return([__set intersectsSet:set]);}
+    BOOL isEqualToSet:(NSSet*)set {return([__set isEqualToSet:set]);}
+    void setValue:(id)value forKey:(NSString *)key {[__set setValue:value forKey:key];}
+    id valueForKey:(NSString*)key {return([__set valueForKey:key]);}
 
 
     //Creating a Sorted Array
-    -(NSArray*)sortedArrayUsingDescriptors:(NSArray*)sortDescriptors {return([__set sortedArrayUsingDescriptors:sortDescriptors]);}
+    NSArray* sortedArrayUsingDescriptors:(NSArray*)sortDescriptors {return([__set sortedArrayUsingDescriptors:sortDescriptors]);}
 
 
     //Key-Value Observing
-    -(void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
+    void addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context {
         [__set addObserver:observer forKeyPath:keyPath options:options context:context];
     }
-    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
+    void removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
         [__set removeObserver:observer forKeyPath:keyPath];
     }
-    -(void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
+    void removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context {
         [__set removeObserver:observer forKeyPath:keyPath context:context];
     }
 
 
     //Describing a Set
     NSString description={return([__set description]);}
-    -(NSString*)descriptionWithLocale:(id)locale {return([__set descriptionWithLocale:locale]);}
+    NSString* descriptionWithLocale:(id)locale {return([__set descriptionWithLocale:locale]);}
 
 
 
@@ -189,10 +189,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 <MutableSetDelegate>
     NSSet delegateForSet=nil (assign,ivar=delegateForSet)
-    -(void)delegateForSetChanged {}
+    void delegateForSetChanged {}
 
     <MutableSetDelegate> setDelegate=nil (readonly)
-    -(void)addDelegate:(NSObject<MutableSetDelegate>*)v {
+    void addDelegate:(NSObject<MutableSetDelegate>*)v {
         if (v.setDelegate) return;
         if (v==self) return;
         if (setDelegate) [setDelegate addDelegate:v];
@@ -202,8 +202,8 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
             [v delegateForSetChanged];
         }
     }
-    -(void)removedDelegate {@-100setDelegate=nil;}
-    -(void)removeDelegate:(NSObject<MutableSetDelegate>*)v {
+    void removedDelegate {@-100setDelegate=nil;}
+    void removeDelegate:(NSObject<MutableSetDelegate>*)v {
         if (setDelegate) {
             if (setDelegate==v) {
                 v.delegateForSet=nil;
@@ -214,21 +214,21 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
             else [setDelegate removeDelegate:v];
         }
     }
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {@-999
         bool ret=YES;
         @100 if (ret&&setDelegate) ret=[setDelegate shouldAddObject:object makeWeak:weak];
         @999 return(ret);
     }
-    -(void)willAddObject:(id)object {
+    void willAddObject:(id)object {
         @100 [setDelegate willAddObject:object];
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         @100 [setDelegate didAddObject:object];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         @100 [setDelegate willRemoveObject:object];
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         @100 [setDelegate didRemoveObject:object];
     }
 
@@ -256,10 +256,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     }
 
     long version=1
-    -(void)stateOK {@-100 version++;}
+    void stateOK {@-100 version++;}
 
 
-    -(void)dealloc {@-100 [self removeAllObjects];}
+    void dealloc {@-100 [self removeAllObjects];}
 
 
     //Creating a Mutable Set
@@ -294,7 +294,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     }
         
 
-    -(NSMutableSet*)getAndClear {
+    NSMutableSet* getAndClear {
         NSMutableSet *ret=__mutableSet;
         for (id o in ret) [self willRemoveObject:o];
         __set=__mutableSet=[[NSMutableSet alloc] init];
@@ -305,38 +305,38 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 
-    -(void)addObject:(id)object {
+    void addObject:(id)object {
         if ([self _addObject:object]) [self stateOK];
     }
-    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+    void filterUsingPredicate:(NSPredicate *)predicate {
         if ([self _filterUsingPredicate:predicate]) [self stateOK];
     }
-    -(void)removeObject:(id)object {
+    void removeObject:(id)object {
         if ([self _removeObject:object]) [self stateOK];
     }
-    -(void)removeAllObjects {
+    void removeAllObjects {
         if ([self _removeAllObjects]) [self stateOK];
     }
-    -(void)addObjectsFromArray:(NSArray*)array {
+    void addObjectsFromArray:(NSArray*)array {
         if ([self _addObjectsFromArray:array]) [self stateOK];
     }
-    -(void)unionSet:(NSSet*)set {
+    void unionSet:(NSSet*)set {
         if ([self _unionSet:set]) [self stateOK];
     }
-    -(void)minusSet:(NSSet*)set {
+    void minusSet:(NSSet*)set {
         if ([self _minusSet:set]) [self stateOK];
     }
-    -(void)intersectSet:(NSSet*)set {
+    void intersectSet:(NSSet*)set {
         if ([self _intersectSet:set]) [self stateOK];
     }
-    -(void)setSet:(NSSet*)set {
+    void setSet:(NSSet*)set {
         if ([self _setSet:set]) [self stateOK];
     }
 
 
     
     //Adding and Removing Entries
-    -(bool)_addObject:(id)object {
+    bool _addObject:(id)object {
         bool weak=insertsWeakObjectsByDefault;
         if ((![__set containsObject:object])&&[self shouldAddObject:object makeWeak:weak]) {
             [self willAddObject:object];
@@ -347,7 +347,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         }
         else return(NO);
     }
-    -(bool)_filterUsingPredicate:(NSPredicate *)predicate {
+    bool _filterUsingPredicate:(NSPredicate *)predicate {
         bool ret=NO;
         NSMutableSet *toRemove=nil;
         for (NSObject *object in __set) if (![predicate evaluateWithObject:object]) {
@@ -359,7 +359,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         }
         return(ret);
     }
-    -(bool)_removeObject:(id)object {
+    bool _removeObject:(id)object {
         if ([__set containsObject:object]) {
             [self willRemoveObject:object];
             if ([object isWeakSelf]) --weakObjectCount;
@@ -369,7 +369,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         }
         else return(NO);
     }
-    -(bool)_removeAllObjects {
+    bool _removeAllObjects {
         if (!self.count) return(NO);
         NSSet *was=[__set copy];
         for (NSObject *object in was) [self willRemoveObject:object];
@@ -378,22 +378,22 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         for (NSObject *object in was) [self didRemoveObject:object];
         return(YES);
     }
-    -(bool)_addObjectsFromArray:(NSArray*)array {
+    bool _addObjectsFromArray:(NSArray*)array {
         bool ret=NO;
         for (NSObject *object in array) if ([self _addObject:object]) ret=YES;
         return(ret);
     }
-    -(bool)_unionSet:(NSSet*)set {
+    bool _unionSet:(NSSet*)set {
         bool ret=NO;
         for (NSObject *object in set) if ([self _addObject:object]) ret=YES;
         return(ret);
     }
-    -(bool)_minusSet:(NSSet*)set {
+    bool _minusSet:(NSSet*)set {
         bool ret=NO;
         for (NSObject *object in set) if ([self _removeObject:object]) ret=YES;
         return(ret);
     }
-    -(bool)_intersectSet:(NSSet*)set {
+    bool _intersectSet:(NSSet*)set {
         bool ret=NO;
         NSMutableSet *toRemove=nil;
         for (NSObject *object in __set) if (![set containsObject:object]) {
@@ -405,7 +405,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         }
         return(ret);
     }
-    -(bool)_setSet:(NSSet*)set {
+    bool _setSet:(NSSet*)set {
         bool ret=[self _intersectSet:set];
         if ([self _unionSet:set]) ret=YES;
         return(ret);
@@ -418,13 +418,13 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 <ModelMutableSet>
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@-200
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {@-200
         if (![object conformsToProtocol:@protocol(RefCountedObject)]) ret=NO;
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         [object modeladd];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         [object modelsub];
     }
 
@@ -432,13 +432,13 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 <NotifiedBySet>
-    -(void)markDirtyBySet {[self markDirty];}
-    -(void)markDirty {}
+    void markDirtyBySet {[self markDirty];}
+    void markDirty {}
 
 <NotifyingMutableSet>
     notifyingSet -s< <NotifiedBySet> setWatcher
 
-    -(void)stateOK {@100 
+    void stateOK {@100 
         for (NSObject<NotifiedBySet>*w in self.setWatchers) {
             [w markDirtyBySet];
         }
@@ -456,10 +456,10 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
-    -(id)objectForObject:(id)object {@-999 id ret=nil;
+    id objectForObject:(id)object {@-999 id ret=nil;
         @999 return(ret);
     }
-    -(NSSet*)objectsForObject:(id)object {@-999 NSMutableSet *s=[NSMutableSet set];NSSet *ret=s;
+    NSSet* objectsForObject:(id)object {@-999 NSMutableSet *s=[NSMutableSet set];NSSet *ret=s;
         @999 return(ret);
     }
 
@@ -470,14 +470,14 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         {return(followerSet);}
         -v{followerSet=v;[self refreshFollowerSet];}=nil (ivar=followerSet)
 
-    -(void)delegateForSetChanged {
+    void delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
     }
 
-    -(void)willAddObject:(id)object {@500 
+    void willAddObject:(id)object {@500 
         [self followerWillAddObject:object];
     }
-    -(void)followerWillAddObject:(id)object {
+    void followerWillAddObject:(id)object {
         if ([mapsets objectForKey:object]||[map1 objectForKey:object]) {
             ERR("Shouldn't have object");
             return;
@@ -509,7 +509,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
             }
         }
     }
-    -(void)willRemoveObject:(id)object {@500 
+    void willRemoveObject:(id)object {@500 
         id o=[map1 objectForKey:object];
         if (o) {
             IntCarrier *c=[ocounts objectForKey:o];
@@ -540,16 +540,16 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
     }
 
 
-    -(void)stateOK {@100 
+    void stateOK {@100 
         [followerSet stateOK];
     }
 
 
-    -(void)refreshFollowerSet {
+    void refreshFollowerSet {
         [self _refreshFollowerSet];
         [followerSet stateOK];
     }
-    -(void)_refreshFollowerSet {
+    void _refreshFollowerSet {
         [ocounts removeAllObjects];
         [map1 removeAllObjects];
         [mapsets removeAllObjects];
@@ -569,20 +569,20 @@ MutableSetUnionDelegate1<MutableSetDelegate>
         owner=aowner;
     }
 
-    -(void)willAddObject:(id)object {@500 
+    void willAddObject:(id)object {@500 
         [self.owner unionWillAddObject1:object];
     }
-    -(void)willRemoveObject:(id)object {@500 
+    void willRemoveObject:(id)object {@500 
         [self.owner unionWillRemoveObject1:object];
     }
 
-    -(void)stateOK {
+    void stateOK {
         [self.owner stateOK];
     }
 
 
 MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
-    -(NSObject<MutableSet>*)setForObject:(id)object {@-999 NSObject<MutableSet> *ret=([object conformsToProtocol:@protocol(MutableSet)]?(NSObject<MutableSet>*)object:nil);
+    NSObject<MutableSet>* setForObject:(id)object {@-999 NSObject<MutableSet> *ret=([object conformsToProtocol:@protocol(MutableSet)]?(NSObject<MutableSet>*)object:nil);
         @999 return(ret);
     }
 
@@ -594,14 +594,14 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         {return(unionSet);}
         -v{unionSet=v;[self refreshUnionSet];}=nil (ivar=unionSet)
 
-    -(void)delegateForSetChanged {
+    void delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];
     }
 
-    -(void)willAddObject:(id)object {@500 
+    void willAddObject:(id)object {@500 
         [self unionWillAddObject:object];
     }
-    -(void)unionWillAddObject:(id)object {
+    void unionWillAddObject:(id)object {
         if ([mapsets objectForKey:object]) {
             ERR("Shouldn't have object");
             return;
@@ -615,7 +615,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
             }
         }
     }
-    -(void)unionWillAddObject1:(id)o {
+    void unionWillAddObject1:(id)o {
         IntCarrier *c=[ocounts objectForKey:o];
         if (c) c.intValue++;
         else {
@@ -624,7 +624,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         }
     }
 
-    -(void)willRemoveObject:(id)object {@500 
+    void willRemoveObject:(id)object {@500 
         MutableSet *s=[mapsets objectForKey:object];
         if (s) {
             for (id o in s) {
@@ -640,7 +640,7 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         }
     }
 
-    -(void)unionWillRemoveObject1:(id)o {
+    void unionWillRemoveObject1:(id)o {
         IntCarrier *c=[ocounts objectForKey:o];
         if (!--c.intValue) {
             [unionSet _removeObject:o];
@@ -650,16 +650,16 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
 
 
 
-    -(void)stateOK {@100 
+    void stateOK {@100 
         [unionSet stateOK];
     }
 
 
-    -(void)refreshUnionSet {
+    void refreshUnionSet {
         [self _refreshUnionSet];
         [unionSet stateOK];
     }
-    -(void)_refreshUnionSet {
+    void _refreshUnionSet {
         [ocounts removeAllObjects];
         for (kid key in mapsets) {
             MutableSet *s=[mapsets objectForKey:key];

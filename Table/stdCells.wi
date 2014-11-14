@@ -9,14 +9,14 @@ HasPropertiesParentValueDelegate<MutableValueDelegate>
     Self initWithOwner:(NSObject<HasProperties>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+    void willChangeValueFrom:(id)fromObject to:(id)toObject {
         if (owner) {
             if ([fromObject conformsToProtocol:@protocol(HasProperties)]) {
                 [((NSObject<HasProperties>*)fromObject)._properties removeDelegate:owner.filterDel];
             }
         }
     }
-    -(void)didSetValueTo:(id)object {
+    void didSetValueTo:(id)object {
         if (owner) {
             if ([object conformsToProtocol:@protocol(HasProperties)]) {
                 [((NSObject<HasProperties>*)object)._properties addDelegate:owner.filterDel];
@@ -64,12 +64,12 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
     MutableDictionaryPrefixedKeyDelegate filterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (publicreadonly,ivar=filterDel)
 
 
-    -(void)attachPropertyDebuggers {
+    void attachPropertyDebuggers {
         [MutableDictionaryDebuggerDelegate attachTo:_myProperties named:[self.objectName stringByAppendingString:@"_myProps"]];
         [MutableDictionaryDebuggerDelegate attachTo:_parentProperties named:[self.objectName stringByAppendingString:@"_parProps"]];
         [MutableDictionaryDebuggerDelegate attachTo:_properties named:[self.objectName stringByAppendingString:@"_props"]];
     }
-    -(void)dettachPropertyDebuggers {
+    void dettachPropertyDebuggers {
         [MutableDictionaryDebuggerDelegate dettachFrom:_myProperties named:[self.objectName stringByAppendingString:@"_myProps"]];
         [MutableDictionaryDebuggerDelegate dettachFrom:_parentProperties named:[self.objectName stringByAppendingString:@"_parProps"]];
         [MutableDictionaryDebuggerDelegate dettachFrom:_properties named:[self.objectName stringByAppendingString:@"_props"]];
@@ -100,12 +100,12 @@ ParentPropertyValueDelegate<MutableValueDelegate>
     Self initWithOwner:(NSObject<HasProperties>*)aowner "super init" {
         owner=aowner;
     }
-    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+    void willChangeValueFrom:(id)fromObject to:(id)toObject {
         if (owner) {
             if (fromObject&&(owner.parent==fromObject)) owner.parent=nil;
         }
     }
-    -(void)didSetValueTo:(id)object {
+    void didSetValueTo:(id)object {
         if (owner) {
             if ((owner.parent!=object)&&[object conformsToProtocol:@protocol(HasProperties)]) {
                 owner.parent=(NSObject<HasProperties>*)object;
@@ -154,7 +154,7 @@ App<HasProperties,BaseObject>
         [propertyStack addObject:_appProperties];
         appFilterDel.followerDictionary=_appProperties;
     }
-    -(void)dealloc {@-100 
+    void dealloc {@-100 
         [g_singletons.app._properties removeDelegate:appFilterDel];
     }
 
@@ -164,7 +164,7 @@ App<HasProperties,BaseObject>
     Class nextVCClass (readonly)
     UINavigationController navBar=nil (assign)
 
-    -(void)goChildFromProperties:(NSObject<HasProperties>*)aparent {
+    void goChildFromProperties:(NSObject<HasProperties>*)aparent {
         if (self.nextVCClass) {
             UIViewController<StdVC> *child=[self.nextVCClass getUsingNib];
             child.navBar=self.navBar;
@@ -184,7 +184,7 @@ App<HasProperties,BaseObject>
         model=[[self.tableModelClass alloc] init];
     }
 
-    -(void)gotTable {
+    void gotTable {
         //[Model commit];
         self.table.delegate=self;
         self.table.dataSource=self;
@@ -202,14 +202,14 @@ App<HasProperties,BaseObject>
         ((NSObject<HasProperties>*)model).parent=self;
     }
 
-    -(void)awakeFromNib {@-10 
+    void awakeFromNib {@-10 
         if (self.table&&!tableIsLoaded) {
             tableIsLoaded=YES;
             [self gotTable];
         }
     }
 
-    -(void)viewDidLoad {@-10 
+    void viewDidLoad {@-10 
         if (self.table&&!tableIsLoaded) {
             tableIsLoaded=YES;
             [self gotTable];
@@ -218,7 +218,7 @@ App<HasProperties,BaseObject>
 
 <StdTableVC:StdVC,StdTable>
     Self start {@-100 self.vc=self;}
-    - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)from {
+    void didRotateFromInterfaceOrientation:(UIInterfaceOrientation)from {
         [self.model invalidateLayout];
     }
 
@@ -245,7 +245,7 @@ App<HasProperties,BaseObject>
     }
     <StdVC> vc=nil (assign)
 
-    -(id)addSection:(Class)clas {
+    id addSection:(Class)clas {
         if (!clas) return(nil);
         NSObject<StdSectionModel> *sec=[[clas alloc] init];
         [self.sections addObject:sec];
@@ -283,7 +283,7 @@ App<HasProperties,BaseObject>
         [self._table_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
-    -(id)addCell:(Class)clas {
+    id addCell:(Class)clas {
         if (!clas) return(nil);
         NSObject<StdCellModel> *cell=[[clas alloc] init];
         [self.cells addObject:cell];
@@ -305,14 +305,14 @@ App<HasProperties,BaseObject>
         [self._section_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
-    -(bool)canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below {@-999 bool ret=YES;
+    bool canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below {@-999 bool ret=YES;
         @999 return(ret);
     }
 
-    -(void)wasTapped {
+    void wasTapped {
         [((NSObject<StdTableModel>*)self.section.table).vc goChildFromProperties:self];
     }
-    -(void)accessoryWasTapped {
+    void accessoryWasTapped {
         [((NSObject<StdTableModel>*)self.section.table).vc goChildFromProperties:self];
     }
 
@@ -391,7 +391,7 @@ __Table__Cell "nac" "multi"
 
 <BasicTable:UITableViewMetaEnabled> "nac" "multi"
     __Table__TableController tableController=[[__Table__TableController alloc] init] (publicreadonly,ivar=tableController)
-    -(void)dealloc {@-200 tableController.__table=nil;}
+    void dealloc {@-200 tableController.__table=nil;}
     
     Self start {
         tableModelFollower=tableController;
@@ -399,7 +399,7 @@ __Table__Cell "nac" "multi"
         [tableController gotTable];
     }
 <BasicDataTable:BasicTable> "nac" "multi"
-    -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
+    void didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr isEqualToString:@"model"]) {
             if ([object conformsToProtocol:@protocol(__Table__s__model)]) {
                 ((__Table__TableModel*)tableController.model).dataModel=(NSObject<__Table__s__model>*)object;
@@ -445,7 +445,7 @@ __Table__Cell "nac" "multi"
             del.followerArray=[self _sectionAtIndex:0]._cells;
         }
     }
-    -(NSObject<__ItemData____viewedObject>*)make__ItemData__ViewedObjectForModelObject:(NSObject<__ItemData____modelObject>*)modelObject {
+    NSObject<__ItemData____viewedObject>* make__ItemData__ViewedObjectForModelObject:(NSObject<__ItemData____modelObject>*)modelObject {
         ret=[[__Table__CellModel alloc] init];
         ret.dataModel=modelObject;
     }
@@ -468,7 +468,7 @@ __Table__Cell "nac" "multi"
     Self init "super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@\"__Class__\" meta:[NSDictionary dictionaryWithObjectsAndKeys:@\"cell\",@\"type\",[__Class__ metaURLKey],@\"urlkey\",nil] parent:nil key:nil" {}
     +(NSString*)metaURLKey {return(@"__table___cell");}
 
-    -(void)clearCell {
+    void clearCell {
         self.myDataRegistry=nil;
         [self._metaProperties removeAllObjects];
     }
@@ -478,7 +478,7 @@ __Table__Cell "nac" "multi"
     bool canMove=NO,canEdit=NO
     UITableViewCellEditingStyle editingStyle=UITableViewCellEditingStyleNone
             
-    -(void)applyToCell:(UITableViewCell*)cell {
+    void applyToCell:(UITableViewCell*)cell {
         if (cell&&[self conformsToProtocol:@protocol(DataModelViewer)]&&[cell conformsToProtocol:@protocol(MetaComponent)]&&[cell conformsToProtocol:@protocol(MetaEnabled)]) {
             UITableViewCell<MetaComponent,MetaEnabled> *c=(UITableViewCell<MetaComponent,MetaEnabled>*)cell;
             [c reloadMetasFromURLKey];

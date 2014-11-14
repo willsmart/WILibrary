@@ -5,7 +5,7 @@
 
 
 SHPositionSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
-    -(void)set {
+    void set {
         {
             float *sz=[self.program uniformForKey:@"unitSize"].asVec2;
             float v[8]={
@@ -19,7 +19,7 @@ SHPositionSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
         [super set];
     }
 SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
-    -(void)set {
+    void set {
         {
             float *sz=[self.program uniformForKey:@"sizeInPixels"].asVec2;
             float v[8]={
@@ -142,7 +142,7 @@ Singletons
 ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
     float maxSize=100000
     Int maxCount=10000
-    -(NSObject<LRUCacheItem>*)makeForKey:(NSObject<NSCopying>*)key {
+    NSObject<LRUCacheItem>* makeForKey:(NSObject<NSCopying>*)key {
         if ([key isKindOfClass:[NSURL class]]) {
             return([[ShaderURLConversion alloc] initWithURL:(NSURL*)key]);
         }
@@ -153,7 +153,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
 
 
 <RenderTicker>
-    -(void)dealloc {@-100 self.animating=NO;}
+    void dealloc {@-100 self.animating=NO;}
 
     CADisplayLink displayLink=nil
 
@@ -193,7 +193,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
     }
 
     bool inRenderTick=nil (readonly)
-    -(void)renderTick {@-100 
+    void renderTick {@-100 
         @synchronized (self) {
             if (inRenderTick) return;
             inRenderTick=YES;
@@ -209,13 +209,13 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
 Singletons
     ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}=nil (ivar)
 
-    -(void)startImageTicker {
+    void startImageTicker {
         [self.shaderTicker startWithInterval:0.5];
     }
 
 
 ShaderTicker<RenderTicker,Ticker,BaseObject>
-    -(void)renderTick {[self tick];}
+    void renderTick {[self tick];}
 
 
 

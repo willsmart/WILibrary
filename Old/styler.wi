@@ -21,51 +21,51 @@ Styler
         }
 
 
-    -(void)restyle {}
+    void restyle {}
 
     Self start {
         @1 self.styler=[Styler getDefault];
     }
 
-    -(NSString*)getOrSetStringForKeySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+    NSString* getOrSetStringForKeySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
         return([self.styler getOrSetStringForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
     }
-    -(double)getOrSetDoubleForKeySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+    double getOrSetDoubleForKeySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
         return([self.styler getOrSetDoubleForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
     }
-    -(UIColor*)getOrSetColorForKeySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+    UIColor* getOrSetColorForKeySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
         return([self.styler getOrSetColorForKeyPrefix:self.stylerPrefix keySuffix:keySuffix defaultValue:def didChange:changed]);
     }
-    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         return([self styleLabel:label usingPrefix:prefix usingColorPrefix:prefix y:y ytype:ytype]);
     }
-    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
+    float styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
         return([self.styler styleLabel:label usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
     }
-    -(float)styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         return([self.styler styleTextField:field usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
     }
-    -(float)styleTextView:(UITextView *)view usingPrefix:(NSString *)prefix y:(float)y ytype:(char)ytype {
+    float styleTextView:(UITextView *)view usingPrefix:(NSString *)prefix y:(float)y ytype:(char)ytype {
         return([self.styler styleTextView:view usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
     }
-    -(float)styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         return([self.styler styleSwitch:swtch usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype]);
     }
-    -(float)styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
+    float styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
         return([self.styler styleOuterButton:button usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) y:y ytype:ytype innerControls:controls]);
     }
-    -(void)styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
+    void styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
         return([self.styler styleTable:table usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix)]);
     }
 
-    -(float)styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y
+    float styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y
     {
         return([self.styler styleCell:cell usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) innerControls:controls y:y]);
     }
-    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
+    float styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
         return([self styleToolbar:toolbar usingPrefix:prefix usingColorPrefix:prefix]);
     }
-    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
+    float styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
         return([self.styler styleToolbar:toolbar usingPrefix:(self.stylerPrefix?(prefix?[self.stylerPrefix stringByAppendingString:prefix]:self.stylerPrefix):prefix) usingColorPrefix:(self.stylerPrefix?(colPrefix?[self.stylerPrefix stringByAppendingString:colPrefix]:self.stylerPrefix):colPrefix)]);    
     }
 
@@ -88,7 +88,7 @@ Styler <BaseObject>
         return(_Styler_default);
     }
 
-    -(void)trimKeys {
+    void trimKeys {
         NSMutableSet *remove=[MutableSet set];
         for (NSString *key in keysAndValues.allKeys) if (![usedKeys containsObject:key]) [remove addObject:key];
         for (NSString *key in remove) [keysAndValues removeObjectForKey:key];
@@ -100,11 +100,11 @@ Styler <BaseObject>
         return([documentsDirectory stringByAppendingPathComponent:@"styler.txt"]);
     }
 
-    -(void)notifyAllStyledObjects {
+    void notifyAllStyledObjects {
         for (NSObject<StyledObject> *obj in self.objects) [obj restyle];    
     }
 
-    -(void) read {
+    void read {
         @try {
             NSError *err=nil;
             NSString *s=[NSString stringWithContentsOfFile:[Styler sylerFileName] encoding:NSUTF8StringEncoding error:&err];
@@ -120,7 +120,7 @@ Styler <BaseObject>
         }
     }
 
-    -(void)write {
+    void write {
         @try {
             NSString *s=self.asURL;
             NSError *err=nil;
@@ -134,7 +134,7 @@ Styler <BaseObject>
         }    
     }
 
-    -(void)destroyFile {
+    void destroyFile {
         @try {
             NSError *err=nil;
             [@"" writeToFile:[Styler sylerFileName] atomically:YES encoding:NSUTF8StringEncoding error:&err];
@@ -250,7 +250,7 @@ Styler <BaseObject>
         return(s);
     }
 
-    -(NSString*)getOrSetStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
+    NSString* getOrSetStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -263,7 +263,7 @@ Styler <BaseObject>
             return(def);
         }
     }
-    -(double)getOrSetDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
+    double getOrSetDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -277,7 +277,7 @@ Styler <BaseObject>
             return(def);
         }
     }
-    -(UIColor*)getOrSetColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
+    UIColor* getOrSetColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -292,7 +292,7 @@ Styler <BaseObject>
         }
     }
 
-    -(NSString*)getStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
+    NSString* getStringForKey:(NSString*)key defaultValue:(NSString*)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -304,7 +304,7 @@ Styler <BaseObject>
             return(def);
         }
     }
-    -(double)getDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
+    double getDoubleForKey:(NSString*)key defaultValue:(double)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -317,7 +317,7 @@ Styler <BaseObject>
             return(def);
         }
     }
-    -(UIColor*)getColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
+    UIColor* getColorForKey:(NSString*)key defaultValue:(UIColor*)def didChange:(bool*)changed {
         [usedKeys addObject:key];
         NSString *s=[keysAndValues objectForKey:key];
         if (s) {
@@ -330,30 +330,30 @@ Styler <BaseObject>
             return(def);
         }
     }
-    -(NSString*)getOrSetStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+    NSString* getOrSetStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
         return([self getOrSetStringForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
-    -(double)getOrSetDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+    double getOrSetDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
         return([self getOrSetDoubleForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
-    -(UIColor*)getOrSetColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+    UIColor* getOrSetColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
         return([self getOrSetColorForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
-    -(NSString*)getStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
+    NSString* getStringForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(NSString*)def didChange:(bool*)changed {
         return([self getStringForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
-    -(double)getDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
+    double getDoubleForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(double)def didChange:(bool*)changed {
         return([self getDoubleForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
-    -(UIColor*)getColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
+    UIColor* getColorForKeyPrefix:(NSString*)keyPrefix keySuffix:(NSString*)keySuffix defaultValue:(UIColor*)def didChange:(bool*)changed {
         return([self getColorForKey:(keyPrefix?[keyPrefix stringByAppendingString:keySuffix]:keySuffix) defaultValue:def didChange:changed]);
     }
 
 
-    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         return([self styleLabel:label usingPrefix:prefix usingColorPrefix:prefix y:y ytype:ytype]);
     }
-    -(float)styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
+    float styleLabel:(UILabel*)label usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix y:(float)y ytype:(char)ytype {
         if (!label) {
             bool changed=false;
             NSString *fontName=[self getStringForKeyPrefix:prefix keySuffix:@"Font" defaultValue:@"Helvetica" didChange:&changed];
@@ -430,7 +430,7 @@ Styler <BaseObject>
         }
     }
 
-    -(float)styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleTextField:(UITextField*)field usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         if (!field) {
             bool changed=false;
             
@@ -516,7 +516,7 @@ Styler <BaseObject>
 
 
 
-    -(float)styleTextView:(UITextView*)view usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleTextView:(UITextView*)view usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         if (!view) {
             bool changed=false;
             
@@ -602,7 +602,7 @@ Styler <BaseObject>
     }
 
 
-    -(float)styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
+    float styleSwitch:(UISwitch*)swtch usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype {
         bool changed=false;
         
 
@@ -640,7 +640,7 @@ Styler <BaseObject>
     }
 
 
-    -(float)styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
+    float styleOuterButton:(UIButton*)button usingPrefix:(NSString*)prefix y:(float)y ytype:(char)ytype innerControls:(NSArray*)controls {
         bool changed=false;
 
         if (!button) return(NAN);
@@ -694,7 +694,7 @@ Styler <BaseObject>
         return(topy+height);
     }
 
-    -(void)styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
+    void styleTable:(UITableView*)table usingPrefix:(NSString*)prefix {
         bool changed=false;
         
         if (table) {
@@ -716,7 +716,7 @@ Styler <BaseObject>
         }    
     }
 
-    -(float)styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y {
+    float styleCell:(UITableViewCell*)cell usingPrefix:(NSString*)prefix innerControls:(NSArray*)controls y:(float)y {
         bool changed=false;
         
         if (!cell) return(NAN);
@@ -748,10 +748,10 @@ Styler <BaseObject>
         return(height);
     }
 
-    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
+    float styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix {
         return([self styleToolbar:toolbar usingPrefix:prefix usingColorPrefix:prefix]);
     }
-    -(float)styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
+    float styleToolbar:(UIToolbar*)toolbar usingPrefix:(NSString*)prefix usingColorPrefix:(NSString*)colPrefix {
         bool changed=false;
         
         if (!toolbar) {

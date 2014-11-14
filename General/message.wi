@@ -8,11 +8,11 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         self.vc=avc;
     }
 
-    - (bool)sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML {
+    bool sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML {
         return([self sendMailWithSubject:subject content:content isHTML:isHTML attachData:nil attachMimeType:nil attachFileName:nil]);
     }
 
-    - (bool)sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML attachData:(NSData*)attachData attachMimeType:(NSString*)attachMimeType attachFileName:(NSString*)attachFileName {
+    bool sendMailWithSubject:(NSString*)subject content:(NSString*)content isHTML:(bool)isHTML attachData:(NSData*)attachData attachMimeType:(NSString*)attachMimeType attachFileName:(NSString*)attachFileName {
         if ([MFMailComposeViewController canSendMail]) {
             MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
             mailer.mailComposeDelegate = self;
@@ -35,7 +35,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }
     }
 
-    -(bool)sendMessageWithContent:(NSString*)content {
+    bool sendMessageWithContent:(NSString*)content {
         if ([MFMailComposeViewController canSendMail]) {
             MFMessageComposeViewController *mailer = [[MFMessageComposeViewController alloc] init];
             mailer.messageComposeDelegate = self;
@@ -56,7 +56,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
 
 
 
-    - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+    void mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
         NSString *alertTitle=nil,*alert=nil;
         switch (result) {
             case MFMailComposeResultCancelled:
@@ -86,7 +86,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }        
     }
 
-    - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    void messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
         NSString *alertTitle=nil,*alert=nil;
         switch (result) {
             case MessageComposeResultCancelled:
@@ -114,41 +114,41 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
     }
 
 
-    - (NSString*)htmlForURLString:(NSString*)urlStr title:(NSString*)title {
+    NSString* htmlForURLString:(NSString*)urlStr title:(NSString*)title {
         if (!title) title=urlStr;
         return([NSString stringWithFormat:@"<a href=\"%@\">%@</a>",[[urlStr stringByEncodingCEscapes] stringByEncodingHTMLEntities],[title stringByEncodingHTMLEntities]]);
     }
 
-    //- (NSString*)htmlForURL:(NSURL*)url {
+    //NSString* htmlForURL:(NSURL*)url {
     //    return([self htmlForURLString:url.absoluteString title:[[WebPageTitleCache getDefault] getExistingTitleForURL:url]]);
     //}
 
-    - (void)startItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
+    void startItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
         if (depth>0) [s appendString:@"<li>"];    
     }
-    - (void)endItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
+    void endItemWithHTMLString:(NSMutableString*)s depth:(Int)depth {
         if (depth>0) [s appendString:@"</li>"];    
     }
-    - (void)incrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
+    void incrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
         (*pdepth)++;
         if (*pdepth>0) [s appendString:@"<ul>"];
     }
-    - (void)decrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
+    void decrementIndentDepth:(Int*)pdepth htmlString:(NSMutableString*)s {
         if (*pdepth>0) [s appendString:@"</ul>"];
         (*pdepth)--;
     }
-    - (void)appendIndentToString:(NSMutableString*)s depth:(Int)depth plusString:(NSString*)add {
+    void appendIndentToString:(NSMutableString*)s depth:(Int)depth plusString:(NSString*)add {
         //for (Int i=0;i<=depth;i++) [s appendString:@"-"];
         if (add) [s appendString:add];
     }
 
-    /*- (void)addURL:(NamedURL*)url toString:(NSMutableString*)s depth:(Int)depth {
+    /*void addURL:(NamedURL*)url toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         [self appendIndentToString:s depth:depth plusString:@" "];
         [s appendFormat:@"%@<br/>",[self htmlForURL:url.url]];    
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPattern:(NamedURLPattern*)pattern toString:(NSMutableString*)s depth:(Int)depth {
+    void addPattern:(NamedURLPattern*)pattern toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         [self appendIndentToString:s depth:depth plusString:@" "];
         NSString *patternNameStr=(pattern.patternName&&pattern.patternName.length?[[NSString stringWithFormat:@"%@: ",pattern.patternName] basicHTMLEncode]:@"");
@@ -183,7 +183,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPageList:(PageList*)pl toString:(NSMutableString*)s depth:(Int)depth {
+    void addPageList:(PageList*)pl toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         if (depth>=0) {
             [self appendIndentToString:s depth:depth plusString:@" "];
@@ -196,7 +196,7 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         }
         [self endItemWithHTMLString:s depth:depth];
     }
-    - (void)addPLFolder:(PLFolder*)f toString:(NSMutableString*)s depth:(Int)depth {
+    void addPLFolder:(PLFolder*)f toString:(NSMutableString*)s depth:(Int)depth {
         [self startItemWithHTMLString:s depth:depth];
         if (depth>=0) {
             [self appendIndentToString:s depth:depth plusString:@" "];
@@ -216,31 +216,31 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
     }
 
 
-    - (bool)sendMailForPLFolder:(PLFolder*)f {
+    bool sendMailForPLFolder:(PLFolder*)f {
         NSMutableString *s=[NSMutableString stringWithFormat:@"Here are some bbookmarks for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:f.asURL title:@"bbookmarks link"]];
         [self addPLFolder:f toString:s depth:(f.folderName&&f.folderName.length?0:-1)];
         return([self sendMailWithSubject:(f.folderName&&f.folderName.length?[NSString stringWithFormat:@"BBookmarks folder \"%@\"",f.folderName]:@"BBookmarks folder") content:s isHTML:YES attachData:[[BookmarkHTMLImporterExporter HTMLForPLFolder:f] dataUsingEncoding:NSASCIIStringEncoding] attachMimeType:@"text/html" attachFileName:@"Bookmark (folder from bbookmarks).html"]);
     }
 
-    - (bool)sendMessageForPLFolder:(PLFolder*)f {
+    bool sendMessageForPLFolder:(PLFolder*)f {
         NSMutableString *s=[NSMutableString stringWithFormat:@"%@",f.asURL];
         return([self sendMessageWithContent:s]);
     }
 
-    - (bool)sendMailForPageList:(PageList *)pl {
+    bool sendMailForPageList:(PageList *)pl {
         NSMutableString *s=[NSMutableString stringWithFormat:@"Here are some bbookmarks for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:pl.asURL title:@"bbookmarks link"]];
         [self addPageList:pl toString:s depth:0];
         return([self sendMailWithSubject:[NSString stringWithFormat:@"BBookmarks group \"%@\"",pl.listName] content:s isHTML:YES attachData:[[BookmarkHTMLImporterExporter HTMLForPageList:pl] dataUsingEncoding:NSASCIIStringEncoding] attachMimeType:@"text/html" attachFileName:@"Bookmark (group from bbookmarks).html"]);
     }
 
-    - (bool)sendMessageForPageList:(PageList*)pl {
+    bool sendMessageForPageList:(PageList*)pl {
         NSMutableString *s=[NSMutableString stringWithFormat:@"%@",pl.asURL];
         return([self sendMessageWithContent:s]);
     }
      
 
 
-    - (NSString*)getBBookmarkURLForURL:(NSString*)aurl title:(NSString*)title {
+    NSString* getBBookmarkURLForURL:(NSString*)aurl title:(NSString*)title {
         PageList *pl=[[PageList alloc] init];
         NamedURLPattern *pattern=[[NamedURLPattern alloc] initWithPageList:nil URL:aurl named:nil parent:nil];
         if (title) pl.listName=pattern.patternName=title;
@@ -249,14 +249,14 @@ MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewContro
         return(url);
     }
 
-    - (bool)sendMailForURL:(NSString*)url withTitle:(NSString*)title {
+    bool sendMailForURL:(NSString*)url withTitle:(NSString*)title {
         NSString *bburl=[self getBBookmarkURLForURL:url title:title];
         NSMutableString *s=[NSMutableString stringWithFormat:@"Here is a bbookmark for you:<br/><b>%@</b> (install the <a href=\"http://bbookmarks.com/emaillink\">app</a> first)<br/><br/>",[self htmlForURLString:bburl title:@"bbookmarks link"]];
         [s appendFormat:@"<ul><li>%@</li></ul>",[self htmlForURLString:url title:title]];
         return([self sendMailWithSubject:(title?[NSString stringWithFormat:@"\"%@\"",title]:@"BBookmark") content:s isHTML:YES]);
     }
      
-    - (bool)sendMessageForURL:(NSString*)url withTitle:(NSString*)title {
+    bool sendMessageForURL:(NSString*)url withTitle:(NSString*)title {
         NSMutableString *s;
         if (title) s=[NSMutableString stringWithFormat:@"\"%@\"\n%@",title,url];
         else s=[NSMutableString stringWithFormat:@"%@",url];

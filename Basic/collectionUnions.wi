@@ -1,17 +1,17 @@
 UnionSetsMutableSetDelegate<MutableSetDelegate,BaseObject>
     setsDelegate -~ <UnionArray> owner
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableSet class]]&&[object conformsToProtocol:@protocol(MutableSetDelegate)];
     }
     
-    -(void)stateOK {
+    void stateOK {
         [self.owner refresh];
     }
     
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         [self.owner addSetDelegate:[[UnionSetDelegate alloc] initWithSet:(NSMutableSet<MutableSetDelegate>*)object]];
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         for (UnionSetDelegate del in self.owner.setDelegates) if (del.delegateForSet==object) {del.owner=nil;break;}
     }
 
@@ -27,28 +27,28 @@ UnionSetDelegate<MutableSetDelegate,BaseObject>
 
     NSMutableSet shouldAddObjects=[[NSMutableSet alloc] init] (readonly)
     
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret&&[self.owner shouldAddObject:object makeWeak:weak fromDelegate:self]) {
             [shouldAddObjects addObject:[PointerKey keyWithObject:object]];
         }
     }
-    -(void)willAddObject:(id)object {
+    void willAddObject:(id)object {
         if ([shouldAddObjects containsObject:object]) {
             [self.owner willAddObject:object fromDelegate:self];
         }
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([shouldAddObjects containsObject:object]) {
             [self.owner didAddObject:object fromDelegate:self];
         }
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         [self.owner willRemoveObject:object fromDelegate:self];
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         [self.owner didRemoveObject:object fromDelegate:self];
     }
-    -(void)stateOK {
+    void stateOK {
         [shouldAddObjects removeAllObjects];
         [self.owner stateOKFromDelegate:self];
     }
@@ -71,13 +71,13 @@ UnionSet<UnionSet>
 
     bool __changed=NO;
 
-    -(void)shouldAddObject:(id)object makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
+    void shouldAddObject:(id)object makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (n) return(YES);
         else return([self shouldAddObject:object makeWeak:weak]);
     }
 
-    -(void)willAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    void willAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (!n) {
             [self willAddObject:object];
@@ -88,12 +88,12 @@ UnionSet<UnionSet>
         else n.intValue++;
     }
 
-    -(void)didAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    void didAddObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (!n) [self didAddObject:object];
     }
 
-    -(void)willRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    void willRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__countsForKeys objectForKey:object];
         if (!n) {
             ERR("Should have intcarrier");
@@ -106,19 +106,19 @@ UnionSet<UnionSet>
             __changed=YES;
         }
     }
-    -(void)didRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    void didRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         if (![__countsForKeys objectForKey:object]) {
             [self didRemoveObject:object];
         }
     }
-    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+    void stateOKFromDelegate:(UnionSetDelegate*)del {
         if (__changed) {
             __changed=NO;
             [self stateOK];
         }
     }
 
-    -(void)refresh {
+    void refresh {
         [__countsForKeys removeAllObjects];
         NSMutableSet *newObjects=[[NSMutableSet alloc] init];
         for (NSSet *s in self.sets) {
@@ -183,18 +183,18 @@ UnionSet<UnionSet>
 
 UnionDictionariesMutableArrayDelegate<MutableArrayDelegate,BaseObject>
     dictionariesDelegate -~ <UnionDictionary> owner
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableDictionary class]]&&[object conformsToProtocol:@protocol(MutableDictionaryDelegate)];
     }
     
-    -(void)stateOK {
+    void stateOK {
         [self.owner refresh];
     }
     
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner addDictionaryDelegate:[[UnionDictionaryDelegate alloc] initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)object]];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         for (UnionDictionaryDelegate del in self.owner.dictionaryDelegates) if (del.delegateForDictionary==object) {del.owner=nil;break;}
     }
 
@@ -210,12 +210,12 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
 
     NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly)
     
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {
         if (ret&&[self.owner shouldAddObject:object forKey:key makeWeak:weak fromDelegate:self]) {
             [shouldAddObjects setObject:object forKey:key];
         }
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (fromObject) {
             [self.owner willRemoveObject:fromObject forKey:key fromDelegate:self];
         }
@@ -225,7 +225,7 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
             }
         }
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             if ([shouldAddObjects objectForKey:key]==toObject) {
                 [self.owner didAddObject:toObject forKey:key fromDelegate:self];
@@ -235,7 +235,7 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
             [self.owner didRemoveObject:fromObject forKey:key fromDelegate:self];
         }
     }
-    -(void)stateOK {
+    void stateOK {
         [shouldAddObjects removeAllObjects];
         [self.owner stateOKFromDelegate:self];
     }
@@ -263,11 +263,11 @@ UnionDictionary<UnionDictionary>
 
     bool __changed=NO;
 
-    -(void)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
+    void shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak fromDelegate:(UnionSetDelegate*)del {
         return([self shouldAddObject:object forKey:key makeWeak:weak]);
     }
 
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
         if (fromObject) {
             IntCarrier *n=[__depthsForKeys objectForKey:key];
             if (n&&(n.intValue==del.depth)) {
@@ -292,7 +292,7 @@ UnionDictionary<UnionDictionary>
         }
     }
 
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
         if (toObject) {
             IntCarrier *n=[__depthsForKeys objectForKey:key];
             if (!n) {
@@ -325,7 +325,7 @@ UnionDictionary<UnionDictionary>
         }
     }
 
-    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+    void stateOKFromDelegate:(UnionSetDelegate*)del {
         if (__changed) {
             __changed=NO;
             [self stateOK];
@@ -334,7 +334,7 @@ UnionDictionary<UnionDictionary>
 
 
                     
-    -(void)refresh {
+    void refresh {
         NSMutableSet *keys=[NSMutableSet set];
         
         for (UnionDictionaryDelegate *del in self.dictionaryDelegates) {
@@ -424,15 +424,15 @@ UnionDictionary<UnionDictionary>
 
 UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
     arraysDelegate -~ <UnionArray> owner
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if (ret) ret=[object isKindOfClass:[NSMutableArray class]]&&[object conformsToProtocol:@protocol(MutableArrayDelegate)];
     }
 
-    -(void)stateOK {
+    void stateOK {
         [self.owner refresh];
     }
 
-    -(id)objectForObject:(id)object {
+    id objectForObject:(id)object {
         ret=[[UnionArrayDelegate alloc] initWithArray:(NSMutableArray<MutableArrayDelegate>*)object];
     }
 
@@ -459,14 +459,14 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
 
     NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init] (readonly)
     
-    -(void)willTryToAddObjectsWithCount:(Unsigned)count {
+    void willTryToAddObjectsWithCount:(Unsigned)count {
         [self.owner willTryToAddObjectsWithCount:count fromDelegate:self];
     }
-    -(void)willRemoveObjectsWithCount:(Unsigned)count {
+    void willRemoveObjectsWithCount:(Unsigned)count {
         [self.owner willRemoveObjectsWithCount:count fromDelegate:self];
     }
 
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {
         if ([self.owner shouldAddObject:object forKey:key makeWeak:weak fromDelegate:self]&&ret) {
             UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
             if (!c) {
@@ -475,7 +475,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
             c.willCount++;c.didCount++;
         }
     }
-    -(void)wontAddObject:(id)object withIndex:(Unsigned)index {
+    void wontAddObject:(id)object withIndex:(Unsigned)index {
         UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
         if (c&&(c.willCount-->0)) {
             c.willCount--;
@@ -483,7 +483,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
         }
         [self.owner wontAddObject:object withIndex:index fromDelegate:self];
     }
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
+    void willAddObject:(id)object withIndex:(Unsigned)index {
         UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
         if (c&&(c.willCount-->0)) {
             [unionWillHaveIndexes addIndex:index];
@@ -492,7 +492,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
             [self.owner wontAddObject:object withIndex:index fromDelegate:self];
         }
     }
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         UnionArrayDelegateCount *c=[shouldAddObjects objectForKey:object];
         if (c&&(c.didCount-->0)) {
             [self.owner didAddObject:object withIndex:index fromDelegate:self];
@@ -500,26 +500,26 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
     }
 
 
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         if ([unionHasIndexes containsIndex:index]) {
             [unionWillRemoveIndexes addIndex:index];
         }
         else [self.owner wontRemoveObject:object fromDelegate:self];
         //[self.owner willRemoveObject:object fromIndex:index fromDelegate:self];
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         [self.owner didRemoveObject:object fromDelegate:self];
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         //[self.owner objectsSwappedWithIndex:fromIndex andIndex:toIndex fromDelegate:self];
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         //[self.owner objectsMovedFromRange:fromRange toLocation:toLocation fromDelegate:self];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         [self.owner allObjectsMovedFromDelegate:self];
     }
-    -(void)stateOK {
+    void stateOK {
         [shouldAddObjects removeAllObjects];
         [unionWillHaveIndexes removeAllIndexes];
         //[unionWontHaveIndexes removeAllIndexes];
@@ -560,35 +560,35 @@ UnionArray<UnionArray>
     Unsigned __outstandingAddCount=nil
     Unsigned __outstandingRemoveCount=nil
 
-    -(void)willTryToAddObjectsWithCount:(Unsigned)count fromDelegate:(UnionArrayDelegate*)del {
+    void willTryToAddObjectsWithCount:(Unsigned)count fromDelegate:(UnionArrayDelegate*)del {
         __outstandingAddCount+=count;
     }
 
 
-    -(void)willRemoveObjectsWithCount:(Unsigned)count fromDelegate:(UnionArrayDelegate*)del {
+    void willRemoveObjectsWithCount:(Unsigned)count fromDelegate:(UnionArrayDelegate*)del {
         __outstandingRemoveCount+=count;
     }
 
 
-    -(void)wontAddObject:(id)object withIndex:(Unsigned)index fromDelegate:(UnionSetDelegate*)del {
+    void wontAddObject:(id)object withIndex:(Unsigned)index fromDelegate:(UnionSetDelegate*)del {
         if (!--__outstandingAddCount) {
             [self doAddObjects];
         }
     }
 
-    -(void)wontRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
+    void wontRemoveObject:(id)object fromDelegate:(UnionSetDelegate*)del {
         if (!--__outstandingRemoveCount) {
             [self doRemoveObjects];
         }
     }
 
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index fromDelegate:(UnionSetDelegate*)del {
+    void didAddObject:(id)object withIndex:(Unsigned)index fromDelegate:(UnionSetDelegate*)del {
         if (!--__outstandingAddCount) {
             [self doAddObjects];
         }
     }
 
-    -(void)didRemoveObject:(id)object fromDelegate:(UnionArrayDelegate*)del {
+    void didRemoveObject:(id)object fromDelegate:(UnionArrayDelegate*)del {
         if (!--__outstandingRemoveCount) {
             [self doRemoveObjects];
         }
@@ -601,7 +601,7 @@ UnionArray<UnionArray>
     NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] (readonly,ivar=tmpis);
     NSMutableArray __tmpa=[[NSMutableArray alloc] init] (readonly,ivar=tmpa);
 
-    -(void)doAddObjects {
+    void doAddObjects {
         [tmpis removeAllIndexes];
         [tmpa removeAllObjects];
         
@@ -636,7 +636,7 @@ UnionArray<UnionArray>
 
 
 
-    -(void)doRemoveObjects {
+    void doRemoveObjects {
         [tmpis removeAllIndexes];
         
         for (Int ai=self.arrays.count-1;ai>=0;ai--) {
@@ -672,13 +672,13 @@ UnionArray<UnionArray>
 
 
 
-    -(void)willTryToAddObjectsWithCount:(Unsigned)count {
+    void willTryToAddObjectsWithCount:(Unsigned)count {
         for (UnionArrayDelegate *del in self.arrayDelegates) {
             del.curIndex=del.unionWillHaveIndexes.firstIndex;
         }
     }
 
-    -(void)wontAddObject:(id)object withIndex:(Unsigned)index {
+    void wontAddObject:(id)object withIndex:(Unsigned)index {
         for (UnionArrayDelegate *del in self.arrayDelegates) {
             if ((del.addIndex<=index)&&(del.curIndex!=NSNotFound)) {
                 del.curIndex=[del.unionWillHaveIndexes indexGreaterThanIndex:del.curIndex];
@@ -687,7 +687,7 @@ UnionArray<UnionArray>
         }
     }
 
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {@500 
+    void willAddObject:(id)object withIndex:(Unsigned)index {@500 
         bool added=NO;
         for (UnionArrayDelegate *del in self.arrayDelegates) {
             if (added) del.addIndex++;
@@ -699,7 +699,7 @@ UnionArray<UnionArray>
         }
     }
 
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@500 
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {@500 
         bool removed=NO;
         for (Int i=self.arrayDelegates.count-1;i>=0;i--) {
             UnionArrayDelegate *del=[self.arrayDelegates objectAtIndex:i];
@@ -718,7 +718,7 @@ UnionArray<UnionArray>
 
 
 
-    -(void)stateOKFromDelegate:(UnionSetDelegate*)del {
+    void stateOKFromDelegate:(UnionSetDelegate*)del {
         if (__changed) {
             __changed=NO;
             if (__outstandingRemoveCount||__outstandingAddCount) {
@@ -731,23 +731,23 @@ UnionArray<UnionArray>
 
 
 
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         ERR("Shouldn't be called");
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         ERR("Shouldn't be called");
     }
 
 
 
 
-    -(void)allObjectsMovedFromDelegate:(UnionArrayDelegate*)del {
+    void allObjectsMovedFromDelegate:(UnionArrayDelegate*)del {
         [self refresh];
     }
 
 
 
-    -(void)refresh {
+    void refresh {
         [tmpa removeAllObjects];
 
         [__unionArray _removeAllObjects];

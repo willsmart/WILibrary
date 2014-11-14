@@ -9,8 +9,8 @@
 //"collectionUnions.wi"
 
 <CommitableCollection:Commitable>
-    -(void)stateOK {@100 [self markDirty];}
-    -(Int)commitProperties:(Int)substageIndex {modelObjectHasChanged=YES;}
+    void stateOK {@100 [self markDirty];}
+    Int commitProperties:(Int)substageIndex {modelObjectHasChanged=YES;}
 
 
 
@@ -21,22 +21,22 @@
 
 
 <ModelSet:Set>
-    -(void)makeModel {
+    void makeModel {
         for (NSObject *object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modeladd];
         }
     }
-    -(void)makeNonModel {
+    void makeNonModel {
         for (NSObject *object in __set) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
     Self start {@-500 [self makeModel];}
-    -(void)dealloc {@-500 [self makeNonModel];}
+    void dealloc {@-500 [self makeNonModel];}
 
 
 <ModelDictionary:Dictionary>
-    -(void)makeModel {
+    void makeModel {
         for (id<NSCopying> key in __dictionary) {
             id o=[__dictionary objectForKey:key];
             if ([o conformsToProtocol:@protocol(RefCountedObject)]) {
@@ -44,7 +44,7 @@
             }
         }
     }
-    -(void)makeNonModel {
+    void makeNonModel {
         for (id<NSCopying> key in __dictionary) {
             id o=[__dictionary objectForKey:key];
             if ([o conformsToProtocol:@protocol(RefCountedObject)]) {
@@ -53,23 +53,23 @@
         }
     }
     Self start {@-500 [self makeModel];}
-    -(void)dealloc {@-500 [self makeNonModel];}
+    void dealloc {@-500 [self makeNonModel];}
 
 
 
 <ModelArray:Array>
-    -(void)makeModel {
+    void makeModel {
         for (NSObject *object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modeladd];
         }
     }
-    -(void)makeNonModel {
+    void makeNonModel {
         for (NSObject *object in __array) if ([object conformsToProtocol:@protocol(RefCountedObject)]) {
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
     Self start {@-500 [self makeModel];}
-    -(void)dealloc {@-500 [self makeNonModel];}
+    void dealloc {@-500 [self makeNonModel];}
 
 
 
@@ -83,7 +83,7 @@ type id100 "typedef:struct{void *ids[100];}"
 <DebugMutableArray>
     Unsigned array_count=0
     id100 array_objects=nil
-    -(void)stateOK {
+    void stateOK {
         array_count=0;
         for (id o in __array) {
             array_objects.ids[array_count++]=(__bridge void*)o;
@@ -96,7 +96,7 @@ type id100 "typedef:struct{void *ids[100];}"
 <DebugMutableSet>
     Unsigned set_count=0
     id100 set_objects=nil
-    -(void)stateOK {
+    void stateOK {
         set_count=0;
         for (id o in __set) {
             set_objects.ids[set_count++]=(__bridge void*)o;
@@ -111,7 +111,7 @@ type keyval100 "typedef:struct{keyval keyvals[100];}"
 <DebugMutableDictionary>
     Unsigned dictionary_count=0
     keyval100 dictionary_objects=nil
-    -(void)stateOK {
+    void stateOK {
         dictionary_count=0;
         for (id k in __dictionary) {
             dictionary_objects.keyvals[dictionary_count].key=(__bridge void*)k;
@@ -164,35 +164,35 @@ WeakMutableDictionary:NSMutableDictionary<MutableDictionary,WeakCollection> {}
 
 
 <WeakNSCollection> "nap"
-    -(__MutableClass__*)weakMutableCopy
+    __MutableClass__* weakMutableCopy
         __MutableClass__ *ret=(__MutableClass__*)self.asWeak;
         return([ret isEqual:self]?self.mutableCopy:ret);
 
-    -(__MutableClass__*)strongMutableCopy
+    __MutableClass__* strongMutableCopy
         __MutableClass__ *ret=(__MutableClass__*)self.asStrong;
         return([ret isEqual:self]?self.mutableCopy:ret);
 
-    -(__Class__*)weakCopy
+    __Class__* weakCopy
         return(self.asWeak.copy);
 
-    -(__Class__*)strongCopy
+    __Class__* strongCopy
         return(self.asStrong.copy);
 
-    -(__Class__*)withWeakness:(CollectionWeakness)weakness
+    __Class__* withWeakness:(CollectionWeakness)weakness
         switch (weakness) {
             case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self);
             case CollectionIsWeak:return(self.asWeak);
             case CollectionIsStrong:return(self.asStrong);
         }
 
-    -(__Class__*)copyWithWeakness:(CollectionWeakness)weakness
+    __Class__* copyWithWeakness:(CollectionWeakness)weakness
         switch (weakness) {
             case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self.copy);
             case CollectionIsWeak:return(self.weakCopy);
             case CollectionIsStrong:return(self.strongCopy);
         }
 
-    -(__MutableClass__*)mutableCopyWithWeakness:(CollectionWeakness)weakness
+    __MutableClass__* mutableCopyWithWeakness:(CollectionWeakness)weakness
         switch (weakness) {
             case CollectionIsEmpty:case CollectionIsWeakAndStrong:default:return(self.mutableCopy);
             case CollectionIsWeak:return(self.weakMutableCopy);
@@ -283,13 +283,13 @@ MutableValueDebuggerDelegate<MutableValueDelegate,MutableObjectDebuggerDelegate>
         }
     }
 
-    -(void)willChangeValueFrom:(id)fromObject to:(id)toObject {
+    void willChangeValueFrom:(id)fromObject to:(id)toObject {
         prnt("Value %s: will change to %s\n -- was %s\n",v_name.UTF8String,[Util cnameFor:toObject],[Util cnameFor:fromObject]);
     }
-    -(void)didSetValueTo:(id)object {
+    void didSetValueTo:(id)object {
         prnt("Value %s: did change to %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)dealloc {
+    void dealloc {
         if (attached) prnt("Value %s: dealloced\n",v_name.UTF8String);
     }
 
@@ -315,22 +315,22 @@ MutableSetDebuggerDelegate<MutableSetDelegate,MutableObjectDebuggerDelegate>
         }
     }
 
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@998
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {@998
         prnt("Set %s: should%s add %s%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:object]);
     }
-    -(void)willAddObject:(id)object {
+    void willAddObject:(id)object {
         prnt("Set %s: will add %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         prnt("Set %s: did add %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)willRemoveObject:(id)object {
+    void willRemoveObject:(id)object {
         prnt("Set %s: will remove %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         prnt("Set %s: did remove %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)dealloc {
+    void dealloc {
         if (attached) prnt("Set %s: dealloced\n",v_name.UTF8String);
     }
 
@@ -357,10 +357,10 @@ MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebugge
     }
 
 
-    -(bool)shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {@998
+    bool shouldAddObject:(id)object forKey:(id<NSCopying>)key makeWeak:(bool&)weak {@998
         prnt("Dictionary %s: should%s add %s%s=>%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:key],[Util cnameFor:object]);
     }
-    -(void)willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void willReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (!toObject) {
             prnt("Dictionary %s: will remove %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject]);
         }
@@ -369,7 +369,7 @@ MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebugge
         }
         else prnt("Dictionary %s: will replace %s=>%s\n  with  %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject],[Util cnameFor:key],[Util cnameFor:toObject]);
     }
-    -(void)didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
+    void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (!toObject) {
             prnt("Dictionary %s: did remove %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject]);
         }
@@ -378,7 +378,7 @@ MutableDictionaryDebuggerDelegate<MutableDictionaryDelegate,MutableObjectDebugge
         }
         else prnt("Dictionary %s: did replace %s=>%s\n  with  %s=>%s\n",v_name.UTF8String,[Util cnameFor:key],[Util cnameFor:fromObject],[Util cnameFor:key],[Util cnameFor:toObject]);
     }
-    -(void)dealloc {
+    void dealloc {
         if (attached) prnt("Dictionary %s: dealloced\n",v_name.UTF8String);
     }
 
@@ -408,36 +408,36 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
         }
     }
 
-    -(bool)shouldAddObject:(id)object makeWeak:(bool&)weak {@998
+    bool shouldAddObject:(id)object makeWeak:(bool&)weak {@998
         prnt("Array %s: should%s add %s%s\n",v_name.UTF8String,ret?"":"n't",weak?"weak ":"",[Util cnameFor:object]);
     }
-    -(void)wontAddObject:(id)object withIndex:(Unsigned)index {
+    void wontAddObject:(id)object withIndex:(Unsigned)index {
         prnt("Array %s: wont add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {
+    void willAddObject:(id)object withIndex:(Unsigned)index {
         prnt("Array %s: will add index %d, %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         prnt("Array %s: did add index %d, object %s\n",v_name.UTF8String,int(index),[Util cnameFor:object]);
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {
         prnt("Array %s: will remove index %d, object %s\n",v_name.UTF8String,index,[Util cnameFor:object]);
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         prnt("Array %s: did remove object %s\n",v_name.UTF8String,[Util cnameFor:object]);
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         prnt("Array %s: objects at %d and %d swapped\n",v_name.UTF8String,fromIndex,toIndex);
     }
-    -(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
+    void objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         prnt("Array %s: objects at [%d,%d) move to [%d,%d)\n",v_name.UTF8String,fromRange.location,fromRange.location+fromRange.length,toLocation,toLocation+fromRange.length);
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         prnt("Array %s: all objects moved\n",v_name.UTF8String);
     }
-    -(void)stateOK {
+    void stateOK {
     }
-    -(void)dealloc {
+    void dealloc {
         if (attached) prnt("Array %s: dealloced\n",v_name.UTF8String);
     }
 
@@ -460,30 +460,30 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
         {return(followerArray);}
         -v{followerArray=v;[self refreshFollowerArray];}=nil (ivar=followerArray)
 
-    -(id)objectForObject:(id)object {@-999 id ret=object;
+    id objectForObject:(id)object {@-999 id ret=object;
         @999 return(ret);
     }
 
-    -(void)delegateForArrayChanged {
+    void delegateForArrayChanged {
         if (followerArray) [self refreshFollowerArray];
     }
 
-    -(void)willAddObject:(id)object withIndex:(Unsigned)index {@500 
+    void willAddObject:(id)object withIndex:(Unsigned)index {@500 
         [followerArray insertObject:[self objectForObject:object] atIndex:index];
     }
-    -(void)willRemoveObject:(id)object fromIndex:(Unsigned)index {@500 
+    void willRemoveObject:(id)object fromIndex:(Unsigned)index {@500 
         [followerArray removeObjectAtIndex:index];
     }
-    -(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
+    void objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         [followerArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
     }
-    -(void)allObjectsMoved {
+    void allObjectsMoved {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
         NSMutableIndexSet *is=[[NSMutableIndexSet alloc] init];
         for (NSObject *object in delegateForArray) {
             Unsigned index=[delegateForArray indexOfObject:object];
             while ((index!=NSNotFound)&&[is containsIndex:index]) {
-                index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.count-(index+1))]);
+                index=(index==delegateForArray.count-1?NSNotFound:[delegateForArray indexOfObject:object inRange:NSMakeRange(index+1,delegateForArray.countindex+1 )]);
             }
             if (index==NSNotFound) [a addObject:[self objectForObject:object]];
             else {
@@ -493,7 +493,7 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
         }
         [followerArray setArray:a];
     }
-    -(void)refreshFollowerArray {
+    void refreshFollowerArray {
         NSMutableArray *a=[[NSMutableArray alloc] initWithCapacity:delegateForArray.count];
         for (NSObject *object in delegateForArray) {
             [a addObject:[self objectForObject:object]];
@@ -507,30 +507,30 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
 
 
 /*<MinimalMutableArray>
-    -(void)didAddObject:(id)object withIndex:(Unsigned)index {
+    void didAddObject:(id)object withIndex:(Unsigned)index {
         if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (array)\n",object);
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (array)\n",object);
     }
 */
 
 /*
 <MutableSet>
-    -(void)didAddObject:(id)object {
+    void didAddObject:(id)object {
         if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (set)\n",object);
     }
-    -(void)didRemoveObject:(id)object {
+    void didRemoveObject:(id)object {
         if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (set)\n",object);
     }
 
 
 
 <MinimalMutableDictionary>
-    -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
+    void didAddObject:(id)object forKey:(id<NSCopying>)key {
         if ([object isKindOfClass:[UIView class]]) prnt("Add uiview %p (dict)\n",object);
     }
-    -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {
+    void didRemoveObject:(id)object forKey:(id<NSCopying>)key {
         if ([object isKindOfClass:[UIView class]]) prnt("Remove uiview %p (dict)\n",object);
     }
 

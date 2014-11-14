@@ -19,14 +19,14 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
             version=v.version;
         }=nil (ivar=trackerSet)
 
-    -(void)setAtomicSet:(NSSet*)v {
+    void setAtomicSet:(NSSet*)v {
         version=0;
         [self makeNonModel];
         __set=[[NSSet alloc] initWithSet:v];
         [self makeModel];
     }
 
-    -(void)commitSet {
+    void commitSet {
         if (version!=trackerSet.version) {
             [self makeNonModel];
             __set=[[NSSet alloc] initWithSet:trackerSet.__set];
@@ -43,39 +43,39 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     }
 
 
-    -(void)addObject:(id)object {
+    void addObject:(id)object {
         [trackerSet addObject:object];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+    void filterUsingPredicate:(NSPredicate *)predicate {
         [trackerSet filterUsingPredicate:predicate];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)removeObject:(id)object {
+    void removeObject:(id)object {
         [trackerSet removeObject:object];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)removeAllObjects {
+    void removeAllObjects {
         [trackerSet removeAllObjects];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)addObjectsFromArray:(NSArray*)array {
+    void addObjectsFromArray:(NSArray*)array {
         [trackerSet addObjectsFromArray:array];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)unionSet:(NSSet*)set {
+    void unionSet:(NSSet*)set {
         [trackerSet unionSet:set];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)minusSet:(NSSet*)set {
+    void minusSet:(NSSet*)set {
         [trackerSet minusSet:set];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)intersectSet:(NSSet*)set {
+    void intersectSet:(NSSet*)set {
         [trackerSet intersectSet:set];
         if (trackerSet.version!=version) [self markDirty];
     }
-    -(void)setSet:(NSSet*)set {
+    void setSet:(NSSet*)set {
         [trackerSet setSet:set];
         if (trackerSet.version!=version) [self markDirty];
     }
@@ -120,14 +120,14 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
             version=v.version;
         }=nil (ivar=trackerDictionary)
 
-    -(void)setAtomicDictionary:(NSDictionary*)v {
+    void setAtomicDictionary:(NSDictionary*)v {
         version=0;
         [self makeNonModel];
         __dictionary=[[NSDictionary alloc] initWithDictionary:v];
         [self makeModel];
     }
 
-    -(void)commitDictionary {
+    void commitDictionary {
         if (version!=trackerDictionary.version) {
             [self makeNonModel];
             __dictionary=[[NSDictionary alloc] initWithDictionary:trackerDictionary.__dictionary];
@@ -144,33 +144,33 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
     }
  
 
-    -(void)setObject:(id)object forKey:(id<NSCopying>)key {
+    void setObject:(id)object forKey:(id<NSCopying>)key {
         [trackerDictionary setObject:object forKey:key];
         if (trackerDictionary.version!=version) [self markDirty];
     }
-    -(void)removeObjectForKey:(id<NSCopying>)key {
+    void removeObjectForKey:(id<NSCopying>)key {
         if ([self objectForKey:key]) {
             [trackerDictionary removeObjectForKey:key];
             if (trackerDictionary.version!=version) [self markDirty];
         }
     }
-    -(void)setValue:(id)object forKey:(NSString*)key {
+    void setValue:(id)object forKey:(NSString*)key {
         [trackerDictionary setValue:object forKey:key];
         if (trackerDictionary.version!=version) [self markDirty];
     }
-    -(void)addEntriesFromDictionary:(NSDictionary*)dictionary {
+    void addEntriesFromDictionary:(NSDictionary*)dictionary {
         [trackerDictionary addEntriesFromDictionary:dictionary];
         if (trackerDictionary.version!=version) [self markDirty];
     }
-    -(void)setDictionary:(NSDictionary*)dictionary {
+    void setDictionary:(NSDictionary*)dictionary {
         [trackerDictionary setDictionary:dictionary];
         if (trackerDictionary.version!=version) [self markDirty];
     }
-    -(void)removeAllObjects {
+    void removeAllObjects {
         [trackerDictionary removeAllObjects];
         if (trackerDictionary.version!=version) [self markDirty];
     }
-    -(void)removeObjectsForKeys:(NSArray*)keys {
+    void removeObjectsForKeys:(NSArray*)keys {
         [trackerDictionary removeObjectsForKeys:keys];
         if (trackerDictionary.version!=version) [self markDirty];
     }
@@ -213,14 +213,14 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
             version=v.version;
         }=nil (ivar=trackerArray)
 
-    -(void)setAtomicArray:(NSArray*)v {
+    void setAtomicArray:(NSArray*)v {
         version=0;
         [self makeNonModel];
         __array=[[NSArray alloc] initWithArray:v];
         [self makeModel];
     }
 
-    -(void)commitArray {
+    void commitArray {
         if (version!=trackerArray.version) {
             [self makeNonModel];
             __array=[[NSArray alloc] initWithArray:trackerArray.__array];
@@ -238,7 +238,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
 
 
-    -(Unsigned)bestTrackerInsertIndexForObject:(id)object index:(Unsigned)index {
+    Unsigned bestTrackerInsertIndexForObject:(id)object index:(Unsigned)index {
         if ([trackerArray containsObject:object]) return(NSNotFound);
         Int i;
         Unsigned ti=NSNotFound;
@@ -260,26 +260,26 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     
     //Adding Objects
-    -(void)addObject:(id)object {
+    void addObject:(id)object {
         if (![trackerArray containsObject:object]) {
             [trackerArray addObject:object];
             if (trackerArray.version!=version) [self markDirty];
         }
     }
-    -(void)insertObject:(id)object atIndex:(Unsigned)index {
+    void insertObject:(id)object atIndex:(Unsigned)index {
         Unsigned ti=[self bestTrackerInsertIndexForObject:object index:index];
         if (ti!=NSNotFound) {
             [trackerArray insertObject:object atIndex:ti];
             if (trackerArray.version!=version) [self markDirty];
         }
     }
-    -(void)removeObjectAtIndex:(Unsigned)index {
+    void removeObjectAtIndex:(Unsigned)index {
         [self removeObject:[__array objectAtIndex:index]];
     }
-    -(void)removeLastObject {
+    void removeLastObject {
         if (self.count) [self removeObjectAtIndex:self.count-1];
     }
-    -(void)replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
+    void replaceObjectAtIndex:(Unsigned)index withObject:(id)object {
         if (![trackerArray containsObject:object]) {
             NSObject *object2=[__array objectAtIndex:index];
             if ([object2 isEqual:object]) return;
@@ -291,11 +291,11 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
         }
     }
 
-    -(void)addObjectsFromArray:(NSArray*)array {
+    void addObjectsFromArray:(NSArray*)array {
         for (NSObject *object in array) [self addObject:object];
     }
 
-    -(void)insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
+    void insertObjects:(NSArray*)objects atIndexes:(NSIndexSet*)indexes {
         Unsigned index=[indexes firstIndex];
         for (NSObject *object in objects) {
             [self insertObject:object atIndex:index];
@@ -305,41 +305,41 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     
     //Removing Objects
-    -(void)removeAllObjects {
+    void removeAllObjects {
         for (NSObject *object in __array) [self removeObject:object];
     }
-    -(void)removeObject:(id)object {
+    void removeObject:(id)object {
         Unsigned ti=[trackerArray indexOfObject:object];
         if (ti!=NSNotFound) {
             [trackerArray removeObjectAtIndex:ti];
             if (trackerArray.version!=version) [self markDirty];
         }
     }
-    -(void)removeObject:(id)object inRange:(NSRange)r {
-        for (Unsigned index=[self indexOfObject:object inRange:r];index!=NSNotFound;index=[self indexOfObject:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
+    void removeObject:(id)object inRange:(NSRange)r {
+        for (Unsigned index=[self indexOfObject:object inRange:r];index!=NSNotFound;index=[self indexOfObject:object inRange:NSMakeRange(index+1,(r.location+r.length)index+1 )]) {
             [self removeObjectAtIndex:index];
         }
     }
 
-    -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
+    void removeObjectsAtIndexes:(NSIndexSet*)indexes {
         for (Unsigned index=[indexes firstIndex];index!=NSNotFound;index=[indexes indexGreaterThanIndex:index]) {
             [self removeObjectAtIndex:index];
         }
     }
-    -(void)removeObjectIdenticalTo:(id)object {
-        for (Unsigned index=[self indexOfObjectIdenticalTo:object];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,self.count-(index+1))]) {
+    void removeObjectIdenticalTo:(id)object {
+        for (Unsigned index=[self indexOfObjectIdenticalTo:object];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,self.countindex+1 )]) {
             [self removeObjectAtIndex:index];
         }
     }
-    -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-        for (Unsigned index=[self indexOfObjectIdenticalTo:object inRange:r];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,(r.location+r.length)-(index+1))]) {
+    void removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
+        for (Unsigned index=[self indexOfObjectIdenticalTo:object inRange:r];index!=NSNotFound;index=[self indexOfObjectIdenticalTo:object inRange:NSMakeRange(index+1,(r.location+r.length)index+1 )]) {
             [self removeObjectAtIndex:index];
         }
     }
-    -(void)removeObjectsInArray:(NSArray*)array {
+    void removeObjectsInArray:(NSArray*)array {
         for (NSObject *object in array) [self removeObject:object];
     }
-    -(void)removeObjectsInRange:(NSRange)r {
+    void removeObjectsInRange:(NSRange)r {
         for (Unsigned i=r.location;i<r.location+r.length;i++) {
             [self removeObjectAtIndex:i];
         }
@@ -347,31 +347,31 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     
     //Replacing Objects
-    -(void)replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
+    void replaceObjectsAtIndexes:(NSIndexSet*)indexes withObjects:(NSArray*)array {
         Unsigned index=[indexes firstIndex];
         for (NSObject *object in array) {
             [self replaceObjectAtIndex:index withObject:object];
             index=[indexes indexGreaterThanIndex:index];
         }
     }
-    -(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
+    void replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array range:(NSRange)arrayRange {
         for (Int i=0;i<MIN(r.length,arrayRange.length);i++) {
             [self replaceObjectAtIndex:i+r.location withObject:[array objectAtIndex:i+arrayRange.location]];
         }
         for (Unsigned i=arrayRange.length;i<r.length;i++) [self removeObjectAtIndex:i+r.location];
         for (Unsigned i=arrayRange.length-1;i>=r.length;i--) [self insertObject:[array objectAtIndex:i] atIndex:r.location+r.length+1];
     }
-    -(void)replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
+    void replaceObjectsInRange:(NSRange)r withObjectsFromArray:(NSArray*)array {
         [self replaceObjectsInRange:r withObjectsFromArray:array range:NSMakeRange(0,array.count)];
     }
-    -(void)setArray:(NSArray*)array {
+    void setArray:(NSArray*)array {
         [trackerArray setArray:array];
         if (trackerArray.version!=version) [self markDirty];
     }
     
     
     //Filtering Content
-    -(void)filterUsingPredicate:(NSPredicate *)predicate {
+    void filterUsingPredicate:(NSPredicate *)predicate {
         NSMutableIndexSet *toRemove=nil;
         Unsigned index=0;
         for (NSObject *object in __array) {
@@ -388,7 +388,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     
     
     //Rearranging Content
-    -(void)exchangeObjectAtIndex:(Unsigned)fromi withObjectAtIndex:(Unsigned)toi {
+    void exchangeObjectAtIndex:(Unsigned)fromi withObjectAtIndex:(Unsigned)toi {
         if (fromi!=toi) {
             Unsigned fromai=[trackerArray indexOfObject:[__array objectAtIndex:fromi]];
             Unsigned toai=[trackerArray indexOfObject:[__array objectAtIndex:toi]];
@@ -398,23 +398,23 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
             }
         }
     }
-    -(void)sortUsingDescriptors:(NSArray*)sortDescriptors {
+    void sortUsingDescriptors:(NSArray*)sortDescriptors {
         [trackerArray sortUsingDescriptors:sortDescriptors];
         if (trackerArray.version!=version) [self markDirty];
     }
-    -(void)sortUsingComparator:(NSComparator)cmptr {
+    void sortUsingComparator:(NSComparator)cmptr {
         [trackerArray sortUsingComparator:cmptr];
         if (trackerArray.version!=version) [self markDirty];
     }
-    -(void)sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
+    void sortWithOptions:(NSSortOptions)opts usingComparator:(NSComparator)cmptr {
         [trackerArray sortWithOptions:opts usingComparator:cmptr];
         if (trackerArray.version!=version) [self markDirty];
     }
-    -(void)sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
+    void sortUsingFunction:(Int (*)(id, id, void *))compare context:(void *)context {
         [trackerArray sortUsingFunction:compare context:context];
         if (trackerArray.version!=version) [self markDirty];
     }
-    -(void)sortUsingSelector:(SEL)selector {
+    void sortUsingSelector:(SEL)selector {
         [trackerArray sortUsingSelector:selector];
         if (trackerArray.version!=version) [self markDirty];
     }
