@@ -187,7 +187,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
             }
         }=nil (ivar)
 
-    -(init) {@-10 
+    Self start {@-10 
         animating = NO;
         animationFrameInterval = 2;
     }

@@ -14,7 +14,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
     
     UIView renderedInView=nil (assign,ivar=renderedInView)
     
-    -(init) {
+    Self start {
         self.program.vertexCount=4;
         {
             float v[8]={0,0,  1,0,   0,1,   1,1};
@@ -23,7 +23,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
     }
 
     NSSet builtinMacros=nil
-    -(init) {
+    Self start {
         @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
     }
 
@@ -32,7 +32,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
         @!999 gl_FragColor=colour;
     }
 
-    -(init) {
+    Self start {
         [self.program setMacro:@"colour=(0,0,1,1);" forKey:@"getColour"];
     }
 
@@ -89,7 +89,7 @@ MetaEnabled
 RenderLoopView:RenderUIView<UIViewMetaEnabled>
 /**! --    (notenote) Note: Please think about making property "renderShader" publicreadonly !**/
     RenderShader renderShader=[[RenderShader alloc] init] (readonly)
-    -(init) {
+    Self start {
         renderShader.renderedInView=self;
         self.shader=renderShader;
         [renderShader.program setMacro:@"colour=(sin(length(pixel)),0,1,opacity);" forKey:@"getColour"];
@@ -103,8 +103,8 @@ RenderLoopView:RenderUIView<UIViewMetaEnabled>
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
-    -(init)init {}
-    -(init)initWithFrame:(CGRect)frame {}
+    Self init {}
+    Self initWithFrame:(CGRect)frame {}
 
     -(void)didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr hasPrefix:@"macro_"]) {

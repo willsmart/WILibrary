@@ -156,7 +156,7 @@ Singletons<Ticker> "-Object" "fn:object"
         }
     }
 
-    -(init) {@-800
+    Self start {@-800
         g_totalObjectCount=totalObjectCount=[[ClassCount alloc] initWithName:@"All classes"];
         ContextIndex ci={0};
         g_classCounts=[NSMutableArray array];
@@ -304,8 +304,8 @@ Globals
 
     LL __owner_context=nil (ivar=__owner_context)
 
-    -(init) {@-996 debugAutorelease=YES;}
-    -(init) {@-995 objInitFn(self,objectIDInTotal,objectIDInClass);
+    Self start {@-996 debugAutorelease=YES;}
+    Self start {@-995 objInitFn(self,objectIDInTotal,objectIDInClass);
     }
     -(void)dealloc {@998 deallocFn(self,objectIDInTotal,objectIDInClass);
         isZombie=YES;

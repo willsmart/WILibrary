@@ -125,7 +125,7 @@ PropertyData
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__s" clas:[MutableArray class] clasName:@"MutableArray" getter:@selector(__property__s) setter:nil direct:NO] forKey:@"__property__s"];
     }
     //__property__s_parent ~a< <__Property____modelObject> __property__
-    -(init) {
+    Self start {
         [self.__property__s addDelegate:[[__Property__s__modelDelegate alloc] initWithOwner:self]];
     }
     -(void)didAddViewer:(NSObject<DataModelViewer>*)viewer {@-100 
@@ -212,7 +212,7 @@ PropertyViewerDelegate<MutableSetDelegate>
     MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_dataModelParentProperties)
 
 
-    -(init) {@15 
+    Self start {@15 
         [propertyStack addObject:_dataModelParentProperties];
         dataModelParentFilterDel.followerDictionary=_dataModelParentProperties;
         [self.dataModelViewers addDelegate:[[PropertyViewerDelegate alloc] initWithOwner:self]];

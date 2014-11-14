@@ -229,7 +229,7 @@ BinTracker<BaseObject>
 SonicBinPlay<PlaybackAudioUnit,BaseObject>
     Int PLAYBACK_SAMPLE_RATE=48000;
 
-    -(init) {
+    Self start {
         @-6 numChannels=4;
         @0 
     }
@@ -327,7 +327,7 @@ SonicBinRec<RecordingAudioUnit,BaseObject>
     Int RECORDING_SAMPLE_RATE=96000;
 
     
-    -(init) {
+    Self start {
         t1.signmul=-1;
     }
     -(void)setupAudio {@12 

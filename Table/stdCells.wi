@@ -36,7 +36,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
 
 <HasProperties:Commitable,Property_ProxiedDictionaryDelegate>
-    -(init) {
+    Self start {
         @-100 [self property_attachDictionaryDelegateTo:_properties];
     }
 
@@ -75,7 +75,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
         [MutableDictionaryDebuggerDelegate dettachFrom:_properties named:[self.objectName stringByAppendingString:@"_props"]];
     }
     
-    -(init) {
+    Self start {
         @10
         {
             [_properties addSinkCommitter:self];
@@ -127,7 +127,7 @@ App<HasProperties,BaseObject>
 
 
 <StdHasProperties:HasProperties>
-    -(init) {@-10 
+    Self start {@-10 
         self.keepKeyPrefixSuffixLength=0;
         self.filterKeyPrefix=@":";
         self.keyPrefix=@"_:";
@@ -149,7 +149,7 @@ App<HasProperties,BaseObject>
         {}
         -v{appFilterDel.keepKeyPrefixSuffixLength=v;}
 
-    -(init) {@15 
+    Self start {@15 
         [g_singletons.app._properties addDelegate:appFilterDel];
         [propertyStack addObject:_appProperties];
         appFilterDel.followerDictionary=_appProperties;
@@ -180,7 +180,7 @@ App<HasProperties,BaseObject>
     UITableView _table=nil (IBOutlet,retain,nonatomic)
     UITableView table={return(self._table);}
 
-    -(init) {@-10 
+    Self start {@-10 
         model=[[self.tableModelClass alloc] init];
     }
 
@@ -197,7 +197,7 @@ App<HasProperties,BaseObject>
     bool tableIsLoaded=nil (readonly,ivar)
 
     Class tableModelClass (readonly)
-    -(init) {
+    Self start {
         ((NSObject<StdTableModel>*)model).vc=self.vc;
         ((NSObject<HasProperties>*)model).parent=self;
     }
@@ -217,7 +217,7 @@ App<HasProperties,BaseObject>
     }
 
 <StdTableVC:StdVC,StdTable>
-    -(init) {@-100 self.vc=self;}
+    Self start {@-100 self.vc=self;}
     - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)from {
         [self.model invalidateLayout];
     }
@@ -231,7 +231,7 @@ App<HasProperties,BaseObject>
 //ProjectTableVC:UIViewController<StdTableVC> "fn:spvc"
 //    Class nextVCClass={return([MeasurementTableVC class]);}
 //    Class tableModelClass={return([ProjectTableModel class]);}
-//    -(init) {
+//    Self start {
 //        self.keyPrefix=@"project:";
 //    }
     
@@ -252,11 +252,11 @@ App<HasProperties,BaseObject>
         return(sec);
     }
         
-    -(init) {
+    Self start {
         if (self.bagSectionClass) [self addSection:self.bagSectionClass];
     }
 
-    -(init) {@-5 
+    Self start {@-5 
         self.keyPrefix=@"table:";
     }
 
@@ -268,7 +268,7 @@ App<HasProperties,BaseObject>
 
 
 //ProjectTableModel<StdTableModel>
-//    -(init) {
+//    Self start {
 //        [self addSection:[ProjectSectionModel class]];
 //    }
 
@@ -279,7 +279,7 @@ App<HasProperties,BaseObject>
 
 
 <StdSectionModel:SectionModelFromMeta,StdHasProperties,BaseObject>
-    -(init) {
+    Self start {
         [self._table_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
@@ -289,7 +289,7 @@ App<HasProperties,BaseObject>
         [self.cells addObject:cell];
         return(cell);
     }
-    -(init) {@-5 
+    Self start {@-5 
         self.keyPrefix=@"section:";
     }
 
@@ -298,10 +298,10 @@ App<HasProperties,BaseObject>
 
 
 <StdCellModel:CellModelFromMeta,StdHasProperties,BaseObject>
-    -(init) {@-5 
+    Self start {@-5 
         self.keyPrefix=@"cell:";
     }
-    -(init) {
+    Self start {
         [self._section_endpoint addDelegate:[[ParentPropertyValueDelegate alloc] initWithOwner:self]];
     }
 
@@ -343,11 +343,11 @@ App<HasProperties,BaseObject>
 
 //ProjectSectionModel<RVSectionModel> "fn:spvc"
 //    NSString nibName=@"projectcell"
-//    -(init) {
+//    Self start {
 //        self.writableHeaderHeight=60;
 //        self.writableFooterHeight=5;
 //    }
-//    -(init) {
+//    Self start {
 //        [self addCell:[ProjectCellModel class]];
 //        [self addCell:[ProjectCellModel class]];
 //        [self addCell:[ProjectCellModel class]];
@@ -360,7 +360,7 @@ App<HasProperties,BaseObject>
 
 //ProjectCellModel<RVCellModel,Project> "fn:spvc"
 //    NSString nibName=@"projectcell"
-//    -(init) {
+//    Self start {
 //        self.writableCellHeight=40;
 //    }
 //
@@ -393,7 +393,7 @@ __Table__Cell "nac" "multi"
     __Table__TableController tableController=[[__Table__TableController alloc] init] (publicreadonly,ivar=tableController)
     -(void)dealloc {@-200 tableController.__table=nil;}
     
-    -(init) {
+    Self start {
         tableModelFollower=tableController;
         tableController.__table=self;
         [tableController gotTable];
@@ -414,7 +414,7 @@ __Table__Cell "nac" "multi"
     UITableView table={@!0 return(self.__table);}
 
     Class tableModelClass={return([__Table__TableModel class]);}
-    -(init) {@-9 ((__Table__TableModel*)model).controller=self;
+    Self start {@-9 ((__Table__TableModel*)model).controller=self;
         @0
         self.keyPrefix=@"__table__:";
         ((NSObject<HasProperties>*)model).parent=self;
@@ -424,7 +424,7 @@ __Table__Cell "nac" "multi"
 <BasicTableModel:StdTableModel> "nac" "multi"
     __Table__TableController controller=nil (assign,ivar=controller)
     MutableArray __table__s=[[MutableArray alloc] init] (readonly)
-    -(init) {
+    Self start {
         {
             [self addSection:[__Table__SectionModel class]];
             MutableArrayFollowerDelegate *del=[MutableArrayFollowerDelegate get];
@@ -437,7 +437,7 @@ __Table__Cell "nac" "multi"
 
 <BasicDataTableModel:StdTableModel> "nac" "multi"
     __Table__TableController controller=nil (assign,ivar=controller)
-    -(init) {
+    Self start {
         {
             [self addSection:[__Table__SectionModel class]];
             MutableArrayFollowerDelegate *del=[MutableArrayFollowerDelegate get];
@@ -455,11 +455,11 @@ __Table__Cell "nac" "multi"
 
 
 <BasicHeader:MetaComponent> "nac" "multi"
-    -(init)init {}
+    Self init {}
     +(NSString*)metaURLKey {return(@"__table___header");}
 
 <BasicFooter:MetaComponent> "nac" "multi"
-    -(init)init {}
+    Self init {}
     +(NSString*)metaURLKey {return(@"__table___footer");}
 
 <BasicSectionModel:StdSectionModel> "nac" "multi"

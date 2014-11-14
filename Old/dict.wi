@@ -945,11 +945,11 @@ Dictionary
         }
     }
         
-    -(init) {
+    Self start {
         [self initDicts];
     }
 
-    -(init)init {}
+    Self init {}
 
     -(void)load {
         if (![self loadFromFile:self.dictPath]) {
@@ -2128,8 +2128,8 @@ ProMPWords
     ProMPWordsContext ctxt=nil
 
 
-    -(init)init {}
-    -(init) {
+    Self init {}
+    Self start {
         {
             ContextIndex ci={0};
             ctxt.seenMaxHT=new QuickHashTable<char>(ci,0);
@@ -2316,7 +2316,7 @@ ProMPWords
 
 
     WPatternArray *addMaxWPA=nil (readonly)
-    -(init) {
+    Self start {
         addMaxWPA=NEW(WPatternArray);
         addMaxWPA->setUpperBound(99);
     }
@@ -2535,7 +2535,7 @@ ProMPWords
 
 
     PattStr tmpWisPattern=nil
-    -(init) {
+    Self start {
         strcpy(tmpWisPattern.pattern,"xgdisugfyjlkfjslj");
     }
     NSMutableIndexSet tmpWis=[[NSMutableIndexSet alloc] init] (readonly)
@@ -2751,7 +2751,7 @@ ProMPWords
 
     QHT_bool *addMidHT=nil (readonly)
     WPatternArray *addMidWPA=nil (readonly)
-    -(init) {
+    Self start {
         {
             ContextIndex ci={0};
             addMidHT=NEWCONSb(QHT_bool,(ci,NO));
@@ -3246,7 +3246,7 @@ CountSubsequences
         [self setUpperBound:-1 ofBigUIntArray:dpcounts];
     }
 
-    -(init)init {}
+    Self init {}
 
     -(void)setUpperBound:(int)ub ofBigUIntArray:(BCArray_BigUInt*)a {
         int ubwas=a.upperBound;

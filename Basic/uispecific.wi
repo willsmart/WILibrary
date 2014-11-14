@@ -19,7 +19,7 @@ ImageFromCGImage:UIImage
     +(__Class__*)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         return([[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation]);
     }
-    -(init)initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
+    Self initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         sourceImage=CGImageRetain(imageRef);
     }
     -(void)dealloc {
@@ -42,7 +42,7 @@ FontList <BaseObject>
 
     NSArray fontNames=nil (readonly)
 
-    -(init) {
+    Self start {
         {
             MutableArray *a=[MutableArray array];
             NSArray *familyNames=[UIFont familyNames];

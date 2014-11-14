@@ -23,7 +23,7 @@ Styler
 
     -(void)restyle {}
 
-    -(init) {
+    Self start {
         @1 self.styler=[Styler getDefault];
     }
 

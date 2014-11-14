@@ -63,7 +63,7 @@ UnionSet<UnionSet>
     
     
     MutableSet sets=[[MutableSet alloc] init] (readonly)
-    -(init) {@-5 
+    Self start {@-5 
         __set=__mutableSet;
         delegateForSet=self;
         [sets addDelegate:self.setsDelegate=[UnionSetsMutableSetDelegate get]];
@@ -253,7 +253,7 @@ UnionDictionary<UnionDictionary>
     
     
     MutableArray dictionaries=[[MutableArray alloc] init] (readonly)
-    -(init) {@-5 
+    Self start {@-5 
         __dictionary=__mutableDictionary;
         delegateForDictionary=self;
         [dictionaries addDelegate:self.dictionariesDelegate=[UnionDictionariesMutableArrayDelegate get]];
@@ -544,7 +544,7 @@ UnionArray<UnionArray>
     
     
     MutableArray arrays=[[MutableArray alloc] init] (readonly)
-    -(init) {@-5 
+    Self start {@-5 
         __array=__unionArray.__array;
         __unionArray.arrayDelegate=self;
         delegateForArray=self;

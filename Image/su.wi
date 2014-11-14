@@ -21,7 +21,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
     vec2 unit (attribute)
     vec2 pixel (attribute,class=SHPixelCoorAttribute)
 
-    -(init) {
+    Self start {
         self.program.vertexCount=4;
         {
             float v[16]={-1,1,0,1,  1,1,0,1,   -1,-1,0,1,   1,-1,0,1};

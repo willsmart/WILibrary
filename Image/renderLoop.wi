@@ -56,7 +56,7 @@ RenderLoop <BaseObject>
 
     renderLoop ~- ShaderData shaderData
 
-    -(init) {
+    Self start {
         animating = NO;
         animationFrameInterval = 2;
     }

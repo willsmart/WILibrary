@@ -45,12 +45,12 @@ Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
     -(init[super init])initWithDirection:(char)dir {
         direction=dir;
     }
-    -(init)init {
+    Self init {
         direction='f';
         last=-1;
     }
 
-    -(init) {
+    Self start {
         [texA loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:CAMTEXSZ pixelsHigh:CAMTEXSZ contentSize:CGSizeMake(CAMTEXSZ,CAMTEXSZ)];
         [texB loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:CAMTEXSZ pixelsHigh:CAMTEXSZ contentSize:CGSizeMake(CAMTEXSZ,CAMTEXSZ)];
 

@@ -29,7 +29,7 @@ Orientation<BaseObject>
         [motManager stopDeviceMotionUpdates];
     }
 
-    -(init) {
+    Self start {
         locManager.headingFilter=kCLHeadingFilterNone;
         locManager.desiredAccuracy=kCLLocationAccuracyBest;
         [locManager startUpdatingHeading];

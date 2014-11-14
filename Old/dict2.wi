@@ -20,7 +20,7 @@ type DictWordArray "typedef:Array<DictWord>"
 type ULLArray "typedef:Array<ULL>"
 
 DictWords {
-    -(init)init {}
+    Self init {}
     
     int maxLen=0,wordLimit=10000000
     DictWordArray *_words=nil (readonly)

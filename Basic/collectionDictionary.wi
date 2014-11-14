@@ -67,7 +67,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
     // initializing a set
 
-    -(init)init {
+    Self init {
         @-100 __dictionary=[[NSDictionary alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
@@ -408,7 +408,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
         }
 
 
-    -(init) {
+    Self start {
         self.delegateForDictionary=self;
     }
 
@@ -421,7 +421,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     +(id)dictionaryWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
-    -(init)init {
+    Self init {
         @!-100 __dictionary=__mutableDictionary=[[NSMutableDictionary alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {

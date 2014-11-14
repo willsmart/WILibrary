@@ -29,7 +29,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
         }
     }
 
-    -(init) {
+    Self start {
         NSError *err=nil;
         NSString *s=[NSString stringWithContentsOfFile:[__Class__ stylerFileName] encoding:NSUTF8StringEncoding error:&err];
         if (s) {

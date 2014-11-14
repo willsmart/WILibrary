@@ -32,7 +32,7 @@ CollectionTestObject
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
     <Tester> tester=nil (assign)
 
-    -(init) {
+    Self start {
         [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"std"];
         [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"strong"];
         [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"weak"];
@@ -216,7 +216,7 @@ CollectionTestSubObject
         }
     }
 
-    -(init) {
+    Self start {
         _range=NSMakeRange(NSNotFound,0);
         NSMutableArray *array=[NSMutableArray arrayWithCapacity:100];
         NSMutableArray *arrayk=[NSMutableArray arrayWithCapacity:100];
@@ -423,9 +423,9 @@ SetTester <Tester>
         return(-1);
     }
 
-    -(init)init {
+    Self init {
     }
-    -(init) {
+    Self start {
         @10 self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
     }
 
@@ -651,9 +651,9 @@ DictionaryTester <Tester>
     }
 
 
-    -(init)init {
+    Self init {
     }
-    -(init) {
+    Self start {
         self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
     }
 
@@ -891,9 +891,9 @@ ArrayTester <Tester>
         return(-1);
     }
 
-    -(init)init {
+    Self init {
     }
-    -(init) {
+    Self start {
         self.collections=[NSMutableDictionary dictionaryWithObjectsAndKeys:self.a,@"std",self.b,@"strong",self.c,@"weak",nil];
     }
 

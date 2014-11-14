@@ -31,7 +31,7 @@
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
-    -(init) {@-500 [self makeModel];}
+    Self start {@-500 [self makeModel];}
     -(void)dealloc {@-500 [self makeNonModel];}
 
 
@@ -52,7 +52,7 @@
             }
         }
     }
-    -(init) {@-500 [self makeModel];}
+    Self start {@-500 [self makeModel];}
     -(void)dealloc {@-500 [self makeNonModel];}
 
 
@@ -68,7 +68,7 @@
             [(NSObject<RefCountedObject>*)object modelsub];
         }
     }
-    -(init) {@-500 [self makeModel];}
+    Self start {@-500 [self makeModel];}
     -(void)dealloc {@-500 [self makeNonModel];}
 
 
@@ -535,15 +535,15 @@ MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
     }
 
 <Set>
-    -(init) {
+    Self start {
         prnt("%s has %p\n",self.objectName.UTF8String,__set);
     }
 <Array>
-    -(init) {
+    Self start {
         prnt("%s has %p\n",self.objectName.UTF8String,__array);
     }
 <Dictionary>
-    -(init) {
+    Self start {
         prnt("%s has %p\n",self.objectName.UTF8String,__dictionary);
     }
 */

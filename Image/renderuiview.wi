@@ -35,13 +35,13 @@ RenderUIView : UIView<BaseObject>
         }
     }
 
-    -(init) {
+    Self start {
         self.views=[RenderUIViews getDefault];
         self.renderUIViewEnabled=YES;
     }
 
-    -(init)initWithFrame:(CGRect)frame {}
-    -(init)initWithCoder:(NSCoder*)aDecoder {}
+    Self initWithFrame:(CGRect)frame {}
+    Self initWithCoder:(NSCoder*)aDecoder {}
 
 
 
@@ -60,7 +60,7 @@ RenderUIViews <BaseObject>
     }
 
 
-    -(init) {
+    Self start {
         //        [self addStandardUniform:[SU_Coors get]];
         //        [self addStandardUniform:[SU_Camera get]];
         //        [self addStandardUniform:[SU_time get]];

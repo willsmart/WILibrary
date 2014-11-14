@@ -19,7 +19,7 @@
     NSString allowedOrientations=@"new"
 
 
-    -(init) {
+    Self start {
         //self.stylerPrefix=@"VC-";
     }
 
@@ -76,8 +76,8 @@
     }
 
 
-    -(init)initWithCoder:(NSCoder*)aDecoder {}
-    -(init)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {}
+    Self initWithCoder:(NSCoder*)aDecoder {}
+    Self initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {}
     -(init[super initWithNibName:nil bundle:nil])init {}
 
     -(void)viewDidLoad {@-500 

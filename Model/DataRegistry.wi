@@ -79,7 +79,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
     DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (publicreadonly,ivar=parentDel)
 
-    -(init) {
+    Self start {
         @10
         {
             [self.setOfMyViewers addDelegate:[[DataRegistryMyViewersSetDelegate alloc] initWithOwner:self]];
@@ -99,7 +99,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
 
 
-    -(init) {
+    Self start {
         [self dataViewer_attachDictionaryDelegateTo:self.allViewers];
     }
 
@@ -254,7 +254,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
 
 ViewerListenerSet
-    -(init)init {}
+    Self init {}
     viewerListenerSet -m<~ ViewerPropertyListenerSet viewerPropertyListenerSet
     NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init] (readonly)
 
@@ -277,7 +277,7 @@ ViewerListenerSet
     }
 
 ViewerPropertyListenerSet
-    -(init)init {}
+    Self init {}
     namedDataListenerSet >s<~ <NamedDataListener> namedDataListener
 
     -(void)willChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {

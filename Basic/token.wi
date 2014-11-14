@@ -34,7 +34,7 @@ WReader <BaseObject> "fn:token"
 
     NSArray lines=[[NSArray alloc] init] (readonly)
     Int pos=nil
-    -(init) {
+    Self start {
         pos=-1;
     }
 

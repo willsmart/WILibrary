@@ -292,8 +292,8 @@ Globals
 Model<Model,Ticker,Waiter> "fn:model"
     dirtyInModel -s< <Commitable> dirtyObject
 
-    -(init)init {}
-    -(init) {
+    Self init {}
+    Self start {
         //[MutableSetDebuggerDelegate attachTo:self.dirtyObjects named:@"Dirty objects"];
     }
 

@@ -57,7 +57,7 @@ Shader
         -v{self.program.vertexCount=v;}
     NSString expressionRaw=nil,expression=nil,compileErrors=nil
 
-    -(init) {@-100 
+    Self start {@-100 
         self.parse=[Parse get];
         self.program=[ShaderProgram get];
     }
@@ -74,7 +74,7 @@ Shader
 
 
 <AutoShader:StandardUniformProtocol>
-    -(init) {
+    Self start {
         @-10 
         for (NSDictionary *d in self.uniformVars) {
             SHUniform *u;
@@ -195,7 +195,7 @@ SHFn <BaseObject> "fn:shader"
                 [self.vertProgram markChanged];
             }
         }=nil (ivar=enabled)
-    -(init) {
+    Self start {
         enabled=YES;
     }
 
@@ -435,7 +435,7 @@ SHUniform <BaseObject> "fn:shader"
     bool transpose=NO
     GLint glname=INVALIDSHADER
 
-    -(init) {
+    Self start {
         enabled=YES;
         type=un_none;
     }
@@ -704,7 +704,7 @@ SHAttribute <BaseObject> "fn:shader"
         memcpy(_buf.c,copy._buf.c,sizeof(_buf.c));
     }
 
-    -(init) {
+    Self start {
         enabled=YES;
         type=un_none;
     }
@@ -988,7 +988,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     }
 
 
-    -(init) {
+    Self start {
     }
 
     -(void)set {

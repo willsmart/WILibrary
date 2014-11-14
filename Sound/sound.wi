@@ -41,7 +41,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
     ArrayOfInts *recordingQueue,*recordingSamples=nil
     Int recordingQueueSize=1048576,recordingSamplesSize=262144,recordingQueueIn=0,recordingQueueOut=0
-    -(init) {@10 
+    Self start {@10 
         recordingQueue=NEW(ArrayOfInts);
         recordingQueue->setUpperBound(recordingQueueSize-1);
         recordingSamples=NEW(ArrayOfInts);
@@ -234,7 +234,7 @@ Globals
     Int playbackQueueSize=1048576,playbackSamplesSize=262144,playbackQueueIn=0,playbackQueueOut=0,playbackQueueThreshold=900000
 
 
-    -(init) {@10 
+    Self start {@10 
         playbackQueue=NEW(ArrayOfPLAYFRAMEs);
         playbackQueue->setUpperBound(playbackQueueSize-1);
         playbackSamples=NEW(ArrayOfPLAYFRAMEs);

@@ -65,7 +65,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
     // initializing a set
 
-    -(init)init {
+    Self init {
         @-100 __set=[[NSSet alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
@@ -251,7 +251,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
         }
 
 
-    -(init) {
+    Self start {
         self.delegateForSet=self;
     }
 
@@ -266,7 +266,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     +(id)setWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
-    -(init)init {
+    Self init {
         @!-100 __set=__mutableSet=[[NSMutableSet alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {

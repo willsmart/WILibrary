@@ -13,10 +13,10 @@ EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
     GLint framebufferWidth=0,framebufferHeight=0 (readonly)
     GLuint defaultFramebuffer=0, colorRenderbuffer=0 (readonly)
 
-    -(init)initWithFrame:(CGRect)frame {}
-    -(init)initWithCoder:(NSCoder*)aDecoder {}
+    Self initWithFrame:(CGRect)frame {}
+    Self initWithCoder:(NSCoder*)aDecoder {}
 
-    -(init) {
+    Self start {
         if( [[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
             self.contentScaleFactor = [[UIScreen mainScreen] scale];   
         }
@@ -113,7 +113,7 @@ EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
         return [CAEAGLLayer class];
     }
 
-    -(init) {
+    Self start {
         @-900 CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = TRUE;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:

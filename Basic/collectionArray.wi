@@ -62,7 +62,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
     // initializing a set
 
-    -(init)init {
+    Self init {
         @-100 __array=[[NSArray alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
@@ -438,7 +438,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
             }
         }
 
-    -(init) {
+    Self start {
         self.delegateForArray=self;
     }
 
@@ -451,7 +451,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     +(id)arrayWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
-    -(init)init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
+    Self init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];
     }
     -(init[super init])initWithCoder:(NSCoder*)coder {
         @!-100 __array=__mutableArray=[[NSMutableArray alloc] initWithCoder:coder];

@@ -12,7 +12,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
     vec2 pixel (attribute,class=SHPixelCoorSzAttribute)
     vec2 unitSize (uniform)
 
-    -(init) {
+    Self start {
         self.program.vertexCount=4;
         {
             float v[8]={0,0,  1,0,   0,1,   1,1};
@@ -21,7 +21,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
     }
 
     NSSet builtinMacros=nil
-    -(init) {
+    Self start {
         @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
     }
 
@@ -30,7 +30,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
         @!999 gl_FragColor=colour;
     }
 
-    -(init) {
+    Self start {
         [self.program setMacro:@"colour=(0,0,0,0);" forKey:@"getColour"];
     }
 
@@ -46,7 +46,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
     vec4 LineColour (uniform)
     vec3 CellColour (uniform)
 
-    -(init) {@-100 
+    Self start {@-100 
         self.LineWidth.asFloat=3;
         self.CornerRadius.asFloat=50;
         self.BallRadius.asFloat=10;
@@ -186,7 +186,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
       return(specLine*saturatev3(diffuse+spec));
     }
 
-    -(init) {
+    Self start {
         [self.program setMacro:@"3.14159265358979" forKey:@"PI"];
         [self.program setMacro:@"6.28318530717959" forKey:@"PI2"];
         [self.program setMacro:@"{float _x=X;X+=__dx;__code;X=_x;}" forKey:@"TX(__dx,__code)"];
@@ -276,7 +276,7 @@ ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
     ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] (publicreadonly,ivar=imageShaderRequestCache)
     ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] (publicreadonly,ivar=shaderImageRequestCache)
 
-    -(init) {
+    Self start {
         [self setCache:imageShaderRequestCache forKey:@"imageShaders"];
         [self setCache:shaderImageRequestCache forKey:@"images"];
         self.documentsCodingFilename=@"images.bin";
@@ -304,7 +304,7 @@ ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
 
 
 ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
-    -(init) {cache.maxSize=100000;cache.maxCount=1000;}
+    Self start {cache.maxSize=100000;cache.maxCount=1000;}
     -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]) {
             return([[ImageShaderRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader>*)reqData]);
@@ -333,7 +333,7 @@ ImageShaderRequest<Request> "fn:renderimage"
 
 
 ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
-    -(init) {cache.maxSize=10000000;cache.maxCount=1000;}
+    Self start {cache.maxSize=10000000;cache.maxCount=1000;}
     -(NSObject<Request>*)newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]&&[reqData conformsToProtocol:@protocol(HasImage)]) {
             return([[ShaderImageRequest alloc] initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)reqData]);
@@ -469,7 +469,7 @@ Singletons
 ImageRenderer <BaseObject> "fn:render"
 
     Texture2D texture=[[Texture2D alloc] init] (publicreadonly,ivar=texture)
-    -(init) {
+    Self start {
         [texture initContext];
         [texture loadWithData:nil pixelFormat:kTexture2DPixelFormat_RGBA8888 pixelsWide:2048 pixelsHigh:2048 contentSize:CGSizeMake(0,0)];
         [EAGLContext setCurrentContext:nil];
@@ -560,7 +560,7 @@ Singletons
     NSRegularExpression SingleURLImageView_rectregex=nil (readonly)
 
 
-    -(init) {
+    Self start {
         {
             NSError *error=nil;
             v_SingleURLImageView_szregex=[NSRegularExpression regularExpressionWithPattern:@"usizeInPixels=U(0)" options:0 error:&error];
@@ -616,7 +616,7 @@ ImageViewURLRegistryDelegate<MutableDictionaryDelegate,BaseObject>
 
 URLImageView:UIImageView<ImageRequestOwner,Waiter>
     urlImageView >s- URLImageViews views
-    -(init) {self.views=g_singletons.urlImageViews;}
+    Self start {self.views=g_singletons.urlImageViews;}
 
     -(void)refreshFromRegisteredURLs {
         if (imageURLKey) {

@@ -317,7 +317,7 @@ Globals
 
 
 Singletons
-    -(init)init {}
+    Self init {}
     +(Singletons*)getDefault {
         if (!g_singletons) {
             ADDSINGLETON(g_singletons=[[Singletons alloc] init]);
@@ -600,7 +600,7 @@ Globals
 URLHandlerRegistry "fn:util"
     MutableArray handlers=[[MutableArray alloc] init] (publicreadonly,ivar=handlers)
 
-    -(init)init {}
+    Self init {}
 
     -(void)addHandler:(id)handler {
         [self.handlers addObject:handler];

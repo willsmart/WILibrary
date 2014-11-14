@@ -6,7 +6,7 @@
 
 <TableModel:Commitable>
     _table>>table ~a< <SectionModel> _section>>section
-    -(init) {@-190 
+    Self start {@-190 
         [self._sections addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
     -(void)invalidateLayout {
@@ -16,7 +16,7 @@
 
 <SectionModel:Commitable>
     _section>>section ~a< <CellModel> _cell>>cell
-    -(init) {@-190 
+    Self start {@-190 
         [self._cells addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
     -(void)invalidateLayout {
@@ -76,7 +76,7 @@
 
 <ModelTableViewCell:MutableValueDelegate>
     uicell -- <CellModel> cellModel
-    -(init) {@-190 
+    Self start {@-190 
         retainsAsValueDelegate=NO;
         [self.cellModel_endpoint addDelegate:self];
     }
@@ -179,7 +179,7 @@
 
     kid context=[PointerKey keyWithObject:nil] (retain)
 
-    -(init) {@100 
+    Self start {@100 
         [self addSourceCommitter:model];
         //[model overrideSectionsAs:[NSArray array] forContext:v_context];
         [model markDirty];
@@ -668,7 +668,7 @@
 
 
 <DeadTableController:TableController>
-    -(init) {
+    Self start {
         //[Model delayCommitsForSeconds:100];
     }
         
