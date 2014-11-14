@@ -9,7 +9,7 @@ type AudioDeviceID
     Self start {
         [__Class__ getAudioDeviceCalled:nil];
     }
-    +(AudioDeviceID)getAudioDeviceCalled:(const char*)name {
+    AudioDeviceID +getAudioDeviceCalled:(const char*)name {
         AudioObjectPropertyAddress propertyAddress = { 
             kAudioHardwarePropertyDevices, 
             kAudioObjectPropertyScopeGlobal, 

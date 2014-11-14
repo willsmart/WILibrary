@@ -12,7 +12,7 @@ Singletons
 MetaRenderer <BaseObject>
     UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)] (readonly)
 
-    +(NSString*)jsStringForURL:(NSURL*)url {
+    NSString* +jsStringForURL:(NSURL*)url {
         NSMutableDictionary *args=[ImageShader argStringDictionaryForURL:url];
         NSMutableString *ret=[NSMutableString stringWithString:@"(function(){"];
         for (NSString *k in args) {
@@ -137,7 +137,7 @@ MetaRequestCache<BaseObject,RootCodable>
         [cache clear];
     }
 
-    +(NSObject*)metaDataForURL:(NSURL*)url frame:(CGRect)framev {return([g_singletons.metaRequestCache metaDataForURL:url frame:framev]);}
+    NSObject* +metaDataForURL:(NSURL*)url frame:(CGRect)framev {return([g_singletons.metaRequestCache metaDataForURL:url frame:framev]);}
     NSObject* metaDataForURL:(NSURL*)url frame:(CGRect)framev {
         url=[__Class__ sizedURLForURL:url frame:framev];
         NSObject *ret=[cache derefedObjectForKey:url];
@@ -155,7 +155,7 @@ MetaRequestCache<BaseObject,RootCodable>
     }
 
 
-    +(CGRect)roundedRect:(CGRect)r {
+    CGRect +roundedRect:(CGRect)r {
         r.origin.x=round(r.origin.x);
         r.origin.y=round(r.origin.y);
         r.size.width=round(r.size.width);
@@ -163,7 +163,7 @@ MetaRequestCache<BaseObject,RootCodable>
         return(r);
     }
 
-    +(NSURL*)sizedURLForURL:(NSURL*)url frame:(CGRect)framev {
+    NSURL* +sizedURLForURL:(NSURL*)url frame:(CGRect)framev {
         NSString *s=url.absoluteString;//[ShaderURLConversion simplifiedURLForURL:url].absoluteString;
         NSTextCheckingResult *match=[g_singletons.MetaEnabled_szregex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
         CGRect r=[__Class__ roundedRect:framev];
@@ -394,7 +394,7 @@ JSMetaProperty<NamedDataListener>
                     
     }
 
-    +(bool)isJSProperty:(NSObject*)object {
+    bool +isJSProperty:(NSObject*)object {
         if (![object isKindOfClass:[NSDictionary class]]) return(NO);
         for (NSObject *k in (NSDictionary*)object) if ([k isKindOfClass:[NSString class]]) {
             NSString *key=(NSString*)k;
@@ -573,7 +573,7 @@ JSMetaProperty<NamedDataListener>
     }
 
     id superInit {return([super init]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {
         return([(__Class__*)aself superInit]);
     }
 
@@ -824,9 +824,9 @@ JSMetaProperty<NamedDataListener>
     }
 
 MetaEnabled
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {@999 return(nil);}
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {@999 return(nil);}
 
-    +(void)addSubview:(id)childView withName:(NSString*)name parentView:(UIView*)parentView {
+    void +addSubview:(id)childView withName:(NSString*)name parentView:(UIView*)parentView {
         if ([childView isKindOfClass:[UIView class]]) {
             NSArray *chs=parentView.subviews;
             Unsigned insertAt=0;
@@ -1120,7 +1120,7 @@ UISliderMetaEnabled:UISlider<UISliderMetaEnabled>
     Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
@@ -1198,17 +1198,17 @@ UISliderMetaEnabled:UISlider<UISliderMetaEnabled>
 
 
 MetaEnabled
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {
         if ([type isEqualToString:@"Toolbar"]) return([UIToolbarMetaEnabled alloc]);
     }
-    +(NSSet*)viewAllowedMetaChildTypes {@"Toolbar",}
+    NSSet* +viewAllowedMetaChildTypes {@"Toolbar",}
 
 UIToolbarMetaEnabled:UIToolbar<UIToolbarMetaEnabled>
     NSSet* allowedMetaChildTypes {@"ToolbarItem",}
     Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
@@ -1259,7 +1259,7 @@ UIToolbarMetaEnabled:UIToolbar<UIToolbarMetaEnabled>
 
 
 MetaEnabled
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {
         if ([type isEqualToString:@"ToolbarItem"]) return([UIToolbarItemMetaEnabled alloc]);
     }
 
@@ -1268,7 +1268,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
     id superInitWithBarButtonSystemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action {return([super initWithBarButtonSystemItem:item target:target action:action]);}
     id superInitWithTitle:(NSString*)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithTitle:title style:style target:target action:action]);}
     id superInitWithImage:(UIImage*)image style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithImage:image style:style target:target action:action]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         NSObject *k=[metaProps objectForKey:@"style"];
         UIBarButtonItemStyle style=[__Class__ styleFromValue:[metaProps objectForKey:@"style"]];
         bool hasSys;
@@ -1305,7 +1305,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
 
 <UIToolbarItemMetaEnabled:MetaEnabled,URLImageViewListener>
     URLImageView urlImageView=nil (ivar=urlImageView)
-    +(UIBarButtonItemStyle)styleFromValue:(NSObject*)k {
+    UIBarButtonItemStyle +styleFromValue:(NSObject*)k {
         UIBarButtonItemStyle style=UIBarButtonItemStylePlain;
         if ([k isKindOfClass:[NSString class]]) {
             if ([(NSString*)k isEqualToString:@"bordered"]) style=UIBarButtonItemStyleBordered;
@@ -1313,7 +1313,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         }
         return(style);
     }
-    +(UIBarButtonSystemItem)sysFromValue:(NSObject*)k retHasSys:(bool*)phasSys {
+    UIBarButtonSystemItem +sysFromValue:(NSObject*)k retHasSys:(bool*)phasSys {
         UIBarButtonSystemItem sys=UIBarButtonSystemItemDone;
         bool hasSys=NO;
         if ([k isKindOfClass:[NSString class]]) {
@@ -1352,7 +1352,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
             [self.nearestViewer.dataModel respondsToSelector:finalAction]?(NSObject*)self.nearestViewer.dataModel:nil)):nil);
         return(target);
     }
-    +(SEL)actionFromValue:(NSObject*)k {
+    SEL +actionFromValue:(NSObject*)k {
         SEL sel=nil;
         if ([k isKindOfClass:[NSString class]]) sel=NSSelectorFromString((NSString*)k);
         return(sel);
@@ -1375,14 +1375,14 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
     
 
 MetaEnabled
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {
         if ([type isEqualToString:@"View"]) return([UIViewMetaEnabled alloc]);
         if ([type isEqualToString:@"Rend"]) return([RenderView alloc]);
         if ([type isEqualToString:@"Label"]) return([UILabelViewMetaEnabled alloc]);
         if ([type isEqualToString:@"Slider"]) return([UISliderMetaEnabled alloc]);
     }
-    +(NSSet*)viewAllowedMetaChildTypes {@-10 return([NSSet setWithObjects:@10 @"View",@"Rend",@"Label",@"Slider",nil]);}
-    +(CGRect)frameFromMeta:(NSDictionary*)metaProps {
+    NSSet* +viewAllowedMetaChildTypes {@-10 return([NSSet setWithObjects:@10 @"View",@"Rend",@"Label",@"Slider",nil]);}
+    CGRect +frameFromMeta:(NSDictionary*)metaProps {
         CGRect framev=CGRectMake(0,0,1,1);
         {
             NSObject *object=[metaProps objectForKey:@"frame"];
@@ -1410,7 +1410,7 @@ UIViewMetaEnabled:UIView<UIViewMetaEnabled>
     Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
@@ -1419,7 +1419,7 @@ UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
     Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
@@ -1428,7 +1428,7 @@ UILabelViewMetaEnabled:UILabel<UILabelViewMetaEnabled>
     Self init "super initWithFrame:CGRectMake(0,0,1,1)" {}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 
@@ -1454,7 +1454,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {
     }
     id superInitWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {return([super initWithStyle:style reuseIdentifier:reuseIdentifier]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         UITableViewCellStyle style=UITableViewCellStyleDefault;
         NSString *reuseIdentifier=[metaProps objectForKey:@"reuseid"];
         if (!reuseIdentifier) {
@@ -1489,7 +1489,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
         self.separatorStyle=UITableViewCellSeparatorStyleNone;
     }
     id superInitWithFrame:(CGRect)framev style:(UITableViewStyle)style {return([super initWithFrame:framev style:style]);}
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         UITableViewStyle style=UITableViewStylePlain;
         {
             NSString *styleStr=[metaProps objectForKey:@"tableStyle"];
@@ -1534,7 +1534,7 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
     id superInitWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)framev {
         return([super initWithImageURLKey:aimageURLKey highlightedImageURLKey:ahighlightedImageURLKey frame:framev]);
     }
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithImageURLKey:[metaProps objectForKey:@"imagekey"]
             highlightedImageURLKey:[metaProps objectForKey:@"highlightedimagekey"]
             frame:[MetaEnabled frameFromMeta:metaProps]]);
@@ -1565,8 +1565,8 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
 <MetaComponentClass>
     NSString* metaURLKey;
 <MetaComponent>
-    +(NSString*)metaURLKey;
-    +(float)heightFromURL {
+    NSString* +metaURLKey;
+    float +heightFromURL {
         float ret=0;
         NSString *key=[__Class__ metaURLKey];
         if (key) {
@@ -1575,7 +1575,7 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
                 NSURL *url=(NSURL*)o;
                 NSString *s=url.absoluteString;
                 NSError *error=nil;
-                NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"uheight=U(\\d+(?:\\.\\d+)?)" options:0 error:&error];
+                NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"uheight=U(\\d?:\\.\\d+ +?)" options:0 error:&error];
                 if (error) ERR("Bad regex height");
                 NSTextCheckingResult *match=[regex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
                 if (match) {

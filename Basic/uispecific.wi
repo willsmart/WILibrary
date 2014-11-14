@@ -16,7 +16,7 @@ UIImage
 
 ImageFromCGImage:UIImage
     CGImageRef sourceImage=nil
-    +(__Class__*)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
+    __Class__* +imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
         return([[__Class__ alloc] initWithCGImage:imageRef scale:scale orientation:orientation]);
     }
     Self initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation {
@@ -38,7 +38,7 @@ Singletons
     FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil (ivar=fontList,publicreadonly)
 
 FontList <BaseObject>
-    +(FontList*)getDefault {return(g_singletons.fontList);}
+    FontList* +getDefault {return(g_singletons.fontList);}
 
     NSArray fontNames=nil (readonly)
 
@@ -90,7 +90,7 @@ FontList <BaseObject>
 
 
 <ViewUtilities>
-    +(id)loadViewOfClass:(Class)clas withTag:(Int)tag fromNibWithName:(NSString*)nibName {@-999 
+    id +loadViewOfClass:(Class)clas withTag:(Int)tag fromNibWithName:(NSString*)nibName {@-999 
         id ret=nil;
         if (nibName) {
             NSArray *topLevelObjects=[[NSBundle mainBundle] loadNibNamed:nibName owner:nil options:nil];

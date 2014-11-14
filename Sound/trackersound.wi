@@ -89,7 +89,7 @@ BinTracker<BaseObject>
                 dprnt("[");
                 double downi=bufferi-wph*samplesPerWave+samplesPerCycle*cyclesPerBuffer/2,sumsine2=0,sumcos2=0,from=downi-wavesPerEdge*samplesPerWave*0.5,to=downi+wavesPerEdge*samplesPerWave*0.5;
                 dprnt("down:%.2f(%.2f-%.2f) : ",downi/samplesPerWave,from/samplesPerWave,to/samplesPerWave);
-                double ph2=ph+(floor(from)-bufferi)*dph;
+                double ph2=phfloor(from +-bufferi)*dph;
                 for (Int bufferi2=floor(from);bufferi2<=ceil(to);bufferi2++) {
                     double mul=(bufferi2<from?1+bufferi2-from:(bufferi2>to?1-bufferi2+to:1));
                     Int bi2=(bufferi2+samplesPerCycle*cyclesPerBuffer)%(samplesPerCycle*cyclesPerBuffer);
@@ -234,8 +234,8 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
         @0 
     }
 
-    +(Int)cycleSamples {return(1000);}
-    +(Int)cycleWaves:(Int)ci {
+    Int +cycleSamples {return(1000);}
+    Int +cycleWaves:(Int)ci {
         switch (ci) {
             case 0:default:return(160);
             case 1:return(180);
@@ -243,12 +243,12 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
             case 3:return(470);
         }
     }
-    +(Int)bufferCycles {return(8);}
-    +(double)fmoffset {return(0.2);}
-    +(Int)signmul:(Int)ci {
+    Int +bufferCycles {return(8);}
+    double +fmoffset {return(0.2);}
+    Int +signmul:(Int)ci {
         return(ci&1?1:-1);
     }
-    +(short)valForSample:(double)si ci:(Int)ci {
+    short +valForSample:(double)si ci:(Int)ci {
         double cycleSamples=[__Class__ cycleSamples];
         Int cycleWaves=[__Class__ cycleWaves:ci];
         double wi=(si/cycleSamples-floor(si/cycleSamples))*cycleWaves;
@@ -278,7 +278,7 @@ SonicBinPlay<PlaybackAudioUnit,BaseObject>
         }
     }
 
-    +(void)displayWaveBitMasks {
+    void +displayWaveBitMasks {
         prnt("/*top\nextern unsigned long long waveBitMasks[4][16];\n*/\n/*top:impl\nunsigned long long waveBitMasks[4][16]={\n");
         for (Int ci=0;ci<4;ci++) {
             Int Nb=[SonicBinPlay cycleWaves:ci];

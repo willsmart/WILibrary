@@ -62,14 +62,14 @@
         [self resize];
     }
 
-    +(NSString*)stnibName{@-100 
+    NSString* +stnibName{@-100 
         bool isIPhone=([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone);
         @-50 NSString *suffix=(isIPhone?@"_iPhone":@"_iPad"),*base=@"__WIClass__";
         @50 NSString *ret=[base stringByAppendingString:suffix];
         @999 return(ret);
     }
 
-    +(__WIClass__*)getUsingNib {
+    __WIClass__* +getUsingNib {
         NSString *__nibName=[__WIClass__ stnibName];
         if (!__nibName) return(nil);
         return([[__WIClass__ alloc] initWithNibName:__nibName bundle:nil]);

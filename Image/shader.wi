@@ -242,12 +242,12 @@ type UniformType "typedef:enum {
 }
 "
 UniformTypeFunctions "fn:shader"
-    +(UniformType)typeForString:(NSString*)s {
+    UniformType +typeForString:(NSString*)s {
         NSArray *a=[NSArray arrayWithObjects:@"none",@"any",@"noValue",@"bool",@"float",@"int",@"sampler2D",@"samplerCube",@"vec2",@"vec3",@"vec4",@"ivec2",@"ivec3",@"ivec4",@"bvec2",@"bvec3",@"bvec4",@"mat2",@"mat3",@"mat4",nil];
         Unsigned v=[a indexOfObject:s];
         return(v==NSNotFound?un_none:(UniformType)v);
     }
-    +(NSString*)stringForType:(UniformType)type {
+    NSString* +stringForType:(UniformType)type {
         switch (type) {
             case un_float:return(@"float");
             case un_bool:return(@"bool");
@@ -390,7 +390,7 @@ SHUniform <BaseObject> "fn:shader"
             else if (sscanf(pc,"<%c,%c>",bufv.c,bufv.c+1)==2) {bufb[0]=(bufv.c[0]!='f');bufb[1]=(bufv.c[1]!='f');self.asBVec2=bufb;}
             else self.type=un_none;
         }
-    +(NSString*)clearValuesInString:(NSString*)v {
+    NSString* +clearValuesInString:(NSString*)v {
             const char *pc=v.UTF8String;
             Union128byte bufv;
             
@@ -1218,11 +1218,11 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return _glname;
     }
 
-    +(NSCharacterSet*) varCharSet {
+    NSCharacterSet* +varCharSet {
         return([NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"]);
     }
 
-    +(NSString *)parseSource:(NSString *)str {
+    NSString * +parseSource:(NSString *)str {
         NSMutableString *ret=[NSMutableString stringWithString:str];
         [__Class__ parseUSES:ret];
         WReader *r=[WReader get];
@@ -1235,7 +1235,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return(ret);
     }
 
-    +(void)parseUSES:(NSMutableString *)str {
+    void +parseUSES:(NSMutableString *)str {
         NSScanner *scanner=[NSScanner scannerWithString:str];
         scanner.charactersToBeSkipped=[NSCharacterSet characterSetWithCharactersInString:@""];
         NSMutableString *ret=[NSMutableString string];
@@ -1263,7 +1263,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         [str setString:ret];
     }
 
-    +(bool)parsePrecision:(WReader*)r {
+    bool +parsePrecision:(WReader*)r {
         bool hasp=NO,changed=NO;
 
         r.pos=0;
@@ -1302,7 +1302,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     }
 
 
-    +(bool)parseIntToFloat:(WReader*)r {
+    bool +parseIntToFloat:(WReader*)r {
         bool changed=NO;
         r.pos=0;
         for (WReaderToken *t=r.nextToken;t;t=r.nextToken) {
@@ -1326,7 +1326,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
     }
 
 
-    +(bool)parseParan:(WReader*)r {
+    bool +parseParan:(WReader*)r {
         bool wasw=NO,changed=NO;
         NSMutableArray *tokens[4][16];
 
@@ -1437,7 +1437,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return(changed);
     }
 
-    +(bool)compileShader:(GLuint *)shader type:(GLenum)type string:(NSString*)asourcestr addLogTo:(NSMutableString*)addToLog addShaderTo:(NSMutableString*)addToShader {
+    bool +compileShader:(GLuint *)shader type:(GLenum)type string:(NSString*)asourcestr addLogTo:(NSMutableString*)addToLog addShaderTo:(NSMutableString*)addToShader {
         GLint status;
         const GLchar *source;
         
@@ -1486,7 +1486,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return TRUE;    
     }
 
-    +(BOOL)linkProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
+    BOOL +linkProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
         GLint status;
         
         glLinkProgram(prog);
@@ -1513,7 +1513,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return TRUE;
 
     }
-    +(BOOL)validateProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
+    BOOL +validateProgram:(GLuint)prog addLogTo:(NSMutableString*)addToLog {
         GLint logLength, status;
         
         glValidateProgram(prog);
@@ -1536,7 +1536,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
         return TRUE;
 
     }
-    +(void)printLogForShader:(GLuint)obj {
+    void +printLogForShader:(GLuint)obj {
         GLint infologLength = 0;
         
         GLint charsWritten  = 0;
@@ -1555,7 +1555,7 @@ ShaderProgram <BaseObject,GLObject> "fn:shader"
             
         }
     }
-    +(NSString*)logForShader:(GLuint)obj {
+    NSString* +logForShader:(GLuint)obj {
         NSMutableString *ret=[NSMutableString string];
         
         GLint infologLength = 0;

@@ -68,7 +68,7 @@ WReader <BaseObject> "fn:token"
     NSString localString={
         NSMutableString *s=[NSMutableString string];
         Int range=30;
-        for (Int i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
+        for (Int i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,posrange+1 +/2);i++) {
             if (i==pos) [s appendString:@">here>"];
     //        [s appendFormat:@"(%c)%@",((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).type,((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
             [s appendString:((WReaderToken*)[tokenizer.tokens objectAtIndex:i]).str];
@@ -218,7 +218,7 @@ WReaderTokenizer <BaseObject> "fn:token"
 
 
 JsonParser
-    +(NSObject*)unpackString:(NSString*)s {
+    NSObject* +unpackString:(NSString*)s {
         WReaderTokenizer *tk=[[WReaderTokenizer alloc] init];
         tk.str=s;
         NSMutableArray *a=[[NSMutableArray alloc] init];
@@ -245,7 +245,7 @@ JsonParser
         return(ret);
     }
 
-    +(NSObject*)_unpack:(NSArray*)tokens from:(Unsigned)from to:(Unsigned)to used:(Unsigned*)pused {
+    NSObject* +_unpack:(NSArray*)tokens from:(Unsigned)from to:(Unsigned)to used:(Unsigned*)pused {
         if (to<from) {*pused=0;return([NSNull null]);}
         WReaderToken *t0=[tokens objectAtIndex:from];
         if (t0.type=='n') {*pused=1;return(@(t0.str.doubleValue));}

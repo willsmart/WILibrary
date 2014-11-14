@@ -15,7 +15,7 @@ PointerKey <NSCopying> "-Object"
         }
         return(self);
     }
-    +(PointerKey*)keyWithObject:(id)ao {
+    PointerKey* +keyWithObject:(id)ao {
         return([[PointerKey alloc] initWithObject:ao]);
     }
 
@@ -43,11 +43,11 @@ WeakObject <NSCopying> "-Object"
         return(self);
     }
 
-    +(WeakObject*)keyWithObject:(id)ao {
+    WeakObject* +keyWithObject:(id)ao {
         return([[WeakObject alloc] initWithObject:ao]);
     }
 
-    +(NSObject*)deref:(NSObject*)ao {
+    NSObject* +deref:(NSObject*)ao {
         return(ao?([ao isKindOfClass:[WeakObject class]]?((WeakObject*)ao).o:
             ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
     }

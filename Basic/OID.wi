@@ -100,7 +100,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 ClassCount "-Object" "fn:object"
     LL count=nil,nextID=nil
     NSString name=nil (readonly)
-    +(ClassCount*)classCount {
+    ClassCount* +classCount {
         return([[ClassCount alloc] init]);
     }
     Self initWithName:(NSString*)aname "super init" {
@@ -541,7 +541,7 @@ Globals
  
 
 Trace<Ticker,BaseObject> "notrace"
-    +(NSString*)callStackStringFromDepth:(Int)fromDepth toDepth:(Int)toDepth {
+    NSString* +callStackStringFromDepth:(Int)fromDepth toDepth:(Int)toDepth {
         NSMutableString *ret=[NSMutableString string];
         NSArray *__a=[NSThread callStackSymbols];
         //NSLog(__a.description);

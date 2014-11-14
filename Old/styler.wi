@@ -81,7 +81,7 @@ Globals
 Styler <BaseObject>
 
 
-    +(Styler*)getDefault {
+    Styler* +getDefault {
         if (!_Styler_default) {
             ADDSINGLETON(_Styler_default=[Styler get]);
         }
@@ -94,7 +94,7 @@ Styler <BaseObject>
         for (NSString *key in remove) [keysAndValues removeObjectForKey:key];
     }
 
-    +(NSString*)sylerFileName {
+    NSString* +sylerFileName {
         NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
         NSString *documentsDirectory = [paths objectAtIndex:0];
         return([documentsDirectory stringByAppendingPathComponent:@"styler.txt"]);
@@ -189,7 +189,7 @@ Styler <BaseObject>
             }
         }
 
-    +(Int)hexFromChar:(char)c {
+    Int +hexFromChar:(char)c {
         switch (c) {
             case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':return(c-'0');
             case 'a':case 'b':case 'c':case 'd':case 'e':case 'f':return(c+10-'a');
@@ -197,18 +197,18 @@ Styler <BaseObject>
             default:return(-1);
         }
     }
-    +(Int)byteInString:(NSString*)s atIndex:(Int)i {
+    Int +byteInString:(NSString*)s atIndex:(Int)i {
         if ((!s)||(i<0)||(i+1>=s.length)) return(-1);
         Int h=[Styler hexFromChar:[s characterAtIndex:i]],l=[Styler hexFromChar:[s characterAtIndex:i+1]];
         return((h==-1)||(l==-1)?-1:((h<<4)|l));
     }
-    +(Int)hexInString:(NSString*)s atIndex:(Int)i {
+    Int +hexInString:(NSString*)s atIndex:(Int)i {
         if ((!s)||(i<0)||(i>=s.length)) return(-1);
         Int l=[Styler hexFromChar:[s characterAtIndex:i]];
         return(l==-1?-1:l);
     }
 
-    +(UIColor*)colorFromString:(NSString*)s {
+    UIColor* +colorFromString:(NSString*)s {
         Int r,g,b,a,i=0;
         if (s) {
             if ((s.length==3)||(s.length==4)) {
@@ -229,7 +229,7 @@ Styler <BaseObject>
         }
         return(nil);
     }
-    +(NSString*)stringFromColor:(UIColor*)col {
+    NSString* +stringFromColor:(UIColor*)col {
         if (!col) return(nil);
         float r,g,b,a;
         const CGFloat *comp=CGColorGetComponents(col.CGColor);
@@ -237,10 +237,10 @@ Styler <BaseObject>
         else {r=comp[0];g=comp[1];b=comp[2];a=comp[3];}
         return((((int)(a*0xff))&0xff)==0xff?[NSString stringWithFormat:@"%02x%02x%02x",((int)(r*0xff))&0xff,((int)(g*0xff))&0xff,((int)(b*0xff))&0xff]:[NSString stringWithFormat:@"%02x%02x%02x%02x",((int)(r*0xff))&0xff,((int)(g*0xff))&0xff,((int)(b*0xff))&0xff,((int)(a*0xff))&0xff]);
     }
-    +(double)doubleFromString:(NSString*)s {
+    double +doubleFromString:(NSString*)s {
         return(s?[s doubleValue]:0);
     }
-    +(NSString*)stringFromDouble:(double)v {
+    NSString* +stringFromDouble:(double)v {
         NSString *s=[NSString stringWithFormat:@"%.5f",v];
         if ([s rangeOfString:@"."].location!=NSNotFound) {
             Int zi=s.length-1;for (;[s characterAtIndex:zi]=='0';zi--);
@@ -675,7 +675,7 @@ Styler <BaseObject>
             }
         }
         
-        float height=lw*2+pad*2+(maxy-miny);
+        float height=lw*2+pad*2maxy-miny +;
         float topy;
         switch (ytype) {
             case 't':default:topy=y;break;
@@ -738,7 +738,7 @@ Styler <BaseObject>
         }
 
         float lw=1;
-        float height=y+lw*2+pad*2+(maxy-miny);
+        float height=y+lw*2+pad*2maxy-miny +;
         double addy=pad+lw+y-miny;
         if (fabs(addy)>0.01) {
             for (UIView *v in controls) {

@@ -143,7 +143,7 @@ Globals
 
 
 
-        #define nextWordAddress(__ps) ((__ps)+((*(__ps))&0x1f))
+        #define nextWordAddress(__ps) ((__ps)(*(__ps +)&0x1f))
         #define wordAddressFirstLetter(__ps) (letter5[((*(__ps))>>(((*ps)&0x3e0)==0x20?10:5))&0x1f])
         #define wordAddressFreq(__ps,__ret) { \
             (*(int*)&__ret)=(((int)(__ps)[((*(__ps))&0x1f)-2])<<16)|(__ps)[((*(__ps))&0x1f)-1]; \
@@ -918,7 +918,7 @@ Dictionary
     double maxPotentials=1000000
     double minFreq=0
 
-    +(Dictionary*)getDefault {
+    Dictionary* +getDefault {
         if (!_Dictionary_default) {
             ADDSINGLETON(_Dictionary_default=[[Dictionary alloc] init]);
         }
@@ -1006,7 +1006,7 @@ Dictionary
         return((unsigned short*)[(NSMutableData*)[dictsForLengths objectAtIndex:len] mutableBytes]);
     }
     unsigned short* dictEndForLength:(int)len {
-        return((unsigned short*)(((BYT*)[(NSMutableData*)[dictsForLengths objectAtIndex:len] mutableBytes])+((NSMutableData*)[dictsForLengths objectAtIndex:len]).length));
+        return((unsigned short*)(((BYT*)[(NSMutableData*)[dictsForLengths objectAtIndex:len] mutableBytes])(NSMutableData* +[dictsForLengths objectAtIndex:len]).length));
     }
 
 
@@ -1589,8 +1589,8 @@ Dictionary
     #undef IPARR
             
             if (i<pot_numBest) {
-                memmove(pot_best+(i+1),pot_best+i,sizeof(pot_best[0])*(pot_numBest-i));
-                memmove(pot_bestp+(i+1),pot_bestp+i,sizeof(pot_bestp[0])*(pot_numBest-i));
+                memmove(pot_besti+1 +,pot_best+i,sizeof(pot_best[0])*(pot_numBest-i));
+                memmove(pot_bestpi+1 +,pot_bestp+i,sizeof(pot_bestp[0])*(pot_numBest-i));
             }
             
             pot_numBest++;
@@ -1628,7 +1628,7 @@ Dictionary
 
 
     double maxNumLetters(double numLetters,double maxMulLen) {
-        return(numLetters*maxMulLen+(maxMulLen-1)*3);
+        return(numLetters*maxMulLenmaxMulLen-1 +*3);
     }
     */
     
@@ -1636,7 +1636,7 @@ Dictionary
         double oneLetterWordPrecisionPower=2;
         int maxPresisionedNumTaps=3;
         if (numTaps<=maxPresisionedNumTaps) {
-            double power=1+(oneLetterWordPrecisionPower-1)*(maxPresisionedNumTaps+1-numTaps)/maxPresisionedNumTaps;
+            double power=1oneLetterWordPrecisionPower-1 +*(maxPresisionedNumTaps+1-numTaps)/maxPresisionedNumTaps;
             return(pow(missingMul,power));
         }
         else return(missingMul);
@@ -1688,7 +1688,7 @@ Dictionary
                 INSERTPOS(nlen,ind);
     #undef IPVAR
     #undef IPARR
-                if (ind<nlen) memmove(ord+(ind+1),ord+ind,sizeof(char)*(nlen-ind));
+                if (ind<nlen) memmove(ordind+1 +,ord+ind,sizeof(char)*(nlen-ind));
                 ord[ind]=len;
                 nlen++;
             }
@@ -1747,7 +1747,7 @@ Dictionary
                 lenMul[len]=f;
                     
                 if (ind<nlen-1) {
-                    memmove(ord+(ind+1),ord+ind,sizeof(char)*(nlen-1-ind));
+                    memmove(ordind+1 +,ord+ind,sizeof(char)*(nlen-1-ind));
                     ord[ind]=len;
                 }
             }
@@ -1770,7 +1770,7 @@ Dictionary
             double oneLetterWordPrecisionPower=2;
             int maxPresisionedNumTaps=2;
             if (numTaps<=maxPresisionedNumTaps) {
-                double power=1+(oneLetterWordPrecisionPower-1)*(maxPresisionedNumTaps+1-numTaps)/maxPresisionedNumTaps;
+                double power=1oneLetterWordPrecisionPower-1 +*(maxPresisionedNumTaps+1-numTaps)/maxPresisionedNumTaps;
                 for (int nt=0;nt<numTaps;nt++) {
                     for (int l=0;l<NUMLETTERS;l++) letterMuls[l][nt]=pow(letterMuls[l][nt],power);
                 }
@@ -2363,7 +2363,7 @@ ProMPWords
         int wii;Unsigned wi;
         for (wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
             memset(countedCommonLetter,0,sizeof(bool)*NUMLETTERS);
-            for (char *pc=wds[wi].word+(parInds[wii]+1);*pc;pc++) if (!countedCommonLetter[(*pc)-'a']) {
+            for (char *pc=wds[wi].wordparInds[wii]+1 +;*pc;pc++) if (!countedCommonLetter[(*pc)-'a']) {
                 countedCommonLetter[(*pc)-'a']=YES;
                 commonLetterCount[(*pc)-'a']++;
             }
@@ -2373,7 +2373,7 @@ ProMPWords
             memset(nonOverrideCommonLetters,0,sizeof(bool)*NUMLETTERS);
             for (wii=0,wi=wis.firstIndex;wi!=NSNotFound;wi=[wis indexGreaterThanIndex:wi],wii++) {
                 memset(countedCommonLetter,0,sizeof(bool)*NUMLETTERS);
-                for (char *pc=wds[wi].word+(parInds[wii]+1);(*pc)!='a'+li;pc++) {
+                for (char *pc=wds[wi].wordparInds[wii]+1 +;(*pc)!='a'+li;pc++) {
                     countedCommonLetter[(*pc)-'a']=YES;
                 }
                 for (int li2=0;li2<NUMLETTERS;li2++) if ((li!=li2)&&(commonLetterCount[li2]==wis.count)) {
@@ -3290,7 +3290,7 @@ CountSubsequences
 
 
     BigUInt& goWithChars:(const char *)pc N:(int)N len:(int)len at:(int)at k:(int)k {
-        int myi=(N+1)*k+(at+1);
+        int myi=(N+1)*kat+1 +;
         //printf(">> [%d(%d)] %d %d %d %d\n",myi,dpgot.a[myi],N,len,at,k);
         BigUInt &ret=dpcounts.a[myi];
         if (!dpgot.a[myi]) {
@@ -3316,7 +3316,7 @@ CountSubsequences
         return(ret);			
     }
 
-    +(bool)subCounts:(BCArray_BigUInt*)sub from:(BCArray_BigUInt*)from {
+    bool +subCounts:(BCArray_BigUInt*)sub from:(BCArray_BigUInt*)from {
         for (int i=0;i<sub.num;i++) {
             BigUInt bui=BigUIntFunctions::zero();
             if (i<from.num) bui=from.a[i];
@@ -3326,7 +3326,7 @@ CountSubsequences
         return(YES);
     }
 
-    +(bool)subSCCounts:(SchemaCount*)sub from:(SchemaCount*)from {
+    bool +subSCCounts:(SchemaCount*)sub from:(SchemaCount*)from {
         for (int i=0;i<TA_num(*sub);i++) {
             BigUInt bui=BigUIntFunctions::zero();
             if (i<TA_num(*from)) bui=TA_A(*from,i);
@@ -3337,7 +3337,7 @@ CountSubsequences
     }
 
 
-    +(bool)string:(const char*)sub isSubsequenceOf:(const char*)str {
+    bool +string:(const char*)sub isSubsequenceOf:(const char*)str {
         while (*sub) {
             while ((*str)&&(*str!=*sub)) str++;
             if (!*str) return(NO);
@@ -3347,7 +3347,7 @@ CountSubsequences
         return(YES);
     }
 
-    +(bool)subCountsOfSubsequencesFromStringsAndCounts:(NSDictionary*)subs fromString:(NSString*)fromStr withCounts:(BCArray_BigUInt*)fromCounts {
+    bool +subCountsOfSubsequencesFromStringsAndCounts:(NSDictionary*)subs fromString:(NSString*)fromStr withCounts:(BCArray_BigUInt*)fromCounts {
         bool ret=YES;
         const char *str=fromStr.UTF8String;
         for (NSString *subStr in subs) {

@@ -302,10 +302,10 @@ Model<Model,Ticker,Waiter> "fn:model"
     CommitStage commitStage=stage_none (readonly)
     ULL commitFrame=1
 
-    +(void)delayCommitsForSeconds:(double)sec {
+    void +delayCommitsForSeconds:(double)sec {
         [[Model getDefault] waitForSeconds:sec];
     }
-    +(bool)commit {
+    bool +commit {
         return([[Model getDefault] _commit]);
     }
     bool _commit {@-999 
@@ -391,7 +391,7 @@ Model<Model,Ticker,Waiter> "fn:model"
             //prnt("Commit o\n");
     }
 
-    +(Model*)getDefault {
+    Model* +getDefault {
         if (!_Model_default) {
             ADDSINGLETON(_Model_default=[[Model alloc] init]);
         }

@@ -2,7 +2,7 @@ Singletons
     StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil (ivar=styleTicker)
 
 StyleTicker<Ticker,BaseObject> "fn:style"
-    +(StyleTicker*)getDefault {return(g_singletons.styleTicker);}
+    StyleTicker* +getDefault {return(g_singletons.styleTicker);}
 
     void go {
         [self startWithInterval:4];
@@ -37,7 +37,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
         };
     }
 
-    +(NSString*)stylerFileName {
+    NSString* +stylerFileName {
         NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
         NSString *documentsDirectory = [paths objectAtIndex:0];
         return([documentsDirectory stringByAppendingPathComponent:@"styler.txt"]);

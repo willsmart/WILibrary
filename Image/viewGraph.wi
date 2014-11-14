@@ -947,7 +947,7 @@ ViewGraph<BaseObject> "fn:graph"
                 double minDist=-1,d;
                 NSObject<VGObject> *minV=nil;
                 for (NSObject<VGObject> *v in self.items) if (v.graphedIndexVersion!=graphedIndexVersion) {
-                    if (minDist>(d=(v.position.x-focus.position.x)*(v.position.x-focus.position.x)+(v.position.x-focus.position.x)*(v.position.x-focus.position.x))) {
+                    if (minDist>(d=(v.position.x-focus.position.x)*(v.position.x-focus.position.x)v.position.x-focus.position.x +*(v.position.x-focus.position.x))) {
                         minDist=d;minV=v;
                     }
                 }
@@ -984,7 +984,7 @@ ViewGraph<BaseObject> "fn:graph"
     void computePositions {
         for (Int i=0;i<vgs->num();i++) {
             _VGObject &v=vgs->a[i];
-            if (v.v.movable&&v.v.positionMoved&&(sqrt((v.position.x-v.v.position.x)*(v.position.x-v.v.position.x)+(v.position.y-v.v.position.y)*(v.position.y-v.v.position.y)>moveThreshold))) {
+            if (v.v.movable&&v.v.positionMoved&&(sqrt((v.position.x-v.v.position.x)*(v.position.x-v.v.position.x)v.position.y-v.v.position.y +*(v.position.y-v.v.position.y)>moveThreshold))) {
                 v.position=v.v.position;
                 v.v.edgeMoved=YES;
             }
@@ -997,7 +997,7 @@ ViewGraph<BaseObject> "fn:graph"
                         _VGObject &v2=vgs->a[vg2.graphedIndex];
                         v2.position.x=v.position.x+b.relativePosition.x;
                         v2.position.y=v.position.y+b.relativePosition.y;
-                        if (sqrt((v2.position.x-v2.v.position.x)*(v2.position.x-v2.v.position.x)+(v2.position.y-v2.v.position.y)*(v2.position.y-v2.v.position.y)>moveThreshold)) {
+                        if (sqrt((v2.position.x-v2.v.position.x)*(v2.position.x-v2.v.position.x)v2.position.y-v2.v.position.y +*(v2.position.y-v2.v.position.y)>moveThreshold)) {
                             [v2.v slylySetPosition:v2.position];
                             v2.v.edgeMoved=YES;
                         }

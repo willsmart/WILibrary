@@ -79,12 +79,12 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderima
       squiggle.y=PI*radius*0.5+high.x+high.y;
       squiggle.z=1;
       if ((lxy.x>0)&&(lxy.y<(lsz.y-radius)*lxy.x/lsz.x)) {
-        float bf=xy.y/(low.y+(high.y-low.y)*lxy.x/lsz.x);
+        float bf=xy.y/(low.yhigh.y-low.y +*lxy.x/lsz.x);
         dist=length(vec2(lsz.x,(high.y-low.y)*bf))*(1-lxy.x/lsz.x);
         squiggle.x=bf*high.y;
       }
       else if ((lxy.y>0)&&(lxy.x<(lsz.x-radius)*lxy.y/lsz.y)) {
-        float bf=xy.x/(low.x+(high.x-low.x)*lxy.y/lsz.y);
+        float bf=xy.x/(low.xhigh.x-low.x +*lxy.y/lsz.y);
         dist=length(vec2(lsz.y,(high.x-low.x)*bf))*(1-lxy.y/lsz.y);
         squiggle.x=squiggle.y-high.x*bf;
         if (ballRadius>0) {
@@ -530,7 +530,7 @@ ImageRenderer <BaseObject> "fn:render"
         return(ret);
     }
 
-    +(NSString*)pathForURL:(NSURL*)url {
+    NSString* +pathForURL:(NSURL*)url {
         NSString *dir=[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         ULL hash=makeStringHashCode([url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding]);
         return([dir stringByAppendingFormat:@"/render_%08lx.png",long(hash)]);
@@ -654,7 +654,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         }=nil (ivar=highlightedImageURLKey)
 
     CGRect imageRenderedAsRect=nil,highlightedImageRenderedAsRect=nil (ivar,readonly)
-    +(CGRect)roundedRect:(CGRect)r {
+    CGRect +roundedRect:(CGRect)r {
         r.origin.x=round(r.origin.x);
         r.origin.y=round(r.origin.y);
         r.size.width=round(r.size.width);
@@ -763,7 +763,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         if (needHighlightedImage&&self.highlightedImageURL) [self goRequestWithURL:self.sizedHighlightedImageURL];
     }
 
-    +(NSURL*)sizedURLForURL:(NSURL*)url frame:(CGRect)frame toRect:(CGRect*)torect {
+    NSURL* +sizedURLForURL:(NSURL*)url frame:(CGRect)frame toRect:(CGRect*)torect {
         NSString *s=[ShaderURLConversion simplifiedURLForURL:url].absoluteString;
         NSTextCheckingResult *match=[g_singletons.SingleURLImageView_szregex firstMatchInString:s options:0 range:NSMakeRange(0, [s length])];
         CGRect r=[__Class__ roundedRect:frame];

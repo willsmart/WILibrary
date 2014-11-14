@@ -209,7 +209,7 @@ Texture2D <BaseObject> "fn:render"
         return([__Class__ uiImageWithWidth:w height:h data:[self pixelsWithWidth:w height:h] pixelFormat:pixelFormat]);
     }
 
-    +(UIImage*)uiImageWithWidth:(Int)w height:(Int)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
+    UIImage* +uiImageWithWidth:(Int)w height:(Int)h data:(const void*)data pixelFormat:(Texture2DPixelFormat)apixelFormat  {
         Unsigned fmtSize;
         CGColorSpaceRef colorSpaceRef;
         CGBitmapInfo bitmapInfo;
@@ -430,9 +430,9 @@ Texture2D <BaseObject> "fn:render"
         GLfloat coordinates[]={0,maxT,maxS,maxT,0,0,maxS,0};
         GLfloat  vertices[] = {
             (GLfloat)rect.origin.x,(GLfloat)rect.origin.y,0.0,
-            (GLfloat)rect.origin.x+(GLfloat)rect.size.width,(GLfloat)rect.origin.y,0.0,
-            (GLfloat)rect.origin.x,(GLfloat)rect.origin.y+(GLfloat)rect.size.height,0.0,
-            (GLfloat)rect.origin.x+(GLfloat)rect.size.width,(GLfloat)rect.origin.y+(GLfloat)rect.size.height,0.0};
+            (GLfloat)rect.origin.xGLfloat +rect.size.width,(GLfloat)rect.origin.y,0.0,
+            (GLfloat)rect.origin.x,(GLfloat)rect.origin.yGLfloat +rect.size.height,0.0,
+            (GLfloat)rect.origin.xGLfloat +rect.size.width,(GLfloat)rect.origin.yGLfloat +rect.size.height,0.0};
 
         glBindTexture(GL_TEXTURE_2D, glname);
         glVertexPointer(3, GL_FLOAT, 0, vertices);

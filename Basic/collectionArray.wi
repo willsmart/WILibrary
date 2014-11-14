@@ -114,13 +114,13 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
     // Creating an array
-    +(__WIClass__*)array {return([[__WIClass__ alloc] init]);}
-    +(__WIClass__*)arrayWithArray:(NSArray*)array {return([[__WIClass__ alloc] initWithArray:array]);}
-    +(__WIClass__*)arrayWithContentsOfFile:(NSString*)file {return([[__WIClass__ alloc] initWithContentsOfFile:file]);}
-    +(__WIClass__*)arrayWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
-    +(__WIClass__*)arrayWithObject:(id)object {return([[__WIClass__ alloc] initWithObjects:&object count:1]);}
-    //+(__WIClass__*)arrayWithObjects:( {return([[__WIClass__ alloc] init]);}
-    +(__WIClass__*)arrayWithObjects:(id*)objects count:(Unsigned)count {return([[__WIClass__ alloc] initWithObjects:objects count:count]);}
+    __WIClass__* +array {return([[__WIClass__ alloc] init]);}
+    __WIClass__* +arrayWithArray:(NSArray*)array {return([[__WIClass__ alloc] initWithArray:array]);}
+    __WIClass__* +arrayWithContentsOfFile:(NSString*)file {return([[__WIClass__ alloc] initWithContentsOfFile:file]);}
+    __WIClass__* +arrayWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
+    __WIClass__* +arrayWithObject:(id)object {return([[__WIClass__ alloc] initWithObjects:&object count:1]);}
+    //__WIClass__* +arrayWithObjects:( {return([[__WIClass__ alloc] init]);}
+    __WIClass__* +arrayWithObjects:(id*)objects count:(Unsigned)count {return([[__WIClass__ alloc] initWithObjects:objects count:count]);}
 
 
 
@@ -448,7 +448,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
     void dealloc {@-100 [self removeAllObjects];}
 
     //Creating a Mutable Array
-    +(id)arrayWithCapacity:(Unsigned)numItems {
+    id +arrayWithCapacity:(Unsigned)numItems {
         return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     Self init {@!-100 __array=__mutableArray=[[NSMutableArray alloc] init];

@@ -131,11 +131,11 @@ NSString "fn:sys"
 
     NSString JSONString={return(JSONStringForString(self));}
 
-    +(NSString*)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*)d {
+    NSString* +JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*)d {
         return(JSONStringForCString(from,N,d));
     }
 
-    +(const unichar*)JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(Int*)retLength {
+    const unichar* +JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(Int*)retLength {
         return(JSONunicharsStringForCString(from,N,pd,retLength));
     }
 
@@ -197,7 +197,7 @@ NSString "fn:sys"
     }
 
 
-    +(NSString*)stringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding error:(NSError*__strong*)aerr timeoutInterval:(float)timeout {
+    NSString* +stringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding error:(NSError*__strong*)aerr timeoutInterval:(float)timeout {
         if (!g_singletons.online) return(nil);
         NSURLRequest *req=[[NSURLRequest alloc]
               initWithURL:aurl
@@ -210,7 +210,7 @@ NSString "fn:sys"
         return([[NSString alloc] initWithData:data encoding:encoding]);
     }
 
-    +(StringRequestURLDelegate*)requestStringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding timeoutInterval:(float)timeout completion:(StringRequestURLDelegateCompletionBlock)completionBlock {
+    StringRequestURLDelegate* +requestStringWithContentsOfURL:(NSURL*)aurl encoding:(NSStringEncoding)encoding timeoutInterval:(float)timeout completion:(StringRequestURLDelegateCompletionBlock)completionBlock {
         if (!g_singletons.online) {
             completionBlock(nil,[NSError errorWithDomain:@"offline" code:1 userInfo:nil]);
             return(nil);
@@ -318,7 +318,7 @@ Globals
 
 Singletons
     Self init {}
-    +(Singletons*)getDefault {
+    Singletons* +getDefault {
         if (!g_singletons) {
             ADDSINGLETON(g_singletons=[[Singletons alloc] init]);
         }
@@ -333,7 +333,7 @@ Singletons
 
 Util "fn:util"
 
-    +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {
+    bool +getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {
         NSMutableArray *dels=[[MutableArray alloc] init];
         NSMutableArray *inss=[[MutableArray alloc] init];
 
@@ -385,7 +385,7 @@ Util "fn:util"
         return(ret);
     }
 
-    +(bool) getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet*__strong*)pinss dels:(NSIndexSet*__strong*)pdels  {
+    bool +getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet*__strong*)pinss dels:(NSIndexSet*__strong*)pdels  {
         NSMutableArray *inss,*dels;
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:&inss dels:&dels]) return(NO);
         NSMutableIndexSet *s=[[NSMutableIndexSet alloc] init];
@@ -397,7 +397,7 @@ Util "fn:util"
         return(YES);
     }
 
-    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(Int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
+    /*bool +getInsertsAndDeletesAsIndexPathsInSection:(Int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
         NSMutableArray *dels=[MutableArray array];
         NSMutableArray *inss=[MutableArray array];
@@ -408,7 +408,7 @@ Util "fn:util"
         return(YES);
     }*/
 
-    +(bool) getInsertsAndDeletesForSetWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet*__strong*)pinss dels:(NSSet*__strong*)pdels  {
+    bool +getInsertsAndDeletesForSetWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet*__strong*)pinss dels:(NSSet*__strong*)pdels  {
         if ([from isEqualToSet:to]) return(NO);
         if (!(pinss||pdels)) return(YES);
         if (pinss) [(NSMutableSet*)((*pinss=to.mutableCopy)) minusSet:from];
@@ -417,7 +417,7 @@ Util "fn:util"
     }
 
 
-    +(bool) getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet*__strong*)pinss delKeys:(NSSet*__strong*)pdels changeKeys:(NSSet*__strong*)pchanges  {
+    bool +getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet*__strong*)pinss delKeys:(NSSet*__strong*)pdels changeKeys:(NSSet*__strong*)pchanges  {
         NSSet *fromKeys=[[NSSet alloc] initWithArray:from.allKeys];
         NSSet *toKeys=[[NSSet alloc] initWithArray:to.allKeys];
         bool ret=[Util getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];
@@ -452,23 +452,23 @@ Util "fn:util"
     -decl:impl
         Util* _Util_default=nil;
 
-    +(Util*)getDefault {
+    Util* +getDefault {
         if (!_Util_default) _Util_default=[[Util alloc] init];
         return(_Util_default);
     }
 
-    +(void)clearStaticData {
+    void +clearStaticData {
         if (_Util_default) {_Util_default=nil;}
     }
 
 
-    //+(bool)viewIsConnected:(id)view  {
+    //bool +viewIsConnected:(id)view  {
     //    for (;view;view=view.superview) if ([view isKindOfClass:[UIWindow class]]) return(YES);
     //    return(NO);
     //}
 
 
-    +(void)logString:(NSString*)str object:(NSObject*)obj  {
+    void +logString:(NSString*)str object:(NSObject*)obj  {
         if (!obj) printf("\n%s\n",str.UTF8String);
         else {
             printf("\n%s : obj %s\n",str.UTF8String,obj.description.UTF8String);
@@ -478,7 +478,7 @@ Util "fn:util"
         }
     }
 
-    +(void)logStringRecurse:(NSString*)str object:(NSObject*)obj  {
+    void +logStringRecurse:(NSString*)str object:(NSObject*)obj  {
         if (!obj) printf("\n%s\n",str.UTF8String);
         else {
             printf("\n%s : obj %s\n",str.UTF8String,obj.description.UTF8String);
@@ -489,27 +489,27 @@ Util "fn:util"
     }
 
 
-    +(bool)objectOrString:(id)a equals:(id)b {
+    bool +objectOrString:(id)a equals:(id)b {
         if ([a respondsToSelector:@selector(isEqualToString:)]&&[b respondsToSelector:@selector(isEqualToString:)]) return([((NSString*)a) isEqualToString:(NSString*)b]);
         else return(a==b);
     }
 
-    +(NSString*)descriptionFor:(id)object {
+    NSString* +descriptionFor:(id)object {
         if (!object) return(@"nil");
         else if ([object respondsToSelector:@selector(description)]) {
             return([object description]);
         }
         else return(@"?");
     }
-    +(const char*)cdescriptionFor:(id)object {return([__Class__ descriptionFor:object].UTF8String);}
-    +(NSString*)nameFor:(id)object {
+    const char* +cdescriptionFor:(id)object {return([__Class__ descriptionFor:object].UTF8String);}
+    NSString* +nameFor:(id)object {
         if (!object) return(@"[nil]");
         if ([object respondsToSelector:@selector(objectName)]) {
             return([object objectName]);
         }
         else return([__Class__ descriptionFor:object]);
     }
-    +(const char*)cnameFor:(id)object {return([__Class__ nameFor:object].UTF8String);}
+    const char* +cnameFor:(id)object {return([__Class__ nameFor:object].UTF8String);}
 
 /*ViewConnectionWaiter : NSObject
 
@@ -517,7 +517,7 @@ Util "fn:util"
 @property (retain,nonatomic) NSObject *target,*object;
 @property SEL selector;
 @property (assign,nonatomic) NSTimer *_timer;
-+(ViewConnectionWaiter*)waiterWithView:(UIView*)view target:(NSObject*)target selector:(SEL)selector object:(NSObject*)object persist:(bool)persist attemptWithInterval:(float)interval;
+ViewConnectionWaiter* +waiterWithView:(UIView*)view target:(NSObject*)target selector:(SEL)selector object:(NSObject*)object persist:(bool)persist attemptWithInterval:(float)interval;
 
 @end
 */
@@ -527,7 +527,7 @@ Util "fn:util"
 
 IntCarrier "fn:util"
     Int intValue=nil
-    +(IntCarrier*)carrierWithInt:(Int)v {
+    IntCarrier* +carrierWithInt:(Int)v {
         return([[IntCarrier alloc] initWithInt:v]);
     }
     Self initWithInt:(Int)v "super init" {
@@ -538,7 +538,7 @@ IntCarrier "fn:util"
 
 ULLCarrier "fn:util"
     ULL ullValue=nil
-    +(ULLCarrier*)carrierWithULL:(ULL)v {
+    ULLCarrier* +carrierWithULL:(ULL)v {
         return([[ULLCarrier alloc] initWithULL:v]);
     }
     Self initWithULL:(ULL)v "super init" {
@@ -554,7 +554,7 @@ ULLCarrier "fn:util"
 "<mach/task.h>"
 
 MemMonitor "fn:util"
-    +(NSString*)memString {
+    NSString* +memString {
         int mib[6];
         mib[0] = CTL_HW;
         mib[1] = HW_PAGESIZE;
@@ -606,7 +606,7 @@ URLHandlerRegistry "fn:util"
         [self.handlers addObject:handler];
     }
 
-    +(URLHandlerRegistry*)getDefault {
+    URLHandlerRegistry* +getDefault {
         if (!_URLHandlerRegistry_default) {
             ADDSINGLETON(_URLHandlerRegistry_default=[[URLHandlerRegistry alloc] init]);
         }
@@ -642,14 +642,14 @@ URLHandlerRegistry "fn:util"
 
 
 <URLResource>
-    +(NSString*)urlScheme;
-    +(NSString*)urlType;
-    +(NSString*)urlPrefix {
+    NSString* +urlScheme;
+    NSString* +urlType;
+    NSString* +urlPrefix {
         return([__Class__ urlType]?[[__Class__ urlScheme] stringByAppendingString:[__Class__ urlType]]:
         [__Class__ urlScheme]);
     }
 
-    +(NSObject*)makeResourceFromURL:(NSURL*)url {
+    NSObject* +makeResourceFromURL:(NSURL*)url {
         NSString *s=url.absoluteString;
         if ([s hasPrefix:[__Class__ urlPrefix]]) {
             NSObject<URLResource> *o=[__Class__ cacheObjectForURL:url];
@@ -660,7 +660,7 @@ URLHandlerRegistry "fn:util"
         return(nil);
     }
 
-    +(NSObject<URLResource>*)cacheObjectForURL:(NSURL*)url {@-999 NSObject<URLResource> *ret=nil;
+    NSObject<URLResource>* +cacheObjectForURL:(NSURL*)url {@-999 NSObject<URLResource> *ret=nil;
         @999 return(ret);
     }
 
@@ -722,11 +722,11 @@ URLHandlerRegistry "fn:util"
             self.urlArgs=d;
         }
 
-    +(NSURL*)simplifiedURLForURL:(NSURL*)url {
+    NSURL* +simplifiedURLForURL:(NSURL*)url {
         return([__Class__ urlForArgDictionary:[__Class__ argDictionaryForURL:url]]);
     }
 
-    +(NSURL*)urlForArgDictionary:(NSDictionary*)d {
+    NSURL* +urlForArgDictionary:(NSDictionary*)d {
         if (!d) return(nil);
         NSArray *keys=[d.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return([(NSString*)obj1 compare:obj2]);
@@ -745,7 +745,7 @@ URLHandlerRegistry "fn:util"
         }
         return([NSURL URLWithString:ret]);
     }
-    +(NSMutableDictionary*)argDictionaryForURL:(NSURL*)url {
+    NSMutableDictionary* +argDictionaryForURL:(NSURL*)url {
         NSString *v=url.absoluteString,*prefix=[__Class__ urlPrefix];
         if (![v hasPrefix:prefix]) return(nil);
         NSArray *a=[[v substringFromIndex:prefix.length] componentsSeparatedByString:@"&"];
@@ -768,7 +768,7 @@ URLHandlerRegistry "fn:util"
     }
 
 
-    +(NSURL*)urlForArgStringDictionary:(NSDictionary*)d {
+    NSURL* +urlForArgStringDictionary:(NSDictionary*)d {
         if (!d) return(nil);
         NSArray *keys=[d.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return([(NSString*)obj1 compare:obj2]);
@@ -787,7 +787,7 @@ URLHandlerRegistry "fn:util"
         }
         return([NSURL URLWithString:ret]);
     }
-    +(NSMutableDictionary*)argStringDictionaryForURL:(NSURL*)url {
+    NSMutableDictionary* +argStringDictionaryForURL:(NSURL*)url {
         NSString *v=url.absoluteString,*prefix=[__Class__ urlPrefix];
         if (![v hasPrefix:prefix]) return(nil);
         NSArray *a=[[v substringFromIndex:prefix.length] componentsSeparatedByString:@"&"];
@@ -810,13 +810,13 @@ URLHandlerRegistry "fn:util"
     }
 
 
-    +(NSString*)stringFromObject:(NSObject*)o {@-100 
+    NSString* +stringFromObject:(NSObject*)o {@-100 
         if ([o isKindOfClass:[NSNumber class]]) return([@"N" stringByAppendingString:[Styler stringFromDouble:((NSNumber*)o).doubleValue]]);
         else if ([o isKindOfClass:[NSString class]]) return([@"S" stringByAppendingString:(NSString*)o]);
         else if ([o isKindOfClass:[UIColor class]]) return([@"C" stringByAppendingString:[Styler stringFromColor:(UIColor*)o]]);
         @100 else return(nil);
     }
-    +(NSObject*)objectFromString:(NSString*)s {@-100 
+    NSObject* +objectFromString:(NSString*)s {@-100 
         if ([s hasPrefix:@"N"]) return(@([Styler doubleFromString:[s substringFromIndex:1]]));
         else if ([s hasPrefix:@"S"]) return([s substringFromIndex:1]);
         else if ([s hasPrefix:@"C"]) return([Styler colorFromString:[s substringFromIndex:1]]);
@@ -1028,11 +1028,11 @@ Singletons
 Log<BaseObject>
     NSTimer tim=nil (readonly)
 
-    +(Log*)getDefault {return(g_singletons.log);}
+    Log* +getDefault {return(g_singletons.log);}
 
     NSMutableString *value=[[NSMutableString alloc] init] (readonly)
 
-    +(void)log:(NSString*)format,... {
+    void +log:(NSString*)format,... {
         Log *log=[Log getDefault];
         va_list args;va_start(args,format);
         [log->value appendString:[[NSString alloc] initWithFormat:format arguments:args]];
@@ -1055,7 +1055,7 @@ tim=nil;
         }
     }
 
-    +(void)sendToLog:(NSString*)logName format:(NSString*)format,... {
+    void +sendToLog:(NSString*)logName format:(NSString*)format,... {
         va_list args;va_start(args,format);
         NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
         va_end(args);

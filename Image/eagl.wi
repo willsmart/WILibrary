@@ -109,7 +109,7 @@ EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
         [self deleteFramebuffer];
     }
 
-    +(Class)layerClass {
+    Class +layerClass {
         return [CAEAGLLayer class];
     }
 

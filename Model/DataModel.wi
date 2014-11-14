@@ -32,7 +32,7 @@ PropertyData
 //    NSURL metaURL (
 
 <FieldProperty:DataModel> "nac" "multi"
-    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+    void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSObject class] clasName:@"<__PropertyProtocol__>" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     <__PropertyProtocol__> __property__=
@@ -52,7 +52,7 @@ PropertyData
 
 
 <StringProperty:DataModel> "nac" "multi"
-    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+    void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSString class] clasName:@"NSString" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     NSString __property__=
@@ -72,7 +72,7 @@ PropertyData
 
 
 <NumberProperty:DataModel> "nac" "multi"
-    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+    void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSNumber class] clasName:@"NSNumber" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
     NSNumber __property__=
@@ -121,7 +121,7 @@ PropertyData
 
 
 <ChildArrayProperty:DataModel> "nac" "multi"
-    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
+    void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__s" clas:[MutableArray class] clasName:@"MutableArray" getter:@selector(__property__s) setter:nil direct:NO] forKey:@"__property__s"];
     }
     //__property__s_parent ~a< <__Property____modelObject> __property__
@@ -275,9 +275,9 @@ PropertyViewerDelegate<MutableSetDelegate>
             return(ret);
         }=nil (ivar=propertyDatas)
 
-    +(void)addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
+    void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
 
-    +(bool)isDirectObject:(NSObject*)object {
+    bool +isDirectObject:(NSObject*)object {
         return([object isKindOfClass:[NSString class]]||[object isKindOfClass:[NSNumber class]]);
     }
 

@@ -384,8 +384,8 @@ __Table__Cell "nac" "multi"
 
 
 <BasicTable_addTo_MetaEnabled> "nac" "multi"
-    +(NSSet*)viewAllowedMetaChildTypes {@"__Table__Table",}
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+    NSSet* +viewAllowedMetaChildTypes {@"__Table__Table",}
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {
         if ([type isEqualToString:@"__Table__Table"]) return([__Table__Table alloc]);
     }
 
@@ -456,17 +456,17 @@ __Table__Cell "nac" "multi"
 
 <BasicHeader:MetaComponent> "nac" "multi"
     Self init {}
-    +(NSString*)metaURLKey {return(@"__table___header");}
+    NSString* +metaURLKey {return(@"__table___header");}
 
 <BasicFooter:MetaComponent> "nac" "multi"
     Self init {}
-    +(NSString*)metaURLKey {return(@"__table___footer");}
+    NSString* +metaURLKey {return(@"__table___footer");}
 
 <BasicSectionModel:StdSectionModel> "nac" "multi"
 
 <BasicCell:MetaComponent> "nac" "multi"
     Self init "super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@\"__Class__\" meta:[NSDictionary dictionaryWithObjectsAndKeys:@\"cell\",@\"type\",[__Class__ metaURLKey],@\"urlkey\",nil] parent:nil key:nil" {}
-    +(NSString*)metaURLKey {return(@"__table___cell");}
+    NSString* +metaURLKey {return(@"__table___cell");}
 
     void clearCell {
         self.myDataRegistry=nil;

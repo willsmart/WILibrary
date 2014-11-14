@@ -79,8 +79,8 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
 
 
 MetaEnabled
-    +(NSSet*)viewAllowedMetaChildTypes {@"RenderLoopView",}
-    +(NSObject<MetaEnabled>*)doallocMetaEnabledOfType:(NSString*)type {
+    NSSet* +viewAllowedMetaChildTypes {@"RenderLoopView",}
+    NSObject<MetaEnabled>* +doallocMetaEnabledOfType:(NSString*)type {
         if ([type isEqualToString:@"RenderLoopView"]) return([RenderLoopView alloc]);
     }
 
@@ -99,7 +99,7 @@ RenderLoopView:RenderUIView<UIViewMetaEnabled>
     id superInitWithFrame:(CGRect)frame {
         return([super initWithFrame:frame]);
     }
-    +(id)metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
+    id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
         return([aself superInitWithFrame:[MetaEnabled frameFromMeta:metaProps]]);
     }
 

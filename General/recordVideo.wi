@@ -186,7 +186,7 @@ RecordVideo
              float x,y;Int ox,oy,i,oi;
              for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
              for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
-             i=4*(((int)y*w)+(int)x);
+             i=4*(((int)y*w)int +x);
              obytes[oi]=bytes[i+2];
              obytes[oi+1]=bytes[i+1];
              obytes[oi+2]=bytes[i];
@@ -283,7 +283,7 @@ RecordVideo
                  float x,y;Int ox,oy,i,oi;
                  for (i=0,oi=0,y=0,oy=0;oy<oh;oy++,y+=h*0.9999/oh) 
                  for (x=0,ox=0;ox<ow;ox++,x+=w*0.9999/ow,oi+=4) {
-                 i=4*(((int)y*w)+(int)x);
+                 i=4*(((int)y*w)int +x);
                  obytes[oi]=bytes[i+2];
                  obytes[oi+1]=bytes[i+1];
                  obytes[oi+2]=bytes[i];
@@ -357,7 +357,7 @@ RecordVideo
         }
     }
 
-    +(NSURL*)nextRecordURL {
+    NSURL* +nextRecordURL {
         static Int i=1;NSString *path;
         NSDate *today = [NSDate date];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];

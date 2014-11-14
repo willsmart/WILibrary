@@ -45,7 +45,7 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
 
 
 <URLResourceShader:URLResource>
-    +(NSString*)urlType {return(@"shader?");}
+    NSString* +urlType {return(@"shader?");}
     NSDictionary urlArgs=
         {
             ret=[MutableDictionary dictionary];
@@ -75,12 +75,12 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
             urlValid=YES;
         }
 
-    +(NSString*)stringFromObject:(NSObject*)o {
+    NSString* +stringFromObject:(NSObject*)o {
         else if ([o isKindOfClass:[SHUniform class]]) {
             return([@"U" stringByAppendingString:((SHUniform*)o).asString]);
         }
     }
-    +(NSObject*)objectFromString:(NSString*)s {
+    NSObject* +objectFromString:(NSString*)s {
         else if ([s hasPrefix:@"U"]) {
             SHUniform *u=[SHUniform get];
             u.asString=[s substringFromIndex:1];
@@ -101,7 +101,7 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
 
 
 ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
-    +(NSString*)urlType {return([ImageShader urlType]);}
+    NSString* +urlType {return([ImageShader urlType]);}
     NSURL simplifiedClearedURL=nil,simplifiedURL=nil
     Self initWithURL:(NSURL*)url "super init" {
         self.simplifiedClearedURL=[__Class__ _simplifiedClearedURLForURL:url];
@@ -109,15 +109,15 @@ ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
     }
     float size={return(v_simplifiedURL.absoluteString.length);}
 
-    +(NSURL*)simplifiedClearedURLForURL:(NSURL*)url {
+    NSURL* +simplifiedClearedURLForURL:(NSURL*)url {
         return(((ShaderURLConversion*)[g_singletons.shaderURLConversionCache objectForKey:url]).simplifiedClearedURL);
     }
-    +(NSURL*)simplifiedURLForURL:(NSURL*)url {
+    NSURL* +simplifiedURLForURL:(NSURL*)url {
         return(((ShaderURLConversion*)[g_singletons.shaderURLConversionCache objectForKey:url]).simplifiedURL);
     }
 
 
-    +(NSURL*)_simplifiedClearedURLForURL:(NSURL*)url {
+    NSURL* +_simplifiedClearedURLForURL:(NSURL*)url {
         NSMutableDictionary *d=[__Class__ argStringDictionaryForURL:url];
         NSArray *keys=d.allKeys;
         for (NSString *key in keys) if ([[d objectForKey:key] isKindOfClass:[NSString class]]) {

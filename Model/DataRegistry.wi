@@ -123,22 +123,22 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         [self attachListener:l toProperty:[__Class__ propertyKeyFromProperty:propertyNamev] inViewer:[__Class__ viewerKeyFromProperty:propertyNamev]];
     }
 
-    +(NSString*)propertyNameForProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
+    NSString* +propertyNameForProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey {
         if (!([propertyKey isKindOfClass:[NSString class]]&&
         [viewerKey isKindOfClass:[NSString class]]
         )) return(nil);
         return([NSString stringWithFormat:@"%@::%@",viewerKey,propertyKey]);
     }
     
-    +(NSString*)viewerKeyFromProperty:(NSString*)propertyNamev {
+    NSString* +viewerKeyFromProperty:(NSString*)propertyNamev {
         NSRange r=[propertyNamev rangeOfString:@"::"];
         return(r.location==NSNotFound?@"app":[propertyNamev substringToIndex:r.location]);
     }
-    +(NSString*)viewerKeyOrNilFromProperty:(NSString*)propertyNamev {
+    NSString* +viewerKeyOrNilFromProperty:(NSString*)propertyNamev {
         NSRange r=[propertyNamev rangeOfString:@"::"];
         return(r.location==NSNotFound?nil:[propertyNamev substringToIndex:r.location]);
     }
-    +(NSString*)propertyKeyFromProperty:(NSString*)propertyNamev {
+    NSString* +propertyKeyFromProperty:(NSString*)propertyNamev {
         NSRange r=[propertyNamev rangeOfString:@"::"];
         return(r.location==NSNotFound?propertyNamev:[propertyNamev substringFromIndex:r.location+r.length]);
     }

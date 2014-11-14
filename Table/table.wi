@@ -441,7 +441,7 @@
     NSIndexPath* tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {@-999 
     
         Int s0=proposedDestinationIndexPath.section,sp=s0,sm=sp;
-        Int r0=proposedDestinationIndexPath.row,rp=r0+((s0==sourceIndexPath.section)&&(r0>sourceIndexPath.row)?1:0),rm=rp;
+        Int r0=proposedDestinationIndexPath.row,rp=r0(s0==sourceIndexPath.section +&&(r0>sourceIndexPath.row)?1:0),rm=rp;
         
         NSObject<CellModel> *cell=[self cellAtIndexPath:sourceIndexPath];
 
@@ -464,7 +464,7 @@
                     ret=[NSIndexPath indexPathForRow:rp(sp==sourceIndexPath.section &&(rp>sourceIndexPath.row)?1:0) inSection:sp];
                     break;
                 }
-                if ((++rp)>=[[self sectionAtIndex:sm] cellsGivenContext:v_context].count+(sp>proposedDestinationIndexPath.section?1:0)) {
+                if ((++rp)>=[[self sectionAtIndex:sm] cellsGivenContext:v_context].countsp>proposedDestinationIndexPath.section?1:0 +) {
                     if ((++sp)<[model sectionsGivenContext:v_context].count) {
                         rp=0;
                     }
@@ -488,7 +488,7 @@
             NSMutableArray *a=ama.mutableCopy;
             [ama removeObjectAtIndex:fromIndexPath.row];
             [a removeObjectAtIndex:fromIndexPath.row];
-            [ama insertObject:n atIndex:toIndexPath.row+(toIndexPath.row>fromIndexPath.row?1:0)];
+            [ama insertObject:n atIndex:toIndexPath.rowtoIndexPath.row>fromIndexPath.row?1:0 +];
             [a insertObject:n atIndex:toIndexPath.row];
             [m overrideCellsAs:a forContext:v_context];
         }

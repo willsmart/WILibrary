@@ -52,7 +52,7 @@ RenderUIViews <BaseObject>
     -decl:impl
         RenderUIViews *_RenderUIViews_default=nil;
 
-    +(RenderUIViews*)getDefault {
+    RenderUIViews* +getDefault {
         if (!_RenderUIViews_default) {
             ADDSINGLETON(_RenderUIViews_default=[[RenderUIViews alloc] init]);
         }
