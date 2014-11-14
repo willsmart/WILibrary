@@ -6,20 +6,16 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-Mat44 typedef:
-    struct Mat44
-Vec4 typedef:
-    struct Vec4
+Mat44 typedef:struct Mat44
+Vec4 typedef:struct Vec4
 
-Globals
-    interfaces:
-        impl:
-            #define ThreeDCFILE
-        header:
-            #define _MatMPtr(c,r) (m->m[((r)<<2)c +])
-            #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)c +])
-            #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)
-            #define MatM1Ptr(mm,r,c) MatMPtr(mm,(r)-1,(c)-1)
+impl:
+    #define ThreeDCFILE
+header:
+    #define _MatMPtr(c,r) (m->m[((r)<<2)c +])
+    #define MatMPtr(mm,r,c) ((mm)->m[((r)<<2)c +])
+    #define _MatM1Ptr(r,c) _MatMPtr((r)-1,(c)-1)
+    #define MatM1Ptr(mm,r,c) MatMPtr(mm,(r)-1,(c)-1)
 
 
 Matrix44<BaseObject>
