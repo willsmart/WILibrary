@@ -3,7 +3,7 @@
 
 
 <NSSetWrapper>
-    NSSet __set (readonly)
+    readonly: NSSet __set
 
     void initObj {}
 
@@ -135,7 +135,7 @@
 
 
 <NSArrayWrapper>
-    NSArray __array (readonly)
+    readonly: NSArray __array
 
     void initObj {}
 
@@ -395,7 +395,7 @@
 
 
 <NSDictionary Wrapper>
-    NSDictionary __dictionary (readonly)
+    readonly: NSDictionary __dictionary
 
     void initObj {}
 
@@ -683,7 +683,7 @@
 
 
 PointerKey <NSCopying>
-    id o (readonly)
+    readonly: id o
     void dealloc {}
     id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
@@ -710,7 +710,7 @@ PointerKey <NSCopying>
 
 
 WeakObject <NSCopying>
-    void *o (readonly)
+    readonly: void *o
     id initWithObject:(NSObject*)ao {
         if (!(self=[super init])) return(nil);
         o=ao;
@@ -839,7 +839,7 @@ NSMutableSet
 MutableSet : NSMutableSet
     bool weakObjects
 
-    NSMutableSet __base (readonly)
+    readonly: NSMutableSet __base
 
     id init {
         if (!(self=[super init])) return(nil);
@@ -976,7 +976,7 @@ MutableSet : NSMutableSet
 MutableArray : NSMutableArray
     bool weakObjects
 
-    NSMutableArray __base (readonly)
+    readonly: NSMutableArray __base
 
     –(void)addObject:(id)object {
         if ([self willAddObject:object atIndex:self.count]) {

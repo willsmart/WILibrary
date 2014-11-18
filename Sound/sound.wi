@@ -412,7 +412,7 @@ Globals
 <AudioUnit>
     AudioComponentInstance audioUnit=nil
 
-    bool isSetup=NO,isStarted=NO (readonly)
+    readonly: bool isSetup=NO,isStarted=NO
     
     void setupAudio {@5 
         if (isSetup) return;

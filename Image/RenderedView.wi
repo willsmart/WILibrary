@@ -266,7 +266,7 @@ ShaderTicker
 
 
 Singletons
-    ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));}=nil (ivar)
+    ImageShaderRequestCaches imageShaderRequestCaches={return(v_imageShaderRequestCaches?v_imageShaderRequestCaches:(v_imageShaderRequestCaches=[[ImageShaderRequestCaches alloc] init]));}=nil
     NSString description={
         [ret appendFormat:@"\nImageShaderRequestCaches %p has %d/%d in cache, %d/%d outstanding\n",self.imageShaderRequestCaches,(int)self.imageShaderRequestCaches.imageShaderRequestCache.cache.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.cache.count,(int)self.imageShaderRequestCaches.imageShaderRequestCache.proxyList.count,(int)self.imageShaderRequestCaches.shaderImageRequestCache.proxyList.count];
     }
@@ -313,7 +313,8 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
     }
 
 ImageShaderRequest<Request> "fn:renderimage"
-    <HasURL,HasImageShader> object=nil (readonly)
+    readonly:
+        <HasURL,HasImageShader> object=nil
     Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject super:init {
         object=aobject;
     }
@@ -342,7 +343,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
     }
 
 ShaderImageRequest<Request> "fn:renderimage"
-    <HasURL,HasImageShader,HasImage> object=nil (readonly)
+    readonly: <HasURL,HasImageShader,HasImage> object=nil
     Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject super:init {
         object=aobject;
     }
@@ -461,7 +462,7 @@ ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
 
 
 Singletons
-    ImageRenderer imageRenderer={return(v_imageRenderer?v_imageRenderer:(v_imageRenderer=[[ImageRenderer alloc] init]));}=nil (ivar)
+    ImageRenderer imageRenderer={return(v_imageRenderer?v_imageRenderer:(v_imageRenderer=[[ImageRenderer alloc] init]));}=nil
     NSString description={
         [ret appendFormat:@"\nxImageRenderer %p\n",self.imageRenderer];
     }
@@ -556,8 +557,9 @@ ImageRenderer <BaseObject> "fn:render"
 
 
 Singletons
-    NSRegularExpression SingleURLImageView_szregex=nil (readonly)
-    NSRegularExpression SingleURLImageView_rectregex=nil (readonly)
+    readonly:
+        NSRegularExpression SingleURLImageView_szregex=nil
+        NSRegularExpression SingleURLImageView_rectregex=nil
 
 
     Self start {
@@ -653,7 +655,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }=nil (ivar=highlightedImageURLKey)
 
-    CGRect imageRenderedAsRect=nil,highlightedImageRenderedAsRect=nil (ivar,readonly)
+    readonly: CGRect imageRenderedAsRect=nil,highlightedImageRenderedAsRect=nil
     CGRect +roundedRect:(CGRect)r {
         r.origin.x=round(r.origin.x);
         r.origin.y=round(r.origin.y);
@@ -755,7 +757,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
             }
         }=nil (ivar=sizedHighlightedImageURL)
 
-    bool needImage=nil,needHighlightedImage=nil (readonly)
+    readonly: bool needImage=nil,needHighlightedImage=nil
 
     void goWait {[self waitForSeconds:0.2];}
     void waited {

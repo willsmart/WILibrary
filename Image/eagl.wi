@@ -10,8 +10,9 @@ type GLint
 type GLuint
 
 EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
-    GLint framebufferWidth=0,framebufferHeight=0 (readonly)
-    GLuint defaultFramebuffer=0, colorRenderbuffer=0 (readonly)
+    readonly:
+        GLint framebufferWidth=0,framebufferHeight=0
+        GLuint defaultFramebuffer=0, colorRenderbuffer=0
 
     Self initWithFrame:(CGRect)frame {}
     Self initWithCoder:(NSCoder*)aDecoder {}

@@ -27,8 +27,9 @@
     float likelyHeaderHeight={@-999 float ret=0;@999 return(ret);}
     float likelyFooterHeight={@-999 float ret=0;@999 return(ret);}
 
-    UIView header=nil,footer=nil (readonly)
-    float headerHeight,footerHeight (readonly)
+    readonly:
+        UIView header=nil,footer=nil
+        float headerHeight,footerHeight
 
     Int commitProperties:(Int)substageIndex {@-998 |shiftOne[8]@80 
         if (modelObjectHasChanged) self._table.modelObjectHasChanged=YES;
@@ -56,16 +57,17 @@
     <SectionModel> insertNewCellsAtTopOfSection={@-999 NSObject<SectionModel> *ret=nil;
         @999 return(ret);
     }
-    UITableViewCell newUITVCell (readonly)
+    readonly: UITableViewCell newUITVCell
     void applyToCell:(UITableViewCell*)cell;
 
 
     float likelyCellHeight={@-999 float ret=0;@999 return(ret);}
-    float cellHeight (readonly)
-    NSString cellReuseIdentifier=nil (readonly)
+    readonly:
+        float cellHeight
+        NSString cellReuseIdentifier=nil
+        bool canMove,canEdit
+        UITableViewCellEditingStyle editingStyle
 
-    bool canMove,canEdit (readonly)
-    UITableViewCellEditingStyle editingStyle (readonly)
     Int indentationLevel=0
 
     bool canMoveToSection:(NSObject<SectionModel>*)toSection belowCell:(NSObject<CellModel>*)below;
@@ -142,7 +144,7 @@
 
 
 <CellModelFromNib:CellModel>
-    NSString nibName (readonly)
+    readonly: NSString nibName
     Int tag=0
     Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} (ivar=uiTVCellClass)
     NSString cellReuseIdentifier=
@@ -157,7 +159,7 @@
 
 
 <SectionModelFromNib:SectionModel>
-    NSString nibName (readonly)
+    readonly: NSString nibName
     Int headerTag=1,footerTag=2
     Class headerClass={return(headerClass?headerClass:[UIView class]);} (ivar=headerClass)
     Class footerClass={return(footerClass?footerClass:[UIView class]);} (ivar=footerClass)
@@ -175,9 +177,9 @@
 
 
 <TableModelFollower:Commitable>
-    <TableModel> model=nil (readonly)
+    readonly: <TableModel> model=nil
 
-    kid context=[PointerKey keyWithObject:nil] (retain)
+    kid context=[PointerKey keyWithObject:nil]
 
     Self start {@100 
         [self addSourceCommitter:model];
@@ -189,7 +191,7 @@
         if (model.modelObjectHasChanged) modelObjectHasChanged=YES;
     }
 
-    bool updatesStarted=nil (readonly)
+    readonly: bool updatesStarted=nil
     void startCommit {
         if (!updatesStarted) {
             [self.table beginUpdates];
@@ -305,7 +307,7 @@
 
 
 <TableController:Commitable,UITableViewDataSource,UITableViewDelegate>
-    UITableView table (readonly)
+    readonly: UITableView table
 
     bool __editing=NO
     bool _editing>>editing=

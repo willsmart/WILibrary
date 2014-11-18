@@ -23,7 +23,8 @@ DictWords {
     Self init {}
     
     int maxLen=0,wordLimit=10000000
-    DictWordArray *_words=nil (readonly)
+    readonly:
+        DictWordArray *_words=nil
     
     bool validWord:(const char*)pc {
         for (;*pc;pc++) if ((pc[0]!='\'')&&(pc[0]!='-')&&((pc[0]<'a')||(pc[0]>'z'))&&((pc[0]<'A')||(pc[0]>'Z'))) return(NO);
@@ -211,7 +212,7 @@ DictWords {
         
 
     
-    ULLArray *_ulls=nil (readonly)
+    readonly: ULLArray *_ulls=nil
     ULL *ulls_pull=nil
     BYT ulls_shft=0
     int ulls_depth=0,ulls_state=0

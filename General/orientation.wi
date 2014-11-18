@@ -17,11 +17,11 @@ Orientation<BaseObject>
     Int zoomLevels=10
     float currentZoom=1,currentRotateDegrees=0
     CGPoint currentPan=nil
-    float rotateMin=2 (readonly,ivar)
-    float rotateScale=0.08 (readonly,ivar)
-
-    CLLocationManager locManager=[[CLLocationManager alloc] init] (readonly)
-    CMMotionManager motManager=[[CMMotionManager alloc] init] (readonly)
+    readonly:
+        float rotateMin=2
+        float rotateScale=0.08
+        CLLocationManager locManager=[[CLLocationManager alloc] init]
+        CMMotionManager motManager=[[CMMotionManager alloc] init]
 
 
     void dealloc {@-100 
@@ -152,13 +152,13 @@ Orientation<BaseObject>
         return(1.0/(1.0+fmax(-0.99,svol*zoomScale)));
     }
 /**! -wi!warnwarn Address warning: Non-imaginary variable volume has an ivar, but no default value. This is less a strict error than unclean !**/
-    float volume=
+    ivar: float volume=
         {
             return(volume*1.0/zoomLevels);
         }
         -v{
             volume=(int)fmin(zoomLevels,fmax(0,v*zoomLevels));
-        }=nil (ivar)
+        }=nil
 
     float rotateDegrees={
         Vec4 xv={{1,0,0,1}},v2,yv={{0,1,0,1}};

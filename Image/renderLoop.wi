@@ -39,7 +39,7 @@ RenderLoop <BaseObject>
                 self.displayLink = nil;
                 animating = FALSE;
             }
-        }=nil (ivar)
+        }=nil
 
 /**! -wi!warnwarn Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
     Int animationFrameInterval=
@@ -52,7 +52,7 @@ RenderLoop <BaseObject>
                     self.animating=YES;
                 }
             }
-        }=nil (ivar)
+        }=nil
 
     renderLoop ~- ShaderData shaderData
 

@@ -32,7 +32,7 @@ WReader <BaseObject> "fn:token"
         }
 
 
-    NSArray lines=[[NSArray alloc] init] (readonly)
+    readonly: NSArray lines=[[NSArray alloc] init]
     Int pos=nil
     Self start {
         pos=-1;
@@ -109,7 +109,7 @@ WReaderToken "fn:token"
 
 WReaderTokenizer <BaseObject> "fn:token"
 
-    NSMutableArray tokens=[[MutableArray alloc] init] (readonly)
+    readonly: NSMutableArray tokens=[[MutableArray alloc] init]
     NSString _str=@""
     NSString str=
         {

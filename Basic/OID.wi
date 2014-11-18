@@ -91,7 +91,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
     }
 
 <ClassObject>
-    ULL __private_access_thread_mask_in___ClassName__=0 (justivar,privateivar)
+    //readonly: ULL __private_access_thread_mask_in___ClassName__=0 (justivar)
 
 
 
@@ -99,7 +99,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 
 ClassCount "-Object" "fn:object"
     LL count=nil,nextID=nil
-    NSString name=nil (readonly)
+    readonly: NSString name=nil
     ClassCount* +classCount {
         return([[ClassCount alloc] init]);
     }
@@ -144,9 +144,11 @@ Globals
 
 Singletons<Ticker> "-Object" "fn:object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
-    QuickHashTableOfClassCounts *classCountht=nil (readonly)
-    ArrayOfClassCounts *classCountArray=nil (readonly)
-    ClassCount totalObjectCount=nil (publicreadonly,ivar=totalObjectCount)
+    readonly:
+        QuickHashTableOfClassCounts *classCountht=nil
+        ArrayOfClassCounts *classCountArray=nil
+    publicreadonly:
+        ClassCount totalObjectCount=nil
 
     void dealloc {
         {
@@ -295,9 +297,9 @@ Globals
         }
 
 <Object>
-    LL objectIDInClass=nil,objectIDInTotal=nil (readonly)
-
-    bool isZombie=nil (readonly)
+    readonly:
+        LL objectIDInClass=nil,objectIDInTotal=nil
+        bool isZombie=nil
 
     bool debugAutorelease=nil
 
@@ -630,8 +632,9 @@ Globals
         ObjectGraph *g_objectGraph=nil;
 
 ObjectGraph<Ticker,BaseObject>
-    NSMutableString *newEdits=[[NSMutableString alloc] init] (readonly)
-    NSMutableString *newEdits2=[[NSMutableString alloc] init] (readonly)
+    readonly:
+        NSMutableString *newEdits=[[NSMutableString alloc] init]
+        NSMutableString *newEdits2=[[NSMutableString alloc] init]
 
     void start {g_objectGraph=self;[self startWithInterval:0.5];}
     void stop {@100 g_objectGraph=nil;}
@@ -670,13 +673,13 @@ ObjectGraph<Ticker,BaseObject>
     
 
 ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
-    LL objectIDInTotal=nil (readonly)
+    readonly: LL objectIDInTotal=nil
     Self initWithObjectID:(LL)aobjectIDInTotal super:init {
         objectIDInTotal=aobjectIDInTotal;
     }
     
 <ObjectEquate>
-    LL objectIDInTotal (readonly)
+    readonly: LL objectIDInTotal
     BOOL isEqual:(id)obj {@-999 
         bool ret=(obj==self)||
                     ([obj respondsToSelector:@selector(objectIDInTotal)]&&

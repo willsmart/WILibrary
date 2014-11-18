@@ -926,7 +926,7 @@ Dictionary
     }
 
 
-    NSMutableArray dictsForLengths=[NSMutableArray array] (readonly)
+    readonly: NSMutableArray dictsForLengths=[NSMutableArray array]
     bool changed=NO,inited=NO
 
     NSString dictPath={
@@ -2257,7 +2257,12 @@ ProMPWords
     
 
 
-    NSMutableArray incIndsStack=[NSMutableArray array] (readonly)
+    readonly:
+        NSMutableArray incIndsStack=[NSMutableArray array]
+        NSMutableArray indsStack=[NSMutableArray array]
+        NSMutableArray maxPattIndsStack=[NSMutableArray array]
+
+
     NSMutableArray* incIndsArrayForDepth:(int)depth {
         NSMutableArray *ret;
         while (incIndsStack.count<=depth) [incIndsStack addObject:[NSMutableArray array]];
@@ -2266,7 +2271,6 @@ ProMPWords
         return(ret);
     }
 
-    NSMutableArray indsStack=[NSMutableArray array] (readonly)
     NSMutableIndexSet* indsIndexSetForDepth:(int)depth {
         NSMutableIndexSet *ret;
         while (indsStack.count<=depth) [indsStack addObject:[NSMutableIndexSet indexSet]];
@@ -2282,7 +2286,6 @@ ProMPWords
 
 
 
-    NSMutableArray maxPattIndsStack=[NSMutableArray array] (readonly)
 
     int* getMaxPattIndsForDepth:(int)d num:(int)n {
         while (maxPattIndsStack.count<=d) [maxPattIndsStack addObject:[NSMutableData dataWithLength:n*sizeof(int)]];
@@ -2315,7 +2318,7 @@ ProMPWords
 
 
 
-    WPatternArray *addMaxWPA=nil (readonly)
+    readonly: WPatternArray *addMaxWPA=nil
     Self start {
         addMaxWPA=NEW(WPatternArray);
         addMaxWPA->setUpperBound(99);
@@ -2538,7 +2541,7 @@ ProMPWords
     Self start {
         strcpy(tmpWisPattern.pattern,"xgdisugfyjlkfjslj");
     }
-    NSMutableIndexSet tmpWis=[[NSMutableIndexSet alloc] init] (readonly)
+    readonly: NSMutableIndexSet tmpWis=[[NSMutableIndexSet alloc] init]
 
     NSIndexSet* wordIndexesMatchingPattern:(const char*)wd {
         if (strcmp(tmpWisPattern.pattern,wd)) {
@@ -2749,8 +2752,10 @@ ProMPWords
         return(ret);
     }
 
-    QHT_bool *addMidHT=nil (readonly)
-    WPatternArray *addMidWPA=nil (readonly)
+    readonly:
+        QHT_bool *addMidHT=nil
+        WPatternArray *addMidWPA=nil
+
     Self start {
         {
             ContextIndex ci={0};
@@ -2811,7 +2816,8 @@ ProMPWords
         
 
 
-    BCArray_int indByLength=[[BCArray_int alloc] init] (readonly)
+    readonly: BCArray_int indByLength=[[BCArray_int alloc] init]
+
     BCArray_int _sortedPatternIndexes_length=nil
     BCArray_int sortedPatternIndexes_length={
         if (!v__sortedPatternIndexes_length) {
@@ -2856,7 +2862,7 @@ ProMPWords
     }
 
 
-    BCArray_int wdis=[[BCArray_int alloc] init] (readonly)
+    readonly: BCArray_int wdis=[[BCArray_int alloc] init]
 
     float timenow={return(0);}
 
@@ -3029,7 +3035,7 @@ ProMPWords
     }
         
 
-    CountSubsequences ssc=[[CountSubsequences alloc] init] (readonly)
+    readonly: CountSubsequences ssc=[[CountSubsequences alloc] init]
 
     void goOptsWithDictWordArray:(DictWordArray*)pwds {
         self.patternFilename=[NSString stringWithFormat:@"maxs%d_owned.txt",self.numWords];
@@ -3238,10 +3244,12 @@ wi type BigUInt
 wi type SchemaCount
 
 CountSubsequences
-    BCArray_BigUInt countsByLength=[[BCArray_BigUInt alloc] init] (readonly)
-    BCArray_BigUInt dpcounts=[[BCArray_BigUInt alloc] init] (readonly)
-    BCArray_bool dpgot=[[BCArray_bool alloc] init] (readonly)
-    void dealloc {@-950 
+    readonly:
+        BCArray_BigUInt countsByLength=[[BCArray_BigUInt alloc] init]
+        BCArray_BigUInt dpcounts=[[BCArray_BigUInt alloc] init]
+        BCArray_bool dpgot=[[BCArray_bool alloc] init]
+
+    void dealloc {@-950
         [self setUpperBound:-1 ofBigUIntArray:countsByLength];
         [self setUpperBound:-1 ofBigUIntArray:dpcounts];
     }
@@ -3358,8 +3366,9 @@ CountSubsequences
         return(ret);
     }
 
-    BCString bcs=[[BCString alloc] init] (readonly)
-    NSMutableString countstr=[[NSMutableString alloc] init] (readonly)
+    readonly:
+        BCString bcs=[[BCString alloc] init]
+        NSMutableString countstr=[[NSMutableString alloc] init]
 
     NSString* stringForCounts:(BCArray_BigUInt*)counts ret:(NSMutableString*)ret {
         if (!ret) ret=countstr;

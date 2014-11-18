@@ -18,16 +18,16 @@
 
 Globals
     -top
-        #ifdef TARGET_OS_IPHONE
-            #import <UIKit/UIKit.h>
-        #else
+        //#ifdef TARGET_OS_IPHONE
+        //    #import <UIKit/UIKit.h>
+        //#else
             #define UIColor NSColor
             #define UIImage NSImage
             #define UIFont NSFont
             #define UIBezierPath NSBezierPath
             #define TARGET_OS_OSX 1
             #import <AppKit/AppKit.h>
-        #endif
+        //#endif
         #ifdef __SWIFT__
             #define NOSWIFT(...)
         #else

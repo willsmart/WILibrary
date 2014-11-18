@@ -230,7 +230,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
 
     
-    NSMutableSet viewersThatChanged=[[NSMutableSet alloc] init] (readonly)
+    readonly: NSMutableSet viewersThatChanged=[[NSMutableSet alloc] init]
 
 
     void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey inViewer:(NSObject<NSCopying>*)viewerKey from:(NSObject*)fromValue to:(NSObject*)toValue {
@@ -256,7 +256,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 ViewerListenerSet
     Self init {}
     viewerListenerSet -m<~ ViewerPropertyListenerSet viewerPropertyListenerSet
-    NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init] (readonly)
+    readonly: NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init]
 
     void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
         ViewerPropertyListenerSet *ls=[self viewerPropertyListenerSetForKey:propertyKey];

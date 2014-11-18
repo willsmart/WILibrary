@@ -1,6 +1,6 @@
 
 Singletons
-    MetaRenderer metaRenderer={return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}=nil (ivar)
+    MetaRenderer metaRenderer={return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}=nil
     NSString description={
         [ret appendFormat:@"\nxMetaRenderer %p\n",self.metaRenderer];
     }
@@ -10,7 +10,7 @@ Singletons
 "fn:meta"
 
 MetaRenderer <BaseObject>
-    UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)] (readonly)
+    readonly: UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)]
 
     NSString* +jsStringForURL:(NSURL*)url {
         NSMutableDictionary *args=[ImageShader argStringDictionaryForURL:url];
@@ -60,13 +60,14 @@ MetaRenderer <BaseObject>
 
 
 Singletons
-    MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}=nil (ivar)
+    MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}=nil
     NSString description={
         [ret appendFormat:@"\nMetaRequestCache %p has %d in cache\n",self.metaRequestCache,(int)self.metaRequestCache.cache.count];
     }
 
-    NSRegularExpression MetaEnabled_szregex=nil (readonly)
-    NSRegularExpression MetaEnabled_rectregex=nil (readonly)
+    readonly:
+        NSRegularExpression MetaEnabled_szregex=nil
+        NSRegularExpression MetaEnabled_rectregex=nil
 
 
     Self start {
@@ -208,10 +209,11 @@ Meta_ProxyDictionaryDelegate<ProxyDictionaryDelegate,MutableDictionaryDelegateWi
 
 
 JSMetaPropertyInState
-    NSString js=nil (readonly)
-    NSString var=nil (readonly)
-    NSObject varDef=nil (readonly)
-    NSObject cachedValue=nil (readonly)
+    readonly:
+        NSString js=nil
+        NSString var=nil
+        NSObject varDef=nil
+        NSObject cachedValue=nil
 
     Self initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar super:init {
         js=ajs;
@@ -276,12 +278,11 @@ JSMetaProperty<NamedDataListener>
     property ~d< JSMetaPropertyInState propertyInState
     jsproperty >d~ <MetaEnabled> owner
 
-    NSArray stateOrder=nil (readonly)
-    
-    NSMutableDictionary varProps=[[NSMutableDictionary alloc] init] (readonly)
-    NSMutableDictionary varDefs=[[NSMutableDictionary alloc] init] (readonly)
-
-    NSString stateProp=nil (readonly)
+    readonly:
+        NSArray stateOrder=nil
+        NSMutableDictionary varProps=[[NSMutableDictionary alloc] init]
+        NSMutableDictionary varDefs=[[NSMutableDictionary alloc] init]
+        NSString stateProp=nil
 
     Self initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d super:init {
         @100
@@ -405,7 +406,7 @@ JSMetaProperty<NamedDataListener>
         return(NO);
     }
 
-    NSObject cachedValue=nil (readonly)
+    readonly: NSObject cachedValue=nil
 
     NSObject<NSCopying> state={
         if (!cachedState) cachedState=self.currentState;
@@ -415,7 +416,7 @@ JSMetaProperty<NamedDataListener>
         if (!cachedValue) cachedValue=self.currentValue;
         return(cachedValue);
     }
-    NSObject<NSCopying> cachedState=nil (readonly)
+    readonly: NSObject<NSCopying> cachedState=nil
     
     NSObject<NSCopying> currentState={
         NSObject *stateo=nil;
@@ -538,9 +539,10 @@ JSMetaProperty<NamedDataListener>
     }
     
 
-    NSDictionary metaPropertiesToInitWith=nil (readonly)
-    NSObject<MetaEnabled> parentForInit=nil (readonly)
-    kid keyInParentToInitWith=nil (readonly)
+    readonly:
+        NSDictionary metaPropertiesToInitWith=nil
+        NSObject<MetaEnabled> parentForInit=nil
+        kid keyInParentToInitWith=nil
 
     MutableDictionary _metaProperties=[[MutableDictionary alloc] init] (ivar=_metaProperties)
     NSDictionary metaProperties=
@@ -613,7 +615,7 @@ JSMetaProperty<NamedDataListener>
     bool debug=NO
     Self start {@-10 if (debug) [self attachPropertyDebuggers];}
 
-    NSMutableSet changedMetaKeys=[[NSMutableSet alloc] init] (readonly)
+    readonly: NSMutableSet changedMetaKeys=[[NSMutableSet alloc] init]
 
     void meta_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-600
         if (toObject) [changedMetaKeys addObject:key];
@@ -773,8 +775,9 @@ JSMetaProperty<NamedDataListener>
 
     urlMetaEnabled >s- URLMetaEnableds urlMetaEnableds
 
-    NSURL metaURLWas=nil (readonly)
-    CGRect frameWas=nil (readonly)
+    readonly:
+        NSURL metaURLWas=nil
+        CGRect frameWas=nil
 
     void refreshMetaFromRegisteredURLs {
         NSDictionary *metaProps=self.metaProperties;
@@ -1357,7 +1360,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         if ([k isKindOfClass:[NSString class]]) sel=NSSelectorFromString((NSString*)k);
         return(sel);
     }
-    SEL finalAction=nil (readonly)
+    readonly: SEL finalAction=nil
     void didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         if ([keyStr isEqualToString:@"title"]) self.title=objectStr;
         else if ([keyStr isEqualToString:@"imagekey"]) urlImageView.imageURLKey=objectStr;

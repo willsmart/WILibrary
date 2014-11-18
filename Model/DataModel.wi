@@ -9,11 +9,13 @@
 
 
 PropertyData
-    SEL getter=nil,setter=nil (readonly)
-    NSString name=nil (readonly)
-    Class clas=nil (readonly)
-    bool direct=nil (readonly)
-    NSString clasName=nil (readonly)
+    readonly:
+        SEL getter=nil,setter=nil
+        NSString name=nil
+        Class clas=nil
+        bool direct=nil
+        NSString clasName=nil
+
     Self initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect super:init {
         direct=adirect;
         name=aname;
@@ -281,7 +283,7 @@ PropertyViewerDelegate<MutableSetDelegate>
         return([object isKindOfClass:[NSString class]]||[object isKindOfClass:[NSNumber class]]);
     }
 
-    bool needViewerStateOK=nil (readonly)
+    readonly: bool needViewerStateOK=nil
 
     void property_didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
@@ -318,7 +320,7 @@ PropertyViewerDelegate<MutableSetDelegate>
 
 
 Singletons
-    NSMutableDictionary dataModelPropertySelectors=[[NSMutableDictionary alloc] init] (readonly)
+    readonly: NSMutableDictionary dataModelPropertySelectors=[[NSMutableDictionary alloc] init]
 
 
 <DataModelViewer:HasProperties>

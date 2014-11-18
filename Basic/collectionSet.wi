@@ -51,8 +51,9 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 <Set>
     bool retrievesWeakValues,insertsWeakObjectsByDefault (nodef)
-    NSSet __set=nil (readonly)
-    Int weakObjectCount=0 (readonly)
+    readonly:
+        NSSet __set=0
+        Int weakObjectCount=0
     CollectionWeakness weakness=
         {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
         -v{}
@@ -191,7 +192,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
     NSSet delegateForSet=nil (assign,ivar=delegateForSet)
     void delegateForSetChanged {}
 
-    <MutableSetDelegate> setDelegate=nil (readonly)
+    readonly: <MutableSetDelegate> setDelegate=nil
     void addDelegate:(NSObject<MutableSetDelegate>*)v {
         if (v.setDelegate) return;
         if (v==self) return;
@@ -235,7 +236,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
-    NSMutableSet __mutableSet=nil (readonly)
+    readonly: NSMutableSet __mutableSet=nil
     CollectionWeakness weakness=
         -v{
             switch (v) {

@@ -13,7 +13,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
 
 
 <RefCountedObject>
-    Int totalRetainCount=1,modelRetaincount=0 (readonly)
+    readonly: Int totalRetainCount=1,modelRetaincount=0
     bool noMOForNextRetain=NO
 
     void dealloc {
@@ -132,7 +132,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
     }
             
 SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
-    <Commitable> owner=nil (readonly)
+    readonly: <Commitable> owner=nil
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
@@ -150,7 +150,7 @@ SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
     }
             
 SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
-    <Commitable> owner=nil (readonly)
+    readonly: <Commitable> owner=nil
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
     }
@@ -169,7 +169,7 @@ SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
 
             
 SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
-    <Commitable> owner=nil (readonly)
+    readonly: <Commitable> owner=nil
 
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
@@ -202,7 +202,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
 
             
 SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
-    <Commitable> owner=nil (readonly)
+    readonly: <Commitable> owner=nil
 
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
@@ -297,9 +297,9 @@ Model<Model,Ticker,Waiter> "fn:model"
         //[MutableSetDebuggerDelegate attachTo:self.dirtyObjects named:@"Dirty objects"];
     }
 
-    bool inCommit=NO (readonly)
-
-    CommitStage commitStage=stage_none (readonly)
+    readonly:
+        bool inCommit=NO
+        CommitStage commitStage=stage_none
     ULL commitFrame=1
 
     void +delayCommitsForSeconds:(double)sec {

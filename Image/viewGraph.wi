@@ -11,12 +11,12 @@
     pattern -- VGPointsSetDelegate pointsSetDelegate
     pattern -- VGPointPartFollowerArrayDelegate partArrayDelegate
     pointPattern ~a< <VGPointPartPattern> partPattern
-    <VGPoint> makePoint (readonly)
+    readonly: <VGPoint> makePoint
 
 
 // Point part pattern: defines a method by which the pattern can make a point part. This allows the abstract pattern to make concrete strategy
 <VGPointPartPattern>
-    <VGPointPart> makePart (readonly)
+    readonly: <VGPointPart> makePart
 
 
 
@@ -64,7 +64,7 @@ VGRelativePosition "fn:graph"
 <VGPoint:Commitable>
     point >~s- __Class__Pattern pattern
     point -a< <VGPointPart> part
-    CGPoint calculate (readonly)
+    readonly: CGPoint calculate
 
 VGCalculatedPoint<Commitable>
     calculatedPoint -- <VGPoint> calculatesValueOfPoint
@@ -261,8 +261,9 @@ Globals
 
 
 <VGPoint>
-    ArrayOfCGPoints *pointStack=nil (readonly,ivar)
-    CGPoint value=nil (readonly)
+    readonly:
+        ArrayOfCGPoints *pointStack=nil
+        CGPoint value=nil
     void _calculatedValue {
         memset(pointStack->a,0,64*sizeof(CGPoint));
         for (NSObject<VGPointPart> *part in self.parts) [part calculatePart];
@@ -599,14 +600,14 @@ VGPointPartFollowerArrayDelegate
 
 
 VGConstantPointPartPattern<VGPointPartPattern>
-    CGPoint value=
+    ivar: CGPoint value=
         {return(value);}
         -v{
             if (value!=v) {
                 value=v;
                 [self markDirty];
             }
-        } (ivar)
+        }
     <VGPointPart> makePart={return([[VGConstantPointPart alloc] init]);}
 
 VGConstantPointPart<VGPointPart>
@@ -615,22 +616,23 @@ VGConstantPointPart<VGPointPart>
 
 
 VGScalerPointPartPattern<VGPointPartPattern>
-    CGPoint multiply=
-        {return(multiply);}
-        -v{
-            if (multiply!=v) {
-                multiply=v;
-                [self markDirty];
+    ivar:
+        CGPoint multiply=
+            {return(multiply);}
+            -v{
+                if (multiply!=v) {
+                    multiply=v;
+                    [self markDirty];
+                }
             }
-        } (ivar)
-    CGPoint add=
-        {return(add);}
-        -v{
-            if (add!=v) {
-                add=v;
-                [self markDirty];
+        CGPoint add=
+            {return(add);}
+            -v{
+                if (add!=v) {
+                    add=v;
+                    [self markDirty];
+                }
             }
-        } (ivar)
     <VGPointPart> makePart={return([[VGScalerPointPart alloc] init]);}
 
 VGScalerPointPart<VGPointPart>
@@ -652,14 +654,14 @@ VGSwizzlePointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ULL indexMask=
+    ivar: ULL indexMask=
         {return(indexMask);}
         -v{
             if (indexMask!=v) {
                 indexMask=v;
                 [self markDirty];
             }
-        } (ivar)
+        }
     <VGPointPart> makePart={return([[VGSwizzlePointPart alloc] init]);}
 
 VGSwizzlePointPart<VGPointPart>
@@ -699,14 +701,14 @@ VGAddSubPointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ULL addMulMask=
+    ivar: ULL addMulMask=
         {return(addMulMask);}
         -v{
             if (addMulMask!=v) {
                 addMulMask=v;
                 [self markDirty];
             }
-        } (ivar)
+        }
     BYT subMulTimes4AtIndex:(Unsigned)index {
         return((subMulMask>>(index<<2))&0xff);
     }
@@ -717,14 +719,14 @@ VGAddSubPointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ULL subMulMask=
+    ivar: ULL subMulMask=
         {return(subMulMask);}
         -v{
             if (subMulMask!=v) {
                 subMulMask=v;
                 [self markDirty];
             }
-        } (ivar)
+        }
     WRD destinationMask=
         {return(destinationMask);}
         -v{
@@ -829,7 +831,7 @@ VGSumPointPart<VGPointPart>
 
 
 ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
-    <VGObject> owner=nil (readonly,assign)
+    readonly:assign: <VGObject> owner=nil
     Self initWithOwner:(NSObject<VGObject>*)aowner super:init {
         aowner=owner;
     }
@@ -853,7 +855,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
     }
 
 ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
-    ViewGraph graph=nil (readonly,assign)
+    readonly:assign: ViewGraph graph=nil
     Self initWithGraph:(ViewGraph*)agraph super:init {
         graph=agraph;
     }
@@ -918,7 +920,7 @@ ViewGraph<BaseObject> "fn:graph"
     }
 
     Int graphedIndexVersion=nil
-    VGObject graphOkForView=nil (readonly)
+    readonly: VGObject graphOkForView=nil
 
     Int commitProperties:(Int)substageIndex {@-998 |2@10 
         [self refreshIndexesWithFocus:self.focus];
@@ -1020,8 +1022,9 @@ ViewGraph<BaseObject> "fn:graph"
     _prev>>prev -- <TreeCell> _next>>next
     _parent>>parent ~a< <TreeCell> _child>>child
 
-    NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil] (readonly)
-    NSMutableSet bindingsThanChanged=[NSMutableSet set] (readonly)
+    readonly:
+        NSMutableDictionary bindings=[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNull null],@"Pprv",[NSNull null],@"Pnxt",[NSNull null],@"Ppar",[NSNull null],@"Pchl",nil]
+        NSMutableSet bindingsThanChanged=[NSMutableSet set]
 
     Int commitProperties:(Int)substageIndex {@100 
         if (modelObjectChanged) {

@@ -1,8 +1,9 @@
 
 <LinkEndpoint>
-    id owner=nil (readonly,nonatomic)
-    bool retains=nil (readonly,nonatomic)
-    SEL otherEndObjectToEndpoint=nil,acceptableSel=nil (readonly,nonatomic)
+    readonly:
+        id owner=nil
+        bool retains=nil
+        SEL otherEndObjectToEndpoint=nil,acceptableSel=nil
 
     bool unacceptable:(id)obj {return(!(acceptableSel&&[self.owner performUnknownSelector:acceptableSel withObject:obj]));}
 

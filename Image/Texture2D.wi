@@ -23,11 +23,13 @@ type Texture2DPixelFormat "typedef:enum {
 
 
 Texture2D <BaseObject> "fn:render"
-    GLuint glname=0 (readonly)
+    readonly:
+        GLuint glname=0
+        Unsigned pixelWidth=100,pixelHeight=100
+        Texture2DPixelFormat pixelFormat=kTexture2DPixelFormat_RGBA8888
+        GLfloat  maxS=1,maxT=1
+
     CGSize contentSize=nil
-    Unsigned pixelWidth=100,pixelHeight=100 (readonly)
-    Texture2DPixelFormat pixelFormat=kTexture2DPixelFormat_RGBA8888 (readonly)
-    GLfloat  maxS=1,maxT=1 (readonly)
     GLuint frameBuffer={
         if ((frameBuffer==GL_INVALID_VALUE)&&glname) {
             glGenFramebuffersOES(1, &frameBuffer);

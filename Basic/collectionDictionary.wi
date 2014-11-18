@@ -51,9 +51,10 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <Dictionary>
-    NSDictionary __dictionary=nil (readonly)
-    bool insertsWeakObjectsByDefault (nodef)
-    Int weakObjectCount=0 (readonly)
+    readonly:
+        NSDictionary __dictionary=0
+        Int weakObjectCount=0
+    bool insertsWeakObjectsByDefault=0
     CollectionWeakness weakness=
         {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
         -v{}
@@ -232,7 +233,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <ProxiedDictionaryDelegate> "nac" "multi"
-    Basic_ProxyDictionaryDelegate basic_subDictionaryDelegate=[[Basic_ProxyDictionaryDelegate alloc] initWithOwner:self] (ivar,publicreadonly)
+    publicreadonly:ivar: Basic_ProxyDictionaryDelegate basic_subDictionaryDelegate=[[Basic_ProxyDictionaryDelegate alloc] initWithOwner:self]
     void dealloc {@-800 [self basic_attachDictionaryDelegateTo:nil];}
     void basic_attachDictionaryDelegateTo:(NSObject<MutableDictionaryDelegate>*)dictionary {
         [(NSObject<MutableDictionaryDelegate>*)v_basic_subDictionaryDelegate.delegateForDictionary removeDelegate:v_basic_subDictionaryDelegate];
@@ -311,7 +312,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 
 <SourcedProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
     <Basic_SourcedProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
-    NSObject<NSCopying> source=nil (readonly)
+    readonly: NSObject<NSCopying> source=nil
     Self initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource super:init {
         owner=aowner;
         source=asource;
@@ -349,7 +350,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
     NSDictionary delegateForDictionary=nil (assign,ivar=delegateForDictionary)
     void delegateForDictionaryChanged {}
 
-    <MutableDictionaryDelegate> dictionaryDelegate=nil (readonly)
+    readonly: <MutableDictionaryDelegate> dictionaryDelegate=nil
     void addDelegate:(NSObject<MutableDictionaryDelegate>*)v {
         if (v.dictionaryDelegate) return;
         if (v==self) return;
@@ -392,7 +393,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 <MinimalMutableDictionary:Dictionary,MutableDictionaryDelegate,ObjectEquate>
-    NSMutableDictionary __mutableDictionary=nil (readonly)
+    readonly: NSMutableDictionary __mutableDictionary=nil
     CollectionWeakness weakness=
         -v{
             switch (v) {

@@ -28,7 +28,7 @@ Globals
 
 
 CollectionTestObject
-    Int intValue=nil (readonly)
+    readonly: Int intValue=nil
     NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
     <Tester> tester=nil (assign)
 

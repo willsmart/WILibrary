@@ -2,10 +2,11 @@ RequestCaches "fn:util"
     caches ~m< <RequestCache> cache
         NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
         cache -m< <Request> request
-            float worthAsRequest (readonly)
+            readonly:
+                float worthAsRequest
+                NSObject result
+                float resultSize
             void goRequest;
-            NSObject result (readonly)
-            float resultSize (readonly)
             request >s<~ <RequestOwner> owner
                 void doneRequestSync:(NSObject<Request>*)request {}
                 void doneRequestAsync:(NSObject<Request>*)request {@990}
@@ -209,12 +210,12 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
 <LRUCacheItem:ListItem>
     <LRUCache> cache=nil (ivar=cache)
     float age=0,initialSize=0
-    float size (readonly)
+    readonly: float size
     NSObject<NSCopying> _cacheKey=nil
 
 LRUCacheItem<LRUCacheItem> "fn:util"
-    NSObject object=nil (readonly)
-    float size=nil (ivar)
+    readonly: NSObject object=nil
+    float size=nil
     Self initWithObject:(NSObject*)aobject size:(float)asize super:init {
         size=asize;
         object=aobject;

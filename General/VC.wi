@@ -4,7 +4,7 @@
 
 
 <MyViewController>
-    CGRect kbRect=nil (readonly)
+    readonly: CGRect kbRect=nil
     NSString allowedOrientations
 
     void resized {

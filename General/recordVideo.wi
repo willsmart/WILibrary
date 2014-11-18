@@ -40,13 +40,15 @@ RecordVideo
     bool going=nil
     float speedup=1.5
 
-    AVAssetWriterInputPixelBufferAdaptor pixelBufferAdaptor=nil (readonly)
-    AVAssetWriterInput assetWriterInput=nil (readonly)
-    AVAssetWriter assetWriter=nil (readonly)
+    readonly:
+        AVAssetWriterInputPixelBufferAdaptor pixelBufferAdaptor=nil
+        AVAssetWriterInput assetWriterInput=nil
+        AVAssetWriter assetWriter=nil
+        CVPixelBufferRef pixBuf=nil
+        NSDate startedAt=nil
+
     NSMutableData pixelData=[NSMutableData dataWithLength:1]
     NSMutableData pixelData2=[NSMutableData dataWithLength:1]
-    CVPixelBufferRef pixBuf=nil (readonly,ivar)
-    NSDate startedAt=nil (readonly)
 
     void dealloc {@-100 
         [self stop];

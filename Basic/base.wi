@@ -130,8 +130,9 @@ NSObject
         return(weak?self.weakSelf:self);
 
 WeakSelf
-    Unsigned index=0,hash=0 (readonly,nonatomic)
-    id strongSelf=nil (readonly,weak,nonatomic)
+    readonly:
+        Unsigned index=0,hash=0
+        weak: id strongSelf=nil
 
     instancetype initWithStrongSelf:(id)strongSelf
         static Int s_index=0;

@@ -161,8 +161,8 @@ App<HasProperties,BaseObject>
 
 
 <StdVC:MyViewController,StdHasProperties>
-    Class nextVCClass (readonly)
-    UINavigationController navBar=nil (assign)
+    readonly: Class nextVCClass
+    assign: UINavigationController navBar=nil
 
     void goChildFromProperties:(NSObject<HasProperties>*)aparent {
         if (self.nextVCClass) {
@@ -193,10 +193,11 @@ App<HasProperties,BaseObject>
 
 
 <StdTable:StdHasProperties,StdTableModelFollower>
-    <StdVC> vc=nil (assign)
-    bool tableIsLoaded=nil (readonly,ivar)
+    assign: <StdVC> vc=nil
+    readonly:
+        bool tableIsLoaded=nil
+        Class tableModelClass
 
-    Class tableModelClass (readonly)
     Self start {
         ((NSObject<StdTableModel>*)model).vc=self.vc;
         ((NSObject<HasProperties>*)model).parent=self;
@@ -422,8 +423,13 @@ __Table__Cell "nac" "multi"
 
 
 <BasicTableModel:StdTableModel> "nac" "multi"
-    __Table__TableController controller=nil (assign,ivar=controller)
-    MutableArray __table__s=[[MutableArray alloc] init] (readonly)
+    assign:
+        __Table__TableController ivar:controller
+            =nil
+            ivar:controller
+
+    readonly: MutableArray __table__s=[[MutableArray alloc] init]
+
     Self start {
         {
             [self addSection:[__Table__SectionModel class]];

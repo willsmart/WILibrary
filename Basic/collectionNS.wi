@@ -1,7 +1,7 @@
 
 
 PointerKey <NSCopying> "-Object"
-    id o=nil (readonly)
+    readonly: id o=nil
     void dealloc {}
     id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
@@ -30,12 +30,12 @@ PointerKey <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    Unsigned hash=nil (readonly)
+    readonly: Unsigned hash=nil
 
 
 
 WeakObject <NSCopying> "-Object"
-    id o=nil (readonly)
+    readonly: id o=nil
     id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
         v_o=ao;
@@ -63,7 +63,7 @@ WeakObject <NSCopying> "-Object"
               ||[super isEqual:object]);
         return(ret);
     }
-    Unsigned hash=nil (readonly)
+    readonly: Unsigned hash=nil
 
 
 
