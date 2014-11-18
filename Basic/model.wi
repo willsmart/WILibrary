@@ -2,7 +2,7 @@
 ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model"
 
 <Model>
-    ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] (ivar=objectsOwnedOnlyByModels)
+    ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] 
 
     void startOfAutoreleasePool {
         for (NSObject<RefCountedObject> *o in objectsOwnedOnlyByModels) o.noMOForNextRetain=YES;

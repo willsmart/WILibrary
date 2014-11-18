@@ -38,7 +38,7 @@ Texture2D <BaseObject> "fn:render"
             [self unbindFrameBuffer];
         }
         return(frameBuffer);
-    }=nil (ivar=frameBuffer)
+    }=nil 
 
     void dealloc {@-50 
         self.context=nil;

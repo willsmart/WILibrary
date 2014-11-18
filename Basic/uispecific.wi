@@ -48,7 +48,7 @@ Globals
         #define NOTUI(...)
 
 Singletons
-    FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil (ivar=fontList,publicreadonly)
+    publicreadonly: FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil 
 
 FontList <BaseObject>
     FontList* +getDefault {return(g_singletons.fontList);}

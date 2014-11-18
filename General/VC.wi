@@ -12,9 +12,9 @@
     void restyle {
     }
 
-    UIViewController parVC=nil (assign,nonatomic)
+    assign: UIViewController parVC=nil
 
-    UIView contentView=nil (nonatomic,IBOutlet)
+    IBOutlet: UIView contentView=nil
 
     NSString allowedOrientations=@"new"
 

@@ -104,7 +104,7 @@ DictWords {
         prnt("%ld sorted words",_words->num());
     }
     
-    NSString binfn=@"dict.bin" (ivar=binfn)
+    NSString binfn=@"dict.bin" 
     
     bool writeBin {
         if (!_words) return(NO);

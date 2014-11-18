@@ -598,7 +598,7 @@ Globals
         URLHandlerRegistry *_URLHandlerRegistry_default=nil;
 
 URLHandlerRegistry "fn:util"
-    MutableArray handlers=[[MutableArray alloc] init] (publicreadonly,ivar=handlers)
+    publicreadonly: MutableArray handlers=[[MutableArray alloc] init] 
 
     Self init {}
 
@@ -854,7 +854,7 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 <WeakListItem>
     next -- <WeakListItem> prev
-    <WeakList> list=nil (assign,ivar=list)
+    assign: <WeakList> list=nil 
 
     void dealloc {@-500 
         [self unlink];
@@ -916,7 +916,7 @@ WeakList <BaseObject,WeakList> "fn:util"
     void dealloc {@-500 [self clear];}
 
 <ListItem>
-    <List> list=nil (assign,ivar=list)
+    assign: <List> list=nil 
     <ListItem> prev=nil (assign)
     <ListItem> next=nil
 
@@ -1024,7 +1024,7 @@ WeakList <BaseObject,WeakList> "fn:util"
 
 
 Singletons
-    Log log={return(log?log:(log=[[Log alloc] init]));}=nil (ivar=log)
+    Log log={return(log?log:(log=[[Log alloc] init]));}=nil 
 
 
 Log<BaseObject>

@@ -97,7 +97,7 @@ PropertyData
 
 
 <ChildArrayPropertyModelDelegate:MutableArrayDelegate> "nac" "multi"
-    <__Property__s__model> owner=nil (ivar=owner,assign)
+    <__Property__s__model> owner=nil 
     Self initWithOwner:(NSObject<__Property__s__model>*)aowner super:init {owner=aowner;}
 
     void didAddObject:(id)object withIndex:(Unsigned)index {
@@ -203,15 +203,16 @@ PropertyData
 
 
 PropertyViewerDelegate<MutableSetDelegate>
-    <DataModel> owner=nil (ivar=owner,assign)
+    <DataModel> owner=nil 
     Self initWithOwner:(NSObject<DataModel>*)aowner super:init {owner=aowner;}
     void didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
     void willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
 
 
 <DataModel:DataModelViewer>
-    MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] (publicreadonly,ivar=dataModelParentFilterDel)
-    MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] (publicreadonly,ivar=_dataModelParentProperties)
+    publicreadonly:
+        MutableDictionaryPrefixedKeyDelegate dataModelParentFilterDel=[[MutableDictionaryPrefixedKeyDelegate alloc] init] 
+        MutableDictionary _dataModelParentProperties=[[MutableDictionary alloc] init] 
 
 
     Self start {@15 
@@ -275,7 +276,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             }
             propertyDatas=ret;
             return(ret);
-        }=nil (ivar=propertyDatas)
+        }=nil 
 
     void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
 

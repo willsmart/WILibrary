@@ -1,5 +1,5 @@
 Singletons
-    StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil (ivar=styleTicker)
+    StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil 
 
 StyleTicker<Ticker,BaseObject> "fn:style"
     StyleTicker* +getDefault {return(g_singletons.styleTicker);}
@@ -120,7 +120,7 @@ StyleTicker<Ticker,BaseObject> "fn:style"
                     }
                 }
             }
-        }=nil (ivar=stylerString)
+        }=nil 
 
     void tick {
         prnt(".");

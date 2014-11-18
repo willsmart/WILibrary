@@ -541,7 +541,8 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
 UnionArray<UnionArray>
 
 <UnionArray:Array,ObjectEquate,MutableArrayDelegate>
-    MutableArray __unionArray=[[MutableArray alloc] init] (readonly,ivar=__mutableArray)
+    readonly:
+        MutableArray __unionArray=[[MutableArray alloc] init] 
     
     
     readonly:
@@ -600,8 +601,9 @@ UnionArray<UnionArray>
 
 
 
-    NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] (readonly,ivar=tmpis);
-    NSMutableArray __tmpa=[[NSMutableArray alloc] init] (readonly,ivar=tmpa);
+    readonly:
+        NSMutableIndexSet __tmpis=[[NSMutableIndexSet alloc] init] ;
+        NSMutableArray __tmpa=[[NSMutableArray alloc] init] ;
 
     void doAddObjects {
         [tmpis removeAllIndexes];

@@ -132,7 +132,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
     //Counting Entries
-    Unsigned count={return([__dictionary count]);} (atomic)
+    atomic: Unsigned count={return([__dictionary count]);}
     
     
     //Comparing Dictionaries
@@ -252,7 +252,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
 <ProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
-    <Basic_ProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
+    assign: <Basic_ProxiedDictionaryDelegate> owner=nil 
     Self initWithOwner:(NSObject<Basic_ProxiedDictionaryDelegate>*)aowner super:init {
         owner=aowner;
     }
@@ -277,7 +277,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 
 
 <SourcedProxiedDictionaryDelegate> "nac" "multi"
-    MutableDictionary basic_subDictionaryDelegates=[[MutableDictionary alloc] init] (ivar=basic_subDictionaryDelegates,publicreadonly)
+    publicreadonly: MutableDictionary basic_subDictionaryDelegates=[[MutableDictionary alloc] init] 
     void dealloc {@-800
         {
             NSArray *sources=basic_subDictionaryDelegates.allKeys;
@@ -311,7 +311,7 @@ Basic_ProxyDictionaryDelegate<Basic_ProxyDictionaryDelegate>
 
 
 <SourcedProxyDictionaryDelegate:MutableDictionaryDelegate> "nac" "multi"
-    <Basic_SourcedProxiedDictionaryDelegate> owner=nil (ivar=owner,assign)
+    assign: <Basic_SourcedProxiedDictionaryDelegate> owner=nil 
     readonly: NSObject<NSCopying> source=nil
     Self initWithOwner:(NSObject<Basic_SourcedProxiedDictionaryDelegate>*)aowner source:(NSObject<NSCopying>*)asource super:init {
         owner=aowner;
@@ -347,7 +347,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 <MutableDictionaryDelegate>
-    NSDictionary delegateForDictionary=nil (assign,ivar=delegateForDictionary)
+    assign: NSDictionary delegateForDictionary=nil 
     void delegateForDictionaryChanged {}
 
     readonly: <MutableDictionaryDelegate> dictionaryDelegate=nil
@@ -627,7 +627,7 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 <MutableDictionaryKeyFollower:BasicTester>
-    NSMutableDictionary __dictionaryObjectKeys=[NSMutableDictionary dictionary] (ivar=__dictionaryObjectKeys)
+    NSMutableDictionary __dictionaryObjectKeys=[NSMutableDictionary dictionary]
     
 
     void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {@-950
@@ -671,19 +671,19 @@ MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
         -v{
 keyPrefix=v;
             [self refreshFollowerDictionary];
-        }=nil (ivar=keyPrefix)
+        }=nil 
     Int keepKeyPrefixSuffixLength=
         {return(keepKeyPrefixSuffixLength);}
         -v{
             keepKeyPrefixSuffixLength=v;
             [self refreshFollowerDictionary];
-        }=nil (ivar=keepKeyPrefixSuffixLength)
+        }=nil 
     NSString filterKeyPrefix=
         {return(filterKeyPrefix);}
         -v{
 filterKeyPrefix=v;
             [self refreshFollowerDictionary];
-        }=nil (ivar=filterKeyPrefix)
+        }=nil 
 
     id<NSCopying> keyForObject:(id)object key:(id<NSCopying>)key {
         if (![(NSObject*)key isKindOfClass:[NSString class]]) return(nil);
@@ -709,11 +709,12 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
     id objectForObject:(id)object key:(id<NSCopying>)key {return(object);}
     id<NSCopying> keyForObject:(id)object key:(id<NSCopying>)key {return(key);}
 
-    NSMutableDictionary __mapk=[[NSMutableDictionary alloc] init] (readonly,ivar=mapk)
-    NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] (readonly,ivar=mapv)
+    readonly:
+        NSMutableDictionary __mapk=[[NSMutableDictionary alloc] init] 
+        NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] 
     <MutableDictionary> followerDictionary=
         {return(followerDictionary);}
-        -v{followerDictionary=v;[self refreshFollowerDictionary];}=nil (ivar=followerDictionary)
+        -v{followerDictionary=v;[self refreshFollowerDictionary];}=nil 
 
     void delegateForDictionaryChanged {
         [self refreshFollowerDictionary];
@@ -777,7 +778,7 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
 
 
 MutableDictionaryUnionDelegate1<MutableDictionaryDelegate>
-    MutableDictionaryUnionDelegate owner=nil (publicreadonly,ivar=owner)
+    publicreadonly: MutableDictionaryUnionDelegate owner=nil 
     Unsigned depth=nil
 
     Self initWithOwner:(MutableDictionaryUnionDelegate*)aowner depth:(Unsigned)adepth super:init {
@@ -798,13 +799,13 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         @999 return(ret);
     }
 
-
-    NSMutableArray __mapdicts=[[NSMutableArray alloc] init] (readonly,ivar=mapdicts)
-    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts)
+    readonly:
+        NSMutableArray __mapdicts=[[NSMutableArray alloc] init] 
+        NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
 
     <MutableDictionary> unionDictionary=
         {return(unionDictionary);}
-        -v{unionDictionary=v;[self refreshUnionDictionary];}=nil (ivar=unionDictionary)
+        -v{unionDictionary=v;[self refreshUnionDictionary];}=nil 
 
     //void setDelegateInArray:(NSObject<NSArray>*)v {@500 
     //    if (unionDictionary) [self refreshUnionDictionary];

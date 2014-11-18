@@ -81,24 +81,25 @@ Singletons
         }
     }
 
-    MutableDictionary metaEnabledURLRegistry={
-        if (!metaEnabledURLRegistry) {
-            metaEnabledURLRegistry=[[MutableDictionary alloc] init];
-            [metaEnabledURLRegistry addDelegate:[[MetaEnabledURLRegistryDelegate alloc] init]];
-        }
-        return(metaEnabledURLRegistry);
-        }=nil (ivar=metaEnabledURLRegistry,publicreadonly)
+    publicreadonly:
+        MutableDictionary metaEnabledURLRegistry={
+            if (!metaEnabledURLRegistry) {
+                metaEnabledURLRegistry=[[MutableDictionary alloc] init];
+                [metaEnabledURLRegistry addDelegate:[[MetaEnabledURLRegistryDelegate alloc] init]];
+            }
+            return(metaEnabledURLRegistry);
+            }=nil 
+        URLMetaEnableds urlMetaEnableds={
+            if (!urlMetaEnableds) {
+                urlMetaEnableds=[[URLMetaEnableds alloc] init];
+            }
+            return(urlMetaEnableds);
+            }=nil 
     void refreshMetaEnabledURLs {
         NSSet *s=self.urlMetaEnableds.urlMetaEnableds.copy;
         for (NSObject<MetaEnabled> *v in s) [v refreshMetaFromRegisteredURLs];
     }
 
-    URLMetaEnableds urlMetaEnableds={
-        if (!urlMetaEnableds) {
-            urlMetaEnableds=[[URLMetaEnableds alloc] init];
-        }
-        return(urlMetaEnableds);
-    }=nil (ivar=urlMetaEnableds,publicreadonly)
 
 
     NSString description={
@@ -128,7 +129,7 @@ URLMetaEnableds<BaseObject>
 
     
 MetaRequestCache<BaseObject,RootCodable>
-    LRUCache cache=[[LRUCache alloc] init] (publicreadonly,ivar=cache)
+    publicreadonly: LRUCache cache=[[LRUCache alloc] init] 
 
     NSDictionary asDictionary=
         {imret=cache.asDictionary;}
@@ -508,7 +509,7 @@ JSMetaProperty<NamedDataListener>
                 myDataRegistry=v;
                 self.dataRegistry=v;
             }
-        }=nil (ivar=myDataRegistry)
+        }=nil 
             
     void setDataRegistry:(DataRegistry*)v {
         @-100 DataRegistry *regWas=dataRegistry;
@@ -544,7 +545,7 @@ JSMetaProperty<NamedDataListener>
         NSObject<MetaEnabled> parentForInit=nil
         kid keyInParentToInitWith=nil
 
-    MutableDictionary _metaProperties=[[MutableDictionary alloc] init] (ivar=_metaProperties)
+    MutableDictionary _metaProperties=[[MutableDictionary alloc] init] 
     NSDictionary metaProperties=
         {return(_metaProperties.__dictionary);}
         -v{
@@ -1307,7 +1308,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
 
 
 <UIToolbarItemMetaEnabled:MetaEnabled,URLImageViewListener>
-    URLImageView urlImageView=nil (ivar=urlImageView)
+    URLImageView urlImageView=nil 
     UIBarButtonItemStyle +styleFromValue:(NSObject*)k {
         UIBarButtonItemStyle style=UIBarButtonItemStylePlain;
         if ([k isKindOfClass:[NSString class]]) {
@@ -1466,7 +1467,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
         }
         return([aself superInitWithStyle:style reuseIdentifier:reuseIdentifier]);
     }
-    MutableDictionaryFollowerDelegate modelFollowDel=[[MutableDictionaryFollowerDelegate alloc] init] (publicreadonly,ivar=modelFollowDel)
+    publicreadonly: MutableDictionaryFollowerDelegate modelFollowDel=[[MutableDictionaryFollowerDelegate alloc] init] 
     Self start {
         modelFollowDel.followerDictionary=self._myProperties;
     }
@@ -1484,7 +1485,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
 
 
 <UITableViewMetaEnabled:UIViewMetaEnabled>
-    <StdTableModelFollower> tableModelFollower=nil (assign,ivar=tableModelFollower)
+    assign: <StdTableModelFollower> tableModelFollower=nil 
     void refreshMetaEnabledURLs {
         [tableModelFollower.model markDirty];
     }

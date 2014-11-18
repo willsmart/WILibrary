@@ -1,6 +1,6 @@
 
 Singletons
-    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil (ivar=rootDataRegistry)
+    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil 
 
 
 
@@ -16,7 +16,7 @@ DataViewerProperties_SourcedProxyDictionaryDelegate<SourcedProxyDictionaryDelega
 
 
 DataRegistryParentValueDelegate<MutableValueDelegate>
-    DataRegistry owner=nil (assign,ivar=owner)
+    assign: DataRegistry owner=nil 
     Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
@@ -37,7 +37,7 @@ DataRegistryParentValueDelegate<MutableValueDelegate>
 
 
 DataRegistryMyViewersSetDelegate<MutableSetDelegate>
-    DataRegistry owner=nil (assign,ivar=owner)
+    assign: DataRegistry owner=nil 
     Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
@@ -50,7 +50,7 @@ DataRegistryMyViewersSetDelegate<MutableSetDelegate>
         }
     }
 DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
-    DataRegistry owner=nil (assign,ivar=owner)
+    assign: DataRegistry owner=nil 
     Self initWithOwner:(DataRegistry*)aowner super:init {
         owner=aowner;
     }
@@ -69,15 +69,16 @@ DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
 
 DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedProxiedDictionaryDelegate,BaseObject>
     viewerInRegistry >s< <DataModelViewer> setOfMyViewer
-    WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] (ivar=myViewers,publicreadonly)
-    WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] (ivar=allViewers,publicreadonly)
-    MutableArray propertyStack=[[MutableArray alloc] init] (publicreadonly,ivar=propertyStack)
+    publicreadonly: 
+        WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] 
+        WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] 
+        MutableArray propertyStack=[[MutableArray alloc] init] 
+        publicreadonly: DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] 
 
     registry -m< ViewerListenerSet viewerListenerSet
 
     parent -s<~ DataRegistry child
 
-    DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] (publicreadonly,ivar=parentDel)
 
     Self start {
         @10
@@ -318,7 +319,7 @@ ViewerPropertyListenerSet
                 dataRegistry=v;
                 self.propertyNamesListenedTo=ns;
             }
-        }=nil (ivar=dataRegistry)
+        }=nil 
 
     NSSet propertyNamesListenedTo=
         {

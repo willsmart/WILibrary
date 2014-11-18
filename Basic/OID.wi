@@ -303,7 +303,7 @@ Globals
 
     bool debugAutorelease=nil
 
-    LL __owner_context=nil (ivar=__owner_context)
+    LL __owner_context=nil 
 
     Self start {@-996 debugAutorelease=YES;}
     Self start {@-995 objInitFn(self,objectIDInTotal,objectIDInClass);
@@ -338,7 +338,7 @@ Globals
     
 Singletons
 
-    Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil(publicreadonly,ivar=trace)
+    publicreadonly: Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil
     
 "<pthread.h>"
 Globals
@@ -620,7 +620,7 @@ Trace<Ticker,BaseObject> "notrace"
 
     
 Singletons
-    ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil(publicreadonly,ivar=objectGraph)
+    publicreadonly: ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil
     
 "<pthread.h>"
 Globals

@@ -158,7 +158,7 @@ referencedPointBinding=v;
                     [self setReferencedPointForPoint:part];
                 }
             }
-        } (ivar=referencedPointBinding)
+        } 
     NSString referencedObjectBinding=
         {return(referencedObjectBinding);}
         -v{
@@ -168,7 +168,7 @@ referencedObjectBinding=v;
                     [self setReferencedPointForPoint:part];
                 }
             }
-        } (ivar=referencedObjectBinding)
+        } 
 
 
 VGPartsSinglyReferencedPointFollowerSetDelegate
@@ -222,7 +222,7 @@ referencedPointBinding=v;
                     [self setReferencedPointsForPoint:part];
                 }
             }
-        } (ivar=referencedPointBinding)
+        } 
     NSString referencedObjectBinding=
         {return(referencedObjectBinding);}
         -v{
@@ -232,7 +232,7 @@ referencedObjectBinding=v;
                     [self setReferencedPointsForPoint:part];
                 }
             }
-        } (ivar=referencedObjectBinding)
+        } 
 
 
 VGPartsGreedilyReferencedPointFollowerSetDelegate

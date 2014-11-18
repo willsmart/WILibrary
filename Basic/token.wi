@@ -38,9 +38,9 @@ WReader <BaseObject> "fn:token"
         pos=-1;
     }
 
-    MutableDictionary replaces=[[MutableDictionary alloc] init] (publicreadonly,ivar=replaces)
-
-    WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] (publicreadonly,ivar=tokenizer)
+    publicreadonly:
+        MutableDictionary replaces=[[MutableDictionary alloc] init] 
+        WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] 
 
 
     WReaderToken nextToken={

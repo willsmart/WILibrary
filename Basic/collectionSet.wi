@@ -125,7 +125,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
     // Counting Entries
-    Unsigned count={return([__set count]);} (atomic)
+    atomic: Unsigned count={return([__set count]);}
 
 
     // Accessing Set Members
@@ -189,7 +189,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 <MutableSetDelegate>
-    NSSet delegateForSet=nil (assign,ivar=delegateForSet)
+    assign: NSSet delegateForSet=nil 
     void delegateForSetChanged {}
 
     readonly: <MutableSetDelegate> setDelegate=nil
@@ -464,12 +464,14 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         @999 return(ret);
     }
 
-    NSMutableDictionary __map1=[[NSMutableDictionary alloc] init] (readonly,ivar=map1)
-    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets)
-    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts)
+    readonly:
+        NSMutableDictionary __map1=[[NSMutableDictionary alloc] init] 
+        NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] 
+        NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
+
     MutableSet followerSet=
         {return(followerSet);}
-        -v{followerSet=v;[self refreshFollowerSet];}=nil (ivar=followerSet)
+        -v{followerSet=v;[self refreshFollowerSet];}=nil 
 
     void delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -565,7 +567,7 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
 
 
 MutableSetUnionDelegate1<MutableSetDelegate>
-    MutableSetUnionDelegate owner=nil (publicreadonly,ivar=owner)
+    publicreadonly: MutableSetUnionDelegate owner=nil 
     Self initWithOwner:(MutableSetUnionDelegate*)aowner super:init {
         owner=aowner;
     }
@@ -588,12 +590,13 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
     }
 
 
-    NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] (readonly,ivar=mapsets)
-    NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] (readonly,ivar=ocounts)
+    readonly:
+        NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] 
+        NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
 
     MutableSet unionSet=
         {return(unionSet);}
-        -v{unionSet=v;[self refreshUnionSet];}=nil (ivar=unionSet)
+        -v{unionSet=v;[self refreshUnionSet];}=nil 
 
     void delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];

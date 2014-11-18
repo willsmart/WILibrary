@@ -5,8 +5,8 @@
 // summary of links and vars:
 Styler
     styler -a< <StyledObject> object
-    NSMutableDictionary keysAndValues=[MutableDictionary dictionary] (ivar=keysAndValues)
-    NSMutableSet usedKeys=[MutableSet set] (ivar=usedKeys)
+    NSMutableDictionary keysAndValues=[MutableDictionary dictionary] 
+    NSMutableSet usedKeys=[MutableSet set] 
 
 
 

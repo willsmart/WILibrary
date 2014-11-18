@@ -855,7 +855,7 @@ Globals
 
 
 DictionaryWord
-    NSString word=nil (ivar=word)
+    NSString word=nil 
     double wordFreq=nil
     double _calculatedProb=nil
 

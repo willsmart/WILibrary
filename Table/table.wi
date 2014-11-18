@@ -146,7 +146,7 @@
 <CellModelFromNib:CellModel>
     readonly: NSString nibName
     Int tag=0
-    Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} (ivar=uiTVCellClass)
+    Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} 
     NSString cellReuseIdentifier=
         {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (readonly!)
     UITableViewCell newUITVCell={@-999
@@ -161,8 +161,8 @@
 <SectionModelFromNib:SectionModel>
     readonly: NSString nibName
     Int headerTag=1,footerTag=2
-    Class headerClass={return(headerClass?headerClass:[UIView class]);} (ivar=headerClass)
-    Class footerClass={return(footerClass?footerClass:[UIView class]);} (ivar=footerClass)
+    Class headerClass={return(headerClass?headerClass:[UIView class]);} 
+    Class footerClass={return(footerClass?footerClass:[UIView class]);} 
     UIView header={@-999 
         id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
         @999 return(ret);

@@ -72,8 +72,9 @@ RequestProxy <WeakListItem> "fn:util"
 
 
 <RequestCache:Codable>
-    WeakList proxyList=[[WeakList alloc] init] (publicreadonly,ivar=proxyList)
-    LRUCache cache=[[LRUCache alloc] init] (publicreadonly,ivar=cache)
+    publicreadonly:
+        WeakList proxyList=[[WeakList alloc] init] 
+        LRUCache cache=[[LRUCache alloc] init] 
 
     NSDictionary asDictionary=
         {imret=cache.asDictionary;}
@@ -208,7 +209,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
 
 
 <LRUCacheItem:ListItem>
-    <LRUCache> cache=nil (ivar=cache)
+    <LRUCache> cache=nil 
     float age=0,initialSize=0
     readonly: float size
     NSObject<NSCopying> _cacheKey=nil

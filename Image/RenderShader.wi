@@ -12,7 +12,7 @@ RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
     vec2 unitSize (uniform)
     float opacity (uniform)
     
-    UIView renderedInView=nil (assign,ivar=renderedInView)
+    assign: UIView renderedInView=nil 
     
     Self start {
         self.program.vertexCount=4;

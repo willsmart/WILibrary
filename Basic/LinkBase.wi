@@ -27,8 +27,8 @@
 
 <MutableValueDelegate>
     bool retainsAsValueDelegate=YES
-    <MutableValueDelegate> parentValueDelegate=nil (ivar=parentValueDelegate,assign)
-    <MutableValueDelegate> valueDelegate=nil (ivar=valueDelegate,weakandstrong)
+    <MutableValueDelegate> parentValueDelegate=nil 
+    weakandstrong: <MutableValueDelegate> valueDelegate=nil 
     void addDelegate:(NSObject<MutableValueDelegate>*)v {
         if (v.valueDelegate) return;
         if (v==self) return;
@@ -79,22 +79,23 @@
 
 
 <ValueLinkEndpoint:MutableValueDelegate>
-    id value=
-        {return(v_value);}
-        -v{
-            if ((v_value==v)||(v&&[self unacceptable:v])) return;
-            [self willChangeValueFrom:v_value to:v];
-            if (v_value) {
-                [[self endpointForObject:v_value] _removeReferrer:self];
-            }
-            if ((v_value=v)) {
-                if (![[self endpointForObject:v] _addReferrer:self]) {
-                    v_value=nil;
+    weakandstrong:
+        id value=
+            {return(v_value);}
+            -v{
+                if ((v_value==v)||(v&&[self unacceptable:v])) return;
+                [self willChangeValueFrom:v_value to:v];
+                if (v_value) {
+                    [[self endpointForObject:v_value] _removeReferrer:self];
                 }
-            }
-            v_value_strong=(retains?v_value:nil);
-            [self didSetValueTo:v];
-        }=nil (weakandstrong,ivar=v_value)
+                if ((v_value=v)) {
+                    if (![[self endpointForObject:v] _addReferrer:self]) {
+                        v_value=nil;
+                    }
+                }
+                v_value_strong=(retains?v_value:nil);
+                [self didSetValueTo:v];
+            }=nil 
     bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);

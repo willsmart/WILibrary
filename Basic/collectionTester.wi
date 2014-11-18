@@ -29,7 +29,7 @@ Globals
 
 CollectionTestObject
     readonly: Int intValue=nil
-    NSMutableDictionary subObjects=[NSMutableDictionary dictionary] (ivar=subObjects)
+    NSMutableDictionary subObjects=[NSMutableDictionary dictionary] 
     <Tester> tester=nil (assign)
 
     Self start {
@@ -77,7 +77,7 @@ CollectionTestSubObject
     Int willAddCount=0,willRemoveCount=0;
     Int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
     Int rcInner=0
-    CollectionTestObject *testObject=nil (assign,ivar=testObject)
+    assign: CollectionTestObject *testObject=nil 
 
     NSString description={return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
 
@@ -109,9 +109,9 @@ CollectionTestSubObject
     NSMutableArray _keyArray=nil,keyArray={if (!v__keyArray) self._keyArray=self.randKeyArray;return(v__keyArray);}
     NSMutableSet _objectSet=nil,objectSet={if (!v__objectSet) self._objectSet=self.randSet;return(v__objectSet);}
     NSMutableIndexSet _indexes=nil,indexes={if (!v__indexes) self._indexes=self.randInternalIndexSet;return(v__indexes);}
-    id _object=nil (assign,ivar=v__object)
+    assign: id _object=nil 
     NSObject *object={if (!v__object) self._object=self.randObject;return(v__object);}
-    id _object2=nil (assign,ivar=v__object2)
+    assign: id _object2=nil 
     NSObject *object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
     NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
     NSRange _range=nil,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}=nil
@@ -367,7 +367,7 @@ CollectionTestSubObject
 
 
 <MutableSetMirrorTester:MutableSet,BasicTester,TesterCounter>
-    NSMutableSet __mirrorSet=[MutableSet set] (ivar=__mirrorSet)
+    NSMutableSet __mirrorSet=[MutableSet set] 
     Int __addingToMirrorSet=0,__removingFromMirrorSet=0
     
     void willAddObject:(id)object {@900 
@@ -413,9 +413,9 @@ CollectionTestSubObject
 
 
 SetTester <Tester>
-    NSMutableSet a=[MutableSet set] (ivar=a)
-    MutableSetMirrorTesterImpl b=[MutableSetMirrorTesterImpl set] (ivar=b)
-    WeakMutableSetMirrorTesterImpl c=[WeakMutableSetMirrorTesterImpl set] (ivar=c)
+    NSMutableSet a=[MutableSet set] 
+    MutableSetMirrorTesterImpl b=[MutableSetMirrorTesterImpl set] 
+    WeakMutableSetMirrorTesterImpl c=[WeakMutableSetMirrorTesterImpl set] 
 
     Int expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
         if ([set isEqualToString:@"weak"]) return(N);
@@ -639,9 +639,9 @@ SetTester <Tester>
 
 
 DictionaryTester <Tester>
-    NSMutableDictionary a=[NSMutableDictionary dictionary] (ivar=a)
-    MutableDictionaryMirrorTesterImpl b=[MutableDictionaryMirrorTesterImpl dictionary] (ivar=b)
-    WeakMutableDictionaryMirrorTesterImpl c=[WeakMutableDictionaryMirrorTesterImpl dictionary] (ivar=c)
+    NSMutableDictionary a=[NSMutableDictionary dictionary] 
+    MutableDictionaryMirrorTesterImpl b=[MutableDictionaryMirrorTesterImpl dictionary] 
+    WeakMutableDictionaryMirrorTesterImpl c=[WeakMutableDictionaryMirrorTesterImpl dictionary] 
 
 
     Int expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
@@ -880,9 +880,9 @@ DictionaryTester <Tester>
 
 
 ArrayTester <Tester>
-    NSMutableArray a=[NSMutableArray array] (ivar=a)
-    MutableArrayMirrorTesterImpl b=[MutableArrayMirrorTesterImpl array] (ivar=b)
-    WeakMutableArrayMirrorTesterImpl c=[WeakMutableArrayMirrorTesterImpl array] (ivar=c)
+    NSMutableArray a=[NSMutableArray array] 
+    MutableArrayMirrorTesterImpl b=[MutableArrayMirrorTesterImpl array] 
+    WeakMutableArrayMirrorTesterImpl c=[WeakMutableArrayMirrorTesterImpl array] 
 
 
     Int expectNForSet:(NSString*)set givenBaseN:(Int)N {@!0 
