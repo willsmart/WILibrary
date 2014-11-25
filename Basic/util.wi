@@ -318,12 +318,14 @@ Globals
 
 Singletons
     -(init)init {}
+    +(Singletons*)_ {return(self.getDefault);}
     +(Singletons*)getDefault {
         if (!g_singletons) {
             ADDSINGLETON(g_singletons=[[Singletons alloc] init]);
         }
         return(g_singletons);
     }
+
 
 
 

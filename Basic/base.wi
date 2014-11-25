@@ -29,19 +29,6 @@ Globals
 
 
 
-AppDelegate
-    -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-        NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-
-    -impl
-        void uncaughtExceptionHandler(NSException *exception) {
-            NSLog(@"\n\n\nStack:(Here)\n%@\n\nStack:(Exception)\n%@\n\nException: %@\n",NSThread.callStackSymbols.description,exception.callStackSymbols.description,exception.reason);
-            BPNOW;
-        }
-    -iface
-        void uncaughtExceptionHandler(NSException *exception);
-
-
 
 
 <BaseClass>
@@ -133,11 +120,11 @@ WeakSelf
     Unsigned index=0,hash=0 (readonly,nonatomic)
     id strongSelf=nil (readonly,weak,nonatomic)
 
-    -(instancetype)initWithStrongSelf:(id)strongSelf
+    -(instancetype)initWithStrongSelf:(id)astrongSelf
         static Int s_index=0;
         if ((self=[super init])) {
             index=++s_index;
-            hash=[((v_strongSelf=strongSelf)) hash];
+            hash=[((strongSelf=astrongSelf)) hash];
         }
         return(self);
 
@@ -145,18 +132,18 @@ WeakSelf
         if ((self=[super init])) {
             index=copy->index;
             hash=copy->hash;
-            v_strongSelf=copy->v_strongSelf;
+            strongSelf=copy->strongSelf;
         }
         return(self);
 
-    +(WeakSelf*)weakSelfFromObject:(id)strongSelf
-        return [[WeakSelf alloc] initWithStrongSelf:strongSelf];
+    +(WeakSelf*)weakSelfFromObject:(id)astrongSelf
+        return [[WeakSelf alloc] initWithStrongSelf:astrongSelf];
 
     -(WeakSelf*)weakSelf
         return(self);
 
     -(id)selfWithWeakness:(bool)weak
-        return(weak?self:v_strongSelf);
+        return(weak?self:strongSelf);
 
     -(bool)isWeakSelf
         return(YES);
@@ -165,4 +152,4 @@ WeakSelf
         return [[WeakSelf allocWithZone:zone] initCopyFrom:self];
 
     -(BOOL)isEqual:(id)object
-        return(object&&((object==self)||(object==v_strongSelf)||([object isKindOfClass:WeakSelf.class]&&(((WeakSelf*)object))->index==index)));
+        return(object&&((object==self)||(object==strongSelf)||([object isKindOfClass:WeakSelf.class]&&(((WeakSelf*)object))->index==index)));

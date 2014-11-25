@@ -18,7 +18,7 @@
 
 Globals
     -top
-        #ifdef TARGET_OS_IPHONE
+        #ifdef TARGET_OS_IPHONE_
             #import <UIKit/UIKit.h>
         #else
             #define UIColor NSColor
@@ -35,13 +35,13 @@ Globals
         #endif
     -imports
         #ifndef __SWIFT__
-        #include <iostream>
+        //#include <iostream>
         #include $"{WIBASE}/BasicClassesCPP/Headers.h"
         #endif
     -interfaces
         #ifndef __SWIFT__
         #define __NOSWIFT__
-        #import $"{APP}-Swift.h"
+        #import $"{APPNAME}-Swift.h"
         #endif
     -top:impl
         #define MAINCPPFILE
