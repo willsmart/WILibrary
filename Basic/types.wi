@@ -126,14 +126,13 @@ type CommitStage "typedef:enum{stage_commitProperties=0,stage_startCommit,stage_
 
 
 
-Globals
-    -decl:impl
-        #define DEB(...) __VA_ARGS__
-        NSMutableArray *singletons=nil;
-        void clearSingletons() {singletons=nil;}
-
-    -decl
-        extern NSMutableArray *singletons;
-        #define ADDSINGLETON(o) [(!singletons?singletons=[NSMutableArray array]:singletons) addObject:o]
-        void clearSingletons();
-
+decl:impl:{
+    #define DEB(...) __VA_ARGS__
+    NSMutableArray *singletons=nil;
+    void clearSingletons() {singletons=nil;}
+}
+decl:{
+    extern NSMutableArray *singletons;
+    #define ADDSINGLETON(o) [(!singletons?singletons=[NSMutableArray array]:singletons) addObject:o]
+    void clearSingletons();
+}
