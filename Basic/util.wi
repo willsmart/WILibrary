@@ -224,10 +224,19 @@ NSString "fn:sys"
         return(del);
     }
 
+    -(unichar*)unicharCString {
+        NSMutableData *data=[NSMutableData dataWithLength:(self.length+1)*sizeof(unichar)];
+        objc_setAssociatedObject(self, @selector(unicharCString), data, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        unichar *ret=(unichar*)data.mutableBytes;
+        for (int i=0;i<self.length;i++) ret[i]=[self characterAtIndex:i];
+        ret[self.length]=0;
+        return(ret);
+    }
 
 NSData
     -(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse*__strong*)retresponse error:(NSError*__strong*)reterr {
-        NSError *err=nil;
+        NSError *err
+        =nil;
         NSURLResponse *response=nil;
         if (reterr) *reterr=nil;
         if (retresponse) retresponse=nil;

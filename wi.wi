@@ -3,6 +3,7 @@
 "<Foundation/Foundation.h>"
 "<objc/runtime.h>"
 "<sys/mman.h>"
+"<pthread.h>"
 
 "Basic/types.wi"
 "Basic/collections.wi"
@@ -36,6 +37,7 @@ Globals
     -imports
         #ifndef __SWIFT__
         //#include <iostream>
+        #define USEPROFILER
         #include $"{WIBASE}/BasicClassesCPP/Headers.h"
         #endif
     -interfaces
@@ -45,5 +47,6 @@ Globals
         #endif
     -top:impl
         #define MAINCPPFILE
+        #define USEPROFILER
         #include $"{WIBASE}/BasicClassesCPP/Headers.h"
 
