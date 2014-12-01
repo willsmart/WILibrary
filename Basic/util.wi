@@ -17,7 +17,7 @@
 
 <SendsSelector>
 <RecievesSelector>
-    selectorReceiver >s< <SendsSelector> selectorSender
+    selectorReceiver >< <SendsSelector> selectorSender
 
 NSObject "fn:sys"
     id performUnknownSelector:(SEL)aSelector {
@@ -139,13 +139,14 @@ NSString "fn:sys"
         return(JSONunicharsStringForCString(from,N,pd,retLength));
     }
 
-    -iface
+    iface:{
         NOSWIFT(
         NSString *JSONStringForString(NSString *str, kid threadTmpDataKey=nil);
         NSString *JSONStringForCString(const char *from, Int length, NSMutableData *tmpData, kid threadTmpDataKey=nil);
         const unichar *JSONunicharsStringForCString(const char *from, Int length, NSMutableData *__strong*ptmpData, Int *retLength,kid threadTmpDataKey=nil);
         )
-    -impl
+    }
+    impl:{
         NOSWIFT(
         NSString *JSONStringForString(NSString *str, kid threadTmpDataKey) {
             return(JSONStringForCString([str cStringUsingEncoding:NSASCIIStringEncoding],str.length,nil,threadTmpDataKey));
@@ -188,9 +189,9 @@ NSString "fn:sys"
             *to=0;
             if (retLength) *retLength=(Int)(to-toWas);
             return(toWas);
-            )
         }
-
+        )
+    }
 
     NSString* stringByDecodingCEscapes {
         return([self stringByReplacingPairs:@"\\\\",@"\\\\ ",@"\\t",@"\t",@"\\r",@"\r",@"\\n",@"\n",@"\\\"",@"\"",@"\\'",@"'",@"\\\\ ",@"\\",nil]);
@@ -300,19 +301,19 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
 
 
 
-Globals
-    -interfaces
-        extern Singletons *g_singletons;
-        #ifndef UIONLY
-        #define UIONLY(...)
-        #endif
-        #ifndef NOTUI
-        #define NOTUI(...) __VA_ARGS__
-        #endif
+interfaces:{
+    extern Singletons *g_singletons;
+    #ifndef UIONLY
+    #define UIONLY(...)
+    #endif
+    #ifndef NOTUI
+    #define NOTUI(...) __VA_ARGS__
+    #endif
+}
 
-    -interfaces:impl
-        Singletons *g_singletons=nil;
-
+interfaces:impl:{
+    Singletons *g_singletons=nil;
+}
 
 
 
@@ -590,12 +591,13 @@ MemMonitor "fn:util"
     }
 
 
-Globals
-    -interfaces
-        extern URLHandlerRegistry *_URLHandlerRegistry_default;
+interfaces:{
+    extern URLHandlerRegistry *_URLHandlerRegistry_default;
+}
 
-    -interfaces:impl
-        URLHandlerRegistry *_URLHandlerRegistry_default=nil;
+interfaces:impl:{
+    URLHandlerRegistry *_URLHandlerRegistry_default=nil;
+}
 
 URLHandlerRegistry "fn:util"
     publicreadonly: MutableArray handlers=[[MutableArray alloc] init] 

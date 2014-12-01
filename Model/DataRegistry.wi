@@ -68,7 +68,7 @@ DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
 
 
 DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedProxiedDictionaryDelegate,BaseObject>
-    viewerInRegistry >s< <DataModelViewer> setOfMyViewer
+    viewerInRegistry >< <DataModelViewer> setOfMyViewer
     publicreadonly: 
         WeakMutableDictionary myViewers=[[WeakMutableDictionary alloc] init] 
         WeakMutableDictionary allViewers=[[WeakMutableDictionary alloc] init] 
@@ -279,7 +279,7 @@ ViewerListenerSet
 
 ViewerPropertyListenerSet
     Self init {}
-    namedDataListenerSet >s<~ <NamedDataListener> namedDataListener
+    namedDataListenerSet ><~ <NamedDataListener> namedDataListener
 
     void willChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
         NSString *propertyNamev=self.propertyName;

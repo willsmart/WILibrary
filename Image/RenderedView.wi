@@ -978,7 +978,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 
 
 <URLImageViewListener>
-    imageViewListener >s< URLImageView listenToImageView
+    imageViewListener >< URLImageView listenToImageView
 
     void imageChangedInImageView:(URLImageView*)imageView;
 

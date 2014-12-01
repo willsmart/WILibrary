@@ -9,10 +9,9 @@ sys EAGLContext
 type GLint
 type GLuint
 
-Globals
-    -top
-        #define kMaxTextureSize   2048
-
+top:{
+    #define kMaxTextureSize   2048
+}
 
 type Texture2DPixelFormat "typedef:enum {
   kTexture2DPixelFormat_Automatic = 0,

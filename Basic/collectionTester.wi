@@ -19,12 +19,9 @@
 
 
 
-Globals
-    -top
-        extern NSString *testKey;
-
-    -top:impl
-        NSString *testKey=nil;
+top:
+    {extern NSString *testKey;}
+    impl:{NSString *testKey=nil;}
 
 
 CollectionTestObject
@@ -120,7 +117,7 @@ CollectionTestSubObject
 
     NSDictionary *collections=[NSDictionary dictionary]
 
-    -top
+    top:{
         #define ITERATECOLLECTIONS(typ,v,...) \
         for (NSString *_key in self.collections) { \
             @autoreleasepool {} \
@@ -146,6 +143,7 @@ CollectionTestSubObject
             } \
             testKey=nil; \
         }
+    }
 
     void clearTest {
         [self._keyArray removeAllObjects];

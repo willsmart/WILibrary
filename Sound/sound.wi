@@ -154,45 +154,44 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
 
 
 
-Globals
-    -interfaces
-        OSStatus recordingCallback(void *inRefCon,
-        AudioUnitRenderActionFlags *ioActionFlags,
-        const AudioTimeStamp *inTimeStamp,
-        UInt32 inBusNumber,
-        UInt32 inNumberFrames,
-        AudioBufferList *ioData);
+interfaces:{
+    OSStatus recordingCallback(void *inRefCon,
+    AudioUnitRenderActionFlags *ioActionFlags,
+    const AudioTimeStamp *inTimeStamp,
+    UInt32 inBusNumber,
+    UInt32 inNumberFrames,
+    AudioBufferList *ioData);
+}
+interfaces:impl:{
+    OSStatus recordingCallback(void *inRefCon,
+    AudioUnitRenderActionFlags *ioActionFlags,
+    const AudioTimeStamp *inTimeStamp,
+    UInt32 inBusNumber,
+    UInt32 inNumberFrames,
+    AudioBufferList *ioData) {prnt("r");
+        AudioBuffer buffer;
+     
+        OSStatus status;
+     
+        buffer.mDataByteSize = inNumberFrames * 4; // sample size
+        buffer.mNumberChannels = 2; // one channel
+        buffer.mData = malloc( inNumberFrames * 4 ); // buffer size
+     
+        AudioBufferList bufferList;
+        bufferList.mNumberBuffers = 1;
+        bufferList.mBuffers[0] = buffer;
+     
+        status = AudioUnitRender([(NSObject<RecordingAudioUnit>*)inRefCon audioUnit], ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames,     &bufferList);
+     
+        AudioBuffer sourceBuffer = bufferList.mBuffers[0];
+        Int N=sourceBuffer.mDataByteSize/4;
+        if (N) [(NSObject<RecordingAudioUnit>*)inRefCon addInts:(Int*)sourceBuffer.mData num:N];
 
-    -interfaces:impl
-        OSStatus recordingCallback(void *inRefCon,
-        AudioUnitRenderActionFlags *ioActionFlags,
-        const AudioTimeStamp *inTimeStamp,
-        UInt32 inBusNumber,
-        UInt32 inNumberFrames,
-        AudioBufferList *ioData) {prnt("r");
-            AudioBuffer buffer;
-         
-            OSStatus status;
-         
-            buffer.mDataByteSize = inNumberFrames * 4; // sample size
-            buffer.mNumberChannels = 2; // one channel
-            buffer.mData = malloc( inNumberFrames * 4 ); // buffer size
-         
-            AudioBufferList bufferList;
-            bufferList.mNumberBuffers = 1;
-            bufferList.mBuffers[0] = buffer;
-         
-            status = AudioUnitRender([(NSObject<RecordingAudioUnit>*)inRefCon audioUnit], ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames,     &bufferList);
-         
-            AudioBuffer sourceBuffer = bufferList.mBuffers[0];
-            Int N=sourceBuffer.mDataByteSize/4;
-            if (N) [(NSObject<RecordingAudioUnit>*)inRefCon addInts:(Int*)sourceBuffer.mData num:N];
-
-            free(bufferList.mBuffers[0].mData);
-         
-            return noErr;
-        }
-
+        free(bufferList.mBuffers[0].mData);
+     
+        return noErr;
+    }
+}
 
 
 
@@ -360,35 +359,35 @@ Globals
 
 
 
-Globals
-    -interfaces
-        extern Int g_sampleIndex;
-        OSStatus playbackCallback(void *inRefCon,
-                                          AudioUnitRenderActionFlags *ioActionFlags,
-                                          const AudioTimeStamp *inTimeStamp,
-                                          UInt32 inBusNumber,
-                                          UInt32 inNumberFrames,
-                                          AudioBufferList *ioData);
-    -interfaces:impl
-        OSStatus playbackCallback(void *inRefCon,
-                                          AudioUnitRenderActionFlags *ioActionFlags,
-                                          const AudioTimeStamp *inTimeStamp,
-                                          UInt32 inBusNumber,
-                                          UInt32 inNumberFrames,
-                                          AudioBufferList *ioData)
-        {prnt("p");
-            for(UInt32 i = 0; i < ioData->mNumberBuffers; ++i)
-            {
-                Int numSamples = ioData->mBuffers[i].mDataByteSize / 8,N=numSamples;
-                [(NSObject<PlaybackAudioUnit>*)inRefCon getInts:(PLAYFRAME*)ioData->mBuffers[i].mData withCount:&N];
-                if (N<numSamples) {
-                    memset(((PLAYFRAME*)ioData->mBuffers[i].mData)+N,0,(numSamples-N)*sizeof(PLAYFRAME));
-                }
+interfaces:{
+    extern Int g_sampleIndex;
+    OSStatus playbackCallback(void *inRefCon,
+                                      AudioUnitRenderActionFlags *ioActionFlags,
+                                      const AudioTimeStamp *inTimeStamp,
+                                      UInt32 inBusNumber,
+                                      UInt32 inNumberFrames,
+                                      AudioBufferList *ioData);
+}
+interfaces:impl:{
+    OSStatus playbackCallback(void *inRefCon,
+                                      AudioUnitRenderActionFlags *ioActionFlags,
+                                      const AudioTimeStamp *inTimeStamp,
+                                      UInt32 inBusNumber,
+                                      UInt32 inNumberFrames,
+                                      AudioBufferList *ioData)
+    {prnt("p");
+        for(UInt32 i = 0; i < ioData->mNumberBuffers; ++i)
+        {
+            Int numSamples = ioData->mBuffers[i].mDataByteSize / 8,N=numSamples;
+            [(NSObject<PlaybackAudioUnit>*)inRefCon getInts:(PLAYFRAME*)ioData->mBuffers[i].mData withCount:&N];
+            if (N<numSamples) {
+                memset(((PLAYFRAME*)ioData->mBuffers[i].mData)+N,0,(numSamples-N)*sizeof(PLAYFRAME));
             }
-
-            return noErr;
         }
 
+        return noErr;
+    }
+}
 
 
 

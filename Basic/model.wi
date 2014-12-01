@@ -95,7 +95,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
     ULL commitFrame=1
     bool _doneStage=NO,doneStage={return(_doneStage);}
 
-    sourceCommitter >s< <Commitable> sinkCommitter
+    sourceCommitter >< <Commitable> sinkCommitter
 
     Int commitProperties:(Int)substageIndex {@-999 Int implementedStages=1@-990 ;
         @-5 switch(substageIndex) {case 0:
@@ -282,12 +282,13 @@ DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
     }
 
 
-Globals
-    -interfaces
-        extern Model *_Model_default;
+interfaces:{
+    extern Model *_Model_default;
+}
 
-    -interfaces:impl
-        Model *_Model_default=nil;
+interfaces:impl:{
+    Model *_Model_default=nil;
+}
 
 Model<Model,Ticker,Waiter> "fn:model"
     dirtyInModel -s< <Commitable> dirtyObject

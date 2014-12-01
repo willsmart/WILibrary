@@ -10,14 +10,14 @@
 type UnpackedWord "typedef:struct {unsigned short blockLength;unsigned short *addr;char letters[MAXWORDLEN],word[MAXWORDLEN];int numLetters,wordLen;double freq;}"
 
 
-Globals
-    -top:iface
-        #define NUMLETTERS 26
-        #define LASTLETTER (NUMLETTERS-1)
-        #define NUMLENGTHS 25
-        #define LASTLENGTH (NUMLENGTHS-1)
-        #define MAXWORDLEN 128
-        #define MAXSEARCHLETTERS 40
+top:iface:{
+    #define NUMLETTERS 26
+    #define LASTLETTER (NUMLETTERS-1)
+    #define NUMLENGTHS 25
+    #define LASTLENGTH (NUMLENGTHS-1)
+    #define MAXWORDLEN 128
+    #define MAXSEARCHLETTERS 40
+}
 
 
 
@@ -25,9 +25,7 @@ Globals
 
 
 
-
-Globals
-    -interfaces {
+interfaces:{
 
         //#define DEBUGCT
 
@@ -905,10 +903,9 @@ DictionaryWord
 
 
 
-Globals
-    -interfaces
-        static Dictionary *_Dictionary_default=nil;
-
+interfaces:{
+    static Dictionary *_Dictionary_default=nil;
+}
 
 Dictionary
 
@@ -2105,12 +2102,12 @@ Dictionary
 
 
 
-Globals
-    -top
-        #include <iostream>
-        #define MAINCPPFILE
-        #define CPPTYPE(...) __VA_ARGS__
-        #include "../BasicClassesCPP/Headers.h"
+top:{
+    #include <iostream>
+    #define MAINCPPFILE
+    #define CPPTYPE(...) __VA_ARGS__
+    #include "../BasicClassesCPP/Headers.h"
+}
 
 type PattStr "typedef:struct {char pattern[28];}"
 type ProMPWordsContext "typedef:struct {ManagedArray<StorableArray<PattStr> > *todo;Array<int> *todois;long todoCount;QuickHashTable<char> *seenMaxHT;QuickHashTable<bool> *seenWisHT;}"

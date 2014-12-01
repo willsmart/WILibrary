@@ -4,12 +4,11 @@
 
 
 
-Globals
-    -top
-        #define MaxDictWordLength 63
-        #define HPFloatForFloat(f) ((WRD)((((*(DWRD*)&f)&0x80000000)>>16)|((MIN(MAX((((*(DWRD*)&f)>>23)&0xff),0x70),0x8f)-0x70)<<10)|(((*(DWRD*)&f)&0x7fffff)>>13)))
-        #define FloatDWRDForHPFloat(f) ((DWRD)((((*(WRD*)&f)&0x8000)<<16)|(((((*(WRD*)&f)>>10)&0x1f)+0x70)<<23)|(((*(WRD*)&f)&0x3ff)<<13)))
-
+top:{
+    #define MaxDictWordLength 63
+    #define HPFloatForFloat(f) ((WRD)((((*(DWRD*)&f)&0x80000000)>>16)|((MIN(MAX((((*(DWRD*)&f)>>23)&0xff),0x70),0x8f)-0x70)<<10)|(((*(DWRD*)&f)&0x7fffff)>>13)))
+    #define FloatDWRDForHPFloat(f) ((DWRD)((((*(WRD*)&f)&0x8000)<<16)|(((((*(WRD*)&f)>>10)&0x1f)+0x70)<<23)|(((*(WRD*)&f)&0x3ff)<<13)))
+}
 
 type DictWord "typedef:struct{
     char word[MaxDictWordLength+1];

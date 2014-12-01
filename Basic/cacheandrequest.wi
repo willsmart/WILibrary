@@ -7,7 +7,7 @@ RequestCaches "fn:util"
                 NSObject result
                 float resultSize
             void goRequest;
-            request >s<~ <RequestOwner> owner
+            request ><~ <RequestOwner> owner
                 void doneRequestSync:(NSObject<Request>*)request {}
                 void doneRequestAsync:(NSObject<Request>*)request {@990}
             request ~s< RequestProxy proxy

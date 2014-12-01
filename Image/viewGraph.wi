@@ -46,11 +46,11 @@
 
 //  eg the "height" binding changed to a different size
 VGPointBindingReference<Commitable,BaseObject> "fn:graph"
-    pointBinding >s<~ <ReferentialVGPointPart> part
+    pointBinding ><~ <ReferentialVGPointPart> part
 
 //  eg the "next" binding changed to a different object
 VGObjectBindingReference<Commitable,BaseObject> "fn:graph"
-    objectBinding >s<~ <ReferentialVGPointPart> part
+    objectBinding ><~ <ReferentialVGPointPart> part
 
 
 VGRelativePosition "fn:graph"
@@ -81,7 +81,7 @@ type ArrayOfCGPoints "typedef:Array<CGPoint>"
 
 // This type of part has referenced to other objects/points (eg sum of siblings)
 <ReferentialVGPointPart:VGPointPart,Commitable>
-    referencedByPart >s< <VGPoint> referencedPoint
+    referencedByPart >< <VGPoint> referencedPoint
     <VGPoint> referencedPoint
 
 
@@ -252,13 +252,12 @@ VGPartsGreedilyReferencedPointFollowerSetDelegate
 
 type ArrayOfVGPoints "typedef:Array<NSObject<VGPoint>*>"
 
-Globals
-    -top
-        extern ArrayOfVGPoints *g_VGPoints;
-
-    -top:impl
-        ArrayOfVGPoints *g_VGPoints=nil;
-
+top:{
+    extern ArrayOfVGPoints *g_VGPoints;
+}
+top:impl:{
+    ArrayOfVGPoints *g_VGPoints=nil;
+}
 
 <VGPoint>
     readonly:

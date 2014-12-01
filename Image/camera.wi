@@ -13,9 +13,9 @@ sys AVCaptureConnection
 sys AVCaptureDevice
 sys AVCaptureSession
 
-Globals
-    -interfaces
-        #define CAMTEXSZ 256
+interfaces:{
+    #define CAMTEXSZ 256
+}
 
 Camera<BaseObject,AVCaptureVideoDataOutputSampleBufferDelegate>
     readonly:
