@@ -1,4 +1,4 @@
-RequestCaches "fn:util"
+RequestCaches
     caches ~m< <RequestCache> cache
         NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
         cache -m< <Request> request
@@ -65,7 +65,7 @@ RequestCaches "fn:util"
     float ageAsRequest={return(-[v_started_at timeIntervalSinceNow]);}
 
 
-RequestProxy <WeakListItem> "fn:util"
+RequestProxy <WeakListItem>
     Self initWithRequest:(NSObject<Request>*)request super:init {
         self.request=request;
     }
@@ -160,7 +160,7 @@ RequestProxy <WeakListItem> "fn:util"
     }
 
 
-RequestCaches<BaseObject,RootCodable> "fn:util"
+RequestCaches<BaseObject,RootCodable>
     <Request> worthiestRequest={
         NSObject<Request> *bestReq=nil,*req;
         for (kid key in self.caches) {
@@ -214,7 +214,7 @@ RequestCaches<BaseObject,RootCodable> "fn:util"
     readonly: float size
     NSObject<NSCopying> _cacheKey=nil
 
-LRUCacheItem<LRUCacheItem> "fn:util"
+LRUCacheItem<LRUCacheItem>
     readonly: NSObject object=nil
     float size=nil
     Self initWithObject:(NSObject*)aobject size:(float)asize super:init {
@@ -223,7 +223,7 @@ LRUCacheItem<LRUCacheItem> "fn:util"
     }
 
 
-LRUCache:NSMutableDictionary<LRUCache,BaseObject> "fn:util"
+LRUCache:NSMutableDictionary<LRUCache,BaseObject>
     float maxSize=100000000
     Int maxCount=1000000
 

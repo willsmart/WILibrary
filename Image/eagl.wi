@@ -9,7 +9,7 @@ sys EAGLContext
 type GLint
 type GLuint
 
-EAGLView : RenderUIView<DerivedBaseObject> "fn:render"
+EAGLView : RenderUIView<DerivedBaseObject>
     readonly:
         GLint framebufferWidth=0,framebufferHeight=0
         GLuint defaultFramebuffer=0, colorRenderbuffer=0

@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-WReader <BaseObject> "fn:token"
+WReader <BaseObject>
     NSString _fileString=@"",_fileName=@""
     NSString fileString=
         {return(v__fileString);}
@@ -84,7 +84,7 @@ WReader <BaseObject> "fn:token"
 
 
 
-WReaderToken "fn:token"
+WReaderToken
     NSString str=nil
     Int bracketCount=nil
     char type=nil
@@ -107,7 +107,7 @@ WReaderToken "fn:token"
 
 
 
-WReaderTokenizer <BaseObject> "fn:token"
+WReaderTokenizer <BaseObject>
 
     readonly: NSMutableArray tokens=[[MutableArray alloc] init]
     NSString _str=@""
@@ -244,6 +244,7 @@ JsonParser
         if (used!=a.count) ret=nil;
         return(ret);
     }
+
 
     NSObject* +_unpack:(NSArray*)tokens from:(Unsigned)from to:(Unsigned)to used:(Unsigned*)pused {
         if (to<from) {*pused=0;return([NSNull null]);}

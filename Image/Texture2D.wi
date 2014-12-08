@@ -21,7 +21,7 @@ type Texture2DPixelFormat "typedef:enum {
 }"
 
 
-Texture2D <BaseObject> "fn:render"
+Texture2D <BaseObject>
     readonly:
         GLuint glname=0
         Unsigned pixelWidth=100,pixelHeight=100

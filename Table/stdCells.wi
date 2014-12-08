@@ -229,7 +229,7 @@ App<HasProperties,BaseObject>
 
 
 
-//ProjectTableVC:UIViewController<StdTableVC> "fn:spvc"
+//ProjectTableVC:UIViewController<StdTableVC>
 //    Class nextVCClass={return([MeasurementTableVC class]);}
 //    Class tableModelClass={return([ProjectTableModel class]);}
 //    Self start {
@@ -342,7 +342,7 @@ App<HasProperties,BaseObject>
 
 
 
-//ProjectSectionModel<RVSectionModel> "fn:spvc"
+//ProjectSectionModel<RVSectionModel>
 //    NSString nibName=@"projectcell"
 //    Self start {
 //        self.writableHeaderHeight=60;
@@ -359,7 +359,7 @@ App<HasProperties,BaseObject>
 
 
 
-//ProjectCellModel<RVCellModel,Project> "fn:spvc"
+//ProjectCellModel<RVCellModel,Project>
 //    NSString nibName=@"projectcell"
 //    Self start {
 //        self.writableCellHeight=40;

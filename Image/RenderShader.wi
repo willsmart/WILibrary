@@ -4,7 +4,7 @@
 
 
 
-RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:render"
+RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
     vec2 sizeInPixels (uniform)
     vec4 position (attribute)
     vec2 unit (attribute)

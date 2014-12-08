@@ -4,7 +4,7 @@
 
 
 
-SHPositionSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
+SHPositionSzAttribute : SHAttribute<DerivedBaseObject>
     void set {
         {
             float *sz=[self.program uniformForKey:@"unitSize"].asVec2;
@@ -18,7 +18,7 @@ SHPositionSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
         }
         [super set];
     }
-SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
+SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject>
     void set {
         {
             float *sz=[self.program uniformForKey:@"sizeInPixels"].asVec2;
@@ -100,7 +100,7 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject> "fn:shader"
 
 
 
-ShaderURLConversion<LRUCacheItem,URLResource> "fn:render"
+ShaderURLConversion<LRUCacheItem,URLResource>
     NSString* +urlType {return([ImageShader urlType]);}
     NSURL simplifiedClearedURL=nil,simplifiedURL=nil
     Self initWithURL:(NSURL*)url super:init {
@@ -139,7 +139,7 @@ Singletons
         [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,(int)self.shaderURLConversionCache.count];
     }
 
-ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache> "fn:render"
+ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache>
     float maxSize=100000
     Int maxCount=10000
     NSObject<LRUCacheItem>* makeForKey:(NSObject<NSCopying>*)key {

@@ -45,15 +45,15 @@
 // these two provide a means for parts to be notified if something changes in the bindings
 
 //  eg the "height" binding changed to a different size
-VGPointBindingReference<Commitable,BaseObject> "fn:graph"
+VGPointBindingReference<Commitable,BaseObject>
     pointBinding ><~ <ReferentialVGPointPart> part
 
 //  eg the "next" binding changed to a different object
-VGObjectBindingReference<Commitable,BaseObject> "fn:graph"
+VGObjectBindingReference<Commitable,BaseObject>
     objectBinding ><~ <ReferentialVGPointPart> part
 
 
-VGRelativePosition "fn:graph"
+VGRelativePosition
     relativePositionAsFrom >s- VGObject from
     relativePositionAsTo >s- VGObject to
     relativePosition ~- VGCalculatedPoint calculatedPoint
@@ -102,14 +102,14 @@ type ArrayOfCGPoints "typedef:Array<CGPoint>"
 
 
 // vaious delegates
-VGObjectObjectDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
-VGObjectPointDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
-VGObjectCalculatedPointDictionaryDelegate<MutableDictionaryDelegate> "fn:graph"
-VGPartsSinglyReferencedPointFollowerSetDelegate<MutableSetDelegate> "fn:graph"
-VGPartsGreedilyReferencedPointFollowerSetDelegate<MutableSetDelegate> "fn:graph"
-VGPointsSetDelegate<MutableSetDelegate> "fn:graph"
-VGObjectPointFollowerArrayDelegate<MutableDictionaryDelegate> "fn:graph"
-VGPointPartFollowerArrayDelegate<MutableArrayDelegate> "fn:graph"
+VGObjectObjectDictionaryDelegate<MutableDictionaryDelegate>
+VGObjectPointDictionaryDelegate<MutableDictionaryDelegate>
+VGObjectCalculatedPointDictionaryDelegate<MutableDictionaryDelegate>
+VGPartsSinglyReferencedPointFollowerSetDelegate<MutableSetDelegate>
+VGPartsGreedilyReferencedPointFollowerSetDelegate<MutableSetDelegate>
+VGPointsSetDelegate<MutableSetDelegate>
+VGObjectPointFollowerArrayDelegate<MutableDictionaryDelegate>
+VGPointPartFollowerArrayDelegate<MutableArrayDelegate>
 
 
 
@@ -829,7 +829,7 @@ VGSumPointPart<VGPointPart>
     }
 
 
-ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
+ViewGraphBindingDelegate<MutableDictionaryDelegate>
     readonly:assign: <VGObject> owner=nil
     Self initWithOwner:(NSObject<VGObject>*)aowner super:init {
         aowner=owner;
@@ -853,7 +853,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate> "fn:graph"
         }
     }
 
-ViewGraphItemDelegate<MutableSetDelegate> "fn:graph"
+ViewGraphItemDelegate<MutableSetDelegate>
     readonly:assign: ViewGraph graph=nil
     Self initWithGraph:(ViewGraph*)agraph super:init {
         graph=agraph;
@@ -885,7 +885,7 @@ type _VGObject "typedef:struct {
 }"
 type _VGObjects "typedef:Array<_VGObject>"
 
-ViewGraph<BaseObject> "fn:graph"
+ViewGraph<BaseObject>
     <VGObject> _focus>>focus
     graph -s< <VGObject> item
     Self start {

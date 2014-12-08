@@ -1,5 +1,5 @@
 
-ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model"
+ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection>
 
 <Model>
     ModelOwnedObjectSet objectsOwnedOnlyByModels=[ModelOwnedObjectSet set] 
@@ -131,7 +131,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection> "fn:model
         for (NSObject<Commitable>*c in self.sinkCommitters) [c markDirty];
     }
             
-SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
+SourceCommitterSetDelegate<MutableSetDelegate>
     readonly: <Commitable> owner=nil
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
@@ -149,7 +149,7 @@ SourceCommitterSetDelegate<MutableSetDelegate> "fn:model"
         }
     }
             
-SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
+SinkCommitterSetDelegate<MutableSetDelegate>
     readonly: <Commitable> owner=nil
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
         owner=aowner;
@@ -168,7 +168,7 @@ SinkCommitterSetDelegate<MutableSetDelegate> "fn:model"
     }
 
             
-SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
+SourceCommitterArrayDelegate<MutableArrayDelegate>
     readonly: <Commitable> owner=nil
 
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
@@ -201,7 +201,7 @@ SourceCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     }
 
             
-SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
+SinkCommitterArrayDelegate<MutableArrayDelegate>
     readonly: <Commitable> owner=nil
 
     Self initWithOwner:(NSObject<Commitable>*)aowner super:init {
@@ -234,7 +234,7 @@ SinkCommitterArrayDelegate<MutableArrayDelegate> "fn:model"
     }
 
             
-DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject> "fn:model"
+DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject>
     void didAddObject:(id)object withIndex:(Unsigned)index {
         Unsigned i=0;
         for (id o in delegateForArray) if ((i++>=index)&&[o conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)o markDirty];
@@ -259,7 +259,7 @@ DirtyObjectIndexArrayDelegate<MutableArrayDelegate,BaseObject> "fn:model"
 
 
 
-DirtyObjectSetDelegate<MutableSetDelegate,BaseObject> "fn:model"
+DirtyObjectSetDelegate<MutableSetDelegate,BaseObject>
     void didAddObject:(id)object {
         if ([object conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)object markDirty];
     }
@@ -269,7 +269,7 @@ DirtyObjectSetDelegate<MutableSetDelegate,BaseObject> "fn:model"
 
 
 
-DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject> "fn:model"
+DirtyObjectDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
     void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
         if (toObject) {
             if ([toObject conformsToProtocol:@protocol(Commitable)]) [(NSObject<Commitable>*)toObject markDirty];
@@ -290,7 +290,7 @@ interfaces:impl:{
     Model *_Model_default=nil;
 }
 
-Model<Model,Ticker,Waiter> "fn:model"
+Model<Model,Ticker,Waiter>
     dirtyInModel -s< <Commitable> dirtyObject
 
     Self init {}

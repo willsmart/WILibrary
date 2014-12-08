@@ -5,10 +5,6 @@ Singletons
         [ret appendFormat:@"\nxMetaRenderer %p\n",self.metaRenderer];
     }
 
-
-
-"fn:meta"
-
 MetaRenderer <BaseObject>
     readonly: UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)]
 

@@ -19,7 +19,7 @@
 <RecievesSelector>
     selectorReceiver >< <SendsSelector> selectorSender
 
-NSObject "fn:sys"
+NSObject
     id performUnknownSelector:(SEL)aSelector {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -101,8 +101,7 @@ NSObject "fn:sys"
 
 
 
-
-NSString "fn:sys"
+NSString
     NSString* urlEncodeUsingEncoding:(NSStringEncoding)encoding {
         return((NSString*)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding))));
     }
@@ -120,6 +119,7 @@ NSString "fn:sys"
         }
         return(s.copy);
     }
+
 
     NSString* stringByEncodingHTMLEntities {
         return([self stringByReplacingPairs:@"&",@"&amp;",@"<",@"&lt;",@">",@"&gt;",@"\"",@"&quot;",@"\n",@"<br/>\n",nil]);
@@ -332,8 +332,7 @@ Singletons
     NSMutableString logDescription=[NSMutableString string];
     NSMutableString* logDescriptionRecurseWithStack:(NSMutableSet*)stack;
 
-Util "fn:util"
-
+Util
     bool +getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {
         NSMutableArray *dels=[[MutableArray alloc] init];
         NSMutableArray *inss=[[MutableArray alloc] init];
@@ -447,12 +446,14 @@ Util "fn:util"
         return(ret);
     }
 
-    -decl
+    decl:{
         extern Util* _Util_default;
+    }
 
-    -decl:impl
+    decl:impl:{
         Util* _Util_default=nil;
-
+    }
+    
     Util* +getDefault {
         if (!_Util_default) _Util_default=[[Util alloc] init];
         return(_Util_default);
@@ -526,7 +527,7 @@ ViewConnectionWaiter* +waiterWithView:(UIView*)view target:(NSObject*)target sel
 
 
 
-IntCarrier "fn:util"
+IntCarrier
     Int intValue=nil
     IntCarrier* +carrierWithInt:(Int)v {
         return([[IntCarrier alloc] initWithInt:v]);
@@ -537,7 +538,7 @@ IntCarrier "fn:util"
     NSString description={return([NSString stringWithFormat:@"%d",(int)intValue]);}
 
 
-ULLCarrier "fn:util"
+ULLCarrier
     ULL ullValue=nil
     ULLCarrier* +carrierWithULL:(ULL)v {
         return([[ULLCarrier alloc] initWithULL:v]);
@@ -554,7 +555,7 @@ ULLCarrier "fn:util"
 "<mach/task_info.h>"
 "<mach/task.h>"
 
-MemMonitor "fn:util"
+MemMonitor
     NSString* +memString {
         int mib[6];
         mib[0] = CTL_HW;
@@ -599,7 +600,7 @@ interfaces:impl:{
     URLHandlerRegistry *_URLHandlerRegistry_default=nil;
 }
 
-URLHandlerRegistry "fn:util"
+URLHandlerRegistry
     publicreadonly: MutableArray handlers=[[MutableArray alloc] init] 
 
     Self init {}
@@ -641,6 +642,7 @@ URLHandlerRegistry "fn:util"
 
 <HasAction>
     void act;
+
 
 
 <URLResource>
@@ -852,11 +854,12 @@ URLHandlerRegistry "fn:util"
 
 
 
-WeakList <BaseObject,WeakList> "fn:util"
+WeakList <BaseObject,WeakList>
 
 <WeakListItem>
     next -- <WeakListItem> prev
-    assign: <WeakList> list=nil 
+    assign:
+        <WeakList> list=nil
 
     void dealloc {@-500 
         [self unlink];
@@ -918,7 +921,8 @@ WeakList <BaseObject,WeakList> "fn:util"
     void dealloc {@-500 [self clear];}
 
 <ListItem>
-    assign: <List> list=nil 
+    assign:
+        <List> list=nil
     <ListItem> prev=nil (assign)
     <ListItem> next=nil
 

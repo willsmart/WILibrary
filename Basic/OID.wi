@@ -13,12 +13,12 @@ top:{
 "<libkern/OSAtomic.h>"
 
 <ThreadKey> "multi" "nac"
-    -decl:{
+    decl:{
         extern pthread_key_t ThreadKey_key_keyName;
         extern valueType getThreadValueNamedKeyName();
         extern valueType setThreadValueNamedKeyName(valueType v);
     }
-    -decl:impl:{
+    decl:impl:{
         pthread_key_t ThreadKey_key_keyName=0;
         valueType getThreadValueNamedKeyName() {
             if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
@@ -40,7 +40,7 @@ each:impl:{
 }
 
 ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
-    -decl:{
+    decl:{
         extern Int g_prevThreadId;
         Int getThreadId();
         ULL getThreadMask();
@@ -52,7 +52,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
         )
     }
-    -decl:impl:{
+    decl:impl:{
         Int g_prevThreadId=0;
         ULL getThreadMask() {
             Int ret=getThreadValueNamedId();
@@ -97,7 +97,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 
 
 
-ClassCount "-Object" "fn:object"
+ClassCount "-Object"
     LL count=nil,nextID=nil
     readonly: NSString name=nil
     ClassCount* +classCount {
@@ -144,7 +144,7 @@ decl:impl:{
     }
 }
 
-Singletons<Ticker> "-Object" "fn:object"
+Singletons<Ticker> "-Object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
     readonly:
         QuickHashTableOfClassCounts *classCountht=nil
@@ -676,7 +676,7 @@ ObjectGraph<Ticker,BaseObject>
 
     
 
-ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
+ObjectPointer<ObjectEquateAndCopy> "-Object"
     readonly: LL objectIDInTotal=nil
     Self initWithObjectID:(LL)aobjectIDInTotal super:init {
         objectIDInTotal=aobjectIDInTotal;

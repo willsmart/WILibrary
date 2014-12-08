@@ -12,7 +12,7 @@ top:{
 
 
 // overall
-Shader <BaseObject> "fn:shader"
+Shader <BaseObject>
     shader ~- ShaderProgram program
         program ~m< SHUniform uniform
         program ~m< SHAttribute attribute
@@ -111,12 +111,16 @@ Shader
         }
     }
 
-    NSSet uniformVars (vars_uniform)
-    NSSet attributeVars (vars_attribute)
-    NSSet fragFunctionNames (varnames_fragFunction)
-    NSSet vertFunctionNames (varnames_vertFunction)
-    
-    NSDictionary mainFragFn (fragFunction,-void main()/*frag*/;)
+    todo:{
+    vars_uniform: NSSet uniformVars
+    vars_attribute: NSSet attributeVars
+    varnames_fragFunction: NSSet fragFunctionNames
+    varnames_vertFunction: NSSet vertFunctionNames
+
+    fragFunction:
+        "-void main()/*frag*/;"
+        NSDictionary mainFragFn
+
     -void main()/*frag*/ {@-999 
         lowp vec4 colour=vec4(0.9,0.0,1.0,1.0);
         @999 gl_FragColor=colour;
@@ -125,6 +129,7 @@ Shader
     NSDictionary mainVertFn (vertFunction,-void main()/*vert*/;)
     -void main()/*vert*/ {@-100 
         ASSIGN_ATTRIBUTES
+    }
     }
 
     ShaderData shaderData=nil (assign)
@@ -176,7 +181,7 @@ Shader
 
 
 
-SHFn <BaseObject> "fn:shader"
+SHFn <BaseObject>
     NSString sig=
         {return((NSString*)(self.fragProgram?self.keyInFragProgram:self.keyInVertProgram));}
         -v{
@@ -240,7 +245,7 @@ type UniformType "typedef:enum {
     un_mat2,un_mat3,un_mat4
 }
 "
-UniformTypeFunctions "fn:shader"
+UniformTypeFunctions
     UniformType +typeForString:(NSString*)s {
         NSArray *a=[NSArray arrayWithObjects:@"none",@"any",@"noValue",@"bool",@"float",@"int",@"sampler2D",@"samplerCube",@"vec2",@"vec3",@"vec4",@"ivec2",@"ivec3",@"ivec4",@"bvec2",@"bvec3",@"bvec4",@"mat2",@"mat3",@"mat4",nil];
         Unsigned v=[a indexOfObject:s];
@@ -275,7 +280,7 @@ type Union128byte "typedef:
     }
 "
 
-SHUniform <BaseObject> "fn:shader"
+SHUniform <BaseObject>
     Union128byte _buf=nil
     Union128byte buf={return(_buf);}
     NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
@@ -672,7 +677,7 @@ type Union1024byte "typedef:
 "
 
 
-SHAttribute <BaseObject> "fn:shader"
+SHAttribute <BaseObject>
     Union1024byte _buf=nil
     Union1024byte buf={return(_buf);}
     NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
@@ -953,7 +958,7 @@ SHAttribute <BaseObject> "fn:shader"
 
 
 
-ShaderProgram <BaseObject,GLObject> "fn:shader"
+ShaderProgram <BaseObject,GLObject>
     bool _changed=YES,changed={return(_changed);}
     bool valid={return(_glname!=INVALIDSHADER);}
 

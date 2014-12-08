@@ -1,7 +1,7 @@
 Singletons
     StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil 
 
-StyleTicker<Ticker,BaseObject> "fn:style"
+StyleTicker<Ticker,BaseObject>
     StyleTicker* +getDefault {return(g_singletons.styleTicker);}
 
     void go {

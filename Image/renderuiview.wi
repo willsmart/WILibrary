@@ -4,7 +4,7 @@ Singletons
     readonly: RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));}=nil
 
 
-RenderUIViews <BaseObject> "fn:shader"
+RenderUIViews <BaseObject>
     //    _views>>views -s< RenderUIView _view>>view
     views -s< RenderUIView view
         view ~- Shader shader
@@ -46,11 +46,13 @@ RenderUIView : UIView<BaseObject>
 
 
 RenderUIViews <BaseObject>
-    -decl
+    decl:{
         extern RenderUIViews *_RenderUIViews_default;
+    }
 
-    -decl:impl
+    decl:impl:{
         RenderUIViews *_RenderUIViews_default=nil;
+    }
 
     RenderUIViews* +getDefault {
         if (!_RenderUIViews_default) {

@@ -5,7 +5,7 @@
 
 
 
-ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject> "fn:renderimage"
+ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
     vec2 sizeInPixels (uniform)
     vec4 position (attribute,class=SHPositionSzAttribute)
     vec2 unit (attribute)
@@ -272,7 +272,7 @@ Singletons
     }
 
     
-ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
+ImageShaderRequestCaches:RequestCaches<DerivedBaseObject>
     publicreadonly:
         ImageShaderRequestCache imageShaderRequestCache=[[ImageShaderRequestCache alloc] init] 
         ShaderImageRequestCache shaderImageRequestCache=[[ShaderImageRequestCache alloc] init] 
@@ -304,7 +304,7 @@ ImageShaderRequestCaches:RequestCaches<DerivedBaseObject> "fn:renderimage"
 
 
 
-ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
+ImageShaderRequestCache<BaseObject,RequestCache>
     Self start {cache.maxSize=100000;cache.maxCount=1000;}
     NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]) {
@@ -313,7 +313,7 @@ ImageShaderRequestCache<BaseObject,RequestCache> "fn:renderimage"
         return(nil);
     }
 
-ImageShaderRequest<Request> "fn:renderimage"
+ImageShaderRequest<Request>
     readonly:
         <HasURL,HasImageShader> object=nil
     Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject super:init {
@@ -334,7 +334,7 @@ ImageShaderRequest<Request> "fn:renderimage"
 
 
 
-ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
+ShaderImageRequestCache<BaseObject,RequestCache>
     Self start {cache.maxSize=10000000;cache.maxCount=1000;}
     NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData {
         if ([reqData conformsToProtocol:@protocol(HasURL)]&&[reqData conformsToProtocol:@protocol(HasImageShader)]&&[reqData conformsToProtocol:@protocol(HasImage)]) {
@@ -343,7 +343,7 @@ ShaderImageRequestCache<BaseObject,RequestCache> "fn:renderimage"
         return(nil);
     }
 
-ShaderImageRequest<Request> "fn:renderimage"
+ShaderImageRequest<Request>
     readonly: <HasURL,HasImageShader,HasImage> object=nil
     Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject super:init {
         object=aobject;
@@ -368,7 +368,7 @@ ShaderImageRequest<Request> "fn:renderimage"
 
 
 
-ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
+ImageToken<HasURL,HasImageShader,HasImage>
     NSURL url=nil
     ImageShader imageShader=nil
     UIImage image=nil
@@ -392,7 +392,7 @@ ImageToken<HasURL,HasImageShader,HasImage> "fn:renderimage"
 
 
 
-ImageRequestProxyOwner<RequestOwner> "fn:renderimage"
+ImageRequestProxyOwner<RequestOwner>
     proxyOwner >s~ <ImageRequestOwner> owner
     ImageToken token=nil 
 
@@ -468,7 +468,7 @@ Singletons
         [ret appendFormat:@"\nxImageRenderer %p\n",self.imageRenderer];
     }
 
-ImageRenderer <BaseObject> "fn:render"
+ImageRenderer <BaseObject>
 
     publicreadonly: Texture2D texture=[[Texture2D alloc] init] 
     Self start {

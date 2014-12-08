@@ -1,7 +1,7 @@
 "<MessageUI/MessageUI.h>"
 
 
-MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate> "fn:util"
+MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>
     UIViewController vc=nil (assign)
 
     Self initWithViewController:(UIViewController*)avc super:init {
