@@ -6,11 +6,16 @@
 
 
 ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
-    vec2 sizeInPixels (uniform)
-    vec4 position (attribute,class=SHPositionSzAttribute)
-    vec2 unit (attribute)
-    vec2 pixel (attribute,class=SHPixelCoorSzAttribute)
-    vec2 unitSize (uniform)
+    uniform:
+        vec2 sizeInPixels
+        vec2 unitSize
+
+    attribute:
+        class:{SHPositionSzAttribute}
+            vec4 position
+        vec2 unit
+        class:{SHPixelCoorSzAttribute}
+            vec2 pixel
 
     Self start {
         self.program.vertexCount=4;
@@ -25,7 +30,7 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
         @500 self.builtinMacros=[NSSet setWithArray:self.program.macros.allKeys];
     }
 
-    -void main()/*frag*/ {@!-999 lowp vec4 colour=vec4(1,0,1,1);
+    frag: void main() {@!-999 lowp vec4 colour=vec4(1,0,1,1);
         @-500 {getColour}
         @!999 gl_FragColor=colour;
     }
@@ -40,11 +45,12 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
 
 
 
-    float LineWidth (uniform)
-    float CornerRadius (uniform)
-    float BallRadius (uniform)
-    vec4 LineColour (uniform)
-    vec3 CellColour (uniform)
+    uniform:
+        float LineWidth
+        float CornerRadius
+        float BallRadius
+        vec4 LineColour
+        vec3 CellColour
 
     Self start {@-100 
         self.LineWidth.asFloat=3;
@@ -60,131 +66,125 @@ ImageShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
         }
     }
 
-    NSDictionary cornerLenFragFn (fragFunction,-float cornerLen(vec2 sz,float radius);)
+    fragFunction:
+        cornerLenFragFn:
+            float cornerLen(vec2 sz,float radius) {
+                return(radius*(PI*0.5-2)+sz.x+sz.y);
+            }
 
-    -float cornerLen(vec2 sz,float radius) {
-      return(radius*(PI*0.5-2)+sz.x+sz.y);
-    }
+
+        _cornerFragFn:
+            float _corner(vec2 xy,vec2 sz,float radius,float ballx,float ballRadius,float linew,out vec3 squiggle) {
+                float dist=0;
+                xy=abs(xy);
+                vec2 low=(max(0,sz.x-sz.y),max(0,sz.y-sz.x));
+                vec2 lxy=xy-low;vec2 lsz=sz-low;
+                vec2 high=szradius,radius ;
+                squiggle.y=PI*radius*0.5+high.x+high.y;
+                squiggle.z=1;
+                if ((lxy.x>0)&&(lxy.y<(lsz.y-radius)*lxy.x/lsz.x)) {
+                    float bf=xy.y/(low.yhigh.y-low.y +*lxy.x/lsz.x);
+                    dist=length(vec2(lsz.x,(high.y-low.y)*bf))*(1-lxy.x/lsz.x);
+                    squiggle.x=bf*high.y;
+                }
+                else if ((lxy.y>0)&&(lxy.x<(lsz.x-radius)*lxy.y/lsz.y)) {
+                    float bf=xy.x/(low.xhigh.x-low.x +*lxy.y/lsz.y);
+                    dist=length(vec2(lsz.y,(high.x-low.x)*bf))*(1-lxy.y/lsz.y);
+                    squiggle.x=squiggle.y-high.x*bf;
+                    if (ballRadius>0) {
+                        float bd=xy.x-ballx;
+                        float bd2=length(vec2(xy.y-sz.y,bd));
+                        float bw=sqrt(ballRadius*ballRadius-bd*bd);
+                        if (bd2<ballRadius*2) dist=sign(sz.y-xy.y)*max(0,mix(-bw,bw,bd2/ballRadius*2));
+                        else if ((bd>0)&&(xy.x<=sz.x-linew*0.5)&&(abs(xy.y-sz.y)<=linew*1.1)) dist=linew*1.1;      
+                    }
+                }
+                else {
+                    float a=dot(lxy,lxy);
+                    vec2 lhigh=high-low;
+                    float b=-2*(lhigh.x*lxy.x+lhigh.y*lxy.y);
+                    float c=dot(lhigh,lhigh)-radius*radius;
+                    float z=(-b+sqrt(b*b-4*a*c))/(2*a);
+                    float lz=length(lxy)*z;
+                    dist=lz*(1-length(lxy)/lz);
+                    squiggle.x=atan(z*lxy.y-lhigh.y,z*lxy.x-lhigh.x)*radius+high.y;
+                }
+                return(dist);
+            }
+
+
+        rectFragFn:
+            float rect(vec2 xy,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,out vec3 squiggle) {
+                float ret;
+                vec2 slens=(cornerLen(sz,radius.x)+cornerLen(sz,radius.y),cornerLen(sz,radius.z)+cornerLen(sz,radius.w));
+                if (xy.y<0) {
+                    if (xy.x<0) ret=_corner(xy,sz,radius.x,ballx.x,ballRadius.x,linew,squiggle);
+                    else {
+                        ret=_corner(xy,sz,radius.y,ballx.y,ballRadius.y,linew,squiggle);
+                        squiggle.x=slens.x-squiggle.x;
+                    }
+                }
+                else if (xy.x>0) {
+                    ret=_corner(xy,sz,radius.z,ballx.z,ballRadius.z,linew,squiggle);
+                    squiggle.x+=slens.x;
+                }
+                else {
+                    ret=_corner(xy,sz,radius.w,ballx.w,ballRadius.w,linew,squiggle);
+                    squiggle.x=slens.x+slens.y-squiggle.x;
+                }
+                squiggle.y=slens.x+slens.y;
+                return(ret);
+            }
 
 
 
-    NSDictionary _cornerFragFn (fragFunction,-float _corner(vec2 xy,vec2 sz,float radius,float ballx,float ballRadius,float linew,out vec3 squiggle);)
 
-    -float _corner(vec2 xy,vec2 sz,float radius,float ballx,float ballRadius,float linew,out vec3 squiggle) {
-      float dist=0;
-      xy=abs(xy);
-      vec2 low=(max(0,sz.x-sz.y),max(0,sz.y-sz.x));
-      vec2 lxy=xy-low;vec2 lsz=sz-low;
-      vec2 high=szradius,radius ;
-      squiggle.y=PI*radius*0.5+high.x+high.y;
-      squiggle.z=1;
-      if ((lxy.x>0)&&(lxy.y<(lsz.y-radius)*lxy.x/lsz.x)) {
-        float bf=xy.y/(low.yhigh.y-low.y +*lxy.x/lsz.x);
-        dist=length(vec2(lsz.x,(high.y-low.y)*bf))*(1-lxy.x/lsz.x);
-        squiggle.x=bf*high.y;
-      }
-      else if ((lxy.y>0)&&(lxy.x<(lsz.x-radius)*lxy.y/lsz.y)) {
-        float bf=xy.x/(low.xhigh.x-low.x +*lxy.y/lsz.y);
-        dist=length(vec2(lsz.y,(high.x-low.x)*bf))*(1-lxy.y/lsz.y);
-        squiggle.x=squiggle.y-high.x*bf;
-        if (ballRadius>0) {
-          float bd=xy.x-ballx;
-          float bd2=length(vec2(xy.y-sz.y,bd));
-          float bw=sqrt(ballRadius*ballRadius-bd*bd);
-          if (bd2<ballRadius*2) dist=sign(sz.y-xy.y)*max(0,mix(-bw,bw,bd2/ballRadius*2));
-          else if ((bd>0)&&(xy.x<=sz.x-linew*0.5)&&(abs(xy.y-sz.y)<=linew*1.1)) dist=linew*1.1;      
+
+        bumpRectFragFn:
+            float bumpRect(mat3 trans33,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,float alias,float bumps,float bumpSqueeze,float bumpPow,float squigglePhase,float squigglePeriod,float squiggleSize,float dmul,out vec3 norm) {
+                float d,b,dx,bx,dy,by;
+                vec3 squiggle=(0,0,0);
+                TXY(sizeInPixels*0.5-pixel.xy,d=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+                d*=dmul;
+                if (squiggleSize>0) {
+                    d+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+                }
+                b=4*BUMP(bumps,bumpSqueeze,d/sz.y,bumpPow);
+
+                LINE(d,alias,linew,,,f,
+                    TXY(sizeInPixels*0.5-pixel.xy1,0 ,dx=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+                    dx*=dmul;
+                    if (squiggleSize>0) {
+                        dx+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+                    }
+
+                    bx=4*BUMP(bumps,bumpSqueeze,dx/sz.y,bumpPow);
+                    TXY(sizeInPixels*0.5-pixel.xy0,1 ,dy=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
+                    dy*=dmul;
+                    if (squiggleSize>0) {
+                        dy+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
+                    }
+
+                    by=4*BUMP(bumps,bumpSqueeze,dy/sz.y,bumpPow);
+                    norm=normalize(vec3(bx-b,by-b,1));
+
+                )
+
+                return(d);
+            }
+
+
+    colourizeFragFn:
+        vec3 colourize(vec3 norm,vec3 diffuse,vec3 specular,float specPower,float specCutoff,float specCutoffMul,vec3 lightPos) {
+            vec3 colour;
+            lightPos=normalize(lightPos);
+            float intensity=saturatef(dot(norm,lightPos));
+            diffuse=saturatev3(diffuse*intensity);
+            vec3 reflection=normalize(2*intensity*norm-lightPos);
+            vec3 spec=pow(saturatef(reflection.z),specPower)*specular;
+            float specLine=saturatef(specCutoffMul*abs(spec.x-specCutoff));
+            return(specLine*saturatev3(diffuse+spec));
         }
-      }
-      else {
-        float a=dot(lxy,lxy);
-        vec2 lhigh=high-low;
-        float b=-2*(lhigh.x*lxy.x+lhigh.y*lxy.y);
-        float c=dot(lhigh,lhigh)-radius*radius;
-        float z=(-b+sqrt(b*b-4*a*c))/(2*a);
-        float lz=length(lxy)*z;
-        dist=lz*(1-length(lxy)/lz);
-        squiggle.x=atan(z*lxy.y-lhigh.y,z*lxy.x-lhigh.x)*radius+high.y;
-      }
-      return(dist);
-    }
-
-
-
-    NSDictionary rectFragFn (fragFunction,-float rect(vec2 xy,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,out vec3 squiggle);)
-
-    -float rect(vec2 xy,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,out vec3 squiggle) {
-      float ret;
-      vec2 slens=(cornerLen(sz,radius.x)+cornerLen(sz,radius.y),cornerLen(sz,radius.z)+cornerLen(sz,radius.w));
-      if (xy.y<0) {
-        if (xy.x<0) ret=_corner(xy,sz,radius.x,ballx.x,ballRadius.x,linew,squiggle);
-        else {
-          ret=_corner(xy,sz,radius.y,ballx.y,ballRadius.y,linew,squiggle);
-          squiggle.x=slens.x-squiggle.x;
-        }
-      }
-      else if (xy.x>0) {
-        ret=_corner(xy,sz,radius.z,ballx.z,ballRadius.z,linew,squiggle);
-        squiggle.x+=slens.x;
-      }
-      else {
-        ret=_corner(xy,sz,radius.w,ballx.w,ballRadius.w,linew,squiggle);
-        squiggle.x=slens.x+slens.y-squiggle.x;
-      }
-      squiggle.y=slens.x+slens.y;
-      return(ret);
-    }
-
-
-
-
-
-    NSDictionary bumpRectFragFn (fragFunction,-float bumpRect(mat3 trans33,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,float alias,float bumps,float bumpSqueeze,float bumpPow,float squigglePhase,float squigglePeriod,float squiggleSize,float dmul,out vec3 norm);)
-
-    -float bumpRect(mat3 trans33,vec2 sz,vec4 radius,vec4 ballx,vec4 ballRadius,float linew,float alias,float bumps,float bumpSqueeze,float bumpPow,float squigglePhase,float squigglePeriod,float squiggleSize,float dmul,out vec3 norm) {
-      float d,b,dx,bx,dy,by;
-      vec3 squiggle=(0,0,0);
-      TXY(sizeInPixels*0.5-pixel.xy,d=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
-      d*=dmul;
-      if (squiggleSize>0) {
-        d+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
-      }
-      b=4*BUMP(bumps,bumpSqueeze,d/sz.y,bumpPow);
-
-      LINE(d,alias,linew,,,f,
-        TXY(sizeInPixels*0.5-pixel.xy1,0 ,dx=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
-        dx*=dmul;
-        if (squiggleSize>0) {
-          dx+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
-        }
-
-        bx=4*BUMP(bumps,bumpSqueeze,dx/sz.y,bumpPow);
-        TXY(sizeInPixels*0.5-pixel.xy0,1 ,dy=rect(XY,sz,radius,ballx,ballRadius,linew,squiggle);)
-        dy*=dmul;
-        if (squiggleSize>0) {
-          dy+=sin(PI2*(squigglePhase+squiggle.x*ceil(squiggle.y/squigglePeriod)/squigglePeriod))*squiggle.z*squiggleSize;
-        }
-
-        by=4*BUMP(bumps,bumpSqueeze,dy/sz.y,bumpPow);
-        norm=normalize(vec3(bx-b,by-b,1));
-
-      )
-
-      return(d);
-    }
-
-
-    NSDictionary colourizeFragFn (fragFunction,-vec3 colourize(vec3 norm,vec3 diffuse,vec3 specular,float specPower,float specCutoff,float specCutoffMul,vec3 lightPos);)
-
-    -vec3 colourize(vec3 norm,vec3 diffuse,vec3 specular,float specPower,float specCutoff,float specCutoffMul,vec3 lightPos) {
-      vec3 colour;
-      lightPos=normalize(lightPos);
-      float intensity=saturatef(dot(norm,lightPos));
-      diffuse=saturatev3(diffuse*intensity);
-      vec3 reflection=normalize(2*intensity*norm-lightPos);
-      vec3 spec=pow(saturatef(reflection.z),specPower)*specular;
-      float specLine=saturatef(specCutoffMul*abs(spec.x-specCutoff));
-      return(specLine*saturatev3(diffuse+spec));
-    }
 
     Self start {
         [self.program setMacro:@"3.14159265358979" forKey:@"PI"];
@@ -316,7 +316,7 @@ ImageShaderRequestCache<BaseObject,RequestCache>
 ImageShaderRequest<Request>
     readonly:
         <HasURL,HasImageShader> object=nil
-    Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject super:init {
+    Self initWithObject:(NSObject<HasURL,HasImageShader>*)aobject  {super:{init}
         object=aobject;
     }
     float resultSize {return(0);}
@@ -345,7 +345,7 @@ ShaderImageRequestCache<BaseObject,RequestCache>
 
 ShaderImageRequest<Request>
     readonly: <HasURL,HasImageShader,HasImage> object=nil
-    Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject super:init {
+    Self initWithObject:(NSObject<HasURL,HasImageShader,HasImage>*)aobject  {super:{init}
         object=aobject;
     }
     float resultSize {return(800);}
@@ -372,7 +372,7 @@ ImageToken<HasURL,HasImageShader,HasImage>
     NSURL url=nil
     ImageShader imageShader=nil
     UIImage image=nil
-    Self initWithURL:(NSURL*)aurl super:init {
+    Self initWithURL:(NSURL*)aurl  {super:{init}
         self.url=aurl;
     }
 
@@ -396,7 +396,7 @@ ImageRequestProxyOwner<RequestOwner>
     proxyOwner >s~ <ImageRequestOwner> owner
     ImageToken token=nil 
 
-    Self initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner super:init {@100 
+    Self initWithToken:(ImageToken*)atoken owner:(NSObject<ImageRequestOwner>*)aowner  {super:{init}@100 
         token=atoken;
         self.owner=aowner;
         [self requestImage];
@@ -791,7 +791,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
 
     bool waitForResize=nil
 
-    Self initWithImageURL:(NSURL*)aurl frame:(CGRect)frame super:initWithImage:aimage {@-10100
+    Self initWithImageURL:(NSURL*)aurl frame:(CGRect)frame  {super:{initWithImage:aimage}@-10100
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
@@ -816,7 +816,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         }
     }
 
-    Self initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame super:initWithImage:aimage highlightedImage:ahighlightedImage {@-10100
+    Self initWithImageURL:(NSURL*)aimageURL highlightedImageURL:(NSURL*)ahighlightedImageURL frame:(CGRect)frame  {super:{initWithImage:aimage highlightedImage:ahighlightedImage}@-10100
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);
@@ -857,7 +857,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
     }
 
 
-    Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame super:initWithImage:aimage {@-10100
+    Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)frame  {super:{initWithImage:aimage}@-10100
         UIImage *aimage=nil;
         NSURL *aimageURL=nil;
         NSURL *asizedImageURL=nil;
@@ -889,7 +889,7 @@ URLImageView:UIImageView<ImageRequestOwner,Waiter>
         }
     }
 
-    Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame super:initWithImage:aimage highlightedImage:ahighlightedImage {@-10100 
+    Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)frame  {super:{initWithImage:aimage highlightedImage:ahighlightedImage}@-10100
         UIImage *aimage=nil;
         NSURL *asizedImageURL=nil;
         CGRect aimageRenderedAsRect=CGRectMake(0,0,0,0);

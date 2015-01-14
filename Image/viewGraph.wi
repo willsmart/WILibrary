@@ -46,11 +46,11 @@
 
 //  eg the "height" binding changed to a different size
 VGPointBindingReference<Commitable,BaseObject>
-    pointBinding ><~ <ReferentialVGPointPart> part
+    pointBinding >-~< <ReferentialVGPointPart> part
 
 //  eg the "next" binding changed to a different object
 VGObjectBindingReference<Commitable,BaseObject>
-    objectBinding ><~ <ReferentialVGPointPart> part
+    objectBinding >-~< <ReferentialVGPointPart> part
 
 
 VGRelativePosition
@@ -347,7 +347,7 @@ VGObjectBindingReference
 
 
 VGRelativePosition
-    Self initFrom:(NSObject<VGObject>*)afrom to:(NSObject<VGObject>*)ato calculatedPoint:(VGCalculatedPoint*)cpt super:init {
+    Self initFrom:(NSObject<VGObject>*)afrom to:(NSObject<VGObject>*)ato calculatedPoint:(VGCalculatedPoint*)cpt  {super:{init}
         self.from=afrom;
         self.to=ato;
         self.calculatedPoint=cpt;
@@ -811,7 +811,7 @@ VGSumPointPart<VGPointPart>
     bool edgeMoved,positionMoved=nil
     bool movable=nil
     Int graphedIndex,graphedIndexVersion=nil
-    owner ~m< VGPoint binding
+    owner ~d< VGPoint binding
 
     NSObject<VGObject>* objectForBinding:(NSString*)binding;
 
@@ -831,7 +831,7 @@ VGSumPointPart<VGPointPart>
 
 ViewGraphBindingDelegate<MutableDictionaryDelegate>
     readonly:assign: <VGObject> owner=nil
-    Self initWithOwner:(NSObject<VGObject>*)aowner super:init {
+    Self initWithOwner:(NSObject<VGObject>*)aowner  {super:{init}
         aowner=owner;
     }
     void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
@@ -855,7 +855,7 @@ ViewGraphBindingDelegate<MutableDictionaryDelegate>
 
 ViewGraphItemDelegate<MutableSetDelegate>
     readonly:assign: ViewGraph graph=nil
-    Self initWithGraph:(ViewGraph*)agraph super:init {
+    Self initWithGraph:(ViewGraph*)agraph  {super:{init}
         graph=agraph;
     }
     void didAddObject:(id)object {

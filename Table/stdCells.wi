@@ -6,7 +6,7 @@
 
 HasPropertiesParentValueDelegate<MutableValueDelegate>
     assign: <HasProperties> owner=nil 
-    Self initWithOwner:(NSObject<HasProperties>*)aowner super:init {
+    Self initWithOwner:(NSObject<HasProperties>*)aowner  {super:{init}
         owner=aowner;
     }
     void willChangeValueFrom:(id)fromObject to:(id)toObject {
@@ -96,7 +96,7 @@ Property_ProxyDictionaryDelegate<ProxyDictionaryDelegate> "basic_=>property_"
 
 ParentPropertyValueDelegate<MutableValueDelegate>
     assign: <HasProperties> owner=nil 
-    Self initWithOwner:(NSObject<HasProperties>*)aowner super:init {
+    Self initWithOwner:(NSObject<HasProperties>*)aowner  {super:{init}
         owner=aowner;
     }
     void willChangeValueFrom:(id)fromObject to:(id)toObject {
@@ -233,12 +233,11 @@ App<HasProperties,BaseObject>
 
 
 
-
 <StdTableModel:TableModel,StdHasProperties,BaseObject>
     Class bagSectionClass {@-999 Class ret=nil;
         @999 return(ret);
     }
-    <StdVC> vc=nil (assign)
+    assign: <StdVC> vc=nil
 
     id addSection:(Class)clas {
         if (!clas) return(nil);

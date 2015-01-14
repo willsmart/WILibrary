@@ -1,5 +1,6 @@
 
 
+
 top:{
     #define OID_marker (0xbad0fad0dad0cad0LL)
     #define __Derived_CClass__ (class_getName([self class]))
@@ -103,7 +104,7 @@ ClassCount "-Object"
     ClassCount* +classCount {
         return([[ClassCount alloc] init]);
     }
-    Self initWithName:(NSString*)aname super:init {
+    Self initWithName:(NSString*)aname  {super:{init}
         name=aname;
         count=0;nextID=1;
     }
@@ -584,7 +585,7 @@ Trace<Ticker,BaseObject> "notrace"
     }
     
 
-    //NSMutableData tmpJSONData=[[NSMutableData alloc] init] (readonly)
+    //readonly: NSMutableData tmpJSONData=[[NSMutableData alloc] init]
     
     void start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
     void stop {@100 g_trace=nil;}
@@ -678,7 +679,7 @@ ObjectGraph<Ticker,BaseObject>
 
 ObjectPointer<ObjectEquateAndCopy> "-Object"
     readonly: LL objectIDInTotal=nil
-    Self initWithObjectID:(LL)aobjectIDInTotal super:init {
+    Self initWithObjectID:(LL)aobjectIDInTotal  {super:{init}
         objectIDInTotal=aobjectIDInTotal;
     }
     

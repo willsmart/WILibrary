@@ -106,18 +106,19 @@
     float headerHeight {return(self.likelyHeaderHeight);}
     float footerHeight {return(self.likelyFooterHeight);}
 
-    UIView header=nil <-{
-        if (!header) {
-            header=[[__HeaderClass__ alloc] init];
+    "readonly!":
+        UIView header=nil <-{
+            if (!header) {
+                header=[[__HeaderClass__ alloc] init];
+            }
+            return(header);
         }
-        return(header);
-    } (readonly!)
-    UIView footer=nil <-{
-        if (!footer) {
-            footer=[[__FooterClass__ alloc] init];
+        UIView footer=nil <-{
+            if (!footer) {
+                footer=[[__FooterClass__ alloc] init];
+            }
+            return(footer);
         }
-        return(footer);
-    } (readonly!)
 
 
 
@@ -128,8 +129,8 @@
 
     float cellHeight {return(self.likelyCellHeight);}
 
-    NSString cellReuseIdentifier=nil
-        <-{return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);} (readonly!)
+    "readonly!": NSString cellReuseIdentifier=nil
+        <-{return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}
 
     UITableViewCell newUITVCell {
         UITableViewCell *ret=[[__CellClass__ alloc] init];
@@ -147,8 +148,8 @@
     readonly: NSString nibName
     Int tag=0
     Class uiTVCellClass {return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} 
-    NSString cellReuseIdentifier 
-        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (readonly!)
+    "readonly!": NSString cellReuseIdentifier
+        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);}
     UITableViewCell newUITVCell {@-999
         UITableViewCell *ret=[ViewUtilities loadViewOfClass:self.uiTVCellClass withTag:tag fromNibWithName:self.nibName];
         if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
@@ -163,14 +164,15 @@
     Int headerTag=1,footerTag=2
     Class headerClass {return(headerClass?headerClass:[UIView class]);} 
     Class footerClass {return(footerClass?footerClass:[UIView class]);} 
-    UIView header {@-999 
-        id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
-        @999 return(ret);
-    } (readonly!)
-    UIView footer {@-999 
-        id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
-        @999 return(ret);
-    } (readonly!)
+    "readonly!":
+        UIView header {@-999
+            id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
+            @999 return(ret);
+        }
+        UIView footer {@-999
+            id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
+            @999 return(ret);
+        }
         
 
 
@@ -299,7 +301,7 @@
 
 
 //TableModelController <TableController,TableModelFollower>
-//    Self initWithTable:(UITableView*)atable model:(NSObject<TableModel>*)amodel super:init {
+//    Self initWithTable:(UITableView*)atable model:(NSObject<TableModel>*)amodel  {super:{init}
 //        self.table=atable;
 //        self.model=amodel;
 //    }

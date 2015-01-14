@@ -264,7 +264,7 @@ StringRequestURLDelegate<NSURLConnectionDelegate>
     void dealloc {
     }
 
-    Self initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock super:init {
+    Self initWithEncoding:(NSStringEncoding)aencoding completionBlock:(StringRequestURLDelegateCompletionBlock)acompletionBlock  {super:{init}
         encoding=aencoding;
         self.completionBlock=acompletionBlock;
     }
@@ -536,7 +536,7 @@ IntCarrier
     IntCarrier* +carrierWithInt:(Int)v {
         return([[IntCarrier alloc] initWithInt:v]);
     }
-    Self initWithInt:(Int)v super:init {
+    Self initWithInt:(Int)v  {super:{init}
         intValue=v;
     }
     NSString description {return([NSString stringWithFormat:@"%d",(int)intValue]);}
@@ -547,7 +547,7 @@ ULLCarrier
     ULLCarrier* +carrierWithULL:(ULL)v {
         return([[ULLCarrier alloc] initWithULL:v]);
     }
-    Self initWithULL:(ULL)v super:init {
+    Self initWithULL:(ULL)v  {super:{init}
         ullValue=v;
     }
     NSString description {return([NSString stringWithFormat:@"%qu",ullValue]);}
@@ -917,7 +917,7 @@ WeakList <BaseObject,WeakList>
 
 <List>
     <ListItem> headItem=nil
-    <ListItem> tailItem=nil (assign)
+    assign: <ListItem> tailItem=nil
     void clear {
         while (self.headItem) [self.headItem unlink];
     }
@@ -927,7 +927,7 @@ WeakList <BaseObject,WeakList>
 <ListItem>
     assign:
         <List> list=nil
-    <ListItem> prev=nil (assign)
+        <ListItem> prev=nil
     <ListItem> next=nil
 
     void unlink {
@@ -1080,6 +1080,9 @@ tim=nil;
         }
     }
     
+
+
+
 
 <Codable>
     NSDictionary asDictionary

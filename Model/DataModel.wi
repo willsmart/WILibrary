@@ -16,7 +16,7 @@ PropertyData
         bool direct=nil
         NSString clasName=nil
 
-    Self initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect super:init {
+    Self initWithName:(NSString*)aname clas:(Class)aclas clasName:(NSString*)aclasName getter:(SEL)agetter setter:(SEL)asetter direct:(bool)adirect  {super:{init}
         direct=adirect;
         name=aname;
         clas=aclas;
@@ -27,7 +27,7 @@ PropertyData
 
 
 //DataRepresentationSchema
-//    NSArray childRepresentations=[NSMutableArray array] (readonly)
+//    readonly: NSArray childRepresentations=[NSMutableArray array]
 //
 //    NSString dataBinding
 //    NSURL _metaURL=nil
@@ -98,7 +98,7 @@ PropertyData
 
 <ChildArrayPropertyModelDelegate:MutableArrayDelegate> "nac" "multi"
     <__Property__s__model> owner=nil 
-    Self initWithOwner:(NSObject<__Property__s__model>*)aowner super:init {owner=aowner;}
+    Self initWithOwner:(NSObject<__Property__s__model>*)aowner  {super:{init}owner=aowner;}
 
     void didAddObject:(id)object withIndex:(Unsigned)index {
         [self.owner didAdd__Property__:(NSObject<__Property____modelObject>*)object withIndex:index];
@@ -204,7 +204,7 @@ PropertyData
 
 PropertyViewerDelegate<MutableSetDelegate>
     <DataModel> owner=nil 
-    Self initWithOwner:(NSObject<DataModel>*)aowner super:init {owner=aowner;}
+    Self initWithOwner:(NSObject<DataModel>*)aowner  {super:{init}owner=aowner;}
     void didAddObject:(id)object {[owner didAddViewer:(NSObject<DataModelViewer>*)object];}
     void willRemoveObject:(id)object {[owner willRemoveViewer:(NSObject<DataModelViewer>*)object];}
 

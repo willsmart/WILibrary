@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+
 WReader <BaseObject>
     NSString _fileString=@"",_fileName=@""
     NSString fileString
@@ -90,7 +91,7 @@ WReaderToken
     char type=nil
 
 
-    Self initWithString:(NSString*)astr bracketCount:(Int)bc type:(char)atype super:init {
+    Self initWithString:(NSString*)astr bracketCount:(Int)bc type:(char)atype  {super:{init}
         self.str=astr.copy;
         bracketCount=bc;
         type=atype;

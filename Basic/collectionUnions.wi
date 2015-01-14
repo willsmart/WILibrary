@@ -21,7 +21,7 @@ UnionSetsMutableSetDelegate<MutableSetDelegate,BaseObject>
 UnionSetDelegate<MutableSetDelegate,BaseObject>
     setDelegate >s~ <UnionSet> owner
 
-    Self initWithSet:(NSMutableSet<MutableSetDelegate>*)aset super:init {
+    Self initWithSet:(NSMutableSet<MutableSetDelegate>*)aset  {super:{init}
         [aset addDelegate:self];
     }
 
@@ -204,7 +204,7 @@ UnionDictionaryDelegate<MutableDictionaryDelegate,BaseObject>
     dictionaryDelegate >s~ <UnionDictionary> owner
     Int depth;
 
-    Self initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary super:init {
+    Self initWithDictionary:(NSMutableDictionary<MutableDictionaryDelegate>*)adictionary  {super:{init}
         [adictionary addDelegate:self];
     }
 
@@ -454,7 +454,7 @@ UnionArrayDelegate<MutableArrayDelegate,BaseObject>
         NSMutableDictionary shouldAddObjects=[[NSMutableDictionary alloc] init]
 
 
-    Self initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray super:init {
+    Self initWithArray:(NSMutableArray<MutableArrayDelegate>*)aarray  {super:{init}
         [aarray addDelegate:self];
     }
 

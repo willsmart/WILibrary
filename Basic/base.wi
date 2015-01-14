@@ -100,7 +100,7 @@ AppDelegate
     //NSMutableDictionary *asNewDictionary{@-999 
     //    NSMutableDictionary *ret=super.asNewDictionary;
     //    @999 return(ret);
-    //} (noivar)
+    //}
 
 
 NSObject

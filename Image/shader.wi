@@ -14,10 +14,10 @@ top:{
 // overall
 Shader <BaseObject>
     shader ~- ShaderProgram program
-        program ~m< SHUniform uniform
-        program ~m< SHAttribute attribute
-        fragProgram ~m< SHFn fragFn
-        vertProgram ~m< SHFn vertFn
+        program ~d< SHUniform uniform
+        program ~d< SHAttribute attribute
+        fragProgram ~d< SHFn fragFn
+        vertProgram ~d< SHFn vertFn
 
     shader ~- Parse parse
 
@@ -132,7 +132,7 @@ Shader
     }
     }
 
-    ShaderData shaderData=nil (assign)
+    assign: ShaderData shaderData=nil
     CGRect frameBufferRect=nil,drawRect=nil
 
     void setInShaderProgram:(ShaderProgram*)prog withData:(ShaderData*)data frameBufferRect:(CGRect)aframeBufferRect drawRect:(CGRect)adrawRect {

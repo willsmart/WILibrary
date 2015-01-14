@@ -5,13 +5,15 @@
 
 
 RenderShader:Shader<URLResourceShader,AutoShader,DerivedBaseObject>
-    vec2 sizeInPixels (uniform)
-    vec4 position (attribute)
-    vec2 unit (attribute)
-    vec2 pixel (attribute)
-    vec2 unitSize (uniform)
-    float opacity (uniform)
-    
+    uniform:
+        vec2 sizeInPixels
+        vec2 unitSize
+        float opacity
+    attribute:
+        vec4 position
+        vec2 unit
+        vec2 pixel
+
     assign: UIView renderedInView=nil 
     
     Self start {

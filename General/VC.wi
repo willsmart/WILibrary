@@ -78,7 +78,7 @@
 
     Self initWithCoder:(NSCoder*)aDecoder {}
     Self initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {}
-    Self init super:initWithNibName:nil bundle:nil {}
+    Self init  {super:{initWithNibName:nil bundle:nil}}
 
     void viewDidLoad {@-500 
         [super viewDidLoad];

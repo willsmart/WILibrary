@@ -1,7 +1,10 @@
 /*<GCObject>
-    Int __gcDistToModel=-1,__gcConnections=0 (readonly)
-    NSSet __gcVars (readonly)
-    NSSet ___gcVars (vars_gc)
+    Int __gcDistToModel=-1
+    readonly:
+        __gcConnections=0
+        NSSet __gcVars
+    vars_gc:
+        NSSet ___gcVars
 
     void __gc {
         if (___gcVars) {

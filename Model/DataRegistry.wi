@@ -17,7 +17,7 @@ DataViewerProperties_SourcedProxyDictionaryDelegate<SourcedProxyDictionaryDelega
 
 DataRegistryParentValueDelegate<MutableValueDelegate>
     assign: DataRegistry owner=nil 
-    Self initWithOwner:(DataRegistry*)aowner super:init {
+    Self initWithOwner:(DataRegistry*)aowner  {super:{init}
         owner=aowner;
     }
     void willChangeValueFrom:(id)fromObject to:(id)toObject {
@@ -38,7 +38,7 @@ DataRegistryParentValueDelegate<MutableValueDelegate>
 
 DataRegistryMyViewersSetDelegate<MutableSetDelegate>
     assign: DataRegistry owner=nil 
-    Self initWithOwner:(DataRegistry*)aowner super:init {
+    Self initWithOwner:(DataRegistry*)aowner  {super:{init}
         owner=aowner;
     }
     void didRemoveObject:(id)object {
@@ -51,7 +51,7 @@ DataRegistryMyViewersSetDelegate<MutableSetDelegate>
     }
 DataRegistryMyViewersDictionaryDelegate<MutableDictionaryDelegate>
     assign: DataRegistry owner=nil 
-    Self initWithOwner:(DataRegistry*)aowner super:init {
+    Self initWithOwner:(DataRegistry*)aowner  {super:{init}
         owner=aowner;
     }
     void didReplaceObject:(id)fromObject withObject:(id)toObject forKey:(id<NSCopying>)key {
@@ -75,9 +75,9 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
         MutableArray propertyStack=[[MutableArray alloc] init] 
         publicreadonly: DataRegistryParentValueDelegate parentDel=[[DataRegistryParentValueDelegate alloc] initWithOwner:self] 
 
-    registry -m< ViewerListenerSet viewerListenerSet
+    registry -d< ViewerListenerSet viewerListenerSet
 
-    parent -s<~ DataRegistry child
+    parent -s~< DataRegistry child
 
 
     Self start {
@@ -256,7 +256,7 @@ DataRegistry<DataViewer_ProxiedDictionaryDelegate,DataViewerProperties_SourcedPr
 
 ViewerListenerSet
     Self init {}
-    viewerListenerSet -m<~ ViewerPropertyListenerSet viewerPropertyListenerSet
+    viewerListenerSet -d~< ViewerPropertyListenerSet viewerPropertyListenerSet
     readonly: NSMutableSet propertiesThatChanged=[[NSMutableSet alloc] init]
 
     void willChangeValueOfProperty:(NSObject<NSCopying>*)propertyKey from:(NSObject*)fromValue to:(NSObject*)toValue {
@@ -279,7 +279,7 @@ ViewerListenerSet
 
 ViewerPropertyListenerSet
     Self init {}
-    namedDataListenerSet ><~ <NamedDataListener> namedDataListener
+    namedDataListenerSet >-~< <NamedDataListener> namedDataListener
 
     void willChangeValueFrom:(NSObject*)fromValue to:(NSObject*)toValue {
         NSString *propertyNamev=self.propertyName;

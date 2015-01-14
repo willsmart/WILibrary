@@ -2,9 +2,9 @@
 
 
 MessageController<MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>
-    UIViewController vc=nil (assign)
+    assign: UIViewController vc=nil
 
-    Self initWithViewController:(UIViewController*)avc super:init {
+    Self initWithViewController:(UIViewController*)avc  {super:{init}
         self.vc=avc;
     }
 

@@ -1,4 +1,5 @@
 
+
 Singletons
     MetaRenderer metaRenderer=nil <-{return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}
     NSString description {
@@ -6,7 +7,8 @@ Singletons
     }
 
 MetaRenderer <BaseObject>
-    readonly: UIWebView webView=[[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)]
+    readonly: UIWebView webView=
+        [[UIWebView alloc] initWithFrame:CGRectMake(0,0,10,10)]
 
     NSString* +jsStringForURL:(NSURL*)url {
         NSMutableDictionary *args=[ImageShader argStringDictionaryForURL:url];
@@ -212,7 +214,7 @@ JSMetaPropertyInState
         NSObject varDef=nil
         NSObject cachedValue=nil
 
-    Self initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar super:init {
+    Self initWithJs:(NSString*)ajs value:(NSObject*)avalue var:(NSString*)avar  {super:{init}
         js=ajs;
         if (!js) cachedValue=avalue;
         if (avar&&!(js||cachedValue)) {
@@ -281,7 +283,7 @@ JSMetaProperty<NamedDataListener>
         NSMutableDictionary varDefs=[[NSMutableDictionary alloc] init]
         NSString stateProp=nil
 
-    Self initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d super:init {
+    Self initWithOwner:(NSObject<MetaEnabled>*)aowner name:(kid)name dictionary:(NSDictionary*)d  {super:{init}
         @100
         [aowner setJsproperty:self forKey:name];
         
@@ -1117,7 +1119,7 @@ MetaEnabled
 
 UISliderMetaEnabled:UISlider<UISliderMetaEnabled>
     NSSet* allowedMetaChildTypes {@"Rend",}
-    Self init super:initWithFrame:CGRectMake(0,0,1,1) {}
+    Self init  {super:{initWithFrame:CGRectMake(0,0,1,1)}}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1205,7 +1207,7 @@ MetaEnabled
 
 UIToolbarMetaEnabled:UIToolbar<UIToolbarMetaEnabled>
     NSSet* allowedMetaChildTypes {@"ToolbarItem",}
-    Self init super:initWithFrame:CGRectMake(0,0,1,1) {}
+    Self init  {super:{initWithFrame:CGRectMake(0,0,1,1)}}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1407,7 +1409,7 @@ MetaEnabled
 
 UIViewMetaEnabled:UIView<UIViewMetaEnabled>
     NSSet* allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
-    Self init super:initWithFrame:CGRectMake(0,0,1,1) {}
+    Self init  {super:{initWithFrame:CGRectMake(0,0,1,1)}}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1416,7 +1418,7 @@ UIViewMetaEnabled:UIView<UIViewMetaEnabled>
 
 UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
     NSSet* allowedMetaChildTypes {@-20 return([MetaEnabled viewAllowedMetaChildTypes]);}
-    Self init super:initWithFrame:CGRectMake(0,0,1,1) {}
+    Self init  {super:{initWithFrame:CGRectMake(0,0,1,1)}}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1425,7 +1427,7 @@ UIViewMetaEnabledDataModelViewer:UIView<UIViewMetaEnabled,DataModelViewer>
 
 
 UILabelViewMetaEnabled:UILabel<UILabelViewMetaEnabled>
-    Self init super:initWithFrame:CGRectMake(0,0,1,1) {}
+    Self init  {super:{initWithFrame:CGRectMake(0,0,1,1)}}
     Self initWithFrame:(CGRect)framev {}
     id superInitWithFrame:(CGRect)framev {return([super initWithFrame:framev]);}
     id +metaInitSelf:(id)aself withMeta:(NSDictionary*)metaProps {@!0
@@ -1448,7 +1450,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     void willDettachChild:(NSObject<MetaEnabled>*)child withName:(NSString*)name {
         if ([child isKindOfClass:[UIView class]]) [(UIView*)child removeFromSuperview];
     }
-    Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent super:initWithStyle:style reuseIdentifier:reuseIdentifier {
+    Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier meta:(NSDictionary*)metaProps parent:(NSObject<MetaEnabled>*)aparent key:(id<NSCopying>)keyInParent  {super:{initWithStyle:style reuseIdentifier:reuseIdentifier}
         [self metaEnabledPartialInitWithMeta:metaProps parent:aparent key:keyInParent];
     }
     Self initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {
@@ -1485,7 +1487,7 @@ UITableViewCellMetaEnabled:UITableViewCell<ModelTableViewCell,UIViewMetaEnabled>
     void refreshMetaEnabledURLs {
         [tableModelFollower.model markDirty];
     }
-    Self initWithFrame:(CGRect)framev super:initWithFrame:framev style:UITableViewStylePlain {
+    Self initWithFrame:(CGRect)framev  {super:{initWithFrame:framev style:UITableViewStylePlain}
         self.separatorStyle=UITableViewCellSeparatorStyleNone;
     }
     id superInitWithFrame:(CGRect)framev style:(UITableViewStyle)style {return([super initWithFrame:framev style:style]);}
@@ -1545,8 +1547,8 @@ RenderView:URLImageView<UIViewMetaEnabled,MetaEnabled>
     Self initWithImageURLKey:(NSString*)aurlKey frame:(CGRect)framev {}
     Self initWithImageURLKey:(NSString*)aimageURLKey highlightedImageURLKey:(NSString*)ahighlightedImageURLKey frame:(CGRect)framev {}
 
-    Self init super:initWithImageURL:nil frame:CGRectMake(0,0,1,1) {}
-    Self initWithFrame:(CGRect)framev super:initWithImageURL:nil frame:framev {}
+    Self init  {super:{initWithImageURL:nil frame:CGRectMake(0,0,1,1)}}
+    Self initWithFrame:(CGRect)framev  {super:{initWithImageURL:nil frame:framev}}
 
     void didSetMetaProperty:(NSObject*)object forKey:(NSObject<NSCopying>*)key {
         {

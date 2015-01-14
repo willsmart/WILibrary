@@ -17,9 +17,11 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
         
 
 <XYShader>
-    vec4 position (attribute)
-    vec2 unit (attribute)
-    vec2 pixel (attribute,class=SHPixelCoorAttribute)
+    attribute:
+        vec4 position
+        vec2 unit
+        class:SHPixelCoorAttribute
+            vec2 pixel
 
     Self start {
         self.program.vertexCount=4;

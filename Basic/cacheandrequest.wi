@@ -1,13 +1,13 @@
 RequestCaches
-    caches ~m< <RequestCache> cache
+    caches ~d< <RequestCache> cache
         NSObject<Request>* newRequestForKey:(NSObject<NSCopying>*)key data:(NSObject*)reqData;
-        cache -m< <Request> request
+        cache -d< <Request> request
             readonly:
                 float worthAsRequest
                 NSObject result
                 float resultSize
             void goRequest;
-            request ><~ <RequestOwner> owner
+            request >-~< <RequestOwner> owner
                 void doneRequestSync:(NSObject<Request>*)request {}
                 void doneRequestAsync:(NSObject<Request>*)request {@990}
             request ~s< RequestProxy proxy
@@ -66,10 +66,9 @@ RequestCaches
 
 
 RequestProxy <WeakListItem>
-    Self initWithRequest:(NSObject<Request>*)request super:init {
+    Self initWithRequest:(NSObject<Request>*)request {super:{init}
         self.request=request;
     }
-
 
 <RequestCache:Codable>
     publicreadonly:
@@ -217,7 +216,7 @@ RequestCaches<BaseObject,RootCodable>
 LRUCacheItem<LRUCacheItem>
     readonly: NSObject object=nil
     float size=nil
-    Self initWithObject:(NSObject*)aobject size:(float)asize super:init {
+    Self initWithObject:(NSObject*)aobject size:(float)asize {super:{init}
         size=asize;
         object=aobject;
     }
