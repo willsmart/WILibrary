@@ -858,9 +858,9 @@ DictionaryWord
     double _calculatedProb=nil
 
 
-    double calculatedProb=
-        {return(self._calculatedProb);}
-        -v{
+    double calculatedProb
+        <-{return(self._calculatedProb);}
+        ->{
             Dictionary *dict=[Dictionary getDefault];
             if (v>0) {
                 [dict addWord:self.word freq:v/self.calculatedProb freqIsMultiplier:true];
@@ -926,7 +926,7 @@ Dictionary
     readonly: NSMutableArray dictsForLengths=[NSMutableArray array]
     bool changed=NO,inited=NO
 
-    NSString dictPath={
+    NSString dictPath {
         NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
         NSString *documentsDirectory = [paths objectAtIndex:0];
         return([documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"a.dict"]]);
@@ -1805,7 +1805,7 @@ type WordProbTrie "typedef:struct {BYT letter;int wi;int childIndexes[NUMLETTERS
 Dictionary
 
     int _numWords=0
-    int numWords={
+    int numWords {
         if (!_numWords) {
             for (int len=0;len<NUMLENGTHS;len++) {
                 UnpackedWord wd;
@@ -1821,7 +1821,7 @@ Dictionary
 
 
     NSMutableData *wordAddrData=nil
-    WRD **wordAddrs={
+    WRD **wordAddrs {
         if (!v_wordAddrData) {
             self.wordAddrData=[NSMutableData dataWithLength:self.numWords*sizeof(unsigned short*)];
             unsigned short **wordAddrs=(unsigned short**)v_wordAddrData.mutableBytes;
@@ -1859,7 +1859,7 @@ Dictionary
 
 
     int _numWordsWithDistinctLetters=0
-    int numWordsWithDistinctLetters={
+    int numWordsWithDistinctLetters {
         if (!_numWordsWithDistinctLetters) {
             ContextIndex ci={0};
             QuickHashTable<bool> ht(ci,NO);
@@ -1887,7 +1887,7 @@ Dictionary
 
 
     NSMutableData *wordAddrWithDistinctLettersData=nil
-    WRD **wordAddrsWithDistinctLetters={
+    WRD **wordAddrsWithDistinctLetters {
         if (!v_wordAddrWithDistinctLettersData) {
             self.wordAddrWithDistinctLettersData=[NSMutableData dataWithLength:self.numWordsWithDistinctLetters*sizeof(unsigned short*)];
             unsigned short **wordAddrs=(unsigned short**)v_wordAddrWithDistinctLettersData.mutableBytes;
@@ -2217,7 +2217,7 @@ ProMPWords
 
     NSMutableData *_wordsd=nil
     Wd *_words=nil;
-    Wd *words={
+    Wd *words {
         if (!_words) {
             int maxLen=0;
             ContextIndex ci={0};
@@ -2691,7 +2691,7 @@ ProMPWords
             _patterns=nil;
         }
     }
-    WPatternArray *patterns={
+    WPatternArray *patterns {
         if (!_patterns) {
             FILE *fil=fopen(self.patternFilename.UTF8String,"rb");
             int N=0;
@@ -2816,7 +2816,7 @@ ProMPWords
     readonly: BCArray_int indByLength=[[BCArray_int alloc] init]
 
     BCArray_int _sortedPatternIndexes_length=nil
-    BCArray_int sortedPatternIndexes_length={
+    BCArray_int sortedPatternIndexes_length {
         if (!v__sortedPatternIndexes_length) {
             WPatternArray &pa=*self.patterns;
             Array<long> tmpa;
@@ -2843,7 +2843,7 @@ ProMPWords
 
 
     BCArray_int _sortedPatternIndexes_freq=nil
-    BCArray_int sortedPatternIndexes_freq={
+    BCArray_int sortedPatternIndexes_freq {
         if (!v__sortedPatternIndexes_freq) {
             WPatternArray &pa=*self.patterns;
             Array<long> tmpa;
@@ -2861,7 +2861,7 @@ ProMPWords
 
     readonly: BCArray_int wdis=[[BCArray_int alloc] init]
 
-    float timenow={return(0);}
+    float timenow {return(0);}
 
     void subFromSups  {
         prnt("Get patterns and sort...");

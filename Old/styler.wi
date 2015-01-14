@@ -11,9 +11,9 @@ Styler
 
 
 <StyledObject>
-    NSString _stylerPrefix=@"??",stylerPrefix=
-        {return(self._stylerPrefix);}
-        -v{
+    NSString _stylerPrefix=@"??",stylerPrefix
+        <-{return(self._stylerPrefix);}
+        ->{
             if (![self._stylerPrefix isEqualToString:v]) {
                 self._stylerPrefix=v;
                 [self restyle];
@@ -146,8 +146,8 @@ Styler <BaseObject>
         }    
     }
 
-    NSString asURL=
-        {
+    NSString asURL
+        <-{
             NSMutableString *s=[NSMutableString stringWithString:@"bbookmarks://style"];
             char sep='?';
             @synchronized (self) {
@@ -163,7 +163,7 @@ Styler <BaseObject>
             }
             return([NSString stringWithString:s]);
         }
-        -value{
+        value->{
             if ([value hasPrefix:@"bbookmarks://style?"]) {
                 @synchronized (self) {
                     Int st=@"bbookmarks://style?".length;

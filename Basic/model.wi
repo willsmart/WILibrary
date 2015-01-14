@@ -78,7 +78,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection>
         return(self);
     }
 
-    bool onlyOwnedByModels={return(totalRetainCount==modelRetaincount);}
+    bool onlyOwnedByModels {return(totalRetainCount==modelRetaincount);}
 
     void retract {
         noMOForNextRetain=NO;
@@ -91,9 +91,9 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection>
 <Commitable:RefCountedObject>
     bool modelObjectHasChanged=nil,alwaysChangedIfSourceChanged=nil
     long version=1
-    CommitStage commitStage={return([Model getDefault].commitStage);}
+    CommitStage commitStage {return([Model getDefault].commitStage);}
     ULL commitFrame=1
-    bool _doneStage=NO,doneStage={return(_doneStage);}
+    bool _doneStage=NO,doneStage {return(_doneStage);}
 
     sourceCommitter >< <Commitable> sinkCommitter
 
@@ -118,7 +118,7 @@ ModelOwnedObjectSet:NSMutableSet<MutableSet,MutableSet,WeakCollection>
         modelObjectHasChanged=NO;
     }
 
-    bool _isDirty=NO,isDirty={return(_isDirty);}
+    bool _isDirty=NO,isDirty {return(_isDirty);}
     void markDirty {@-900 
         if (_isDirty) {
             //prnt("%s already dirty\n",[Util cnameFor:self]);

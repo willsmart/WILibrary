@@ -49,7 +49,7 @@ interfaces:{
 }
 
 Singletons
-    publicreadonly: FontList fontList={return(!fontList?fontList=[[FontList alloc] init]:fontList);}=nil 
+    publicreadonly: FontList fontList=nil <-{return(!fontList?fontList=[[FontList alloc] init]:fontList);}
 
 FontList <BaseObject>
     FontList* +getDefault {return(g_singletons.fontList);}

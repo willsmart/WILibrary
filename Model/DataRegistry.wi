@@ -1,6 +1,6 @@
 
 Singletons
-    DataRegistry rootDataRegistry={return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}=nil 
+    DataRegistry rootDataRegistry=nil <-{return(!rootDataRegistry?rootDataRegistry=[[DataRegistry alloc] init]:rootDataRegistry);}
 
 
 
@@ -301,7 +301,7 @@ ViewerPropertyListenerSet
         }
     }
 
-    NSString propertyName={
+    NSString propertyName {
         return([DataRegistry propertyNameForProperty:(NSObject<NSCopying>*)self.keyInViewerListenerSet inViewer:(NSObject<NSCopying>*)self.viewerListenerSet.keyInRegistry]);
     }
 
@@ -309,9 +309,9 @@ ViewerPropertyListenerSet
 
 
 <NamedDataListener:Meta_ProxiedDictionaryDelegate>
-    DataRegistry dataRegistry=
-        {return(dataRegistry?dataRegistry:g_singletons.rootDataRegistry);}
-        -v{
+    DataRegistry dataRegistry=nil
+        <-{return(dataRegistry?dataRegistry:g_singletons.rootDataRegistry);}
+        ->{
             if (v==g_singletons.rootDataRegistry) v=nil;
             if (v!=dataRegistry) {
                 NSSet *ns=self.propertyNamesListenedTo;
@@ -319,17 +319,17 @@ ViewerPropertyListenerSet
                 dataRegistry=v;
                 self.propertyNamesListenedTo=ns;
             }
-        }=nil 
+        }
 
-    NSSet propertyNamesListenedTo=
-        {
+    NSSet propertyNamesListenedTo
+        <-{
             NSMutableSet *s=[NSMutableSet set];
             for (ViewerPropertyListenerSet *ls in self.namedDataListenerSets) {
                 [s addObject:ls.propertyName];
             }
             return(s);
         }
-        -v{
+        ->{
             NSSet *inss=nil,*dels=nil;
             if ([Util getInsertsAndDeletesForSetWhenChanging:self.propertyNamesListenedTo to:v inss:&inss dels:&dels]) {
                 if (dels.count) {

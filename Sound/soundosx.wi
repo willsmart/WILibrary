@@ -3,14 +3,14 @@
 type AudioDeviceID
 
 <AudioUnit>
-    OSType componentSubType={return(kAudioUnitSubType_HALOutput);}
+    OSType componentSubType {return(kAudioUnitSubType_HALOutput);}
     AudioDeviceID mic=[__Class__ getAudioDeviceCalled:"Built-in Microphone"];
     AudioDeviceID speakers=[__Class__ getAudioDeviceCalled:"Built-in Output"];
     Self start {
         [__Class__ getAudioDeviceCalled:nil];
     }
     AudioDeviceID +getAudioDeviceCalled:(const char*)name {
-        AudioObjectPropertyAddress propertyAddress = { 
+        AudioObjectPropertyAddress propertyAddress   { 
             kAudioHardwarePropertyDevices, 
             kAudioObjectPropertyScopeGlobal, 
             kAudioObjectPropertyElementMaster

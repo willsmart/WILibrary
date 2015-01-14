@@ -39,9 +39,9 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
 
 
 <ScrollViewTracker:UIScrollViewDelegate,BaseObject>
-    UIScrollView uiScrollView=
-        {return(uiScrollView);}
-        -v{
+    UIScrollView uiScrollView
+        <-{return(uiScrollView);}
+        ->{
             if (uiScrollView) {
                 uiScrollView.delegate=nil;
             }
@@ -54,7 +54,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
     CGPoint nearestBoundaryPointForPoint:(CGPoint)pt {@999 
         return(pt);
     }
-    CGPoint visibleOffset={@-999 
+    CGPoint visibleOffset {@-999 
         CGPoint ret=self.uiScrollView.contentOffset;
         ret.x-=500000;ret.y-=500000;
         @999 
@@ -62,7 +62,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
         return(ret);
     }
 
-    CGPoint overallNearestInnerPoint={
+    CGPoint overallNearestInnerPoint {
         float top=0,left=0,right=0,bot=0;
         CGPoint co=uiScrollView.contentOffset;
         co.x-=500000;co.y-=500000;
@@ -91,7 +91,7 @@ SHPixelCoorAttribute : SHAttribute<DerivedBaseObject>
 
     void scrollViewDidScroll:(UIScrollView*)scrollView {
         CGPoint pt=self.overallNearestInnerPoint;
-        UIEdgeInsets insets={0,0,0,0};
+        UIEdgeInsets insets {0,0,0,0};
         bool doInsets=NO;
         
         if (pt.x>0.0001) {

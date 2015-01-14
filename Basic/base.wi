@@ -70,7 +70,7 @@ AppDelegate
     //    [s addObject:[ObjectPointer dataForObject:self]];
     //}
 
-    //NSMutableDictionary *asNewDictionary={@-999 
+    //NSMutableDictionary *asNewDictionary{@-999 
     //    NSMutableDictionary *ret=[MutableDictionary dictionary];
     //    [ret setObject:[NSString stringWithFormat:@"%s",class_getName([self class])] forKey:@"___class"];
     //    [ret setObject:[ObjectPointer dataForObject:self] forKey:@"___id"];
@@ -97,7 +97,7 @@ AppDelegate
     //    [super addGraph:s];
     //}
 
-    //NSMutableDictionary *asNewDictionary={@-999 
+    //NSMutableDictionary *asNewDictionary{@-999 
     //    NSMutableDictionary *ret=super.asNewDictionary;
     //    @999 return(ret);
     //} (noivar)

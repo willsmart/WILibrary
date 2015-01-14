@@ -52,7 +52,7 @@ type ArrayOfPLAYFRAMEs "typedef:Array<PLAYFRAME>"
         DELETE(ArrayOfInts,recordingSamples);
     }
 
-    Int recordingQueueNum={return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
+    Int recordingQueueNum {return((recordingQueueIn-recordingQueueOut+recordingQueueSize)%recordingQueueSize);}
     Int _debrci=0;
     void addInts:(Int*)arecordingSamples num:(Int)Ns {
         memcpy(recordingSamples->a,arecordingSamples,sizeof(int)*Ns);
@@ -244,7 +244,7 @@ interfaces:impl:{
         DELETE(ArrayOfPLAYFRAMEs,playbackSamples);
     }
 
-    Int playbackQueueNum={return((playbackQueueIn-playbackQueueOut+playbackQueueSize)%playbackQueueSize);}
+    Int playbackQueueNum {return((playbackQueueIn-playbackQueueOut+playbackQueueSize)%playbackQueueSize);}
 
 
 

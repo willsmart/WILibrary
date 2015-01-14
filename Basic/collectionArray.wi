@@ -51,8 +51,8 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         Int weakObjectCount=0
     bool insertsWeakObjectsByDefault=0
     CollectionWeakness weakness=
-        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
-        -v{}
+        <-{return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        ->{}
 
     void countWeakObjects {
         Int c=0;
@@ -130,12 +130,12 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
     //Querying an Array
     BOOL containsObject:(id)object {return([__array containsObject:object]);}
-    atomic: Unsigned count={return([__array count]);}
+    atomic: Unsigned count{return([__array count]);}
     void getObjects:(__unsafe_unretained id[])aBuffer range:(NSRange)aRange {
         [__array getObjects:aBuffer range:aRange];
         if (weakObjectCount) for (Int i=aRange.length+aRange.location-1;i>=aRange.location;i--) aBuffer[i]=[aBuffer[i] strongSelf];
     }
-    id lastObject={return(weakObjectCount?[__array.lastObject strongSelf]:__array.lastObject);}
+    id lastObject{return(weakObjectCount?[__array.lastObject strongSelf]:__array.lastObject);}
     id objectAtIndex:(Unsigned)index {
         if (index>=__array.count) ERR("Index %d is out of bounds [0,%d)",int(index),int(__array.count));
         return(weakObjectCount?[__array[index] strongSelf]:__array[index]);
@@ -171,8 +171,8 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
         }
         else return([__array objectsAtIndexes:indexes]);
     }
-    NSEnumerator objectEnumerator={return([__array objectEnumerator]);}
-    NSEnumerator reverseObjectEnumerator={return([__array reverseObjectEnumerator]);}
+    NSEnumerator objectEnumerator{return([__array objectEnumerator]);}
+    NSEnumerator reverseObjectEnumerator{return([__array reverseObjectEnumerator]);}
 
 
     //Finding Objects in an Array
@@ -290,7 +290,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 
 
     //Creating a Description
-    NSString description={return([__array description]);}
+    NSString description{return([__array description]);}
     NSString * descriptionWithLocale:(id)locale {
         return([self.objects descriptionWithLocale:locale]);
     }
@@ -426,7 +426,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakCo
 <MinimalMutableArray:Array,MutableArrayDelegate,ObjectEquate>
     readonly: NSMutableArray __mutableArray=nil
     CollectionWeakness weakness=
-        -v{
+        ->{
             switch (v) {
                 case CollectionIsEmpty:[self removeAllObjects];break;
                 case CollectionIsWeakAndStrong:default:break;

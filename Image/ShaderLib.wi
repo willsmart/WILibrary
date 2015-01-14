@@ -46,13 +46,13 @@ SHPixelCoorSzAttribute : SHAttribute<DerivedBaseObject>
 
 <URLResourceShader:URLResource>
     NSString* +urlType {return(@"shader?");}
-    NSDictionary urlArgs=
-        {
+    NSDictionary urlArgs
+        <-{
             ret=[MutableDictionary dictionary];
             for (NSString *name in self.program.uniforms) [ret setObject:[self.program uniformForKey:name] forKey:[@"u" stringByAppendingString:name]];
             for (NSString *name in self.program.macros) [ret setObject:[self.program macroForKey:name] forKey:[@"m" stringByAppendingString:name]];
         }
-        -v {
+        ->{
             NSArray *unames=self.program.uniforms.allKeys;
             NSArray *mnames=self.program.macros.allKeys;
             for (NSString *name in unames) if (!([self respondsToSelector:NSSelectorFromString((NSString*)name)]||[v objectForKey:[@"u" stringByAppendingString:name]])) [self.program removeUniformForKey:name];
@@ -107,7 +107,7 @@ ShaderURLConversion<LRUCacheItem,URLResource>
         self.simplifiedClearedURL=[__Class__ _simplifiedClearedURLForURL:url];
         self.simplifiedURL=[ImageShader simplifiedURLForURL:url];
     }
-    float size={return(v_simplifiedURL.absoluteString.length);}
+    float size {return(v_simplifiedURL.absoluteString.length);}
 
     NSURL* +simplifiedClearedURLForURL:(NSURL*)url {
         return(((ShaderURLConversion*)[g_singletons.shaderURLConversionCache objectForKey:url]).simplifiedClearedURL);
@@ -134,8 +134,8 @@ ShaderURLConversion<LRUCacheItem,URLResource>
 
 
 Singletons
-    ShaderURLConversionCache shaderURLConversionCache={return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}=nil
-    NSString description={
+    ShaderURLConversionCache shaderURLConversionCache=nil <-{return(v_shaderURLConversionCache?v_shaderURLConversionCache:(v_shaderURLConversionCache=[[ShaderURLConversionCache alloc] init]));}
+    NSString description {
         [ret appendFormat:@"\nShaderURLConversionCache %p has %u\n",self.shaderURLConversionCache,(int)self.shaderURLConversionCache.count];
     }
 
@@ -157,9 +157,9 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache>
 
     CADisplayLink displayLink=nil
 
-    BOOL animating=
-        {return(animating);}
-        -v{
+    BOOL animating=nil
+        <-{return(animating);}
+        ->{
             if (v&&!animating) {
                 CADisplayLink *aDisplayLink = [[UIScreen mainScreen] displayLinkWithTarget:self selector:@selector(renderTick)];
                 [aDisplayLink setFrameInterval:animationFrameInterval];
@@ -173,11 +173,11 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache>
                 self.displayLink = nil;
                 animating = FALSE;
             }
-        }=nil
+        }
 
-    Int animationFrameInterval=
-        {return animationFrameInterval;}
-        -v{
+    Int animationFrameInterval=nil
+        <-{return animationFrameInterval;}
+        ->{
             if (v >= 1) {
                 animationFrameInterval = v;
                 if (animating) {
@@ -185,7 +185,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache>
                     self.animating=YES;
                 }
             }
-        }=nil
+        }
 
     Self start {@-10 
         animating = NO;
@@ -207,7 +207,7 @@ ShaderURLConversionCache:NSMutableDictionary<BaseObject,LRUCache>
 
 
 Singletons
-    ShaderTicker shaderTicker={return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}=nil
+    ShaderTicker shaderTicker=nil <-{return(v_shaderTicker?v_shaderTicker:(v_shaderTicker=[[ShaderTicker alloc] init]));}
 
     void startImageTicker {
         [self.shaderTicker startWithInterval:0.5];

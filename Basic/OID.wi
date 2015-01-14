@@ -107,7 +107,7 @@ ClassCount "-Object"
         name=aname;
         count=0;nextID=1;
     }
-    NSString description={return([NSString stringWithFormat:@"%@x%qu",name,count]);}
+    NSString description {return([NSString stringWithFormat:@"%@x%qu",name,count]);}
 
 type UnsafeClassCount "typedef@-1:__unsafe_unretained ClassCount*"
 type QuickHashTableOfClassCounts "typedef:QuickHashTable<UnsafeClassCount>"
@@ -170,7 +170,7 @@ Singletons<Ticker> "-Object"
         for (Int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
     }
 
-    NSString description={@-999
+    NSString description {@-999
         NSMutableString *ret=[NSMutableString stringWithFormat:@"\nx%qu Objects:\n",totalObjectCount.count];
         {
             UnsafeClassCount pcc;
@@ -318,17 +318,17 @@ interfaces:impl:{
 #endif
     }
 
-    NSString description={@-999
+    NSString description {@-999
         NSMutableString *ret=self.objectName;
         @999 return(ret);
     }
-    NSMutableString objectName={@-999 
+    NSMutableString objectName {@-999 
         NSMutableString *ret=nil;
         @-100 ret=[NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
         @999 return(ret);
     }
-    constchar *cdescription={return([self.description cStringUsingEncoding:NSASCIIStringEncoding]);}
-    constchar *cobjectName={return([self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);}
+    constchar *cdescription {return([self.description cStringUsingEncoding:NSASCIIStringEncoding]);}
+    constchar *cobjectName {return([self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);}
 
 
 
@@ -341,7 +341,7 @@ interfaces:impl:{
     
 Singletons
 
-    publicreadonly: Trace trace={return(!trace?trace=[[Trace alloc] init]:trace);}=nil
+    publicreadonly: Trace trace=nil <-{return(!trace?trace=[[Trace alloc] init]:trace);}
     
 "<pthread.h>"
 interfaces:{
@@ -589,7 +589,7 @@ Trace<Ticker,BaseObject> "notrace"
     void start {__getCurrentTraceString();g_trace=self;[self startWithInterval:0.5];}
     void stop {@100 g_trace=nil;}
     
-    bool savingTrace={return(v_tim!=nil);}
+    bool savingTrace {return(v_tim!=nil);}
 
 
     bool not_first=nil
@@ -623,7 +623,7 @@ Trace<Ticker,BaseObject> "notrace"
 
     
 Singletons
-    publicreadonly: ObjectGraph objectGraph={return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}=nil
+    publicreadonly: ObjectGraph objectGraph=nil <-{return(!objectGraph?objectGraph=[[ObjectGraph alloc] init]:objectGraph);}
     
 "<pthread.h>"
 interfaces:{
@@ -643,7 +643,7 @@ ObjectGraph<Ticker,BaseObject>
     void start {g_objectGraph=self;[self startWithInterval:0.5];}
     void stop {@100 g_objectGraph=nil;}
     
-    bool savingGraph={return(v_tim!=nil);}
+    bool savingGraph {return(v_tim!=nil);}
 
     void object:(LL)owner ownsObject:(LL)object count:(Int)count {
         [newEdits appendFormat:@"[%qu,%f,%qu,%qu,%d],\n",g_sequence++,CACurrentMediaTime(),owner,object,(int)count];

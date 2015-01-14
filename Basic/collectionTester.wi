@@ -35,7 +35,7 @@ CollectionTestObject
         [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"weak"];
     }
 
-    NSString description={
+    NSString description {
         NSMutableString *s=[NSMutableString stringWithFormat:@"(o%d",(int)intValue];
         for (NSString *key in subObjects) [s appendFormat:@" %@:%@",key,((CollectionTestSubObject*)[subObjects objectForKey:key]).description];
         [s appendFormat:@")"];
@@ -72,11 +72,11 @@ CollectionTestObject
 
 CollectionTestSubObject
     Int willAddCount=0,willRemoveCount=0;
-    Int __rc=0,__arc=0,rcWillBe={return(__rc-__arc);},rcIs={return(__rc);}
+    Int __rc=0,__arc=0,rcWillBe {return(__rc-__arc);},rcIs {return(__rc);}
     Int rcInner=0
     assign: CollectionTestObject *testObject=nil 
 
-    NSString description={return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
+    NSString description {return([NSString stringWithFormat:@"%d->%d  ",(int)self.rcIs,(int)self.rcWillBe]);}
 
     Self initWithTestObject:(CollectionTestObject*)atestObject super:init {
         self.testObject=atestObject;
@@ -101,19 +101,19 @@ CollectionTestSubObject
 
 <Tester:BasicTester>
     NSArray _allObjects=nil,_allKeys=nil
-    NSMutableArray _objectArray=nil,objectArray={if (!v__objectArray) self._objectArray=self.randArray;return(v__objectArray);}
-    NSMutableDictionary _dictionary=nil,dictionary={if (!v__dictionary) self._dictionary=self.randDictionary;return(v__dictionary);}
-    NSMutableArray _keyArray=nil,keyArray={if (!v__keyArray) self._keyArray=self.randKeyArray;return(v__keyArray);}
-    NSMutableSet _objectSet=nil,objectSet={if (!v__objectSet) self._objectSet=self.randSet;return(v__objectSet);}
-    NSMutableIndexSet _indexes=nil,indexes={if (!v__indexes) self._indexes=self.randInternalIndexSet;return(v__indexes);}
+    NSMutableArray _objectArray=nil,objectArray {if (!v__objectArray) self._objectArray=self.randArray;return(v__objectArray);}
+    NSMutableDictionary _dictionary=nil,dictionary {if (!v__dictionary) self._dictionary=self.randDictionary;return(v__dictionary);}
+    NSMutableArray _keyArray=nil,keyArray {if (!v__keyArray) self._keyArray=self.randKeyArray;return(v__keyArray);}
+    NSMutableSet _objectSet=nil,objectSet {if (!v__objectSet) self._objectSet=self.randSet;return(v__objectSet);}
+    NSMutableIndexSet _indexes=nil,indexes {if (!v__indexes) self._indexes=self.randInternalIndexSet;return(v__indexes);}
     assign: id _object=nil 
-    NSObject *object={if (!v__object) self._object=self.randObject;return(v__object);}
+    NSObject *object {if (!v__object) self._object=self.randObject;return(v__object);}
     assign: id _object2=nil 
-    NSObject *object2={if (!v__object2) self._object2=self.randObject;return(v__object2);}
-    NSString _key=nil,key={if (!v__key) self._key=self.randKey;return(v__key);} (assign)
-    NSRange _range=nil,range={return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}=nil
-    Unsigned _index=NSNotFound,index={return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
-    Unsigned _index1=NSNotFound,index1={return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
+    NSObject *object2 {if (!v__object2) self._object2=self.randObject;return(v__object2);}
+    NSString _key=nil,key {if (!v__key) self._key=self.randKey;return(v__key);} (assign)
+    NSRange _range=nil,range {return(_range.location==NSNotFound?self._range=self.randInternalRange:self._range);}
+    Unsigned _index=NSNotFound,index {return(_index==NSNotFound?_index=(a.count==0?NSNotFound:(rand()%a.count)):_index);}
+    Unsigned _index1=NSNotFound,index1 {return(_index1==NSNotFound?_index1=rand()%(a.count+1):_index1);}
 
     NSDictionary *collections=[NSDictionary dictionary]
 
@@ -246,33 +246,33 @@ CollectionTestSubObject
 
 
 
-    id randObject=
+    id randObject 
         {return([self._allObjects objectAtIndex:rand()%self._allObjects.count]);}
-    NSString randKey=
+    NSString randKey 
         {return((NSString*)[self._allKeys objectAtIndex:rand()%self._allKeys.count]);}
 
-    NSMutableDictionary randDictionary=
+    NSMutableDictionary randDictionary 
         {
             NSMutableDictionary *d=[NSMutableDictionary dictionary];
             Unsigned count=rand()%10;
             for (Int i=0;i<count;i++) [d setObject:self.randObject forKey:self.randKey];
             return(d);
         }
-    NSMutableSet randSet=
+    NSMutableSet randSet 
         {
             NSMutableSet *objects=[MutableSet set];
             Unsigned count=rand()%10;
             for (Int i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
-    NSMutableArray randArray=
+    NSMutableArray randArray 
         {
             NSMutableArray *objects=[NSMutableArray array];
             Unsigned count=rand()%10;
             for (Int i=0;i<count;i++) [objects addObject:self.randObject];
             return(objects);
         }
-    NSMutableArray randKeyArray=
+    NSMutableArray randKeyArray 
         {
             NSMutableArray *keys=[NSMutableArray array];
             Unsigned count=rand()%10;
@@ -290,8 +290,8 @@ CollectionTestSubObject
         }
         return(indexesv);
     }
-    NSMutableIndexSet randInternalIndexSet={return([self randIndexSetWithCount:rand()%(a.count+1) max:a.count-1]);}
-    NSRange randInternalRange=
+    NSMutableIndexSet randInternalIndexSet {return([self randIndexSetWithCount:rand()%(a.count+1) max:a.count-1]);}
+    NSRange randInternalRange 
         {
             Unsigned location=rand()%a.count,length=rand()%(a.count-location);
             return(NSMakeRange(location,length));
@@ -451,7 +451,7 @@ SetTester <Tester>
         }
     }
 
-    bool stateGood={return([a isEqualToSet:b]);}
+    bool stateGood {return([a isEqualToSet:b]);}
 
 
     void setByAddingObject {
@@ -675,7 +675,7 @@ DictionaryTester <Tester>
         }
     }
 
-    bool stateGood={return([a isEqualToDictionary:b]);}
+    bool stateGood {return([a isEqualToDictionary:b]);}
 
 
 
@@ -720,8 +720,8 @@ DictionaryTester <Tester>
     
     
     //Enumerating Dictionaries
-    //NSEnumerator keyEnumerator={return([__dictionary keyEnumerator]);}
-    //NSEnumerator objectEnumerator={return([__dictionary objectEnumerator]);}
+    //NSEnumerator keyEnumerator {return([__dictionary keyEnumerator]);}
+    //NSEnumerator objectEnumerator {return([__dictionary objectEnumerator]);}
     //void enumerateKeysAndObjectsUsingBlock:(void (^)(id key, id obj, BOOL *stop))block {
     //void enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (^)(id key, id obj, BOOL *stop))block {
     
@@ -936,7 +936,7 @@ ArrayTester <Tester>
         }
     }
 
-    bool stateGood={return([a isEqualToArray:b]);}
+    bool stateGood {return([a isEqualToArray:b]);}
 
 
 
@@ -963,8 +963,8 @@ ArrayTester <Tester>
     void objectsAtIndexes {
         //[self passFail:[[a objectsAtIndexes:self.indexes] isEqualToArray:[b objectsAtIndexes:self.indexes]] format:@"objectsAtIndexes"];
     }
-    //NSEnumerator objectEnumerator={return([__array objectEnumerator]);}
-    //NSEnumerator reverseObjectEnumerator={return([__array reverseObjectEnumerator]);}
+    //NSEnumerator objectEnumerator {return([__array objectEnumerator]);}
+    //NSEnumerator reverseObjectEnumerator {return([__array reverseObjectEnumerator]);}
 
 
     //Finding Objects in an Array
@@ -1045,7 +1045,7 @@ ArrayTester <Tester>
 
 
     //Creating a Description
-    //NSString description={return([__array description]);}
+    //NSString description {return([__array description]);}
     //NSString * descriptionWithLocale:(id)locale {
     //NSString * descriptionWithLocale:(id)locale indent:(Unsigned)level {
     //BOOL writeToFile:(NSString *)path atomically:(BOOL)flag {

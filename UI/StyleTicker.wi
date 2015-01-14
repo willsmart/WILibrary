@@ -1,5 +1,5 @@
 Singletons
-    StyleTicker styleTicker={return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}=nil 
+    StyleTicker styleTicker=nil <-{return(styleTicker?styleTicker:(styleTicker=[[StyleTicker alloc] init]));}
 
 StyleTicker<Ticker,BaseObject>
     StyleTicker* +getDefault {return(g_singletons.styleTicker);}
@@ -44,9 +44,9 @@ StyleTicker<Ticker,BaseObject>
     }
 
 
-    NSString stylerString=
-        {return(stylerString);}
-        -v{
+    NSString stylerString=nil
+        <-{return(stylerString);}
+        ->{
             if (v&&![v isEqualToString:stylerString]) {
                 prnt("New Shader string\n");
                 if (debug) prnt(">> %s\n",v.UTF8String);
@@ -120,7 +120,7 @@ StyleTicker<Ticker,BaseObject>
                     }
                 }
             }
-        }=nil 
+        } 
 
     void tick {
         prnt(".");

@@ -5,9 +5,9 @@ RenderLoop <BaseObject>
     void dealloc {@-100 self.animating=NO;self.eaglView=nil;}
 
     EAGLView _eaglView=nil
-    EAGLView eaglView=
-        {return(self._eaglView);}
-        -v{
+    EAGLView eaglView
+        <-{return(self._eaglView);}
+        ->{
             if (v) {
                 [(self._eaglView=v) initContext];
             }
@@ -23,9 +23,9 @@ RenderLoop <BaseObject>
     CADisplayLink displayLink=nil
 
 /**! -wi!warnwarn Address warning: Non-imaginary variable animating has an ivar, but no default value. This is less a strict error than unclean !**/
-    BOOL animating=
-        {return(animating);}
-        -v{
+    BOOL animating=nil
+        <-{return(animating);}
+        ->{
             if (v&&!animating) {
                 CADisplayLink *aDisplayLink = [[UIScreen mainScreen] displayLinkWithTarget:self selector:@selector(drawFrame)];
                 [aDisplayLink setFrameInterval:animationFrameInterval];
@@ -39,12 +39,12 @@ RenderLoop <BaseObject>
                 self.displayLink = nil;
                 animating = FALSE;
             }
-        }=nil
+        }
 
 /**! -wi!warnwarn Address warning: Non-imaginary variable animationFrameInterval has an ivar, but no default value. This is less a strict error than unclean !**/
-    Int animationFrameInterval=
-        {return animationFrameInterval;}
-        -v{
+    Int animationFrameInterval=nil
+        <-{return animationFrameInterval;}
+        ->{
             if (v >= 1) {
                 animationFrameInterval = v;
                 if (animating) {
@@ -52,7 +52,7 @@ RenderLoop <BaseObject>
                     self.animating=YES;
                 }
             }
-        }=nil
+        }
 
     renderLoop ~- ShaderData shaderData
 

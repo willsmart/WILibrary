@@ -25,12 +25,12 @@ RequestCaches
         }
 
     NSDictionary asDictionary=
-        {
+        <-{
             for (kid key in self.caches) {
                 [ret setObject:[self cacheForKey:key].asDictionary forKey:key];
             }
         }
-        -v{
+        ->{
             for (kid key in v) {
                 NSObject<RequestCache> *cache=[self cacheForKey:key];
                 if (cache) cache.asDictionary=(NSDictionary*)[v objectForKey:key];
@@ -62,7 +62,7 @@ RequestCaches
         [self removeAllOwners];
     }
     NSDate started_at=[NSDate date]
-    float ageAsRequest={return(-[v_started_at timeIntervalSinceNow]);}
+    float ageAsRequest{return(-[v_started_at timeIntervalSinceNow]);}
 
 
 RequestProxy <WeakListItem>
@@ -77,8 +77,8 @@ RequestProxy <WeakListItem>
         LRUCache cache=[[LRUCache alloc] init] 
 
     NSDictionary asDictionary=
-        {imret=cache.asDictionary;}
-        -v{cache.asDictionary=v;}
+        <-{imret=cache.asDictionary;}
+        ->{cache.asDictionary=v;}
 
 
     NSObject* immediateResultForKey:(id<NSCopying>)key {
@@ -136,7 +136,7 @@ RequestProxy <WeakListItem>
         return(req);
     }
 
-    <Request> worthiestRequest={
+    <Request> worthiestRequest{
         RequestProxy *proxy;
         NSObject<Request> *req=nil;
         while (((proxy=(RequestProxy*)proxyList.headItem))&&!((req=proxy.request))) {
@@ -161,7 +161,7 @@ RequestProxy <WeakListItem>
 
 
 RequestCaches<BaseObject,RootCodable>
-    <Request> worthiestRequest={
+    <Request> worthiestRequest{
         NSObject<Request> *bestReq=nil,*req;
         for (kid key in self.caches) {
             NSObject<RequestCache> *cache=[self.caches objectForKey:key];
@@ -238,7 +238,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject>
         return([dir stringByAppendingFormat:@"/render_%04d.png",(int)imi++]);
     }
     NSDictionary asDictionary=
-        {
+        <-{
             NSMutableArray *list=[[NSMutableArray alloc] init];
             for (LRUCacheItem *item=(LRUCacheItem*)self.headItem;item;item=(LRUCacheItem*)item.next) {
                 UIONLY(
@@ -281,7 +281,7 @@ LRUCache:NSMutableDictionary<LRUCache,BaseObject>
             }
             if (ret.count) [ret setObject:list.copy forKey:@"___li_st___"];
         }
-        -v{
+        ->{
             [self clear];
 
             NSArray *list=[v objectForKey:@"___li_st___"];

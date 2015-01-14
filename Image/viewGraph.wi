@@ -149,9 +149,9 @@ VGPointPartFollowerArrayDelegate<MutableArrayDelegate>
         part.referencedPoint=(referencedPointBinding?[o pointForKey:referencedPointBinding]:nil);
     }
 
-    NSString referencedPointBinding=
-        {return(referencedPointBinding);}
-        -v{
+    NSString referencedPointBinding
+        <-{return(referencedPointBinding);}
+        ->{
             if (referencedPointBinding!=v) {
 referencedPointBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
@@ -159,9 +159,9 @@ referencedPointBinding=v;
                 }
             }
         } 
-    NSString referencedObjectBinding=
-        {return(referencedObjectBinding);}
-        -v{
+    NSString referencedObjectBinding
+        <-{return(referencedObjectBinding);}
+        ->{
             if (referencedObjectBinding!=v) {
 referencedObjectBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
@@ -213,9 +213,9 @@ VGPartsSinglyReferencedPointFollowerSetDelegate
         }
     }
 
-    NSString referencedPointBinding=
-        {return(referencedPointBinding);}
-        -v{
+    NSString referencedPointBinding
+        <-{return(referencedPointBinding);}
+        ->{
             if (referencedPointBinding!=v) {
 referencedPointBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
@@ -223,9 +223,9 @@ referencedPointBinding=v;
                 }
             }
         } 
-    NSString referencedObjectBinding=
-        {return(referencedObjectBinding);}
-        -v{
+    NSString referencedObjectBinding
+        <-{return(referencedObjectBinding);}
+        ->{
             if (referencedObjectBinding!=v) {
 referencedObjectBinding=v;
                 for (NSObject<ReferentialVGPointPart> *part in self.parts) {
@@ -282,7 +282,7 @@ top:impl:{
         DELETE(ArrayOfCGPoints,pointStack);
     }
 
-    CGPoint calculatedValue={
+    CGPoint calculatedValue {
         if (self.doneStage) return;
         self.doneStage=YES;
         Int N=0,N2=0,dN2=0;
@@ -441,9 +441,9 @@ VGCalculatedPoint
     Self start {
         [self.referencedPoints addDelegate:[[SourceCommitterArrayDelegate alloc] initWithOwner:self]];
     }
-    <VGPoint> referencedPoint=
-        {return(self.referencedPoints.count==1?[self.referencedPoints objectAtIndex:0]:nil);}
-        -v{
+    <VGPoint> referencedPoint
+        <-{return(self.referencedPoints.count==1?[self.referencedPoints objectAtIndex:0]:nil);}
+        ->{
             if (self.referencedPoint!=v) {
                 [self removeAllReferencedPoints];
                 if (v) [self addReferencedPoint:v];
@@ -599,15 +599,15 @@ VGPointPartFollowerArrayDelegate
 
 
 VGConstantPointPartPattern<VGPointPartPattern>
-    ivar: CGPoint value=
-        {return(value);}
-        -v{
+    CGPoint value=nil
+        <-{return(value);}
+        ->{
             if (value!=v) {
                 value=v;
                 [self markDirty];
             }
         }
-    <VGPointPart> makePart={return([[VGConstantPointPart alloc] init]);}
+    <VGPointPart> makePart {return([[VGConstantPointPart alloc] init]);}
 
 VGConstantPointPart<VGPointPart>
     void calculatePart {self.point.pointStack->a[0]=self.pattern.value;}
@@ -616,23 +616,23 @@ VGConstantPointPart<VGPointPart>
 
 VGScalerPointPartPattern<VGPointPartPattern>
     ivar:
-        CGPoint multiply=
-            {return(multiply);}
-            -v{
+        CGPoint multiply
+            <-{return(multiply);}
+            ->{
                 if (multiply!=v) {
                     multiply=v;
                     [self markDirty];
                 }
             }
-        CGPoint add=
-            {return(add);}
-            -v{
+        CGPoint add
+            <-{return(add);}
+            ->{
                 if (add!=v) {
                     add=v;
                     [self markDirty];
                 }
             }
-    <VGPointPart> makePart={return([[VGScalerPointPart alloc] init]);}
+    <VGPointPart> makePart {return([[VGScalerPointPart alloc] init]);}
 
 VGScalerPointPart<VGPointPart>
     void calculatePart {
@@ -653,15 +653,15 @@ VGSwizzlePointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ivar: ULL indexMask=
-        {return(indexMask);}
-        -v{
+    ivar: ULL indexMask
+        <-{return(indexMask);}
+        ->{
             if (indexMask!=v) {
                 indexMask=v;
                 [self markDirty];
             }
         }
-    <VGPointPart> makePart={return([[VGSwizzlePointPart alloc] init]);}
+    <VGPointPart> makePart {return([[VGSwizzlePointPart alloc] init]);}
 
 VGSwizzlePointPart<VGPointPart>
     void calculatePart {
@@ -700,9 +700,9 @@ VGAddSubPointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ivar: ULL addMulMask=
-        {return(addMulMask);}
-        -v{
+    ivar: ULL addMulMask
+        <-{return(addMulMask);}
+        ->{
             if (addMulMask!=v) {
                 addMulMask=v;
                 [self markDirty];
@@ -718,23 +718,23 @@ VGAddSubPointPartPattern<VGPointPartPattern>
             [self markDirty];
         }
     }
-    ivar: ULL subMulMask=
-        {return(subMulMask);}
-        -v{
+    ivar: ULL subMulMask
+        <-{return(subMulMask);}
+        ->{
             if (subMulMask!=v) {
                 subMulMask=v;
                 [self markDirty];
             }
         }
-    WRD destinationMask=
-        {return(destinationMask);}
-        -v{
+    WRD destinationMask
+        <-{return(destinationMask);}
+        ->{
             if (destinationMask!=v) {
                 destinationMask=v;
                 [self markDirty];
             }
         }
-    <VGPointPart> makePart={return([[VGAddSubPointPart alloc] init]);}
+    <VGPointPart> makePart {return([[VGAddSubPointPart alloc] init]);}
 
 VGAddSubPointPart<VGPointPart>
     void calculatePart {
@@ -792,7 +792,7 @@ VGAddSubPointPart<VGPointPart>
 
 
 VGSumPointPartPattern<VGPointPartPattern>
-    <VGPointPart> makePart={return([[VGSumPointPart alloc] init]);}
+    <VGPointPart> makePart {return([[VGSumPointPart alloc] init]);}
 
 VGSumPointPart<VGPointPart>
     void calculatePart {

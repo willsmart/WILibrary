@@ -49,14 +49,15 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
 
+
 <Set>
-    bool retrievesWeakValues,insertsWeakObjectsByDefault (nodef)
+    bool retrievesWeakValues,insertsWeakObjectsByDefault
     readonly:
         NSSet __set=0
         Int weakObjectCount=0
-    CollectionWeakness weakness=
-        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
-        -v{}
+    CollectionWeakness weakness
+        <-{return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        ->{}
 
     void countWeakObjects {
         Int c=0;
@@ -125,18 +126,18 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
     // Counting Entries
-    atomic: Unsigned count={return([__set count]);}
+    atomic: Unsigned count{return([__set count]);}
 
 
     // Accessing Set Members
-    NSArray allObjects={return([__set allObjects]);}
-    id anyObject={return([[__set anyObject] selfWithWeakness:retrievesWeakValues]);}
+    NSArray allObjects{return([__set allObjects]);}
+    id anyObject{return([[__set anyObject] selfWithWeakness:retrievesWeakValues]);}
     BOOL containsObject:(id)object {return([__set containsObject:object]);}
     NSSet* filteredSetUsingPredicate:(NSPredicate *)predicate {return([__set filteredSetUsingPredicate:predicate]);}
     void makeObjectsPerformSelector:(SEL)selector {[__set makeObjectsPerformSelector:selector];}
     void makeObjectsPerformSelector:(SEL)selector withObject:(id)object {[__set makeObjectsPerformSelector:selector withObject:object];}
     id member:(id)object {return([__set member:object]);}
-    NSEnumerator objectEnumerator={return([__set objectEnumerator]);}
+    NSEnumerator objectEnumerator{return([__set objectEnumerator]);}
     void enumerateObjectsUsingBlock:(void (^)(id obj, BOOL *stop))block {
         [__set enumerateObjectsUsingBlock:block];
     }
@@ -173,7 +174,7 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 
     //Describing a Set
-    NSString description={return([__set description]);}
+    NSString description{return([__set description]);}
     NSString* descriptionWithLocale:(id)locale {return([__set descriptionWithLocale:locale]);}
 
 
@@ -237,8 +238,8 @@ WeakMutableSetMirrorTesterImpl:NSMutableSet <MutableSetMirrorTester,MutableSet,W
 
 <MutableSet:Set,MutableSetDelegate,ObjectEquate>
     readonly: NSMutableSet __mutableSet=nil
-    CollectionWeakness weakness=
-        -v{
+    CollectionWeakness weakness
+        ->{
             switch (v) {
                 case CollectionIsEmpty:[self removeAllObjects];break;
                 case CollectionIsWeakAndStrong:default:break;
@@ -469,9 +470,9 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
         NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] 
         NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
 
-    MutableSet followerSet=
-        {return(followerSet);}
-        -v{followerSet=v;[self refreshFollowerSet];}=nil 
+    MutableSet followerSet=nil
+        <-{return(followerSet);}
+        ->{followerSet=v;[self refreshFollowerSet];}
 
     void delegateForSetChanged {
         if (followerSet) [self refreshFollowerSet];
@@ -594,9 +595,9 @@ MutableSetUnionDelegate<MutableSetDelegate,BaseObject>
         NSMutableDictionary __mapsets=[[NSMutableDictionary alloc] init] 
         NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
 
-    MutableSet unionSet=
-        {return(unionSet);}
-        -v{unionSet=v;[self refreshUnionSet];}=nil 
+    MutableSet unionSet=nil
+        <-{return(unionSet);}
+        ->{unionSet=v;[self refreshUnionSet];}
 
     void delegateForSetChanged {
         if (unionSet) [self refreshUnionSet];

@@ -129,7 +129,7 @@ NSString
         return([self stringByReplacingPairs:@"\\",@"\\\\",@"\"",@"\\\"",@"\n",@"\\n",@"\r",@"\\r",@"\t",@"\\t",nil]);
     }
 
-    NSString JSONString={return(JSONStringForString(self));}
+    NSString JSONString {return(JSONStringForString(self));}
 
     NSString* +JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*)d {
         return(JSONStringForCString(from,N,d));
@@ -138,6 +138,7 @@ NSString
     const unichar* +JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*__strong*)pd retLength:(Int*)retLength {
         return(JSONunicharsStringForCString(from,N,pd,retLength));
     }
+
 
     iface:{
         NOSWIFT(
@@ -311,9 +312,12 @@ interfaces:{
     #endif
 }
 
+
+
 interfaces:impl:{
     Singletons *g_singletons=nil;
 }
+
 
 
 
@@ -535,7 +539,7 @@ IntCarrier
     Self initWithInt:(Int)v super:init {
         intValue=v;
     }
-    NSString description={return([NSString stringWithFormat:@"%d",(int)intValue]);}
+    NSString description {return([NSString stringWithFormat:@"%d",(int)intValue]);}
 
 
 ULLCarrier
@@ -546,7 +550,7 @@ ULLCarrier
     Self initWithULL:(ULL)v super:init {
         ullValue=v;
     }
-    NSString description={return([NSString stringWithFormat:@"%qu",ullValue]);}
+    NSString description {return([NSString stringWithFormat:@"%qu",ullValue]);}
 
 
 "<sys/sysctl.h>"
@@ -669,26 +673,26 @@ URLHandlerRegistry
     }
 
     bool urlValid=NO
-    NSDictionary urlArgs=
-        {@-999 
+    NSDictionary urlArgs
+        <-{@-999
             NSMutableDictionary *ret=nil;
             @999 return(ret);
         }
-        -v {}
-    NSURL asURL=
-        {
+        -> {}
+    NSURL asURL
+        <-{
             NSString *urlPrefix=[__Class__ urlPrefix];
             return(urlPrefix?[NSURL URLWithString:[urlPrefix stringByAppendingString:self.urlArgString]]:nil);
         }
-        -v{
+        ->{
             urlValid=NO;
             NSString *urlPrefix=[__Class__ urlPrefix];
             if (!urlPrefix) return;
             NSString *s=v.absoluteString;
             if ([s hasPrefix:urlPrefix]) self.urlArgString=[s substringFromIndex:urlPrefix.length];
         }
-    NSString urlArgString=
-        {
+    NSString urlArgString
+        <-{
             NSDictionary *d=self.urlArgs;
             if (!d) return(@"bad");
             else {
@@ -706,7 +710,7 @@ URLHandlerRegistry
                 return(s);
             }
         }
-        -v{
+        ->{
             NSArray *a=[v componentsSeparatedByString:@"&"];
             NSMutableDictionary *d=[MutableDictionary dictionary];
             for (NSString *kv in a) {
@@ -836,7 +840,7 @@ URLHandlerRegistry
     listAsHead -- <WeakListItem> headItem
     listAsTail -- <WeakListItem> tailItem
     Unsigned _count=0
-    Unsigned count={return(_count);}
+    Unsigned count {return(_count);}
 
     void dealloc {@-500 self.headItem=self.tailItem=nil;}
     void link:(NSObject<WeakListItem>*)item after:(NSObject<WeakListItem>*)prev {
@@ -1030,7 +1034,7 @@ WeakList <BaseObject,WeakList>
 
 
 Singletons
-    Log log={return(log?log:(log=[[Log alloc] init]));}=nil 
+    Log log=nil <-{return(log?log:(log=[[Log alloc] init]));}
 
 
 Log<BaseObject>
@@ -1078,27 +1082,26 @@ tim=nil;
     
 
 <Codable>
-    NSDictionary asDictionary=
-        {
+    NSDictionary asDictionary
+        <-{
             @-999 NSMutableDictionary *ret=[NSMutableDictionary dictionary];NSDictionary *imret=ret;
             @999 return(imret);
         }
-        -v{
-        }
+        ->{}
 
 <RootCodable:Codable>
-    NSData asData=
-        {return([NSKeyedArchiver archivedDataWithRootObject:self.asDictionary]);}
-        -v{self.asDictionary=[NSKeyedUnarchiver unarchiveObjectWithData:v];}
+    NSData asData
+        <-{return([NSKeyedArchiver archivedDataWithRootObject:self.asDictionary]);}
+        ->{self.asDictionary=[NSKeyedUnarchiver unarchiveObjectWithData:v];}
     NSString codingFilename=nil
-    ivar: NSString documentsCodingFilename=
-        {return(v_documentsCodingFilename);}
-        -v{
+    NSString documentsCodingFilename=nil
+        <-{return(v_documentsCodingFilename);}
+        ->{
             v_documentsCodingFilename=v;
             NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask ,YES );
             NSString *documentsDirectory = [paths objectAtIndex:0];
             self.codingFilename=[documentsDirectory stringByAppendingPathComponent:v];
-        }=nil
+        }
 
     void loadCodable {
         [self loadCodableFromFilename:self.codingFilename];

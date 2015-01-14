@@ -1,7 +1,7 @@
 
 Singletons
-    MetaRenderer metaRenderer={return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}=nil
-    NSString description={
+    MetaRenderer metaRenderer=nil <-{return(v_metaRenderer?v_metaRenderer:(v_metaRenderer=[[MetaRenderer alloc] init]));}
+    NSString description {
         [ret appendFormat:@"\nxMetaRenderer %p\n",self.metaRenderer];
     }
 
@@ -56,8 +56,8 @@ MetaRenderer <BaseObject>
 
 
 Singletons
-    MetaRequestCache metaRequestCache={return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}=nil
-    NSString description={
+    MetaRequestCache metaRequestCache=nil <-{return(v_metaRequestCache?v_metaRequestCache:(v_metaRequestCache=[[MetaRequestCache alloc] init]));}
+    NSString description {
         [ret appendFormat:@"\nMetaRequestCache %p has %d in cache\n",self.metaRequestCache,(int)self.metaRequestCache.cache.count];
     }
 
@@ -78,19 +78,19 @@ Singletons
     }
 
     publicreadonly:
-        MutableDictionary metaEnabledURLRegistry={
+        MutableDictionary metaEnabledURLRegistry=nil <-{
             if (!metaEnabledURLRegistry) {
                 metaEnabledURLRegistry=[[MutableDictionary alloc] init];
                 [metaEnabledURLRegistry addDelegate:[[MetaEnabledURLRegistryDelegate alloc] init]];
             }
             return(metaEnabledURLRegistry);
-            }=nil 
-        URLMetaEnableds urlMetaEnableds={
+        }
+        URLMetaEnableds urlMetaEnableds=nil <-{
             if (!urlMetaEnableds) {
                 urlMetaEnableds=[[URLMetaEnableds alloc] init];
             }
             return(urlMetaEnableds);
-            }=nil 
+        }
     void refreshMetaEnabledURLs {
         NSSet *s=self.urlMetaEnableds.urlMetaEnableds.copy;
         for (NSObject<MetaEnabled> *v in s) [v refreshMetaFromRegisteredURLs];
@@ -98,7 +98,7 @@ Singletons
 
 
 
-    NSString description={
+    NSString description {
         [ret appendFormat:@"\nMetaEnabledRegistry %@\n",self.metaEnabledURLRegistry.allKeys.description];
         [ret appendFormat:@"\nURLMetaEnableds x %d : %@\n",(int)self.urlMetaEnableds.urlMetaEnableds.count,self.urlMetaEnableds.urlMetaEnableds.description];
     }
@@ -127,9 +127,9 @@ URLMetaEnableds<BaseObject>
 MetaRequestCache<BaseObject,RootCodable>
     publicreadonly: LRUCache cache=[[LRUCache alloc] init] 
 
-    NSDictionary asDictionary=
-        {imret=cache.asDictionary;}
-        -v{cache.asDictionary=v;}
+    NSDictionary asDictionary
+        <-{imret=cache.asDictionary;}
+        ->{cache.asDictionary=v;}
 
     void clearCache {
         [cache clear];
@@ -228,7 +228,7 @@ JSMetaPropertyInState
             varDef=def;
         }
     }
-    NSString currentjs={
+    NSString currentjs {
         if (!js) return(nil);
         NSMutableString *rawjs=nil;
         for (NSString *var2 in self.property.varProps) {
@@ -241,11 +241,11 @@ JSMetaPropertyInState
         }
         return(rawjs?rawjs:js);
     }
-    NSObject value={
+    NSObject value {
         if (!cachedValue) cachedValue=self.currentValue;
         return(cachedValue);
     }
-    NSObject currentValue={
+    NSObject currentValue {
         if (js) {
             return([g_singletons.metaRenderer objectByEvaluatingJS:self.currentjs]);
         }
@@ -405,17 +405,17 @@ JSMetaProperty<NamedDataListener>
 
     readonly: NSObject cachedValue=nil
 
-    NSObject<NSCopying> state={
+    NSObject<NSCopying> state {
         if (!cachedState) cachedState=self.currentState;
         return(cachedState);
     }
-    NSObject value={
+    NSObject value {
         if (!cachedValue) cachedValue=self.currentValue;
         return(cachedValue);
     }
     readonly: NSObject<NSCopying> cachedState=nil
     
-    NSObject<NSCopying> currentState={
+    NSObject<NSCopying> currentState {
         NSObject *stateo=nil;
         if (stateProp) stateo=[self.dataRegistry valueForProperty:stateProp];
         
@@ -438,7 +438,7 @@ JSMetaProperty<NamedDataListener>
         return(nil);
     }
     
-    NSObject currentValue={
+    NSObject currentValue {
         if (!self.state) return(nil);
         JSMetaPropertyInState *ms=[self.propertyInStates objectForKey:self.state];
         return(ms?ms.value:nil);
@@ -496,16 +496,16 @@ JSMetaProperty<NamedDataListener>
 
     parentMeta ~d< <MetaEnabled> childMeta
 
-    bool isMutable={return(YES);}
+    bool isMutable {return(YES);}
 
-    DataRegistry myDataRegistry=
-        {return(myDataRegistry);}
-        -v{
+    DataRegistry myDataRegistry=nil
+        <-{return(myDataRegistry);}
+        ->{
             if (v!=myDataRegistry) {
                 myDataRegistry=v;
                 self.dataRegistry=v;
             }
-        }=nil 
+        }
             
     void setDataRegistry:(DataRegistry*)v {
         @-100 DataRegistry *regWas=dataRegistry;
@@ -523,13 +523,13 @@ JSMetaProperty<NamedDataListener>
         }
     }
     
-    DataRegistry nearestRegistry={
+    DataRegistry nearestRegistry {
         NSObject<MetaEnabled> *v=self;
         while (v&&!v.myDataRegistry) v=v.parentMeta;
         return(v.myDataRegistry);
     }
 
-    <DataModelViewer> nearestViewer={
+    <DataModelViewer> nearestViewer {
         NSObject<MetaEnabled> *v=self;
         while (v&&![v conformsToProtocol:@protocol(DataModelViewer)]) v=v.parentMeta;
         return((NSObject<DataModelViewer>*)v);
@@ -542,9 +542,9 @@ JSMetaProperty<NamedDataListener>
         kid keyInParentToInitWith=nil
 
     MutableDictionary _metaProperties=[[MutableDictionary alloc] init] 
-    NSDictionary metaProperties=
-        {return(_metaProperties.__dictionary);}
-        -v{
+    NSDictionary metaProperties
+        <-{return(_metaProperties.__dictionary);}
+        ->{
             [_metaProperties setDictionary:v];
         }
 
@@ -1264,7 +1264,7 @@ MetaEnabled
     }
 
 UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
-    CGRect frame={return(CGRectMake(0,0,20,20));}
+    CGRect frame {return(CGRectMake(0,0,20,20));}
     id superInitWithBarButtonSystemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action {return([super initWithBarButtonSystemItem:item target:target action:action]);}
     id superInitWithTitle:(NSString*)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithTitle:title style:style target:target action:action]);}
     id superInitWithImage:(UIImage*)image style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {return([super initWithImage:image style:style target:target action:action]);}
@@ -1347,7 +1347,7 @@ UIToolbarItemMetaEnabled:UIBarButtonItem<UIToolbarItemMetaEnabled>
         if (phasSys) *phasSys=hasSys;
         return(sys);
     }
-    NSObject currentTarget={
+    NSObject currentTarget {
         NSObject *target=(finalAction?([self.nearestViewer respondsToSelector:finalAction]?(NSObject*)self.nearestViewer:(
             [self.nearestViewer.dataModel respondsToSelector:finalAction]?(NSObject*)self.nearestViewer.dataModel:nil)):nil);
         return(target);

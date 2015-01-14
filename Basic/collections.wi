@@ -456,9 +456,9 @@ MutableArrayDebuggerDelegate<MutableArrayDelegate,MutableObjectDebuggerDelegate>
 
 
 MutableArrayFollowerDelegate<MutableArrayDelegate,BaseObject>
-    NSMutableArray followerArray=
-        {return(followerArray);}
-        -v{followerArray=v;[self refreshFollowerArray];}=nil 
+    NSMutableArray followerArray=nil
+        <-{return(followerArray);}
+        ->{followerArray=v;[self refreshFollowerArray];}
 
     id objectForObject:(id)object {@-999 id ret=object;
         @999 return(ret);

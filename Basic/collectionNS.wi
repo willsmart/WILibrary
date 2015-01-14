@@ -1,5 +1,7 @@
 
 
+
+
 PointerKey <NSCopying> "-Object"
     readonly: id o=nil
     void dealloc {}
@@ -19,8 +21,8 @@ PointerKey <NSCopying> "-Object"
         return([[PointerKey alloc] initWithObject:ao]);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
+    NSString description{return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
+    NSString debugDescription{return([NSString stringWithFormat:@"Wrapped:%p",v_o]);}
     id copyWithZone:(NSZone*)zone {
         return([[PointerKey allocWithZone:zone] initWithObject:v_o]);
     }
@@ -52,8 +54,8 @@ WeakObject <NSCopying> "-Object"
             ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",v_o]);}
+    NSString description{return([NSString stringWithFormat:@"Weak:%p",v_o]);}
+    NSString debugDescription{return([NSString stringWithFormat:@"Weak:%p",v_o]);}
     id copyWithZone:(NSZone*)zone {
         return([[WeakObject allocWithZone:zone] initWithObject:v_o]);
     }

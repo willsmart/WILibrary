@@ -8,9 +8,9 @@
 
 WReader <BaseObject>
     NSString _fileString=@"",_fileName=@""
-    NSString fileString=
-        {return(v__fileString);}
-        -v{
+    NSString fileString
+        <-{return(v__fileString);}
+        ->{
             self._fileString=[(v?v.copy:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
             for (NSString *from in replaces.allKeys) {
                 NSString *to=[replaces objectForKey:from];
@@ -22,9 +22,9 @@ WReader <BaseObject>
             pos=-1;
         }
 
-    NSString fileName=
-        {return(v__fileName);}
-        -v{
+    NSString fileName
+        <-{return(v__fileName);}
+        ->{
             NSError *err=nil;
             self._fileName=v;
             NSString *s=[NSString stringWithContentsOfFile:v encoding:NSUTF8StringEncoding error:&err];
@@ -43,13 +43,13 @@ WReader <BaseObject>
         WReaderTokenizer tokenizer=[[WReaderTokenizer alloc] init] 
 
 
-    WReaderToken nextToken={
+    WReaderToken nextToken {
         if (pos>=tokenizer.tokens.count) return(nil);
         pos++;
         return(self.currentToken);
     }
 
-    WReaderToken currentToken={
+    WReaderToken currentToken {
         if (pos<0) pos=0;
         if (pos>=tokenizer.tokens.count) return(nil);
         return([tokenizer.tokens objectAtIndex:pos]);
@@ -65,7 +65,7 @@ WReader <BaseObject>
         return(s);
     }
 
-    NSString localString={
+    NSString localString {
         NSMutableString *s=[NSMutableString string];
         Int range=30;
         for (Int i=MAX(0,pos-range/2);i<=MIN(tokenizer.tokens.count-1,posrange+1 +/2);i++) {
@@ -96,7 +96,7 @@ WReaderToken
         type=atype;
     }
 
-    NSString *description={
+    NSString *description {
         return([NSString stringWithFormat:@"<Token:%c:%d:%@>",type,(int)bracketCount,self.str]);
     }
 
@@ -111,11 +111,11 @@ WReaderTokenizer <BaseObject>
 
     readonly: NSMutableArray tokens=[[MutableArray alloc] init]
     NSString _str=@""
-    NSString str=
-        {
+    NSString str
+        <-{
             return(v__str);
         }
-        -v{
+        ->{
             self._str=(v?v.copy:@"");
             const char *mat[]={
                 "     r  w  n  .  +  -  *  /  \\  Q  q  _  ? ",
@@ -208,7 +208,7 @@ WReaderTokenizer <BaseObject>
 
         }
 
-    NSString tokenStr={
+    NSString tokenStr {
         NSMutableString *s=[NSMutableString string];
         for (WReaderToken *t in tokens) {
             [s appendFormat:@"%c:%d:\"%@\"\n",t.type,(int)t.bracketCount,t.str];

@@ -217,7 +217,7 @@ DictWords {
     int ulls_depth=0,ulls_state=0
     DictWord ulls_word,ulls_ciword=nil
     
-    ULLArray *ulls={
+    ULLArray *ulls {
         if (!_ulls) {
             _ulls=NEW(ULLArray);
             
@@ -242,7 +242,7 @@ DictWords {
         ulls_depth=0;ulls_state=0;
         ulls_ciword.word[0]=0;
     }
-    DictWord nextWord={
+    DictWord nextWord {
         bool debug=YES;
         ULL v;
 

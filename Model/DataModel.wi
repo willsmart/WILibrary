@@ -37,60 +37,60 @@ PropertyData
     void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSObject class] clasName:@"<__PropertyProtocol__>" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
-    <__PropertyProtocol__> __property__=
-        {NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    <__PropertyProtocol__> ___property__=
-        {NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    <__PropertyProtocol__> __property__
+        <-{NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    <__PropertyProtocol__> ___property__
+        <-{NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 <FieldPropertyViewer:DataModelViewer> "nac" "multi"
-    <__PropertyProtocol__> __property__=
-        {NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    <__PropertyProtocol__> ___property__=
-        {NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    <__PropertyProtocol__> __property__
+        <-{NSObject *o=[properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    <__PropertyProtocol__> ___property__
+        <-{NSObject *o=[_properties objectForKey:@"__property__"];return([o conformsToProtocol:@protocol(__PropertyProtocol__)]?(NSObject<__PropertyProtocol__>*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 
 <StringProperty:DataModel> "nac" "multi"
     void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSString class] clasName:@"NSString" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
-    NSString __property__=
-        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    NSString ___property__=
-        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    NSString __property__
+        <-{id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSString ___property__
+        <-{id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 <StringPropertyViewer:DataModelViewer> "nac" "multi"
-    NSString __property__=
-        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    NSString ___property__=
-        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    NSString __property__
+        <-{id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSString ___property__
+        <-{id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSString class]]?(NSString*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 
 <NumberProperty:DataModel> "nac" "multi"
     void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {
         [apropertyDatas setObject:[[PropertyData alloc] initWithName:@"__property__" clas:[NSNumber class] clasName:@"NSNumber" getter:@selector(__property__) setter:@selector(set__property__:) direct:YES] forKey:@"__property__"];
     }
-    NSNumber __property__=
-        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    NSNumber ___property__=
-        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
-        -v{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    NSNumber __property__
+        <-{id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSNumber ___property__
+        <-{id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        ->{[myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 <NumberPropertyViewer:DataModelViewer> "nac" "multi"
-    NSNumber __property__=
-        {id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
-    NSNumber ___property__=
-        {id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
-        -v{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
+    NSNumber __property__
+        <-{id o=[properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set__property__:)
+    NSNumber ___property__
+        <-{id o=[_properties objectForKey:@"__property__"];return([o isKindOfClass:[NSNumber class]]?(NSNumber*)o:nil);}
+        ->{[self.dataModel.myProperties setObject:v forKey:@"__property__"];} (setter=set___property__:)
 
 
 
@@ -265,8 +265,8 @@ PropertyViewerDelegate<MutableSetDelegate>
     }
 
 
-    NSDictionary propertyDatas=
-        {
+    NSDictionary propertyDatas=nil
+        <-{
             if (propertyDatas) return(propertyDatas);
             NSDictionary *ret=[g_singletons.dataModelPropertySelectors objectForKey:NSStringFromClass([__Class__ class])];
             if (!ret) {
@@ -276,7 +276,7 @@ PropertyViewerDelegate<MutableSetDelegate>
             }
             propertyDatas=ret;
             return(ret);
-        }=nil 
+        }
 
     void +addPropertySelectorsToDictionary:(NSMutableDictionary*)apropertyDatas {}
 

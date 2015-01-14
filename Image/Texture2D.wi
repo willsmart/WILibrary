@@ -29,7 +29,7 @@ Texture2D <BaseObject>
         GLfloat  maxS=1,maxT=1
 
     CGSize contentSize=nil
-    GLuint frameBuffer={
+    GLuint frameBuffer=nil <-{
         if ((frameBuffer==GL_INVALID_VALUE)&&glname) {
             glGenFramebuffersOES(1, &frameBuffer);
             [self bindFrameBuffer];
@@ -37,16 +37,16 @@ Texture2D <BaseObject>
             [self unbindFrameBuffer];
         }
         return(frameBuffer);
-    }=nil 
+    }
 
     void dealloc {@-50 
         self.context=nil;
     }
 
 
-    EAGLContext _context=nil,context=
-        {return(self._context);}
-        -v{
+    EAGLContext _context=nil,context
+        <-{return(self._context);}
+        ->{
             if (self._context != v) {
                 if (self.context) {
                     [EAGLContext setCurrentContext:self.context];
@@ -99,7 +99,7 @@ Texture2D <BaseObject>
     }
 
 
-    NSString description={
+    NSString description {
       return([NSString stringWithFormat:@"<%@ = %p | Name = %i | Dimensions = %ix%i | Coordinates = (%.2f, %.2f)>", [self class], self, glname, (int)pixelWidth, (int)pixelHeight, maxS, maxT]);
     }
 
@@ -254,14 +254,14 @@ Texture2D <BaseObject>
 
 
     UIImage _uiImage=nil
-    UIImage uiImage=
-        {
+    UIImage uiImage
+        <-{
             if (!v__uiImage) {
                 self.uiImage=[self uiImageWithWidth:(Int)pixelWidth height:(Int)pixelHeight];
             }
             return(v__uiImage);
         }
-        -v{
+        ->{
             if (v==v__uiImage) return;
             
             [self clear];

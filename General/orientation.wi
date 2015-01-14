@@ -72,7 +72,7 @@ Orientation<BaseObject>
     }
 
 
-    Mat44 mat44={// real to device
+    Mat44 mat44 {// real to device
         Mat44 ret={{1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}};
         if (![self initMat44]) return(ret);
         CMRotationMatrix m=motManager.deviceMotion.attitude.rotationMatrix;
@@ -84,7 +84,7 @@ Orientation<BaseObject>
             case UIInterfaceOrientationLandscapeLeft:xx=yy=0;xy=1;yx=-1;break;
             case UIInterfaceOrientationLandscapeRight:xx=yy=0;xy=-1;yx=1;break;
         }
-        Mat44 mm={
+        Mat44 mm {
             {m.m11*xx+m.m21*xy,m.m11*yx+m.m21*yy,m.m31,0,
              m.m12*xx+m.m22*xy,m.m12*yx+m.m22*yy,m.m32,0,
              m.m13*xx+m.m23*xy,m.m13*yx+m.m23*yy,m.m33,0, 0,0,0,1}
@@ -118,7 +118,7 @@ Orientation<BaseObject>
     }
 
 
-    CGPoint direction={
+    CGPoint direction {
         Vec4 v={{0,0,1,1}},v2;
         Mat44 mat=self.mat44,imat;
         if (mat.m[15]<0.5) return(CGPointMake(0,0));
@@ -130,7 +130,7 @@ Orientation<BaseObject>
 
 
 /**! -wi!warnwarn Address warning: Non-imaginary variable rotZoomTransform has an ivar, but no default value. This is less a strict error than unclean !**/
-    Mat44 rotZoomTransform={
+    Mat44 rotZoomTransform {
         float zoom=self.currentZoom;//orientation.zoom;
         float rot=(self.rotateDegrees+self.currentRotateDegrees)*M_PI/180.0;
         CGPoint centrePt=CGPointMake(self.direction.x+self.currentPan.x,self.direction.y+self.currentPan.y);
@@ -146,21 +146,21 @@ Orientation<BaseObject>
     }
 
 
-    float zoom={
+    float zoom {
         float svol=volume/(0.5*zoomLevels);
         svol=(svol<0?-pow(-svol,2):pow(svol,2));
         return(1.0/(1.0+fmax(-0.99,svol*zoomScale)));
     }
 /**! -wi!warnwarn Address warning: Non-imaginary variable volume has an ivar, but no default value. This is less a strict error than unclean !**/
-    ivar: float volume=
-        {
+    ivar: float volume=nil
+        <-{
             return(volume*1.0/zoomLevels);
         }
-        -v{
+        ->{
             volume=(int)fmin(zoomLevels,fmax(0,v*zoomLevels));
-        }=nil
+        }
 
-    float rotateDegrees={
+    float rotateDegrees {
         Vec4 xv={{1,0,0,1}},v2,yv={{0,1,0,1}};
         Mat44 mat=self.mat44,imat;
         if (!mat44Inited) return(0);

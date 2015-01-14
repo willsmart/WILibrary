@@ -22,9 +22,9 @@ EAGLView : RenderUIView<DerivedBaseObject>
             self.contentScaleFactor = [[UIScreen mainScreen] scale];   
         }
     }
-    EAGLContext _context=nil,context=
-        {return(self._context);}
-        -v{
+    EAGLContext _context=nil,context
+        <-{return(self._context);}
+        ->{
             if (self._context != v) {
                 [self deleteFramebuffer];
                 self._context = v;

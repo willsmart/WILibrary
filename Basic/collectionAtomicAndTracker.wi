@@ -12,12 +12,12 @@
 AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
     long version=1
 
-    NSMutableSet<MutableSet> trackerSet=
-        {return(trackerSet);}
-        -v{
+    NSMutableSet<MutableSet> trackerSet=nil
+        <-{return(trackerSet);}
+        ->{
             trackerSet=v;
             version=v.version;
-        }=nil 
+        }
 
     void setAtomicSet:(NSSet*)v {
         version=0;
@@ -35,7 +35,7 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
         }
     }
 
-    NSSet copyAndClear={
+    NSSet copyAndClear{
         NSSet *ret=__set;
         [self makeNonModel];
         __set=[[NSSet alloc] init];
@@ -113,12 +113,12 @@ AtomiclyMutableSet:NSMutableSet<ModelSet,Commitable,ObjectEquate>
 AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectEquate>
     long version=1
 
-    NSMutableDictionary<MinimalMutableDictionary> trackerDictionary=
-        {return(trackerDictionary);}
-        -v{
+    NSMutableDictionary<MinimalMutableDictionary> trackerDictionary=nil
+        <-{return(trackerDictionary);}
+        ->{
             trackerDictionary=v;
             version=v.version;
-        }=nil 
+        }
 
     void setAtomicDictionary:(NSDictionary*)v {
         version=0;
@@ -136,7 +136,7 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
         }
     }
 
-    NSDictionary copyAndClear={
+    NSDictionary copyAndClear{
         NSDictionary *ret=__dictionary;
         [self makeNonModel];
         __dictionary=[[NSDictionary alloc] init];
@@ -206,12 +206,13 @@ AtomiclyMutableDictionary:NSMutableDictionary<ModelDictionary,Commitable,ObjectE
 AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     long version=0
 
-    NSMutableArray<MinimalMutableArray> trackerArray=
-        {return(trackerArray);}
-        -v{
+    NSMutableArray<MinimalMutableArray> trackerArray=nil
+        <-{return(trackerArray);}
+        ->{
             trackerArray=v;
             version=v.version;
-        }=nil 
+        }
+         
 
     void setAtomicArray:(NSArray*)v {
         version=0;
@@ -230,7 +231,7 @@ AtomiclyMutableArray:NSMutableArray<ModelArray,Commitable,ObjectEquate>
     }
 
 
-    NSArray copyAndClear={
+    NSArray copyAndClear{
         NSArray *ret=__array;
         [self makeNonModel];
         __array=[[NSArray alloc] init];

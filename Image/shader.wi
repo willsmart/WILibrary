@@ -34,7 +34,7 @@ Shader <BaseObject>
 
 
 <GLObject>
-    GLuint _glname=INVALIDSHADER,glname={return(_glname);}
+    GLuint _glname=INVALIDSHADER,glname {return(_glname);}
     void dealloc {
         if (_glname!=INVALIDSHADER) glDeleteProgram(_glname);
     }
@@ -51,9 +51,9 @@ Parse <BaseObject> {}
 
 
 Shader
-    GLint numberOfVertices=
-        {return(self.program.vertexCount);}
-        -v{self.program.vertexCount=v;}
+    GLint numberOfVertices
+        <-{return(self.program.vertexCount);}
+        ->{self.program.vertexCount=v;}
     NSString expressionRaw=nil,expression=nil,compileErrors=nil
 
     Self start {@-100 
@@ -182,32 +182,32 @@ Shader
 
 
 SHFn <BaseObject>
-    NSString sig=
-        {return((NSString*)(self.fragProgram?self.keyInFragProgram:self.keyInVertProgram));}
-        -v{
+    NSString sig
+        <-{return((NSString*)(self.fragProgram?self.keyInFragProgram:self.keyInVertProgram));}
+        ->{
             if (self.fragProgram) self.keyInFragProgram=v;
             if (self.vertProgram) self.keyInVertProgram=v;
         }
     NSString body=@""
 
-    bool enabled=
-        {return(enabled);}
-        -v{
+    bool enabled=nil
+        <-{return(enabled);}
+        ->{
             if (enabled!=v) {
                 enabled=v;
                 [self.fragProgram markChanged];
                 [self.vertProgram markChanged];
             }
-        }=nil 
+        }
     Self start {
         enabled=YES;
     }
 
-    NSString shaderString={
+    NSString shaderString {
         if (!enabled) return(@"");
         return([NSString stringWithFormat:@"%@ {%@}",self.sig,self.body]);
     }
-    NSString shaderDeclString={
+    NSString shaderDeclString {
         if (!enabled) return(@"");
         return([NSString stringWithFormat:@"%@;",self.sig]);
     }
@@ -282,27 +282,27 @@ type Union128byte "typedef:
 
 SHUniform <BaseObject>
     Union128byte _buf=nil
-    Union128byte buf={return(_buf);}
-    NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
-    NSString *description={[ret appendFormat:@":%@",self.asString];}
-    UniformType type=
-        {return(type);}
-        -v{
+    Union128byte buf {return(_buf);}
+    NSString name <-{return((NSString*)self.keyInProgram);} ->{self.keyInProgram=v;}
+    NSString *description {[ret appendFormat:@":%@",self.asString];}
+    UniformType type=nil
+        <-{return(type);}
+        ->{
             if (v!=type) {
                 memset(_buf.c,0,128);
                 self.transpose=NO;
                 type=v;
                 [self.program markChanged];
             }    
-        }=nil 
-    bool enabled=
-        {return(enabled);}
-        -v{
+        }
+    bool enabled=nil
+        <-{return(enabled);}
+        ->{
             if (enabled!=v) {
                 enabled=v;
                 [self.program markChanged];
             }
-        }=nil 
+        }
 
     void copyFrom:(SHUniform*)copy {
         self.type=copy.type;
@@ -328,7 +328,7 @@ SHUniform <BaseObject>
         }
         memcpy(_buf.c,copy._buf.c,len);
     }
-    NSString *asJson=
+    NSString *asJson
         {
             bool *bufb=(bool*)_buf.c;
             switch (type) {
@@ -350,8 +350,8 @@ SHUniform <BaseObject>
                 default:return(@"undefined");
             }
         }
-    NSString *asString=
-        {
+    NSString *asString
+        <-{
             bool *bufb=(bool*)_buf.c;
             switch (type) {
                 case un_bool:return([NSString stringWithFormat:@"%c",bufb[0]?'t':'f']);
@@ -372,7 +372,7 @@ SHUniform <BaseObject>
                 default:return([NSString string]);
             }
         }
-        -v{
+        ->{
             const char *pc=v.UTF8String;
             Union128byte bufv;
             bool *bufb=(bool*)bufv.c;
@@ -416,7 +416,7 @@ SHUniform <BaseObject>
             else return(@"none");
         }
 
-    ULL ullHash={
+    ULL ullHash {
         Int len=0;
         switch (type) {
             case un_bvec2:len=sizeof(bool)*2;break;
@@ -443,65 +443,65 @@ SHUniform <BaseObject>
         enabled=YES;
         type=un_none;
     }
-    GLint asSampler2D=
-        {self.type=un_sampler2D;return(*(GLint*)_buf.c);}
-        -v{self.type=un_sampler2D;(*(GLint*)_buf.c)=v;}
+    GLint asSampler2D
+        <-{self.type=un_sampler2D;return(*(GLint*)_buf.c);}
+        ->{self.type=un_sampler2D;(*(GLint*)_buf.c)=v;}
         
-    GLint asSamplerCube=
-        {self.type=un_samplerCube;return(*(GLint*)_buf.c);}
-        -v{self.type=un_samplerCube;(*(GLint*)_buf.c)=v;}
+    GLint asSamplerCube
+        <-{self.type=un_samplerCube;return(*(GLint*)_buf.c);}
+        ->{self.type=un_samplerCube;(*(GLint*)_buf.c)=v;}
 
-    bool asBool=
-        {self.type=un_bool;return(*(bool*)_buf.c);}
-        -v{self.type=un_bool;(*(bool*)_buf.c)=v;}
-    bool *asBVec2=
-        {self.type=un_bvec2;return((bool*)_buf.c);}
-        -v{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2);}
-    bool *asBVec3=
-        {self.type=un_bvec3;return((bool*)_buf.c);}
-        -v{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3);}
-    bool *asBVec4=
-        {self.type=un_bvec4;return((bool*)_buf.c);}
-        -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4);}
+    bool asBool
+        <-{self.type=un_bool;return(*(bool*)_buf.c);}
+        ->{self.type=un_bool;(*(bool*)_buf.c)=v;}
+    bool *asBVec2
+        <-{self.type=un_bvec2;return((bool*)_buf.c);}
+        ->{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2);}
+    bool *asBVec3
+        <-{self.type=un_bvec3;return((bool*)_buf.c);}
+        ->{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3);}
+    bool *asBVec4
+        <-{self.type=un_bvec4;return((bool*)_buf.c);}
+        ->{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4);}
 
-    GLint asInt=
-        {self.type=un_int;return(*(GLint*)_buf.c);}
-        -v{self.type=un_int;(*(GLint*)_buf.c)=v;}
-    GLint *asIVec2=
-        {self.type=un_ivec2;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2);}
-    GLint *asIVec3=
-        {self.type=un_ivec3;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3);}
-    GLint *asIVec4=
-        {self.type=un_ivec4;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4);}
+    GLint asInt
+        <-{self.type=un_int;return(*(GLint*)_buf.c);}
+        ->{self.type=un_int;(*(GLint*)_buf.c)=v;}
+    GLint *asIVec2
+        <-{self.type=un_ivec2;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2);}
+    GLint *asIVec3
+        <-{self.type=un_ivec3;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3);}
+    GLint *asIVec4
+        <-{self.type=un_ivec4;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4);}
 
-    float asFloat=
-        {self.type=un_float;return(*(float*)_buf.c);}
-        -v{self.type=un_float;(*(float*)_buf.c)=v;}
-    float *asVec2=
-        {self.type=un_vec2;return((float*)_buf.c);}
-        -v{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2);}
-    float *asVec3=
-        {self.type=un_vec3;return((float*)_buf.c);}
-        -v{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3);}
-    float *asVec4=
-        {self.type=un_vec4;return((float*)_buf.c);}
-        -v{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4);}
+    float asFloat
+        <-{self.type=un_float;return(*(float*)_buf.c);}
+        ->{self.type=un_float;(*(float*)_buf.c)=v;}
+    float *asVec2
+        <-{self.type=un_vec2;return((float*)_buf.c);}
+        ->{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2);}
+    float *asVec3
+        <-{self.type=un_vec3;return((float*)_buf.c);}
+        ->{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3);}
+    float *asVec4
+        <-{self.type=un_vec4;return((float*)_buf.c);}
+        ->{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4);}
 
-    float *asMat2=
-        {self.type=un_mat2;return((float*)_buf.c);}
-        -v{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4);}
-    float *asMat3=
-        {self.type=un_mat3;return((float*)_buf.c);}
-        -v{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9);}
-    float *asMat4=
-        {self.type=un_mat4;return((float*)_buf.c);}
-        -v{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16);}
+    float *asMat2
+        <-{self.type=un_mat2;return((float*)_buf.c);}
+        ->{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4);}
+    float *asMat3
+        <-{self.type=un_mat3;return((float*)_buf.c);}
+        ->{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9);}
+    float *asMat4
+        <-{self.type=un_mat4;return((float*)_buf.c);}
+        ->{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16);}
 
-    NSObject asObject=
-        {
+    NSObject asObject
+        <-{
             NSObject *value;
             switch (type) {
                 case un_none:case un_any:case un_noValue:value=[NSNull null];break;
@@ -532,7 +532,7 @@ SHUniform <BaseObject>
             }
             return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((Int)type),@"type",nil]);
         }
-        -v{
+        ->{
             UniformType typ=type;
             if (v&&[v isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *d=(NSDictionary*)v;
@@ -641,7 +641,7 @@ SHUniform <BaseObject>
         }
     }
     
-    NSString shaderString={
+    NSString shaderString {
         if (!enabled) return(@"");
         NSString *typeStr;
         switch (type) {
@@ -679,26 +679,26 @@ type Union1024byte "typedef:
 
 SHAttribute <BaseObject>
     Union1024byte _buf=nil
-    Union1024byte buf={return(_buf);}
-    NSString name={return((NSString*)self.keyInProgram);}-v{self.keyInProgram=v;}
-    UniformType type=
-        {return(type);}
-        -v{
+    Union1024byte buf {return(_buf);}
+    NSString name <-{return((NSString*)self.keyInProgram);} ->{self.keyInProgram=v;}
+    UniformType type=nil
+        <-{return(type);}
+        ->{
             if (v!=type) {
                 memset(&_buf,0,sizeof(_buf));
                 self.transpose=NO;
                 type=v;
                 [self.program markChanged];
             }    
-        }=nil 
-    bool enabled=
-        {return(enabled);}
-        -v{
+        }
+    bool enabled=nil
+        <-{return(enabled);}
+        ->{
             if (enabled!=v) {
                 enabled=v;
                 [self.program markChanged];
             }
-        }=nil 
+        }
     bool transpose=NO
     GLint glname=INVALIDSHADER
 
@@ -712,65 +712,65 @@ SHAttribute <BaseObject>
         enabled=YES;
         type=un_none;
     }
-    GLint *asSampler2D=
-        {self.type=un_sampler2D;return((GLint*)_buf.c);}
-        -v{self.type=un_sampler2D;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+    GLint *asSampler2D
+        <-{self.type=un_sampler2D;return((GLint*)_buf.c);}
+        ->{self.type=un_sampler2D;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
         
-    GLint *asSamplerCube=
-        {self.type=un_samplerCube;return((GLint*)_buf.c);}
-        -v{self.type=un_samplerCube;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+    GLint *asSamplerCube
+        <-{self.type=un_samplerCube;return((GLint*)_buf.c);}
+        ->{self.type=un_samplerCube;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
 
-    bool *asBool=
-        {self.type=un_bool;return((bool*)_buf.c);}
-        -v{self.type=un_bool;memcpy(_buf.c,v,sizeof(bool)*self.program.vertexCount);}
-    bool *asBVec2=
-        {self.type=un_bvec2;return((bool*)_buf.c);}
-        -v{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2*self.program.vertexCount);}
-    bool *asBVec3=
-        {self.type=un_bvec3;return((bool*)_buf.c);}
-        -v{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3*self.program.vertexCount);}
-    bool *asBVec4=
-        {self.type=un_bvec4;return((bool*)_buf.c);}
-        -v{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4*self.program.vertexCount);}
+    bool *asBool
+        <-{self.type=un_bool;return((bool*)_buf.c);}
+        ->{self.type=un_bool;memcpy(_buf.c,v,sizeof(bool)*self.program.vertexCount);}
+    bool *asBVec2
+        <-{self.type=un_bvec2;return((bool*)_buf.c);}
+        ->{self.type=un_bvec2;memcpy(_buf.c,v,sizeof(bool)*2*self.program.vertexCount);}
+    bool *asBVec3
+        <-{self.type=un_bvec3;return((bool*)_buf.c);}
+        ->{self.type=un_bvec3;memcpy(_buf.c,v,sizeof(bool)*3*self.program.vertexCount);}
+    bool *asBVec4
+        <-{self.type=un_bvec4;return((bool*)_buf.c);}
+        ->{self.type=un_bvec4;memcpy(_buf.c,v,sizeof(bool)*4*self.program.vertexCount);}
 
-    GLint *asInt=
-        {self.type=un_int;return((GLint*)_buf.c);}
-        -v{self.type=un_int;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
-    GLint *asIVec2=
-        {self.type=un_ivec2;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2*self.program.vertexCount);}
-    GLint *asIVec3=
-        {self.type=un_ivec3;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3*self.program.vertexCount);}
-    GLint *asIVec4=
-        {self.type=un_ivec4;return((GLint*)_buf.c);}
-        -v{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4*self.program.vertexCount);}
+    GLint *asInt
+        <-{self.type=un_int;return((GLint*)_buf.c);}
+        ->{self.type=un_int;memcpy(_buf.c,v,sizeof(int)*self.program.vertexCount);}
+    GLint *asIVec2
+        <-{self.type=un_ivec2;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec2;memcpy(_buf.c,v,sizeof(int)*2*self.program.vertexCount);}
+    GLint *asIVec3
+        <-{self.type=un_ivec3;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec3;memcpy(_buf.c,v,sizeof(int)*3*self.program.vertexCount);}
+    GLint *asIVec4
+        <-{self.type=un_ivec4;return((GLint*)_buf.c);}
+        ->{self.type=un_ivec4;memcpy(_buf.c,v,sizeof(int)*4*self.program.vertexCount);}
 
-    float *asFloat=
-        {self.type=un_float;return((float*)_buf.c);}
-        -v{self.type=un_float;memcpy(_buf.c,v,sizeof(float)*self.program.vertexCount);}
-    float *asVec2=
-        {self.type=un_vec2;return((float*)_buf.c);}
-        -v{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2*self.program.vertexCount);}
-    float *asVec3=
-        {self.type=un_vec3;return((float*)_buf.c);}
-        -v{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3*self.program.vertexCount);}
-    float *asVec4=
-        {self.type=un_vec4;return((float*)_buf.c);}
-        -v{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
+    float *asFloat
+        <-{self.type=un_float;return((float*)_buf.c);}
+        ->{self.type=un_float;memcpy(_buf.c,v,sizeof(float)*self.program.vertexCount);}
+    float *asVec2
+        <-{self.type=un_vec2;return((float*)_buf.c);}
+        ->{self.type=un_vec2;memcpy(_buf.c,v,sizeof(float)*2*self.program.vertexCount);}
+    float *asVec3
+        <-{self.type=un_vec3;return((float*)_buf.c);}
+        ->{self.type=un_vec3;memcpy(_buf.c,v,sizeof(float)*3*self.program.vertexCount);}
+    float *asVec4
+        <-{self.type=un_vec4;return((float*)_buf.c);}
+        ->{self.type=un_vec4;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
 
-    float *asMat2=
-        {self.type=un_mat2;return((float*)_buf.c);}
-        -v{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
-    float *asMat3=
-        {self.type=un_mat3;return((float*)_buf.c);}
-        -v{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9*self.program.vertexCount);}
-    float *asMat4=
-        {self.type=un_mat4;return((float*)_buf.c);}
-        -v{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16*self.program.vertexCount);}
+    float *asMat2
+        <-{self.type=un_mat2;return((float*)_buf.c);}
+        ->{self.type=un_mat2;memcpy(_buf.c,v,sizeof(float)*4*self.program.vertexCount);}
+    float *asMat3
+        <-{self.type=un_mat3;return((float*)_buf.c);}
+        ->{self.type=un_mat3;memcpy(_buf.c,v,sizeof(float)*9*self.program.vertexCount);}
+    float *asMat4
+        <-{self.type=un_mat4;return((float*)_buf.c);}
+        ->{self.type=un_mat4;memcpy(_buf.c,v,sizeof(float)*16*self.program.vertexCount);}
 
-    NSObject asObject=
-        {
+    NSObject asObject
+        <-{
             NSObject *value;
             switch (type) {
                 case un_none:case un_any:case un_noValue:value=[NSNull null];break;
@@ -801,7 +801,7 @@ SHAttribute <BaseObject>
             }
             return([NSDictionary dictionaryWithObjectsAndKeys:value,@"value",@((Int)type),@"type",nil]);
         }
-        -v{
+        ->{
             UniformType typ=type;
             if (v&&[v isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *d=(NSDictionary*)v;
@@ -883,7 +883,7 @@ SHAttribute <BaseObject>
         glEnableVertexAttribArray(glname);
     }
     
-    NSString shaderString_frag={
+    NSString shaderString_frag {
         if (!enabled) return(@"");
         NSString *typeStr;
         switch (type) {
@@ -901,7 +901,7 @@ SHAttribute <BaseObject>
         return([NSString stringWithFormat:@"varying %@ %@;\n",typeStr,self.name]);
     }
 
-    NSString shaderString_vert={
+    NSString shaderString_vert {
         if (!enabled) return(@"");
         NSString *typeStr;
         switch (type) {
@@ -919,7 +919,7 @@ SHAttribute <BaseObject>
         return([NSString stringWithFormat:@"attribute %@ __input_%@;\n  varying %@ %@;\n",typeStr,self.name,typeStr,self.name]);
     }
 
-    NSString assignString_vert={
+    NSString assignString_vert {
         if (!enabled) return(@"");
         switch (type) {
             default:case un_none:case un_sampler2D:case un_samplerCube:
@@ -959,12 +959,12 @@ SHAttribute <BaseObject>
 
 
 ShaderProgram <BaseObject,GLObject>
-    bool _changed=YES,changed={return(_changed);}
-    bool valid={return(_glname!=INVALIDSHADER);}
+    bool _changed=YES,changed {return(_changed);}
+    bool valid {return(_glname!=INVALIDSHADER);}
 
     GLint vertexCount=4
 
-    ULL uniformHash={
+    ULL uniformHash {
         ULL ret=734897389745LL;
         for (NSString *key in self.uniforms) {
             ret+=obfuscateULL(makeStringHashCode(key.UTF8String)*3+[self uniformForKey:key].ullHash);
@@ -973,11 +973,11 @@ ShaderProgram <BaseObject,GLObject>
     }
 
     NSString _filename=nil
-    NSString filename={return(self._filename);}-v{self._filename=v;[self markChanged];}
+    NSString filename <-{return(self._filename);} ->{self._filename=v;[self markChanged];}
 
     NSString fragShaderStringWas=@"",vertShaderStringWas=@""
-    NSString _fragShaderString=nil,fragShaderString={[self makeShaderStrings];return(self._fragShaderString);}
-    NSString _vertShaderString=nil,vertShaderString={[self makeShaderStrings];return(self._vertShaderString);}
+    NSString _fragShaderString=nil,fragShaderString {[self makeShaderStrings];return(self._fragShaderString);}
+    NSString _vertShaderString=nil,vertShaderString {[self makeShaderStrings];return(self._vertShaderString);}
 
     publicreadonly: MutableDictionary macros=[[MutableDictionary alloc] init] 
 

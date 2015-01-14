@@ -2,5 +2,5 @@
 
 
 <AudioUnit>
-    OSType componentSubType={return(kAudioUnitSubType_RemoteIO);}
+    OSType componentSubType {return(kAudioUnitSubType_RemoteIO);}
 

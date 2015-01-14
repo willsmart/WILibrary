@@ -80,9 +80,9 @@
 
 <ValueLinkEndpoint:MutableValueDelegate>
     weakandstrong:
-        id value=
-            {return(v_value);}
-            -v{
+        id value=nil
+            <-{return(v_value);}
+            ->{
                 if ((v_value==v)||(v&&[self unacceptable:v])) return;
                 [self willChangeValueFrom:v_value to:v];
                 if (v_value) {
@@ -95,7 +95,7 @@
                 }
                 v_value_strong=(retains?v_value:nil);
                 [self didSetValueTo:v];
-            }=nil 
+            } 
     bool _addReferrer:(NSObject<LinkEndpoint>*)ep {
         id v=ep.owner;
         if (!v) return(NO);

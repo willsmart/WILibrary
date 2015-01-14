@@ -24,8 +24,8 @@
         for (NSObject<CellModel> *cell in self._cells) [cell invalidateLayout];
     }
 
-    float likelyHeaderHeight={@-999 float ret=0;@999 return(ret);}
-    float likelyFooterHeight={@-999 float ret=0;@999 return(ret);}
+    float likelyHeaderHeight {@-999 float ret=0;@999 return(ret);}
+    float likelyFooterHeight {@-999 float ret=0;@999 return(ret);}
 
     readonly:
         UIView header=nil,footer=nil
@@ -48,20 +48,20 @@
         [self markDirty];self.propertiesChanged=YES;
     }
 
-    <CellModel> newCellModel={@-999 NSObject<CellModel> *ret=nil;
+    <CellModel> newCellModel {@-999 NSObject<CellModel> *ret=nil;
         @999 return(ret);
     }
-    <CellModel> insertNewCellsBelowCell={@-999 NSObject<CellModel> *ret=nil;
+    <CellModel> insertNewCellsBelowCell {@-999 NSObject<CellModel> *ret=nil;
         @999 return(ret);
     }
-    <SectionModel> insertNewCellsAtTopOfSection={@-999 NSObject<SectionModel> *ret=nil;
+    <SectionModel> insertNewCellsAtTopOfSection {@-999 NSObject<SectionModel> *ret=nil;
         @999 return(ret);
     }
     readonly: UITableViewCell newUITVCell
     void applyToCell:(UITableViewCell*)cell;
 
 
-    float likelyCellHeight={@-999 float ret=0;@999 return(ret);}
+    float likelyCellHeight {@-999 float ret=0;@999 return(ret);}
     readonly:
         float cellHeight
         NSString cellReuseIdentifier=nil
@@ -96,42 +96,42 @@
 
 
 <SectionModelFromMeta:SectionModel>
-    float likelyHeaderHeight={@-100
+    float likelyHeaderHeight {@-100
         ret=[__HeaderClass__ heightFromURL];
     }
-    float likelyFooterHeight={@-100
+    float likelyFooterHeight {@-100
         ret=[__FooterClass__ heightFromURL];
     }
 
-    float headerHeight={return(self.likelyHeaderHeight);}
-    float footerHeight={return(self.likelyFooterHeight);}
+    float headerHeight {return(self.likelyHeaderHeight);}
+    float footerHeight {return(self.likelyFooterHeight);}
 
-    UIView header={
+    UIView header=nil <-{
         if (!header) {
             header=[[__HeaderClass__ alloc] init];
         }
         return(header);
-    }=nil (readonly!)
-    UIView footer={
+    } (readonly!)
+    UIView footer=nil <-{
         if (!footer) {
             footer=[[__FooterClass__ alloc] init];
         }
         return(footer);
-    }=nil (readonly!)
+    } (readonly!)
 
 
 
 <CellModelFromMeta:CellModel>
-    float likelyCellHeight={@-100
+    float likelyCellHeight {@-100
         ret=[__CellClass__ heightFromURL];
     }
 
-    float cellHeight={return(self.likelyCellHeight);}
+    float cellHeight {return(self.likelyCellHeight);}
 
-    NSString cellReuseIdentifier=
-        {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);}=nil (readonly!)
+    NSString cellReuseIdentifier=nil
+        <-{return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@",NSStringFromClass([__CellClass__ class])]);} (readonly!)
 
-    UITableViewCell newUITVCell={
+    UITableViewCell newUITVCell {
         UITableViewCell *ret=[[__CellClass__ alloc] init];
         if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
             ERR("Cell reuse id (%s) should be %s\n",ret.reuseIdentifier.UTF8String,self.cellReuseIdentifier.UTF8String);
@@ -146,10 +146,10 @@
 <CellModelFromNib:CellModel>
     readonly: NSString nibName
     Int tag=0
-    Class uiTVCellClass={return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} 
-    NSString cellReuseIdentifier=
+    Class uiTVCellClass {return(uiTVCellClass?uiTVCellClass:[UITableViewCell class]);} 
+    NSString cellReuseIdentifier 
         {return(cellReuseIdentifier?cellReuseIdentifier:[NSString stringWithFormat:@"%@-%d",self.nibName,tag]);} (readonly!)
-    UITableViewCell newUITVCell={@-999
+    UITableViewCell newUITVCell {@-999
         UITableViewCell *ret=[ViewUtilities loadViewOfClass:self.uiTVCellClass withTag:tag fromNibWithName:self.nibName];
         if (![self.cellReuseIdentifier isEqualToString:ret.reuseIdentifier]) {
             ERR("Cell reuse id (%s) should be %s\n",ret.reuseIdentifier.UTF8String,self.cellReuseIdentifier.UTF8String);
@@ -161,13 +161,13 @@
 <SectionModelFromNib:SectionModel>
     readonly: NSString nibName
     Int headerTag=1,footerTag=2
-    Class headerClass={return(headerClass?headerClass:[UIView class]);} 
-    Class footerClass={return(footerClass?footerClass:[UIView class]);} 
-    UIView header={@-999 
+    Class headerClass {return(headerClass?headerClass:[UIView class]);} 
+    Class footerClass {return(footerClass?footerClass:[UIView class]);} 
+    UIView header {@-999 
         id ret=(header?header:[ViewUtilities loadViewOfClass:self.headerClass withTag:headerTag fromNibWithName:self.nibName]);
         @999 return(ret);
     } (readonly!)
-    UIView footer={@-999 
+    UIView footer {@-999 
         id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
         @999 return(ret);
     } (readonly!)
@@ -310,9 +310,9 @@
     readonly: UITableView table
 
     bool __editing=NO
-    bool _editing>>editing=
-        {return(__editing);}
-        -v{[self setEditing:v animated:YES];}
+    bool _editing>>editing
+        <-{return(__editing);}
+        ->{[self setEditing:v animated:YES];}
     void setEditing:(BOOL)value animated:(BOOL)animated {@-500 
         if ((__editing?YES:NO)!=(value?YES:NO)) {
             __editing=value;
@@ -333,7 +333,7 @@
 
     bool animateCells=YES
 
-    UITableViewRowAnimation rowAnimation={
+    UITableViewRowAnimation rowAnimation {
         return(animateCells?UITableViewRowAnimationLeft:UITableViewRowAnimationNone);
     }
 

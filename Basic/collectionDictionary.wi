@@ -55,9 +55,9 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         NSDictionary __dictionary=0
         Int weakObjectCount=0
     bool insertsWeakObjectsByDefault=0
-    CollectionWeakness weakness=
-        {return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
-        -v{}
+    CollectionWeakness weakness
+        <-{return(self.count?(weakObjectCount?(weakObjectCount==self.count?CollectionIsWeak:CollectionIsWeakAndStrong):CollectionIsWeak):CollectionIsEmpty);}
+        ->{}
 
     void countWeakObjects {
         Int c=0;
@@ -132,7 +132,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
     //Counting Entries
-    atomic: Unsigned count={return([__dictionary count]);}
+    atomic: Unsigned count{return([__dictionary count]);}
     
     
     //Comparing Dictionaries
@@ -140,9 +140,9 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     
     
     //Accessing Keys and Values
-    NSArray allKeys={return([__dictionary allKeys]);}
+    NSArray allKeys{return([__dictionary allKeys]);}
     NSArray* allKeysForObject:(id)object {return([__dictionary allKeysForObject:object]);}
-    NSArray allValues={return([__dictionary allValues]);}
+    NSArray allValues{return([__dictionary allValues]);}
     void getObjects:(id __unsafe_unretained [])objects andKeys:(id __unsafe_unretained [])keys {
         [__dictionary getObjects:objects andKeys:keys];
     }
@@ -157,8 +157,8 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     
     
     //Enumerating Dictionaries
-    NSEnumerator keyEnumerator={return([__dictionary keyEnumerator]);}
-    NSEnumerator objectEnumerator={return([__dictionary objectEnumerator]);}
+    NSEnumerator keyEnumerator{return([__dictionary keyEnumerator]);}
+    NSEnumerator objectEnumerator{return([__dictionary objectEnumerator]);}
     void enumerateKeysAndObjectsUsingBlock:(void (^)(id key, id obj, BOOL *stop))block {
         [__dictionary enumerateKeysAndObjectsUsingBlock:block];
     }
@@ -198,27 +198,27 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     
     
     //Accessing File Attributes
-    NSDate fileCreationDate={return([__dictionary fileCreationDate]);}
-    BOOL fileExtensionHidden={return([__dictionary fileExtensionHidden]);}
-    NSNumber fileGroupOwnerAccountID={return([__dictionary fileGroupOwnerAccountID]);}
-    NSString fileGroupOwnerAccountName={return([__dictionary fileGroupOwnerAccountName]);}
-    OSType fileHFSCreatorCode={return([__dictionary fileHFSCreatorCode]);}
-    OSType fileHFSTypeCode={return([__dictionary fileHFSTypeCode]);}
-    BOOL fileIsAppendOnly={return([__dictionary fileIsAppendOnly]);}
-    BOOL fileIsImmutable={return([__dictionary fileIsImmutable]);}
-    NSDate fileModificationDate={return([__dictionary fileModificationDate]);}
-    NSNumber fileOwnerAccountID={return([__dictionary fileOwnerAccountID]);}
-    NSString fileOwnerAccountName={return([__dictionary fileOwnerAccountName]);}
-    Unsigned filePosixPermissions={return([__dictionary filePosixPermissions]);}
-    ULL fileSize={return([__dictionary fileSize]);}
-    Unsigned fileSystemFileNumber={return([__dictionary fileSystemFileNumber]);}
-    Int fileSystemNumber={return([__dictionary fileSystemNumber]);}
-    NSString fileType={return([__dictionary fileType]);}
+    NSDate fileCreationDate{return([__dictionary fileCreationDate]);}
+    BOOL fileExtensionHidden{return([__dictionary fileExtensionHidden]);}
+    NSNumber fileGroupOwnerAccountID{return([__dictionary fileGroupOwnerAccountID]);}
+    NSString fileGroupOwnerAccountName{return([__dictionary fileGroupOwnerAccountName]);}
+    OSType fileHFSCreatorCode{return([__dictionary fileHFSCreatorCode]);}
+    OSType fileHFSTypeCode{return([__dictionary fileHFSTypeCode]);}
+    BOOL fileIsAppendOnly{return([__dictionary fileIsAppendOnly]);}
+    BOOL fileIsImmutable{return([__dictionary fileIsImmutable]);}
+    NSDate fileModificationDate{return([__dictionary fileModificationDate]);}
+    NSNumber fileOwnerAccountID{return([__dictionary fileOwnerAccountID]);}
+    NSString fileOwnerAccountName{return([__dictionary fileOwnerAccountName]);}
+    Unsigned filePosixPermissions{return([__dictionary filePosixPermissions]);}
+    ULL fileSize{return([__dictionary fileSize]);}
+    Unsigned fileSystemFileNumber{return([__dictionary fileSystemFileNumber]);}
+    Int fileSystemNumber{return([__dictionary fileSystemNumber]);}
+    NSString fileType{return([__dictionary fileType]);}
     
     
     //Creating a Description
-    NSString description={return([__dictionary description]);}
-    NSString descriptionInStringsFileFormat={return([__dictionary descriptionInStringsFileFormat]);}
+    NSString description{return([__dictionary description]);}
+    NSString descriptionInStringsFileFormat{return([__dictionary descriptionInStringsFileFormat]);}
     NSString * descriptionWithLocale:(id)locale {
         return([__dictionary descriptionWithLocale:locale]);
     }
@@ -247,7 +247,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     }
     void basic_delegateForDictionaryChanged {
     }
-    NSDictionary basic_delegateForDictionary={return(v_basic_subDictionaryDelegate.delegateForDictionary);}
+    NSDictionary basic_delegateForDictionary{return(v_basic_subDictionaryDelegate.delegateForDictionary);}
 
 
 
@@ -394,8 +394,8 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 <MinimalMutableDictionary:Dictionary,MutableDictionaryDelegate,ObjectEquate>
     readonly: NSMutableDictionary __mutableDictionary=nil
-    CollectionWeakness weakness=
-        -v{
+    CollectionWeakness weakness
+        ->{
             switch (v) {
                 case CollectionIsEmpty:[self removeAllObjects];break;
                 case CollectionIsWeakAndStrong:default:break;
@@ -666,24 +666,24 @@ Basic_SourcedProxyDictionaryDelegate<Basic_SourcedProxyDictionaryDelegate>
 
 
 MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
-    NSString keyPrefix=
-        {return(keyPrefix);}
-        -v{
+    NSString keyPrefix=nil
+        <-{return(keyPrefix);}
+        ->{
 keyPrefix=v;
             [self refreshFollowerDictionary];
-        }=nil 
-    Int keepKeyPrefixSuffixLength=
-        {return(keepKeyPrefixSuffixLength);}
-        -v{
+        } 
+    Int keepKeyPrefixSuffixLength=nil
+        <-{return(keepKeyPrefixSuffixLength);}
+        ->{
             keepKeyPrefixSuffixLength=v;
             [self refreshFollowerDictionary];
-        }=nil 
-    NSString filterKeyPrefix=
-        {return(filterKeyPrefix);}
-        -v{
+        }
+    NSString filterKeyPrefix=nil
+        <-{return(filterKeyPrefix);}
+        ->{
 filterKeyPrefix=v;
             [self refreshFollowerDictionary];
-        }=nil 
+        }
 
     id<NSCopying> keyForObject:(id)object key:(id<NSCopying>)key {
         if (![(NSObject*)key isKindOfClass:[NSString class]]) return(nil);
@@ -712,9 +712,9 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
     readonly:
         NSMutableDictionary __mapk=[[NSMutableDictionary alloc] init] 
         NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] 
-    <MutableDictionary> followerDictionary=
-        {return(followerDictionary);}
-        -v{followerDictionary=v;[self refreshFollowerDictionary];}=nil 
+    <MutableDictionary> followerDictionary=nil
+        <-{return(followerDictionary);}
+        ->{followerDictionary=v;[self refreshFollowerDictionary];}
 
     void delegateForDictionaryChanged {
         [self refreshFollowerDictionary];
@@ -803,9 +803,9 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
         NSMutableArray __mapdicts=[[NSMutableArray alloc] init] 
         NSMutableDictionary __ocounts=[[NSMutableDictionary alloc] init] 
 
-    <MutableDictionary> unionDictionary=
-        {return(unionDictionary);}
-        -v{unionDictionary=v;[self refreshUnionDictionary];}=nil 
+    <MutableDictionary> unionDictionary=nil
+        <-{return(unionDictionary);}
+        ->{unionDictionary=v;[self refreshUnionDictionary];}
 
     //void setDelegateInArray:(NSObject<NSArray>*)v {@500 
     //    if (unionDictionary) [self refreshUnionDictionary];

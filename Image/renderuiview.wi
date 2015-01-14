@@ -1,7 +1,7 @@
 
 Singletons
 /**! -wi!warnwarn Address warning: Non-imaginary variable renderUIViews has an ivar, but no default value. This is less a strict error than unclean !**/
-    readonly: RenderUIViews renderUIViews={return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));}=nil
+    readonly: RenderUIViews renderUIViews=nil <-{return(renderUIViews?renderUIViews:(renderUIViews=[[RenderUIViews alloc] init]));}
 
 
 RenderUIViews <BaseObject>
@@ -17,7 +17,7 @@ RenderUIViews <BaseObject>
 
 RenderUIView : UIView<BaseObject>
 
-    CGRect rectOnEAGLView={
+    CGRect rectOnEAGLView {
         if (!self.views) return(CGRectMake(0, 0, 0, 0));
         else return(CGRectIntersection(self.views.eaglView.bounds, [self.views.eaglView convertRect:self.bounds fromView:self]));
     }
