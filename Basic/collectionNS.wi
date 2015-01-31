@@ -19,8 +19,16 @@ PointerKey <NSCopying> "-Object"
         return([[PointerKey alloc] initWithObject:ao]);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
+    +(NSObject<NSCopying>*)nscopyingWithObject:(NSObject*)o {
+        return([o conformsToProtocol:@protocol(NSCopying)]?
+            (NSObject<NSCopying>*)o:
+            [[PointerKey alloc] initWithObject:o]
+        );
+    }
+
+    NSString description
+      ={return([NSString stringWithFormat:@"Wrapped:%p",o]);} "explain"
+    NSString debugDescription ={return([NSString stringWithFormat:@"Wrapped:%p",o]);}
     -(id)copyWithZone:(NSZone*)zone {
         return([[PointerKey allocWithZone:zone] initWithObject:o]);
     }
@@ -52,8 +60,8 @@ WeakObject <NSCopying> "-Object"
             ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
     }
 
-    NSString description={return([NSString stringWithFormat:@"Weak:%p",o]);}
-    NSString debugDescription={return([NSString stringWithFormat:@"Weak:%p",o]);}
+    NSString description ={return([NSString stringWithFormat:@"Weak:%p",o]);}
+    NSString debugDescription ={return([NSString stringWithFormat:@"Weak:%p",o]);}
     -(id)copyWithZone:(NSZone*)zone {
         return([[WeakObject allocWithZone:zone] initWithObject:o]);
     }

@@ -343,7 +343,6 @@ Singletons
     -(NSMutableString*) logDescriptionRecurseWithStack:(NSMutableSet*)stack;
 
 Util "fn:util"
-
     +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {
         NSMutableArray *dels=[[MutableArray alloc] init];
         NSMutableArray *inss=[[MutableArray alloc] init];
@@ -1136,3 +1135,257 @@ tim=nil;
     -(void)saveCodableToServer {
         [self.asData sendAsBodyOfPOSTRequestWithURL:[NSURL URLWithString:[g_singletons.homeURLPrefix stringByAppendingFormat:@"savecodable.php"]] returningResponse:nil error:nil];
     }
+
+
+NSString
+    NSObject asValidJsonObject={return(self);}
+    NSString jsonString={return(self);}
+
+NSNumber
+    NSObject asValidJsonObject={return(self);}
+
+NSNull
+    NSObject asValidJsonObject={return(self);}
+
+NSArray
+    NSObject asValidJsonObject={
+        NSMutableArray *ret=nil;
+        for (int i=((int)self.count)-1;i>=0;i--) {
+            NSObject *o=((NSObject*)self[i]).asValidJsonObject;
+	            if (self[i]!=o) {
+                if (!ret) ret=self.mutableCopy;
+                [ret replaceObjectAtIndex:i withObject:o];
+            }
+        }
+        return(ret?ret:self);
+    }
+    NSString jsonString={
+        NSError *err=nil;
+        return [NSString.alloc initWithData:[NSJSONSerialization dataWithJSONObject:self.asValidJsonObject options:0 error:&err] encoding:NSUTF8StringEncoding];
+    }
+
+NSDictionary
+    NSObject asValidJsonObject={
+        NSMutableDictionary *ret=nil;
+        for (NSObject<NSCopying> *key in self) {
+            NSObject<NSCopying> *k=(NSObject<NSCopying>*)key.asValidJsonObject;
+            NSObject *o=((NSObject*)self[key]).asValidJsonObject;
+            if (key!=k) {
+                if (!ret) ret=self.mutableCopy;
+                [ret removeObjectForKey:key];
+                ret[k]=o;
+            }
+            else if (self[key]!=o) {
+                if (!ret) ret=self.mutableCopy;
+                ret[key]=o;
+            }
+        }
+        return(ret?ret:self);
+    }
+    NSString jsonString={
+        NSError *err=nil;
+        return [NSString.alloc initWithData:[NSJSONSerialization dataWithJSONObject:self.asValidJsonObject options:0 error:&err] encoding:NSUTF8StringEncoding];
+    }
+
+NSSet
+    NSObject asValidJsonObject={return(self.allObjects.asValidJsonObject);}
+    NSString jsonString={return(self.allObjects.jsonString);}
+
+NSObject
+    NSObject asValidJsonObject={return(self.description);}
+    NSString jsonString={return(self.description);}
+
+
+PartiallyOrderedSet
+    NSMutableSet set={
+            return(v_set.copy);
+        }
+        =[NSMutableSet set] (readonly,ivar=v_set)
+    NSMutableDictionary befores={
+            return(v_befores.copy);
+        }
+        =[NSMutableDictionary dictionary] (readonly,ivar=v_befores)
+    NSMutableDictionary afters={
+            return(v_afters.copy);
+        }
+        =[NSMutableDictionary dictionary] (readonly,ivar=v_afters)
+    NSMutableDictionary usedKeys={
+            return(v_usedKeys.copy);
+        }
+        =[NSMutableDictionary dictionary] (readonly,ivar=v_usedKeys)
+    NSArray asArray={
+        NSMutableArray *ret=NSMutableArray.array;
+        NSMutableSet *todo=v_set.mutableCopy;
+        NSMutableArray *todoa=[v_set.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSObject *obj1,NSObject *obj2) {
+            return([obj1 respondsToSelector:@selector(compare:)]&&[obj2 respondsToSelector:@selector(compare:)]?
+                [(id)obj1 compare:(id)obj2]:
+                ((__bridge void*)obj1<(__bridge void*)obj2?
+                    NSOrderedAscending:
+                    ((__bridge void*)obj1==(__bridge void*)obj2?
+                        NSOrderedSame:
+                        NSOrderedDescending
+                    )
+                )
+            );
+        }].mutableCopy;
+        while (todo.count) {
+            NSObject *v=todoa[0];
+            [todoa removeObjectAtIndex:0];
+            [todo removeObject:v];
+            [self add:v toArray:ret todo:todo todoa:todoa];
+        }
+        return(ret);
+    }
+    -(void)add:(NSObject*)v toArray:(NSMutableArray*)array todo:(NSMutableSet*)todo todoa:(NSMutableArray*)todoa {
+        NSSet *befores=[v_befores objectForKey:v];
+        NSObject *before;
+        if ([befores intersectsSet:todo]) {
+            for (NSInteger ind=0;ind<todo.count;ind++) {
+                if ([befores containsObject:before=todoa[ind]]) {
+                    [todoa removeObjectAtIndex:ind];
+                    [todo removeObject:before];
+                    [self add:before toArray:array todo:todo todoa:todoa];
+                }
+            }
+        }
+        [array addObject:v];
+    }
+
+    +(__Class__*)partiallyOrderedSet {return([self new]);}
+    +(__Class__*)partiallyOrderedSetWithArray:(NSArray*)array {return([self.alloc initWithArray:array]);}
+    +(__Class__*)partiallyOrderedSetWithSet:(NSSet*)set {return([self.alloc initWithSet:set]);}
+
+    -(init) {}
+    -(init)init {
+    }
+    -(init[super init])initWithArray:(NSArray*)array {
+        @100
+        for (NSObject *v in array) {
+            if ([v_set containsObject:v]) continue;
+            [v_set addObject:v];
+            NSObject<NSCopying> *key=[PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+                setObject:key
+                forKey:key
+            ];
+            NSMutableSet *befores=NSMutableSet.set;
+            [v_befores
+                setObject:befores
+                forKey:key
+            ];
+            [v_afters
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+            for (NSObject *v2 in array) {
+                if (v2==v) break;
+                [befores addObject:v2];
+                [v_afters[v2] addObject:v];
+            }
+        }
+    }
+    -(init[super init])initWithSet:(NSSet*)set {
+        @100
+        [v_set unionSet:set];
+        for (NSObject *v in set) {
+            NSObject<NSCopying> *key=[PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+                setObject:key
+                forKey:key
+            ];
+            [v_befores
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+            [v_afters
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+        }
+    }
+
+    -(void)mergeWith:(const PartiallyOrderedSet*)other {
+        for (NSObject *v in other->v_set) {
+            if ([v_set containsObject:v]) {
+                NSMutableSet *befores=[v_befores objectForKey:v];
+                NSMutableSet *befores2=[other->v_befores objectForKey:v];
+                NSMutableSet *afters=[v_afters objectForKey:v];
+                NSMutableSet *afters2=[other->v_afters objectForKey:v];
+
+                [befores unionSet:befores2];
+                [befores minusSet:afters2];
+                [befores minusSet:afters];
+
+                [befores unionSet:afters2];
+                [afters minusSet:befores2];
+                [afters minusSet:befores];
+            }
+            else {
+                NSMutableSet *befores2=[other->v_befores objectForKey:v];
+                NSMutableSet *afters2=[other->v_afters objectForKey:v];
+                [v_set addObject:v];
+                NSObject<NSCopying> *key=[PointerKey nscopyingWithObject:v];
+                [v_usedKeys
+                    setObject:key
+                    forKey:key
+                ];
+                [v_befores
+                    setObject:befores2.mutableCopy
+                    forKey:key
+                ];
+                [v_afters
+                    setObject:afters2.mutableCopy
+                    forKey:key
+                ];
+            }
+        }
+    }
+
+    -(void)appendObject:(NSObject*)v {
+        if (![v_set containsObject:v]) {
+            NSObject<NSCopying> *key=[PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+                setObject:key
+                forKey:key
+            ];
+            NSMutableSet *befores=NSMutableSet.set;
+            [v_befores
+                setObject:befores
+                forKey:key
+            ];
+            [v_afters
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+            for (NSObject *v2 in v_set) {
+                if (v2==v) break;
+                [befores addObject:v2];
+                [v_afters[v2] addObject:v];
+            }
+            [v_set addObject:v];
+        }
+    }
+    -(void)addObject:(NSObject*)v {
+        if ([v_set containsObject:v]) {
+            NSObject<NSCopying> *key=[PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+                setObject:key
+                forKey:key
+            ];
+            [v_befores
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+            [v_afters
+                setObject:NSMutableSet.set
+                forKey:key
+            ];
+            [v_set addObject:v];
+        }
+    }
+
+
+
+
+
+
