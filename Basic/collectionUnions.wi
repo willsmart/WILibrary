@@ -439,7 +439,8 @@ UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
 
 
 
-UnionArrayDelegateCount "-Object"
+UnionArrayDelegateCount
+    "-Object"
     Int willCount,didCount=nil
 
 

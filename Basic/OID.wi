@@ -98,7 +98,8 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 
 
 
-ClassCount "-Object"
+ClassCount
+    "-Object"
     LL count=nil,nextID=nil
     readonly: NSString name=nil
     ClassCount* +classCount {
@@ -145,7 +146,8 @@ decl:impl:{
     }
 }
 
-Singletons<Ticker> "-Object"
+Singletons<Ticker>
+    "-Object"
     NSMutableArray typeCountHistory=[NSMutableArray array]
     readonly:
         QuickHashTableOfClassCounts *classCountht=nil
@@ -677,7 +679,8 @@ ObjectGraph<Ticker,BaseObject>
 
     
 
-ObjectPointer<ObjectEquateAndCopy> "-Object"
+ObjectPointer<ObjectEquateAndCopy>
+    "-Object"
     readonly: LL objectIDInTotal=nil
     Self initWithObjectID:(LL)aobjectIDInTotal  {super:{init}
         objectIDInTotal=aobjectIDInTotal;

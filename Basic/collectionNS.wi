@@ -2,7 +2,8 @@
 
 
 
-PointerKey <NSCopying> "-Object"
+PointerKey <NSCopying>
+    "-Object"
     readonly: id o=nil
     void dealloc {}
     id initWithObject:(id)ao {
@@ -36,7 +37,8 @@ PointerKey <NSCopying> "-Object"
 
 
 
-WeakObject <NSCopying> "-Object"
+WeakObject <NSCopying>
+    "-Object"
     readonly: id o=nil
     id initWithObject:(id)ao {
         if (!(self=[super init])) return(nil);
