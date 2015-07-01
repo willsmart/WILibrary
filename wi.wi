@@ -33,7 +33,7 @@ top:{
         #define NOSWIFT(...) __VA_ARGS__
     #endif
 }
-imports:{
+top:{
     #ifndef __SWIFT__
     #include <iostream>
     #include $"{WIBASE}/BasicClassesCPP/Headers.h"

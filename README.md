@@ -1,4 +1,4 @@
 WILibrary
 =========
 
-Modules written in winterface for making ios apps
+Modules written in minim for making ios apps
